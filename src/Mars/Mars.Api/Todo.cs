@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace Mars.Api;
 
-[GenerateService("RepositoryController.txt")]
+[GenerateService]
 public class Todo : IIdentifiable
 {
     public Guid Id { get; set; }
