@@ -1,0 +1,6 @@
+@Mars.Api_HostAddress = http://localhost:5291
+
+GET {{Mars.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
