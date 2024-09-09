@@ -9,7 +9,8 @@ public class Todo : IIdentifiable
 {
     [Key] // key is required for mongo
     public Guid Id { get; set; }
-    public string Content { get; set; }
+
+    public string Content { get; set; } = "";
     public bool IsCompleted { get; set; }
 }
 

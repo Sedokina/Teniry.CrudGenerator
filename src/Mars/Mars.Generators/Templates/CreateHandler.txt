@@ -1,0 +1,7 @@
+using {{Namespace}};
+
+namespace {{PrefferredNamespace}}.Controllers;
+
+public partial class Create{{ClassName}}Handler
+{
+}
