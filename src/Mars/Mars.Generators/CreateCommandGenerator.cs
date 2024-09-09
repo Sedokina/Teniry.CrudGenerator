@@ -13,12 +13,12 @@ public class CreateCommandGenerator : ISourceGenerator
     
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommand>());
+        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateServiceAttribute> syntaxReceiver)
+        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCreateCommandAttribute> syntaxReceiver)
         {
             return;
         }
@@ -71,9 +71,9 @@ public class CreateCommandGenerator : ISourceGenerator
 }
 
 [AttributeUsage(AttributeTargets.Class)]
-public class GenerateCreateCommand : Attribute
+public class GenerateCreateCommandAttribute : Attribute
 {
-    public GenerateCreateCommand()
+    public GenerateCreateCommandAttribute()
     {
         
     }
