@@ -4,13 +4,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>57e2ad8a-4c7c-4fc9-9dae-30d64680bbe0</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5"/>
+        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-        <PackageReference Include="MongoDB.Driver" Version="2.28.0" />
-        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+        <PackageReference Include="ITech.Cqrs" Version="0.1.5" />
     </ItemGroup>
 
     <ItemGroup>

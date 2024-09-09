@@ -1,77 +1,66 @@
-using System.Reflection;
-using Humanizer;
+using System.ComponentModel.DataAnnotations;
 using Mars.Generators;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Mars.Api;
 
 [GenerateService]
 public class Todo : IIdentifiable
 {
+    [Key] // key is required for mongo
     public Guid Id { get; set; }
     public string Content { get; set; }
     public bool IsCompleted { get; set; }
 }
 
-public class MongoDbOptions
-{
-    public string ConnectionString { get; set; } = "mongodb://localhost:27017/" + Assembly.GetEntryAssembly()?.GetName().Name?.Replace(".", "_");
-}
-
 public class MongoDbRepository<TModel> : IRepository<TModel>
     where TModel : class, IIdentifiable
 {
-    protected MongoDbOptions Options { get; init; }
+    private readonly MarsDb _db;
 
-    protected IMongoCollection<TModel> Collection { get; init; }
-
-    public MongoDbRepository(IOptions<MongoDbOptions> options)
+    public MongoDbRepository(MarsDb db)
     {
-        Options = options.Value;
-        var connectionUri = new Uri(options.Value.ConnectionString);
-        var client = new MongoClient(Options.ConnectionString);
-        Collection = client
-            .GetDatabase(connectionUri.AbsolutePath.Trim('/'))
-            .GetCollection<TModel>(typeof(TModel).Name.Pluralize());
+        _db = db;
     }
 
-    public Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        return Collection.DeleteOneAsync(x => x.Id == id);
+        var model = await _db.Set<TModel>().FindAsync(id);
+        if (model == null) return;
+        _db.Set<TModel>().Remove(model);
+        await _db.SaveChangesAsync();
     }
 
-    public Task<List<TModel>> GetListAsync()
+    public async Task<List<TModel>> GetListAsync()
     {
-        return Collection.AsQueryable().ToListAsync();
+        return await _db.Set<TModel>().ToListAsync();
     }
 
-    public Task<TModel?> GetSingleAsync(Guid id)
+    public async Task<TModel?> GetSingleAsync(Guid id)
     {
-        return Task.FromResult(Collection.AsQueryable().FirstOrDefault(x => x.Id == id));
+        return await _db.Set<TModel>().FindAsync(id);
     }
 
-    public Task InsertAsync(TModel model)
+    public async Task InsertAsync(TModel model)
     {
         model.Id = Guid.NewGuid();
-        return Collection.InsertOneAsync(model);
+        await _db.Set<TModel>().AddAsync(model);
+        await _db.SaveChangesAsync();
     }
 
-    public Task UpdateAsync(Guid id, TModel model)
+    public async Task UpdateAsync(Guid id, TModel model)
     {
-        model.Id = id;
-        return Collection.ReplaceOneAsync(x => x.Id == id, model);
+        _db.Update(model);
+        await _db.SaveChangesAsync();
     }
 }
-
 
 public interface IIdentifiable
 {
     Guid Id { get; set; }
 }
 
-
-public interface IRepository<TModel> 
+public interface IRepository<TModel>
     where TModel : class, IIdentifiable
 {
     Task<List<TModel>> GetListAsync();

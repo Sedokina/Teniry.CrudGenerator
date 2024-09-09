@@ -12,6 +12,7 @@ public partial class TodoController
 
         foreach (var todo in todos.Where(x => !x.IsCompleted))
         {
+            todo.IsCompleted = true;
             await _repository.UpdateAsync(todo.Id, todo);
         }
     }
