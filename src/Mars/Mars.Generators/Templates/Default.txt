@@ -1,29 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using {{Namespace}};
-namespace {{PreferredNamespace}}.Controllers;
+using {{namespace}};
+namespace {{preferred_namespace}}.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public partial class {{ClassName}}Controller : ControllerBase
+public partial class {{class_name}}Controller : ControllerBase
 {
-    private static readonly List<{{ClassName}}> _collection = new();
+    private static readonly List<{{class_name}}> _collection = new();
     [HttpGet]
-    public virtual List<{{ClassName}}> Get()
+    public virtual List<{{class_name}}> Get()
     {
         return _collection;
     }
     [HttpGet("{id}")]
-    public virtual {{ClassName}} GetSingle(Guid id)
+    public virtual {{class_name}} GetSingle(Guid id)
     {
         return _collection.SingleOrDefault(x => x.Id == id);
     }
     [HttpPost]
-    public virtual void Create({{ClassName}} item)
+    public virtual void Create({{class_name}} item)
     {
         item.Id = Guid.NewGuid();
         _collection.Add(item);
     }
     [HttpPut("{id}")]
-    public virtual void Update(Guid id, {{ClassName}} item)
+    public virtual void Update(Guid id, {{class_name}} item)
     {
         var existing = _collection.Single(x => x.Id == id);
         item.Id = id;

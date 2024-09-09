@@ -1,36 +1,36 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using {{Namespace}};
-namespace {{PreferredNamespace}}.Controllers;
+using {{namespace}};
+namespace {{preferred_namespace}}.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public partial class {{ClassName}}Controller : ControllerBase
+public partial class {{class_name}}Controller : ControllerBase
 {
-    private readonly IRepository<{{ClassName}}> _repository;
-    public {{ClassName}}Controller(
-        IRepository<{{ClassName}}> repository)
+    private readonly IRepository<{{class_name}}> _repository;
+    public {{class_name}}Controller(
+        IRepository<{{class_name}}> repository)
     {
         _repository = repository;
     }
         
     [HttpGet]
-    public virtual Task<List<{{ClassName}}>> GetListAsync()
+    public virtual Task<List<{{class_name}}>> GetListAsync()
     {
         return _repository.GetListAsync();
     }
         
     [HttpGet("{id}")]
-    public virtual Task<{{ClassName}}> GetSingleAsync(Guid id)
+    public virtual Task<{{class_name}}> GetSingleAsync(Guid id)
     {
         return _repository.GetSingleAsync(id);
     }
     [HttpPost]
-    public virtual async Task CreateAsync({{ClassName}} item)
+    public virtual async Task CreateAsync({{class_name}} item)
     {
         await _repository.InsertAsync(item);
     }
     [HttpPut("{id}")]
-    public virtual async Task UpdateAsync(Guid id, {{ClassName}} item)
+    public virtual async Task UpdateAsync(Guid id, {{class_name}} item)
     {
         await _repository.UpdateAsync(id, item);
     }

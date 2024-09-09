@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Scriban;
 
 namespace Mars.Generators;
 
@@ -55,14 +56,15 @@ public class ServiceGenerator : ISourceGenerator
     private string GetSourceCodeFor(ISymbol symbol, string template = null)
     {
         // If template isn't provieded, use default one from embeded resources.
-        template ??= GetEmbededResource($"Mars.Generators.Templates.RepositoryController.txt");
+        var code = Template.Parse(GetEmbededResource($"Mars.Generators.Templates.RepositoryController.txt"));
 
         // Can't use scriban at the moment, make it manually for now.
-        return template
-            .Replace("{{" + nameof(DefaultTemplateParameters.ClassName) + "}}", symbol.Name)
-            .Replace("{{" + nameof(DefaultTemplateParameters.Namespace) + "}}", GetNamespaceRecursively(symbol.ContainingNamespace))
-            .Replace("{{" + nameof(DefaultTemplateParameters.PreferredNamespace) + "}}", symbol.ContainingAssembly.Name)
-            ;
+        return code.Render(new
+        {
+            ClassName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name
+        });
     }
 
     private string GetEmbededResource(string path)

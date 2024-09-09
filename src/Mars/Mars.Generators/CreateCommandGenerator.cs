@@ -3,15 +3,16 @@ using System.IO;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Scriban;
 
 namespace Mars.Generators;
 
 [Generator]
 public class CreateCommandGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.CreateCommand.txt"; 
-    private const string HandlerResourcePath = "Mars.Generators.Templates.CreateHandler.txt"; 
-    
+    private const string CommandResourcePath = "Mars.Generators.Templates.CreateCommand.txt";
+    private const string HandlerResourcePath = "Mars.Generators.Templates.CreateHandler.txt";
+
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -44,7 +45,7 @@ public class CreateCommandGenerator : ISourceGenerator
             $"Create{symbol.Name}Command.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
-    
+
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
         // Generate the real source code. Pass the template parameter if there is a overriden template.
@@ -53,19 +54,21 @@ public class CreateCommandGenerator : ISourceGenerator
             $"Create{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
-    
+
     private string GetSourceCodeFor(ISymbol symbol, string resourcePath)
     {
         // If template isn't provieded, use default one from embeded resources.
-        var code = GetEmbeddedResource(resourcePath);
+        var code = Template.Parse(GetEmbeddedResource(resourcePath));
 
         // Can't use scriban at the moment, make it manually for now.
-        return code
-                .Replace("{{" + nameof(DefaultTemplateParameters.ClassName) + "}}", symbol.Name)
-                .Replace("{{" + nameof(DefaultTemplateParameters.Namespace) + "}}", GetNamespaceRecursively(symbol.ContainingNamespace))
-                .Replace("{{" + nameof(DefaultTemplateParameters.PreferredNamespace) + "}}", symbol.ContainingAssembly.Name);
+        return code.Render(new
+        {
+            ClassName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name
+        });
     }
-    
+
     private string GetEmbeddedResource(string path)
     {
         using var stream = GetType().Assembly.GetManifestResourceStream(path);
@@ -74,7 +77,7 @@ public class CreateCommandGenerator : ISourceGenerator
 
         return streamReader.ReadToEnd();
     }
-    
+
     private string GetNamespaceRecursively(INamespaceSymbol symbol)
     {
         if (symbol.ContainingNamespace == null)
@@ -91,6 +94,5 @@ public class GenerateCreateCommandAttribute : Attribute
 {
     public GenerateCreateCommandAttribute()
     {
-        
     }
 }

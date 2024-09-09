@@ -1,7 +1,7 @@
-using {{Namespace}};
+using {{namespace}};
 
-namespace {{PreferredNamespace}}.Controllers;
+namespace {{preferred_namespace}}.Controllers;
 
-public partial class Create{{ClassName}}Handler
+public partial class Create{{class_name}}Handler
 {
 }
