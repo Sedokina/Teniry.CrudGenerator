@@ -61,7 +61,7 @@ public class ServiceGenerator : ISourceGenerator
         return template
             .Replace("{{" + nameof(DefaultTemplateParameters.ClassName) + "}}", symbol.Name)
             .Replace("{{" + nameof(DefaultTemplateParameters.Namespace) + "}}", GetNamespaceRecursively(symbol.ContainingNamespace))
-            .Replace("{{" + nameof(DefaultTemplateParameters.PrefferredNamespace) + "}}", symbol.ContainingAssembly.Name)
+            .Replace("{{" + nameof(DefaultTemplateParameters.PreferredNamespace) + "}}", symbol.ContainingAssembly.Name)
             ;
     }
 

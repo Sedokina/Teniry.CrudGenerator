@@ -13,11 +13,11 @@ namespace Mars.Generators
                         ?? throw new ArgumentNullException(nameof(typeName));
             Namespace = typeNamespace
                         ?? throw new ArgumentNullException(nameof(typeNamespace));
-            PrefferredNamespace = rootNamespace 
+            PreferredNamespace = rootNamespace 
                                   ?? throw new ArgumentNullException(nameof(rootNamespace));
         }
         public string ClassName { get; set; }
         public string Namespace { get; set; }
-        public string PrefferredNamespace { get; set; }
+        public string PreferredNamespace { get; set; }
     }
 }

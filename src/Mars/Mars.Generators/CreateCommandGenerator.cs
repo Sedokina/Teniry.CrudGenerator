@@ -9,7 +9,8 @@ namespace Mars.Generators;
 [Generator]
 public class CreateCommandGenerator : ISourceGenerator
 {
-    private const string ResourcePath = "Mars.Generators.Templates.CreateHandler.txt"; 
+    private const string CommandResourcePath = "Mars.Generators.Templates.CreateCommand.txt"; 
+    private const string HandlerResourcePath = "Mars.Generators.Templates.CreateHandler.txt"; 
     
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -30,24 +31,39 @@ public class CreateCommandGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            // Generate the real source code. Pass the template parameter if there is a overriden template.
-            var sourceCode = GetSourceCodeFor(symbol);
-            context.AddSource(
-                $"Create{symbol.Name}Handler.g.cs",
-                SourceText.From(sourceCode, Encoding.UTF8));
+            GenerateHandler(context, symbol);
+            GenerateCommand(context, symbol);
         }
     }
+
+    private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
+    {
+        // Generate the real source code. Pass the template parameter if there is a overriden template.
+        var sourceCode = GetSourceCodeFor(symbol, CommandResourcePath);
+        context.AddSource(
+            $"Create{symbol.Name}Command.g.cs",
+            SourceText.From(sourceCode, Encoding.UTF8));
+    }
     
-    private string GetSourceCodeFor(ISymbol symbol, string template = null)
+    private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
+    {
+        // Generate the real source code. Pass the template parameter if there is a overriden template.
+        var sourceCode = GetSourceCodeFor(symbol, HandlerResourcePath);
+        context.AddSource(
+            $"Create{symbol.Name}Handler.g.cs",
+            SourceText.From(sourceCode, Encoding.UTF8));
+    }
+    
+    private string GetSourceCodeFor(ISymbol symbol, string resourcePath)
     {
         // If template isn't provieded, use default one from embeded resources.
-        template ??= GetEmbeddedResource(ResourcePath);
+        var code = GetEmbeddedResource(resourcePath);
 
         // Can't use scriban at the moment, make it manually for now.
-        return template
+        return code
                 .Replace("{{" + nameof(DefaultTemplateParameters.ClassName) + "}}", symbol.Name)
                 .Replace("{{" + nameof(DefaultTemplateParameters.Namespace) + "}}", GetNamespaceRecursively(symbol.ContainingNamespace))
-                .Replace("{{" + nameof(DefaultTemplateParameters.PrefferredNamespace) + "}}", symbol.ContainingAssembly.Name);
+                .Replace("{{" + nameof(DefaultTemplateParameters.PreferredNamespace) + "}}", symbol.ContainingAssembly.Name);
     }
     
     private string GetEmbeddedResource(string path)

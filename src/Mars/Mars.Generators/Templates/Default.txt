@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using {{Namespace}};
-namespace {{PrefferredNamespace}}.Controllers;
+namespace {{PreferredNamespace}}.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public partial class {{ClassName}}Controller : ControllerBase

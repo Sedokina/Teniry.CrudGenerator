@@ -2,6 +2,6 @@ using {{Namespace}};
 
 namespace {{PreferredNamespace}}.Controllers;
 
-public partial class Create{{ClassName}}Handler
+public partial class Create{{ClassName}}Command
 {
 }
