@@ -1,7 +1,9 @@
+using ITech.Cqrs.Cqrs.Commands;
 using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Create{{class_name}}Handler
+public partial class Create{{class_name}}Handler : ICommandHandler<{{command_name}}>
 {
+    public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {}
 }

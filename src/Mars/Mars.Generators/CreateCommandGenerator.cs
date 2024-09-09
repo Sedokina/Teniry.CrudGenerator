@@ -40,7 +40,15 @@ public class CreateCommandGenerator : ISourceGenerator
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
         // Generate the real source code. Pass the template parameter if there is a overriden template.
-        var sourceCode = GetSourceCodeFor(symbol, CommandResourcePath);
+        var template = Template.Parse(GetEmbeddedResource(CommandResourcePath));
+
+        var sourceCode = template.Render(new
+        {
+            ClassName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name
+        });
+
         context.AddSource(
             $"Create{symbol.Name}Command.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
@@ -49,25 +57,21 @@ public class CreateCommandGenerator : ISourceGenerator
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
         // Generate the real source code. Pass the template parameter if there is a overriden template.
-        var sourceCode = GetSourceCodeFor(symbol, HandlerResourcePath);
+        var template = Template.Parse(GetEmbeddedResource(HandlerResourcePath));
+
+        var sourceCode = template.Render(new
+        {
+            ClassName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name,
+            CommandName = $"Create{symbol.Name}Command"
+        });
+
         context.AddSource(
             $"Create{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 
-    private string GetSourceCodeFor(ISymbol symbol, string resourcePath)
-    {
-        // If template isn't provieded, use default one from embeded resources.
-        var code = Template.Parse(GetEmbeddedResource(resourcePath));
-
-        // Can't use scriban at the moment, make it manually for now.
-        return code.Render(new
-        {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name
-        });
-    }
 
     private string GetEmbeddedResource(string path)
     {
