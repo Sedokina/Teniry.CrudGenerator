@@ -5,5 +5,11 @@ namespace {{preferred_namespace}}.Controllers;
 
 public partial class Create{{class_name}}Handler : ICommandHandler<{{command_name}}>
 {
+    private readonly MarsDb _db;
+
+    public Create{{class_name}}Handler(MarsDb db) {
+        _db = db;
+    }
+
     public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {}
 }
