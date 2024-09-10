@@ -24,7 +24,7 @@ public class CreateCommandGenerator : ISourceGenerator
         {
             return;
         }
-
+        
         foreach (var classSyntax in syntaxReceiver.Classes)
         {
             // Converting the class to semantic model to access much more meaningful data.
@@ -81,22 +81,9 @@ public class CreateCommandGenerator : ISourceGenerator
 
         return streamReader.ReadToEnd();
     }
-
-    private string GetNamespaceRecursively(INamespaceSymbol symbol)
-    {
-        if (symbol.ContainingNamespace == null)
-        {
-            return symbol.Name;
-        }
-
-        return (GetNamespaceRecursively(symbol.ContainingNamespace) + "." + symbol.Name).Trim('.');
-    }
 }
 
 [AttributeUsage(AttributeTargets.Class)]
 public class GenerateCreateCommandAttribute : Attribute
 {
-    public GenerateCreateCommandAttribute()
-    {
-    }
 }
