@@ -93,7 +93,8 @@ public class CreateCommandGenerator : ISourceGenerator
             ClassName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            CommandName = $"Create{symbol.Name}Command"
+            CommandName = $"Create{symbol.Name}Command",
+            EntityName = symbol.Name
         });
 
         context.AddSource(

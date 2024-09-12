@@ -11,5 +11,16 @@ public partial class Create{{class_name}}Handler : ICommandHandler<{{command_nam
         _db = db;
     }
 
-    public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {}
+    public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {
+        var mapper = new {{command_name}}Mapper();
+        var entity = mapper.{{command_name}}To{{entity_name}}(command);
+        await _db.AddAsync(entity, cancellation);
+        await _db.SaveChangesAsync(cancellation);
+    }
+}
+
+// TODO: implement mapping
+public partial class {{command_name}}Mapper
+{
+    public {{entity_name}} {{command_name}}To{{entity_name}}({{command_name}} source) { return null!; }
 }

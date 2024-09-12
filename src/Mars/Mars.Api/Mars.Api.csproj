@@ -9,11 +9,14 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5"/>
-        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
-        <PackageReference Include="ITech.Cqrs" Version="0.1.5" />
     </ItemGroup>
 
+    <ItemGroup Label="Used in Generators">
+        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0" />
+        <PackageReference Include="ITech.Cqrs" Version="0.1.5" />
+    </ItemGroup>
+    
     <ItemGroup>
       <ProjectReference Include="..\Mars.Generators\Mars.Generators.csproj" OutputItemType="Analyzer"/>
     </ItemGroup>
