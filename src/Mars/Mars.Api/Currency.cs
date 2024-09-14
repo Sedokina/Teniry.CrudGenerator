@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using Mars.Generators;
 using Mars.Generators.ApplicationGenerators;
+using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Generators;
 
 namespace Mars.Api;
 
-[GenerateCreateCommand]
+[GenerateCrud]
 public class Currency
 {
     [Key]

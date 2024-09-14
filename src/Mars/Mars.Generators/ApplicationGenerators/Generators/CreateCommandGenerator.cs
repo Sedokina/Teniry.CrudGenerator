@@ -12,16 +12,15 @@ public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
+        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCrudAttribute>());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCreateCommandAttribute> syntaxReceiver)
+        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver)
         {
             return;
         }
-
 
         foreach (var classSyntax in syntaxReceiver.Classes)
         {
@@ -81,7 +80,7 @@ public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(Configuration.CreateCommandCommandGenerator.CommandTemplatePath);
+        var template = ReadTemplate(Configuration.CreateCommandCommandGenerator.HandlerTemplatePath);
 
         var sourceCode = template.Render(new
         {
@@ -95,9 +94,4 @@ public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
             $"Create{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
-}
-
-[AttributeUsage(AttributeTargets.Class)]
-public class GenerateCreateCommandAttribute : Attribute
-{
 }

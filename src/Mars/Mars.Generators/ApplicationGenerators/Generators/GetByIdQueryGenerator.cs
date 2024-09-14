@@ -13,12 +13,12 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
+        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCrudAttribute>());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCreateCommandAttribute> syntaxReceiver)
+        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver)
         {
             return;
         }
@@ -77,7 +77,7 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
     private void GenerateDto(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = ReadTemplate(Configuration.GetByIdQueryGenerator.DtoTemplatePath);
-        
+
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
