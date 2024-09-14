@@ -9,21 +9,17 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class UpdateCommandGenerator : BaseGenerator
 {
-    private readonly GeneratorExecutionContext _context;
-    private readonly ISymbol _symbol;
     private readonly string _entityName;
     private readonly string _usingEntityNamespace;
     private readonly string _putIntoNamespace;
     private readonly string _commandName;
     private readonly string _handlerName;
 
-    public UpdateCommandGenerator(GeneratorExecutionContext context, ISymbol symbol)
+    public UpdateCommandGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
-        _context = context;
-        _symbol = symbol;
-        _entityName = _symbol.Name;
-        _usingEntityNamespace = _symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = _symbol.ContainingAssembly.Name;
+        _entityName = Symbol.Name;
+        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
+        _putIntoNamespace = Symbol.ContainingAssembly.Name;
         _commandName = Configuration.UpdateCommandCommandGenerator.GetCommandName(_entityName);
         _handlerName = Configuration.UpdateCommandCommandGenerator.GetHandlerName(_entityName);
     }
@@ -38,7 +34,7 @@ public class UpdateCommandGenerator : BaseGenerator
     {
         var template = ReadTemplate(templatePath);
 
-        var propertiesOfClass = ((INamedTypeSymbol)_symbol).GetMembers().OfType<IPropertySymbol>();
+        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
@@ -65,20 +61,20 @@ public class UpdateCommandGenerator : BaseGenerator
             PutIntoNamespace = _putIntoNamespace,
             Properties = result
         });
-        _context.AddSource($"{_commandName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        Context.AddSource($"{_commandName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 
     private void GenerateHandler(string templatePath)
     {
         var template = ReadTemplate(templatePath);
 
-        var propertiesOfClass = ((INamedTypeSymbol)_symbol).GetMembers().OfType<IPropertySymbol>();
+        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
         {
             // skip adding to command property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{_symbol.Name}id"))
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{Symbol.Name}id"))
             {
                 continue;
             }
@@ -96,6 +92,6 @@ public class UpdateCommandGenerator : BaseGenerator
         });
 
 
-        _context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 }
