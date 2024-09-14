@@ -1,14 +1,14 @@
 using System;
 using System.Text;
+using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class GetListQueryGenerator : ISourceGenerator
+public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 {
     private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
@@ -41,9 +41,7 @@ public class GetListQueryGenerator : ISourceGenerator
 
     private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetListQueryGenerator.QueryTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetListQueryGenerator.QueryTemplatePath);
 
         var sourceCode = template.Render(new
         {
@@ -59,9 +57,7 @@ public class GetListQueryGenerator : ISourceGenerator
 
     private void GenerateListItemDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetListQueryGenerator.DtoListItemTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetListQueryGenerator.DtoListItemTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -98,9 +94,7 @@ public class GetListQueryGenerator : ISourceGenerator
 
     private void GenerateListDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetListQueryGenerator.DtoTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetListQueryGenerator.DtoTemplatePath);
 
         var sourceCode = template.Render(new
         {
@@ -117,9 +111,7 @@ public class GetListQueryGenerator : ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetListQueryGenerator.HandlerTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetListQueryGenerator.HandlerTemplatePath);
 
         var sourceCode = template.Render(new
         {

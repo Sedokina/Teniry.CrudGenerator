@@ -1,14 +1,14 @@
 using System;
 using System.Text;
+using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class CreateCommandGenerator : ISourceGenerator
+public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 {
     private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
@@ -39,9 +39,7 @@ public class CreateCommandGenerator : ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.CreateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.CreateCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -85,9 +83,7 @@ public class CreateCommandGenerator : ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.CreateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.CreateCommandCommandGenerator.CommandTemplatePath);
 
         var sourceCode = template.Render(new
         {

@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class GetByIdQueryGenerator : ISourceGenerator
+public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 {
     private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
@@ -40,9 +40,7 @@ public class GetByIdQueryGenerator : ISourceGenerator
 
     private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetByIdQueryGenerator.QueryTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.QueryTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -80,10 +78,8 @@ public class GetByIdQueryGenerator : ISourceGenerator
 
     private void GenerateDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetByIdQueryGenerator.DtoTemplatePath, GetType().Assembly));
-
+        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.DtoTemplatePath);
+        
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -119,9 +115,7 @@ public class GetByIdQueryGenerator : ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.GetByIdQueryGenerator.HandlerTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

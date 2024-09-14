@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Mars.Generators.Extensions;
+using Mars.Generators.ApplicationGenerators.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class DeleteCommandGenerator : ISourceGenerator
+public class DeleteCommandGenerator : CrudGenerator, ISourceGenerator
 {
     private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
@@ -39,9 +38,7 @@ public class DeleteCommandGenerator : ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.DeleteCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.DeleteCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -79,9 +76,7 @@ public class DeleteCommandGenerator : ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.DeleteCommandCommandGenerator.HandlerTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.DeleteCommandCommandGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class UpdateCommandGenerator : ISourceGenerator
+public class UpdateCommandGenerator : CrudGenerator, ISourceGenerator
 {
     private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
@@ -39,9 +39,7 @@ public class UpdateCommandGenerator : ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.UpdateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.UpdateCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -78,9 +76,7 @@ public class UpdateCommandGenerator : ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
-                _configuration.UpdateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
+        var template = ReadTemplate(_configuration.UpdateCommandCommandGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
