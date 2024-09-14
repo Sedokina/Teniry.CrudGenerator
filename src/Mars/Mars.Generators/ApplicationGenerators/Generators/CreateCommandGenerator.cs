@@ -60,8 +60,7 @@ public class CreateCommandGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            Namespace = _usingEntityNamespace,
+            CommandName = _commandName,
             PutIntoNamespace = _putIntoNamespace,
             Properties = result
         });
@@ -76,9 +75,10 @@ public class CreateCommandGenerator : BaseGenerator
         var sourceCode = template.Render(new
         {
             EntityName = _entityName,
-            Namespace = _usingEntityNamespace,
+            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
+            HandlerName = _handlerName
         });
 
         WriteFile(_handlerName, sourceCode);

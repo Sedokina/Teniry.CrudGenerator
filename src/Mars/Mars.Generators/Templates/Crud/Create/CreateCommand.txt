@@ -1,8 +1,6 @@
-using {{namespace}};
-
 namespace {{put_into_namespace}}.Controllers;
 
-public partial class Create{{entity_name}}Command
+public partial class {{command_name}}
 {
     {{properties}}
 }

@@ -56,8 +56,7 @@ public class DeleteCommandGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
+            CommandName = _commandName,
             PutIntoNamespace = _putIntoNamespace,
             Properties = result
         });
@@ -89,6 +88,7 @@ public class DeleteCommandGenerator : BaseGenerator
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
+            HandlerName = _handlerName,
             FindProperties = string.Join(", ", result)
         });
 
