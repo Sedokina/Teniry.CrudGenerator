@@ -2,14 +2,11 @@ namespace Mars.Generators.ApplicationGenerators;
 
 public sealed class CrudGeneratorConfiguration
 {
-    private static CrudGeneratorConfiguration _instance;
 
     public CrudGeneratorConfiguration()
     {
         InitDefault();
     }
-
-    public static CrudGeneratorConfiguration Instance => _instance ??= new CrudGeneratorConfiguration();
 
     public string TemplatesBasePath { get; set; }
     public string PutIntoNamespaceBasePath { get; set; }
@@ -22,9 +19,10 @@ public sealed class CrudGeneratorConfiguration
     private void InitDefault()
     {
         TemplatesBasePath = "Mars.Generators.Templates.Crud";
-        PutIntoNamespaceBasePath = "{{assembly_name}}.Application.{{feature_name}}";
+        PutIntoNamespaceBasePath = "{{assembly_name}}.Application.{{feature_name}}.{{function_name}}";
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FunctionName = "Create{0}",
             CommandTemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
             CommandNameFormat = "Create{0}Command",
@@ -32,6 +30,7 @@ public sealed class CrudGeneratorConfiguration
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FunctionName = "Delete{0}",
             CommandTemplatePath = $"{TemplatesBasePath}.Delete.DeleteCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Delete.DeleteHandler.txt",
             CommandNameFormat = "Delete{0}Command",
@@ -39,6 +38,7 @@ public sealed class CrudGeneratorConfiguration
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FunctionName = "Update{0}",
             CommandTemplatePath = $"{TemplatesBasePath}.Update.UpdateCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Update.UpdateHandler.txt",
             CommandNameFormat = "Update{0}Command",
@@ -46,6 +46,7 @@ public sealed class CrudGeneratorConfiguration
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
+            FunctionName = "Get{0}",
             QueryTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdDto.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdHandler.txt",
@@ -55,6 +56,7 @@ public sealed class CrudGeneratorConfiguration
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
+            FunctionName = "GetList{0}",
             QueryTemplatePath = $"{TemplatesBasePath}.GetList.GetListQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetList.GetListDto.txt",
             DtoListItemTemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
@@ -69,6 +71,7 @@ public sealed class CrudGeneratorConfiguration
 
 public class BaseCommandGeneratorConfiguration
 {
+    public string FunctionName { get; set; }
     public string CommandTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
     public string CommandNameFormat { get; set; }
@@ -87,6 +90,7 @@ public class BaseCommandGeneratorConfiguration
 
 public class BaseQueryGeneratorConfiguration
 {
+    public string FunctionName { get; set; }
     public string QueryTemplatePath { get; set; }
     public string DtoTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
@@ -112,6 +116,7 @@ public class BaseQueryGeneratorConfiguration
 
 public class ListQueryGeneratorConfiguration
 {
+    public string FunctionName { get; set; }
     public string QueryTemplatePath { get; set; }
     public string DtoTemplatePath { get; set; }
     public string DtoListItemTemplatePath { get; set; }

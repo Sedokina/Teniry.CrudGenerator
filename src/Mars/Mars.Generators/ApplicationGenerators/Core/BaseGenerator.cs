@@ -19,9 +19,13 @@ public abstract class BaseGenerator
     protected readonly string _usingEntityNamespace;
 
 
-    protected BaseGenerator(GeneratorExecutionContext context, ISymbol symbol)
+    protected BaseGenerator(
+        GeneratorExecutionContext context,
+        ISymbol symbol,
+        CrudGeneratorConfiguration configuration,
+        string functionName)
     {
-        Configuration = CrudGeneratorConfiguration.Instance;
+        Configuration = configuration;
         Context = context;
         Symbol = symbol;
         _entityName = Symbol.Name;
@@ -32,7 +36,7 @@ public abstract class BaseGenerator
         {
             AssemblyName = Symbol.ContainingAssembly.Name,
             FeatureName = $"{_entityName}Feature",
-            // FunctionName = 
+            FunctionName = string.Format(functionName, _entityName)
         });
     }
 

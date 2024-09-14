@@ -8,7 +8,11 @@ public class CreateCommandGenerator : BaseGenerator
     private readonly string _commandName;
     private readonly string _handlerName;
 
-    public CreateCommandGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
+    public CreateCommandGenerator(
+        GeneratorExecutionContext context,
+        ISymbol symbol,
+        CrudGeneratorConfiguration configuration) 
+        : base(context, symbol, configuration, configuration.CreateCommandCommandGenerator.FunctionName)
     {
         _commandName = Configuration.CreateCommandCommandGenerator.GetCommandName(_entityName);
         _handlerName = Configuration.CreateCommandCommandGenerator.GetHandlerName(_entityName);

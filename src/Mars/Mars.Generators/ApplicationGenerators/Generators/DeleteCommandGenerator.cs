@@ -8,7 +8,11 @@ public class DeleteCommandGenerator : BaseGenerator
     private readonly string _commandName;
     private readonly string _handlerName;
 
-    public DeleteCommandGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
+    public DeleteCommandGenerator(
+        GeneratorExecutionContext context,
+        ISymbol symbol,
+        CrudGeneratorConfiguration configuration) 
+        : base(context, symbol, configuration, configuration.DeleteCommandCommandGenerator.FunctionName)
     {
         _commandName = Configuration.DeleteCommandCommandGenerator.GetCommandName(_entityName);
         _handlerName = Configuration.DeleteCommandCommandGenerator.GetHandlerName(_entityName);

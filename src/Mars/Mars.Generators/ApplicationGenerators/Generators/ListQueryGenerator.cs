@@ -10,7 +10,11 @@ public class ListQueryGenerator : BaseGenerator
     private readonly string _listItemDtoName;
     private readonly string _queryName;
 
-    public ListQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
+    public ListQueryGenerator(
+        GeneratorExecutionContext context,
+        ISymbol symbol,
+        CrudGeneratorConfiguration configuration)
+        : base(context, symbol, configuration, configuration.GetListQueryGenerator.FunctionName)
     {
         _queryName = Configuration.GetListQueryGenerator.GetQueryName(_entityName);
         _dtoName = Configuration.GetListQueryGenerator.GetDtoName(_entityName);

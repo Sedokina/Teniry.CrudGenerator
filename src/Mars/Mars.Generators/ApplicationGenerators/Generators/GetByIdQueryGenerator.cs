@@ -9,7 +9,11 @@ public class GetByIdQueryGenerator : BaseGenerator
     private readonly string _handlerName;
     private readonly string _queryName;
 
-    public GetByIdQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
+    public GetByIdQueryGenerator(
+        GeneratorExecutionContext context,
+        ISymbol symbol,
+        CrudGeneratorConfiguration configuration)
+        : base(context, symbol, configuration, configuration.GetByIdQueryGenerator.FunctionName)
     {
         _queryName = Configuration.GetByIdQueryGenerator.GetQueryName(_entityName);
         _dtoName = Configuration.GetByIdQueryGenerator.GetDtoName(_entityName);
