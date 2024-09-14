@@ -58,9 +58,8 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
+            QueryName = _queryName,
             Properties = result
         });
 
@@ -93,9 +92,8 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
+            DtoName = _dtoName,
             Properties = result,
         });
 
@@ -126,7 +124,8 @@ public class GetByIdQueryGenerator : BaseGenerator
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
-            DtoName = $"{Symbol.Name}Dto",
+            HandlerName = _handlerName,
+            DtoName = _dtoName,
             FindProperties = string.Join(", ", result)
         });
 

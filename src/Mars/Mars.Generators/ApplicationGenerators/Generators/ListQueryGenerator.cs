@@ -39,8 +39,8 @@ public class ListQueryGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
+            QueryName = _queryName,
             PutIntoNamespace = _putIntoNamespace,
         });
 
@@ -73,9 +73,8 @@ public class ListQueryGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
+            ListItemDtoName = _listItemDtoName,
             Properties = result,
         });
 
@@ -88,10 +87,9 @@ public class ListQueryGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
-            ItemsType = _listItemDtoName
+            DtoName = _dtoName,
+            ListItemDtoName = _listItemDtoName
         });
 
         WriteFile(_dtoName, sourceCode);
@@ -107,6 +105,7 @@ public class ListQueryGenerator : BaseGenerator
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
+            HandlerName = _handlerName,
             DtoName = _dtoName,
             DtoListItemName = _listItemDtoName,
         });

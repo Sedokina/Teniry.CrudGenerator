@@ -54,9 +54,8 @@ public class UpdateCommandGenerator : BaseGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
+            CommandName = _commandName,
             Properties = result
         });
 
@@ -87,6 +86,7 @@ public class UpdateCommandGenerator : BaseGenerator
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
+            HandlerName = _handlerName,
             FindProperties = string.Join(", ", result)
         });
 

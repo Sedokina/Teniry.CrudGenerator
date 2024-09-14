@@ -1,8 +1,6 @@
-using {{entity_namespace}};
-
 namespace {{put_into_namespace}}.Controllers;
 
-public partial class Get{{entity_name}}Query
+public partial class {{query_name}}
 {
     {{properties}}
 }

@@ -1,8 +1,6 @@
-using {{entity_namespace}};
-
 namespace {{put_into_namespace}}.Controllers;
 
-public partial class {{entity_name}}Dto
+public partial class {{dto_name}}
 {
     {{properties}}
 }

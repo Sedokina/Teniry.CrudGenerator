@@ -1,8 +1,6 @@
-using {{entity_namespace}};
-
 namespace {{put_into_namespace}}.Controllers;
 
-public partial class Update{{entity_name}}Command
+public partial class {{command_name}}
 {
     {{properties}}
 }
