@@ -5,7 +5,7 @@ using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Get{{entity_name}}Handler : IQueryHandler<{{command_name}}, {{dto_name}}>
+public partial class Get{{entity_name}}Handler : IQueryHandler<{{query_name}}, {{dto_name}}>
 {
     private readonly MarsDb _db;
 
@@ -13,7 +13,7 @@ public partial class Get{{entity_name}}Handler : IQueryHandler<{{command_name}},
         _db = db;
     }
 
-    public async Task<{{dto_name}}> HandleAsync({{command_name}} command, CancellationToken cancellation) {
+    public async Task<{{dto_name}}> HandleAsync({{query_name}} query, CancellationToken cancellation) {
         var entity = await _db.Set<{{entity_name}}>().FindAsync([{{find_properties}}], cancellation);
         if (entity == null) {
             throw new EfEntityNotFoundException(typeof({{entity_name}}));

@@ -11,7 +11,7 @@ namespace Mars.Generators;
 [Generator]
 public class GetByIdCommandGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.GetByIdCommand.txt";
+    private const string QueryResourcePath = "Mars.Generators.Templates.GetByIdQuery.txt";
     private const string DtoResourcePath = "Mars.Generators.Templates.GetByIdDto.txt";
     private const string HandlerResourcePath = "Mars.Generators.Templates.GetByIdHandler.txt";
 
@@ -34,22 +34,22 @@ public class GetByIdCommandGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            GenerateCommand(context, symbol);
+            GenerateQuery(context, symbol);
             GenerateDto(context, symbol);
             GenerateHandler(context, symbol);
         }
     }
 
-    private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(CommandResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(QueryResourcePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command property if it is not id of the entity
+            // skip adding to query property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
             if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
             {
@@ -75,7 +75,7 @@ public class GetByIdCommandGenerator : ISourceGenerator
         });
 
         context.AddSource(
-            $"Get{symbol.Name}Command.g.cs",
+            $"Get{symbol.Name}Query.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
     
@@ -88,7 +88,7 @@ public class GetByIdCommandGenerator : ISourceGenerator
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command if not primitive type
+            // skip adding to query if not primitive type
             if (!propertySymbol.Type.IsSimple())
             {
                 continue;
@@ -126,14 +126,14 @@ public class GetByIdCommandGenerator : ISourceGenerator
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command property if it is not id of the entity
+            // skip adding to query property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
             if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
             {
                 continue;
             }
 
-            result.Add($"command.{propertySymbol.Name}");
+            result.Add($"query.{propertySymbol.Name}");
         }
 
         var sourceCode = template.Render(new
@@ -141,7 +141,7 @@ public class GetByIdCommandGenerator : ISourceGenerator
             EntityName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            CommandName = $"Get{symbol.Name}Command",
+            QueryName = $"Get{symbol.Name}Query",
             DtoName = $"{symbol.Name}Dto",
             FindProperties = string.Join(", ", result)
         });
