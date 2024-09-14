@@ -1,10 +1,10 @@
 namespace Mars.Generators.ApplicationGenerators;
 
-public sealed class ApplicationGeneratorsConfiguration
+public sealed class CrudGeneratorConfiguration
 {
-    private static ApplicationGeneratorsConfiguration _instance = null;
+    private static CrudGeneratorConfiguration _instance = null;
 
-    public static ApplicationGeneratorsConfiguration Instance => _instance ??= new ApplicationGeneratorsConfiguration();
+    public static CrudGeneratorConfiguration Instance => _instance ??= new CrudGeneratorConfiguration();
 
     public string TemplatesBasePath { get; set; }
     public BaseCommandGeneratorConfiguration CreateCommandCommandGenerator { get; set; }
@@ -13,7 +13,7 @@ public sealed class ApplicationGeneratorsConfiguration
     public BaseQueryGeneratorConfiguration GetByIdQueryGenerator { get; set; }
     public ListQueryGeneratorConfiguration GetListQueryGenerator { get; set; }
 
-    public ApplicationGeneratorsConfiguration()
+    public CrudGeneratorConfiguration()
     {
         InitDefault();
     }

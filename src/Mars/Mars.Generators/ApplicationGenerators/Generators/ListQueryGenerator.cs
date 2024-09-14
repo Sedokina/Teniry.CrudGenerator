@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class GenerateListQuery : CrudGenerator
+public class ListQueryGenerator : BaseGenerator
 {
     private readonly GeneratorExecutionContext _context;
     private readonly ISymbol _symbol;
@@ -18,7 +18,7 @@ public class GenerateListQuery : CrudGenerator
     private readonly string _listItemDtoName;
     private readonly string _handlerName;
 
-    public GenerateListQuery(GeneratorExecutionContext context, ISymbol symbol)
+    public ListQueryGenerator(GeneratorExecutionContext context, ISymbol symbol)
     {
         _context = context;
         _symbol = symbol;

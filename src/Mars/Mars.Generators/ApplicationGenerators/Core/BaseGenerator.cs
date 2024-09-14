@@ -5,9 +5,9 @@ using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
-public abstract class CrudGenerator
+public abstract class BaseGenerator
 {
-    protected readonly ApplicationGeneratorsConfiguration Configuration = ApplicationGeneratorsConfiguration.Instance;
+    protected readonly CrudGeneratorConfiguration Configuration = CrudGeneratorConfiguration.Instance;
 
     internal Template ReadTemplate(string templatePath)
     {
