@@ -1,8 +1,8 @@
-using {{namespace}};
+using {{entity_namespace}};
 
-namespace {{preferred_namespace}}.Controllers;
+namespace {{put_into_namespace}}.Controllers;
 
-public partial class Delete{{class_name}}Command
+public partial class Delete{{entity_name}}Command
 {
     {{properties}}
 }

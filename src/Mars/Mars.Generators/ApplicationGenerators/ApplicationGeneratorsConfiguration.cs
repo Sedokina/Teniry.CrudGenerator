@@ -31,7 +31,9 @@ public sealed class ApplicationGeneratorsConfiguration
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
             CommandTemplatePath = $"{TemplatesBasePath}.DeleteCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.DeleteHandler.txt"
+            HandlerTemplatePath = $"{TemplatesBasePath}.DeleteHandler.txt",
+            CommandNameFormat = "Delete{0}Command",
+            HandlerNameFormat = "Delete{0}Handler"
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
