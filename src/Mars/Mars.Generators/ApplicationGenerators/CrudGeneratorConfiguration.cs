@@ -20,43 +20,43 @@ public sealed class CrudGeneratorConfiguration
 
     private void InitDefault()
     {
-        TemplatesBasePath = "Mars.Generators.Templates";
+        TemplatesBasePath = "Mars.Generators.Templates.Crud";
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
-            CommandTemplatePath = $"{TemplatesBasePath}.CreateCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.CreateHandler.txt",
+            CommandTemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",
+            HandlerTemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
             CommandNameFormat = "Create{0}Command",
             HandlerNameFormat = "Create{0}Handler"
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
-            CommandTemplatePath = $"{TemplatesBasePath}.DeleteCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.DeleteHandler.txt",
+            CommandTemplatePath = $"{TemplatesBasePath}.Delete.DeleteCommand.txt",
+            HandlerTemplatePath = $"{TemplatesBasePath}.Delete.DeleteHandler.txt",
             CommandNameFormat = "Delete{0}Command",
             HandlerNameFormat = "Delete{0}Handler"
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
-            CommandTemplatePath = $"{TemplatesBasePath}.UpdateCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.UpdateHandler.txt",
+            CommandTemplatePath = $"{TemplatesBasePath}.Update.UpdateCommand.txt",
+            HandlerTemplatePath = $"{TemplatesBasePath}.Update.UpdateHandler.txt",
             CommandNameFormat = "Update{0}Command",
             HandlerNameFormat = "Update{0}Handler"
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
-            QueryTemplatePath = $"{TemplatesBasePath}.GetByIdQuery.txt",
-            DtoTemplatePath = $"{TemplatesBasePath}.GetByIdDto.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.GetByIdHandler.txt",
+            QueryTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdQuery.txt",
+            DtoTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdDto.txt",
+            HandlerTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdHandler.txt",
             QueryNameFormat = "Get{0}Query",
             DtoNameFormat = "{0}Dto",
             HandlerNameFormat = "Get{0}Handler"
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
-            QueryTemplatePath = $"{TemplatesBasePath}.GetListQuery.txt",
-            DtoTemplatePath = $"{TemplatesBasePath}.GetListDto.txt",
-            DtoListItemTemplatePath = $"{TemplatesBasePath}.GetListItemDto.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.GetListHandler.txt",
+            QueryTemplatePath = $"{TemplatesBasePath}.GetList.GetListQuery.txt",
+            DtoTemplatePath = $"{TemplatesBasePath}.GetList.GetListDto.txt",
+            DtoListItemTemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
+            HandlerTemplatePath = $"{TemplatesBasePath}.GetList.GetListHandler.txt",
             QueryNameFormat = "Get{0}ListQuery",
             DtoNameFormat = "{0}ListDto",
             ListItemDtoNameFormat = "{0}ListItemDto",
