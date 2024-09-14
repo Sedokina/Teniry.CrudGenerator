@@ -1,15 +1,13 @@
-using System.Collections.Generic;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class GetByIdQueryGenerator : BaseGenerator
 {
-    private readonly string _queryName;
     private readonly string _dtoName;
     private readonly string _handlerName;
+    private readonly string _queryName;
 
     public GetByIdQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
@@ -39,30 +37,11 @@ public class GetByIdQueryGenerator : BaseGenerator
 
     private void GenerateDto(string templatePath)
     {
-        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
-        var result = "";
-        foreach (var propertySymbol in propertiesOfClass)
-        {
-            // skip adding to query if not primitive type
-            if (!propertySymbol.Type.IsSimple())
-            {
-                continue;
-            }
-
-            // For DateTimeOffset and other date variations remove system from the property type declaration
-            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
-                ? propertySymbol.Type.MetadataName
-                : propertySymbol.Type.ToString();
-
-            result += $"public {propertyTypeName} {propertySymbol.Name} {{ get; set; }}\n\t";
-        }
-
-        result = result.TrimEnd();
-
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
         var model = new
         {
             DtoName = _dtoName,
-            Properties = result,
+            Properties = properties
         };
 
         WriteFile(templatePath, model, _dtoName);
@@ -78,7 +57,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             DtoName = _dtoName,
             FindProperties = string.Join(", ", properties)
         };
-        
+
         WriteFile(templatePath, model, _handlerName);
     }
 }

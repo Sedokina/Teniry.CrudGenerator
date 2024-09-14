@@ -2,7 +2,12 @@ namespace Mars.Generators.ApplicationGenerators;
 
 public sealed class CrudGeneratorConfiguration
 {
-    private static CrudGeneratorConfiguration _instance = null;
+    private static CrudGeneratorConfiguration _instance;
+
+    public CrudGeneratorConfiguration()
+    {
+        InitDefault();
+    }
 
     public static CrudGeneratorConfiguration Instance => _instance ??= new CrudGeneratorConfiguration();
 
@@ -12,11 +17,6 @@ public sealed class CrudGeneratorConfiguration
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; }
     public BaseQueryGeneratorConfiguration GetByIdQueryGenerator { get; set; }
     public ListQueryGeneratorConfiguration GetListQueryGenerator { get; set; }
-
-    public CrudGeneratorConfiguration()
-    {
-        InitDefault();
-    }
 
     private void InitDefault()
     {
@@ -71,8 +71,16 @@ public class BaseCommandGeneratorConfiguration
     public string HandlerTemplatePath { get; set; }
     public string CommandNameFormat { get; set; }
     public string HandlerNameFormat { get; set; }
-    public string GetCommandName(string entityName) => string.Format(CommandNameFormat, entityName);
-    public string GetHandlerName(string entityName) => string.Format(HandlerNameFormat, entityName);
+
+    public string GetCommandName(string entityName)
+    {
+        return string.Format(CommandNameFormat, entityName);
+    }
+
+    public string GetHandlerName(string entityName)
+    {
+        return string.Format(HandlerNameFormat, entityName);
+    }
 }
 
 public class BaseQueryGeneratorConfiguration
@@ -83,9 +91,21 @@ public class BaseQueryGeneratorConfiguration
     public string QueryNameFormat { get; set; }
     public string DtoNameFormat { get; set; }
     public string HandlerNameFormat { get; set; }
-    public string GetQueryName(string entityName) => string.Format(QueryNameFormat, entityName);
-    public string GetDtoName(string entityName) => string.Format(DtoNameFormat, entityName);
-    public string GetHandlerName(string entityName) => string.Format(HandlerNameFormat, entityName);
+
+    public string GetQueryName(string entityName)
+    {
+        return string.Format(QueryNameFormat, entityName);
+    }
+
+    public string GetDtoName(string entityName)
+    {
+        return string.Format(DtoNameFormat, entityName);
+    }
+
+    public string GetHandlerName(string entityName)
+    {
+        return string.Format(HandlerNameFormat, entityName);
+    }
 }
 
 public class ListQueryGeneratorConfiguration
@@ -98,8 +118,24 @@ public class ListQueryGeneratorConfiguration
     public string DtoNameFormat { get; set; }
     public string ListItemDtoNameFormat { get; set; }
     public string HandlerNameFormat { get; set; }
-    public string GetQueryName(string entityName) => string.Format(QueryNameFormat, entityName);
-    public string GetDtoName(string entityName) => string.Format(DtoNameFormat, entityName);
-    public string GetListItemDtoName(string entityName) => string.Format(ListItemDtoNameFormat, entityName);
-    public string GetHandlerName(string entityName) => string.Format(HandlerNameFormat, entityName);
+
+    public string GetQueryName(string entityName)
+    {
+        return string.Format(QueryNameFormat, entityName);
+    }
+
+    public string GetDtoName(string entityName)
+    {
+        return string.Format(DtoNameFormat, entityName);
+    }
+
+    public string GetListItemDtoName(string entityName)
+    {
+        return string.Format(ListItemDtoNameFormat, entityName);
+    }
+
+    public string GetHandlerName(string entityName)
+    {
+        return string.Format(HandlerNameFormat, entityName);
+    }
 }

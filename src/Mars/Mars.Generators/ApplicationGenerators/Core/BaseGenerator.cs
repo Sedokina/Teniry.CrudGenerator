@@ -5,19 +5,18 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
-using Scriban.Functions;
 using Scriban.Runtime;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
 public abstract class BaseGenerator
 {
+    protected readonly string _entityName;
+    protected readonly string _putIntoNamespace;
+    protected readonly string _usingEntityNamespace;
+    protected readonly CrudGeneratorConfiguration Configuration = CrudGeneratorConfiguration.Instance;
     protected readonly GeneratorExecutionContext Context;
     protected readonly ISymbol Symbol;
-    protected readonly CrudGeneratorConfiguration Configuration = CrudGeneratorConfiguration.Instance;
-    protected readonly string _entityName;
-    protected readonly string _usingEntityNamespace;
-    protected readonly string _putIntoNamespace;
 
     protected BaseGenerator(GeneratorExecutionContext context, ISymbol symbol)
     {

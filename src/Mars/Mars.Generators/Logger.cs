@@ -10,7 +10,10 @@ internal static class Logger
 {
     public static List<string> Logs { get; } = new();
 
-    public static void Print(string msg) => Logs.Add("//\t" + msg);
+    public static void Print(string msg)
+    {
+        Logs.Add("//\t" + msg);
+    }
 
     public static void FlushLogs(GeneratorExecutionContext context)
     {

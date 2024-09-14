@@ -10,21 +10,21 @@ public static class TypeExtensions
     /// <param name="type">Type to check</param>
     /// <param name="compilation"></param>
     /// <returns>
-    ///     This returns true for:<br/>
-    ///         - All primitive types<br/>
-    ///         - All enums<br/>
-    ///         - strings<br/>
-    ///         - decimals<br/>
-    ///         - DateTime<br/>
-    ///         - DateTimeOffset<br/>
-    ///         - TimeSpan<br/>
-    ///         - Uri<br/>
-    ///         - Guid<br/>
-    ///         - Nullable of any of the types above<br/>
-    ///         - numerous other types that have native TypeConverters implemented (see here on the Derived section)<br/>
-    /// 
-    /// This approach works well since most frameworks support TypeConverters natively,
-    /// like XML and Json serialization libraries, and you can then use the same converter to parse the values while reading.
+    ///     This returns true for:<br />
+    ///     - All primitive types<br />
+    ///     - All enums<br />
+    ///     - strings<br />
+    ///     - decimals<br />
+    ///     - DateTime<br />
+    ///     - DateTimeOffset<br />
+    ///     - TimeSpan<br />
+    ///     - Uri<br />
+    ///     - Guid<br />
+    ///     - Nullable of any of the types above<br />
+    ///     - numerous other types that have native TypeConverters implemented (see here on the Derived section)<br />
+    ///     This approach works well since most frameworks support TypeConverters natively,
+    ///     like XML and Json serialization libraries, and you can then use the same converter to parse the values while
+    ///     reading.
     /// </returns>
     /// <remarks>
     ///     From: https://stackoverflow.com/a/65079923/10837606
@@ -51,14 +51,9 @@ public static class TypeExtensions
                 return true;
             default:
                 if (type.NullableAnnotation == NullableAnnotation.Annotated)
-                {
                     return IsSimple(((INamedTypeSymbol)type).TypeArguments[0]);
-                }
 
-                if (type.IsValueType && type.IsSealed && type.IsUnmanagedType)
-                {
-                    return true;
-                }
+                if (type.IsValueType && type.IsSealed && type.IsUnmanagedType) return true;
 
                 return false;
         }

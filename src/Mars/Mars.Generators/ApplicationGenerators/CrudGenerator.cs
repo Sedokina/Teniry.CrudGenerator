@@ -15,10 +15,7 @@ public class CrudGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver)
-        {
-            return;
-        }
+        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver) return;
 
         foreach (var classSyntax in syntaxReceiver.Classes)
         {

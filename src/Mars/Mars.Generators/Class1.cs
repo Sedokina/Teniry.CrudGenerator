@@ -18,10 +18,7 @@ public class ServiceGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateServiceAttribute> syntaxReceiver)
-        {
-            return;
-        }
+        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateServiceAttribute> syntaxReceiver) return;
 
         foreach (var classSyntax in syntaxReceiver.Classes)
         {
@@ -32,16 +29,19 @@ public class ServiceGenerator : ISourceGenerator
 
             // Finding my GenerateServiceAttribute over it. I'm sure this attribute is placed, because my syntax receiver already checked before.
             // So, I can surely execute following query.
-            var attribute = classSyntax.AttributeLists.SelectMany(sm => sm.Attributes).First(x => x.Name.ToString().EnsureEndsWith("Attribute").Equals(typeof(GenerateServiceAttribute).Name));
-            
+            var attribute = classSyntax.AttributeLists.SelectMany(sm => sm.Attributes).First(x =>
+                x.Name.ToString().EnsureEndsWith("Attribute").Equals(typeof(GenerateServiceAttribute).Name));
+
             // Getting constructor parameter of the attribute. It might be not presented.
-            var templateParameter = attribute.ArgumentList?.Arguments.FirstOrDefault()?.GetLastToken().ValueText; // Temprorary... Attribute has only one argument for now.
+            var templateParameter =
+                attribute.ArgumentList?.Arguments.FirstOrDefault()?.GetLastToken()
+                    .ValueText; // Temprorary... Attribute has only one argument for now.
 
             // Can't access embeded resource of main project.
             // So overridden template must be marked as Analyzer Additional File to be able to be accessed by an analyzer.
-            var overridenTemplate = templateParameter != null ?
-                context.AdditionalFiles.FirstOrDefault(x => x.Path.EndsWith(templateParameter))?.GetText().ToString() :
-                null;
+            var overridenTemplate = templateParameter != null
+                ? context.AdditionalFiles.FirstOrDefault(x => x.Path.EndsWith(templateParameter))?.GetText().ToString()
+                : null;
 
             // Generate the real source code. Pass the template parameter if there is a overriden template.
             var sourceCode = GetSourceCodeFor(symbol, overridenTemplate);
@@ -56,7 +56,7 @@ public class ServiceGenerator : ISourceGenerator
     private string GetSourceCodeFor(ISymbol symbol, string template = null)
     {
         // If template isn't provieded, use default one from embeded resources.
-        var code = Template.Parse(GetEmbededResource($"Mars.Generators.Templates.RepositoryController.txt"));
+        var code = Template.Parse(GetEmbededResource("Mars.Generators.Templates.RepositoryController.txt"));
 
         // Can't use scriban at the moment, make it manually for now.
         return code.Render(new
@@ -78,10 +78,7 @@ public class ServiceGenerator : ISourceGenerator
 
     private string GetNamespaceRecursively(INamespaceSymbol symbol)
     {
-        if (symbol.ContainingNamespace == null)
-        {
-            return symbol.Name;
-        }
+        if (symbol.ContainingNamespace == null) return symbol.Name;
 
         return (GetNamespaceRecursively(symbol.ContainingNamespace) + "." + symbol.Name).Trim('.');
     }

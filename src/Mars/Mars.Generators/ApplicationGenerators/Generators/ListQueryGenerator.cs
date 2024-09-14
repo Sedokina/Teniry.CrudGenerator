@@ -1,15 +1,14 @@
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class ListQueryGenerator : BaseGenerator
 {
-    private readonly string _queryName;
     private readonly string _dtoName;
-    private readonly string _listItemDtoName;
     private readonly string _handlerName;
+    private readonly string _listItemDtoName;
+    private readonly string _queryName;
 
     public ListQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
@@ -33,37 +32,18 @@ public class ListQueryGenerator : BaseGenerator
         {
             EntityNamespace = _usingEntityNamespace,
             QueryName = _queryName,
-            PutIntoNamespace = _putIntoNamespace,
+            PutIntoNamespace = _putIntoNamespace
         };
         WriteFile(templatePath, model, _queryName);
     }
 
     private void GenerateListItemDto(string templatePath)
     {
-        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
-        var result = "";
-        foreach (var propertySymbol in propertiesOfClass)
-        {
-            // skip adding to query if not primitive type
-            if (!propertySymbol.Type.IsSimple())
-            {
-                continue;
-            }
-
-            // For DateTimeOffset and other date variations remove system from the property type declaration
-            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
-                ? propertySymbol.Type.MetadataName
-                : propertySymbol.Type.ToString();
-
-            result += $"public {propertyTypeName} {propertySymbol.Name} {{ get; set; }}\n\t";
-        }
-
-        result = result.TrimEnd();
-
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
         var model = new
         {
             ListItemDtoName = _listItemDtoName,
-            Properties = result,
+            Properties = properties
         };
 
         WriteFile(templatePath, model, _listItemDtoName);
@@ -88,7 +68,7 @@ public class ListQueryGenerator : BaseGenerator
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
-            DtoListItemName = _listItemDtoName,
+            DtoListItemName = _listItemDtoName
         };
 
         WriteFile(templatePath, model, _handlerName);

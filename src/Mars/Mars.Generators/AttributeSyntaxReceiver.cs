@@ -17,13 +17,10 @@ public class AttributeSyntaxReceiver<TAttribute> : ISyntaxReceiver
             classDeclarationSyntax.AttributeLists.Count > 0 &&
             classDeclarationSyntax.AttributeLists
                 .Any(al => al.Attributes
-                    .Any(a => StringExtensions.EnsureEndsWith(a.Name.ToString(), "Attribute").Equals(typeof(TAttribute).Name))))
-        {
+                    .Any(a => a.Name.ToString().EnsureEndsWith("Attribute").Equals(typeof(TAttribute).Name))))
             Classes.Add(classDeclarationSyntax);
-        }
     }
 }
-
 
 public static class StringExtensions
 {
@@ -31,10 +28,7 @@ public static class StringExtensions
         this string source,
         string suffix)
     {
-        if (source.EndsWith(suffix))
-        {
-            return source;
-        }
+        if (source.EndsWith(suffix)) return source;
         return source + suffix;
     }
 }

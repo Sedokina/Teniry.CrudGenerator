@@ -4,7 +4,8 @@ using System.Reflection;
 
 namespace Mars.Generators.Extensions;
 
-public static class EmbeddedResourceExtensions {
+public static class EmbeddedResourceExtensions
+{
     public static string GetEmbeddedResource(string path, Assembly assembly)
     {
         using var stream = assembly.GetManifestResourceStream(path);
