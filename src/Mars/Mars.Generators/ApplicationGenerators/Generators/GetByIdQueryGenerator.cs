@@ -83,32 +83,19 @@ public class GetByIdQueryGenerator : BaseGenerator
             DtoName = _dtoName,
             Properties = result,
         };
-        
+
         WriteFile(templatePath, model, _dtoName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
-        var result = new List<string>();
-        foreach (var propertySymbol in propertiesOfClass)
-        {
-            // skip adding to query property if it is not id of the entity
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{Symbol.Name}id"))
-            {
-                continue;
-            }
-
-            result.Add($"query.{propertySymbol.Name}");
-        }
-
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol, "query");
         var model = new
         {
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
-            FindProperties = string.Join(", ", result)
+            FindProperties = string.Join(", ", properties)
         };
         WriteFile(templatePath, model, _handlerName);
     }

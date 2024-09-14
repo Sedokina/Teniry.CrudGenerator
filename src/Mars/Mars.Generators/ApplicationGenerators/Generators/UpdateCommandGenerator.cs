@@ -55,25 +55,12 @@ public class UpdateCommandGenerator : BaseGenerator
 
     private void GenerateHandler(string templatePath)
     {
-        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
-        var result = new List<string>();
-        foreach (var propertySymbol in propertiesOfClass)
-        {
-            // skip adding to command property if it is not id of the entity
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{Symbol.Name}id"))
-            {
-                continue;
-            }
-
-            result.Add($"command.{propertySymbol.Name}");
-        }
-
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol, "command");
         var model = new
         {
             CommandName = _commandName,
             HandlerName = _handlerName,
-            FindProperties = string.Join(", ", result)
+            FindProperties = string.Join(", ", properties)
         };
 
         WriteFile(templatePath, model, _handlerName);
