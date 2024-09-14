@@ -1,5 +1,4 @@
 using ITech.Cqrs.Cqrs.Commands;
-using Mapster;
 using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
@@ -13,8 +12,9 @@ public partial class Delete{{entity_name}}Handler : ICommandHandler<{{command_na
     }
 
     public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {
-        var entity = _db.Set<{{entity_name}}>().FindAsync([{{find_properties}}], cancellation);
+        var entity = await _db.Set<{{entity_name}}>().FindAsync([{{find_properties}}], cancellation);
         if (entity == null) return;
+        
         _db.Remove(entity);
         await _db.SaveChangesAsync(cancellation);
     }
