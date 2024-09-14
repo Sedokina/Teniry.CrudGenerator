@@ -1,4 +1,4 @@
-namespace {{put_into_namespace}}.Controllers;
+namespace {{put_into_namespace}};
 
 public partial class {{dto_name}}
 {

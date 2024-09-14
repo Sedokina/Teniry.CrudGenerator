@@ -12,6 +12,7 @@ public sealed class CrudGeneratorConfiguration
     public static CrudGeneratorConfiguration Instance => _instance ??= new CrudGeneratorConfiguration();
 
     public string TemplatesBasePath { get; set; }
+    public string PutIntoNamespaceBasePath { get; set; }
     public BaseCommandGeneratorConfiguration CreateCommandCommandGenerator { get; set; }
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; }
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; }
@@ -21,6 +22,7 @@ public sealed class CrudGeneratorConfiguration
     private void InitDefault()
     {
         TemplatesBasePath = "Mars.Generators.Templates.Crud";
+        PutIntoNamespaceBasePath = "{{assembly_name}}.Application.{{feature_name}}";
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
             CommandTemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",

@@ -1,7 +1,7 @@
 using ITech.Cqrs.Cqrs.Commands;
 using {{entity_namespace}};
 
-namespace {{put_into_namespace}}.Controllers;
+namespace {{put_into_namespace}};
 
 public partial class {{handler_name}} : ICommandHandler<{{command_name}}>
 {

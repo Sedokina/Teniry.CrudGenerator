@@ -11,20 +11,29 @@ namespace Mars.Generators.ApplicationGenerators.Core;
 
 public abstract class BaseGenerator
 {
+    protected readonly CrudGeneratorConfiguration Configuration;
+    protected readonly GeneratorExecutionContext Context;
+    protected readonly ISymbol Symbol;
     protected readonly string _entityName;
     protected readonly string _putIntoNamespace;
     protected readonly string _usingEntityNamespace;
-    protected readonly CrudGeneratorConfiguration Configuration = CrudGeneratorConfiguration.Instance;
-    protected readonly GeneratorExecutionContext Context;
-    protected readonly ISymbol Symbol;
+
 
     protected BaseGenerator(GeneratorExecutionContext context, ISymbol symbol)
     {
+        Configuration = CrudGeneratorConfiguration.Instance;
         Context = context;
         Symbol = symbol;
         _entityName = Symbol.Name;
         _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Symbol.ContainingAssembly.Name;
+
+        var putIntoNamespaceTemplate = Template.Parse(Configuration.PutIntoNamespaceBasePath);
+        _putIntoNamespace = putIntoNamespaceTemplate.Render(new
+        {
+            AssemblyName = Symbol.ContainingAssembly.Name,
+            FeatureName = $"{_entityName}Feature",
+            // FunctionName = 
+        });
     }
 
     protected void WriteFile(string templatePath, object model, string className)

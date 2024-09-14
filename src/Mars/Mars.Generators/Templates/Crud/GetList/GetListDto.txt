@@ -1,6 +1,6 @@
 using ITech.Cqrs.Queryables.Page;
 
-namespace {{put_into_namespace}}.Controllers;
+namespace {{put_into_namespace}};
 
 public partial class {{dto_name}} : PagedResult<{{list_item_dto_name}}>
 {
