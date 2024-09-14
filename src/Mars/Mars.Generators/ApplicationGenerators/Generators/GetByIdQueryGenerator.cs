@@ -6,13 +6,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 
-namespace Mars.Generators;
+namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class UpdateCommandGenerator : ISourceGenerator
+public class GetByIdQueryGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.UpdateCommand.txt";
-    private const string HandlerResourcePath = "Mars.Generators.Templates.UpdateHandler.txt";
+    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -33,22 +32,25 @@ public class UpdateCommandGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            GenerateCommand(context, symbol);
+            GenerateQuery(context, symbol);
+            GenerateDto(context, symbol);
             GenerateHandler(context, symbol);
         }
     }
 
-    private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(CommandResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.GetByIdQueryGenerator.QueryTemplatePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command if not primitive type
-            if (!propertySymbol.Type.IsSimple())
+            // skip adding to query property if it is not id of the entity
+            var propertyNameLower = propertySymbol.Name.ToLower();
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
             {
                 continue;
             }
@@ -72,40 +74,81 @@ public class UpdateCommandGenerator : ISourceGenerator
         });
 
         context.AddSource(
-            $"Update{symbol.Name}Command.g.cs",
+            $"Get{symbol.Name}Query.g.cs",
+            SourceText.From(sourceCode, Encoding.UTF8));
+    }
+
+    private void GenerateDto(GeneratorExecutionContext context, ISymbol symbol)
+    {
+        var template = Template
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.GetByIdQueryGenerator.DtoTemplatePath, GetType().Assembly));
+
+        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var result = "";
+        foreach (var propertySymbol in propertiesOfClass)
+        {
+            // skip adding to query if not primitive type
+            if (!propertySymbol.Type.IsSimple())
+            {
+                continue;
+            }
+
+            // For DateTimeOffset and other date variations remove system from the property type declaration
+            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
+                ? propertySymbol.Type.MetadataName
+                : propertySymbol.Type.ToString();
+
+            result += $"public {propertyTypeName} {propertySymbol.Name} {{ get; set; }}\n\t";
+        }
+
+        result = result.TrimEnd();
+
+        var sourceCode = template.Render(new
+        {
+            ClassName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name,
+            Properties = result,
+        });
+
+        context.AddSource(
+            $"{symbol.Name}Dto.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(HandlerResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.GetByIdQueryGenerator.HandlerTemplatePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command property if it is not id of the entity
+            // skip adding to query property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
             if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
             {
                 continue;
             }
 
-            result.Add($"command.{propertySymbol.Name}");
+            result.Add($"query.{propertySymbol.Name}");
         }
-        
+
         var sourceCode = template.Render(new
         {
             EntityName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            CommandName = $"Update{symbol.Name}Command",
+            QueryName = $"Get{symbol.Name}Query",
+            DtoName = $"{symbol.Name}Dto",
             FindProperties = string.Join(", ", result)
         });
 
         context.AddSource(
-            $"Update{symbol.Name}Handler.g.cs",
+            $"Get{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 }

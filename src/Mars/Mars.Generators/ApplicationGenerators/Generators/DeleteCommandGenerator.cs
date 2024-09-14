@@ -6,13 +6,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 
-namespace Mars.Generators;
+namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
 public class DeleteCommandGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.DeleteCommand.txt";
-    private const string HandlerResourcePath = "Mars.Generators.Templates.DeleteHandler.txt";
+    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -41,7 +40,8 @@ public class DeleteCommandGenerator : ISourceGenerator
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(CommandResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.DeleteCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -80,7 +80,8 @@ public class DeleteCommandGenerator : ISourceGenerator
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(HandlerResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.DeleteCommandCommandGenerator.HandlerTemplatePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

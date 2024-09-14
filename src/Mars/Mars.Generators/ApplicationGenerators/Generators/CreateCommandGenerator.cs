@@ -5,15 +5,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 
-namespace Mars.Generators;
+namespace Mars.Generators.ApplicationGenerators.Generators;
 
 [Generator]
-public class GetListQueryGenerator : ISourceGenerator
+public class CreateCommandGenerator : ISourceGenerator
 {
-    private const string QueryResourcePath = "Mars.Generators.Templates.GetListQuery.txt";
-    private const string DtoListItemResourcePath = "Mars.Generators.Templates.GetListItemDto.txt";
-    private const string DtoResourcePath = "Mars.Generators.Templates.GetListDto.txt";
-    private const string HandlerResourcePath = "Mars.Generators.Templates.GetListHandler.txt";
+    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -27,6 +24,7 @@ public class GetListQueryGenerator : ISourceGenerator
             return;
         }
 
+
         foreach (var classSyntax in syntaxReceiver.Classes)
         {
             // Converting the class to semantic model to access much more meaningful data.
@@ -34,41 +32,29 @@ public class GetListQueryGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            GenerateQuery(context, symbol);
-            GenerateListItemDto(context, symbol);
-            GenerateListDto(context, symbol);
+            GenerateCommand(context, symbol);
             GenerateHandler(context, symbol);
         }
     }
 
-
-    private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(QueryResourcePath, GetType().Assembly));
-
-        var sourceCode = template.Render(new
-        {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
-        });
-
-        context.AddSource(
-            $"Get{symbol.Name}ListQuery.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
-    }
-
-    private void GenerateListItemDto(GeneratorExecutionContext context, ISymbol symbol)
-    {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(DtoListItemResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.CreateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to query if not primitive type
+            // skip adding to command id of the entity
+            var propertyNameLower = propertySymbol.Name.ToLower();
+            if (propertyNameLower.Equals("id") || propertyNameLower.Equals($"{symbol.Name}id"))
+            {
+                continue;
+            }
+
+            // skip adding to command if not primitive type
             if (!propertySymbol.Type.IsSimple())
             {
                 continue;
@@ -89,49 +75,35 @@ public class GetListQueryGenerator : ISourceGenerator
             ClassName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            Properties = result,
+            Properties = result
         });
 
         context.AddSource(
-            $"{symbol.Name}ListItemDto.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
-    }
-
-    private void GenerateListDto(GeneratorExecutionContext context, ISymbol symbol)
-    {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(DtoResourcePath, GetType().Assembly));
-
-        var sourceCode = template.Render(new
-        {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
-            ItemsType = $"{symbol.Name}ListItemDto"
-        });
-
-        context.AddSource(
-            $"{symbol.Name}ListDto.g.cs",
+            $"Create{symbol.Name}Command.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(HandlerResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(
+                _configuration.CreateCommandCommandGenerator.CommandTemplatePath, GetType().Assembly));
 
         var sourceCode = template.Render(new
         {
             EntityName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            QueryName = $"Get{symbol.Name}ListQuery",
-            DtoName = $"{symbol.Name}ListDto",
-            DtoListItemName = $"{symbol.Name}ListItemDto",
+            CommandName = $"Create{symbol.Name}Command",
         });
 
         context.AddSource(
-            $"Get{symbol.Name}ListHandler.g.cs",
+            $"Create{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
+}
+
+[AttributeUsage(AttributeTargets.Class)]
+public class GenerateCreateCommandAttribute : Attribute
+{
 }
