@@ -2,7 +2,7 @@ using ITech.Cqrs.Cqrs.Commands;
 using Mapster;
 using {{namespace}};
 
-namespace {{preferred_namespace}}.Controllers;
+namespace {{put_into_namespace}}.Controllers;
 
 public partial class Create{{entity_name}}Handler : ICommandHandler<{{command_name}}>
 {

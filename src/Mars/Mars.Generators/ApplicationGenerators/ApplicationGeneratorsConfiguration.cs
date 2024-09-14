@@ -24,7 +24,9 @@ public sealed class ApplicationGeneratorsConfiguration
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
             CommandTemplatePath = $"{TemplatesBasePath}.CreateCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.CreateHandler.txt"
+            HandlerTemplatePath = $"{TemplatesBasePath}.CreateHandler.txt",
+            CommandNameFormat = "Create{0}Command",
+            HandlerNameFormat = "Create{0}Handler"
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -56,6 +58,10 @@ public class BaseCommandGeneratorConfiguration
 {
     public string CommandTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
+    public string CommandNameFormat { get; set; }
+    public string HandlerNameFormat { get; set; }
+    public string GetCommandName(string entityName) => string.Format(CommandNameFormat, entityName);
+    public string GetHandlerName(string entityName) => string.Format(HandlerNameFormat, entityName);
 }
 
 public class BaseQueryGeneratorConfiguration
