@@ -7,6 +7,8 @@ namespace Mars.Generators.ApplicationGenerators.Core;
 
 public abstract class CrudGenerator
 {
+    protected readonly ApplicationGeneratorsConfiguration Configuration = ApplicationGeneratorsConfiguration.Instance;
+
     internal Template ReadTemplate(string templatePath)
     {
         return Template.Parse(GetEmbeddedResource(templatePath, GetType().Assembly));

@@ -10,8 +10,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 [Generator]
 public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 {
-    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -39,7 +37,7 @@ public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.CreateCommandCommandGenerator.CommandTemplatePath);
+        var template = ReadTemplate(Configuration.CreateCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -83,7 +81,7 @@ public class CreateCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.CreateCommandCommandGenerator.CommandTemplatePath);
+        var template = ReadTemplate(Configuration.CreateCommandCommandGenerator.CommandTemplatePath);
 
         var sourceCode = template.Render(new
         {

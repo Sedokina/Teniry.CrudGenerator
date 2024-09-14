@@ -10,8 +10,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 [Generator]
 public class DeleteCommandGenerator : CrudGenerator, ISourceGenerator
 {
-    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -38,7 +36,7 @@ public class DeleteCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.DeleteCommandCommandGenerator.CommandTemplatePath);
+        var template = ReadTemplate(Configuration.DeleteCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -76,7 +74,7 @@ public class DeleteCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.DeleteCommandCommandGenerator.HandlerTemplatePath);
+        var template = ReadTemplate(Configuration.DeleteCommandCommandGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

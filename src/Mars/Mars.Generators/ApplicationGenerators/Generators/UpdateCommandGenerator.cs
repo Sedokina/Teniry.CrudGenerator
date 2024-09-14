@@ -11,8 +11,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 [Generator]
 public class UpdateCommandGenerator : CrudGenerator, ISourceGenerator
 {
-    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -39,7 +37,7 @@ public class UpdateCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.UpdateCommandCommandGenerator.CommandTemplatePath);
+        var template = ReadTemplate(Configuration.UpdateCommandCommandGenerator.CommandTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -76,7 +74,7 @@ public class UpdateCommandGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.UpdateCommandCommandGenerator.HandlerTemplatePath);
+        var template = ReadTemplate(Configuration.UpdateCommandCommandGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

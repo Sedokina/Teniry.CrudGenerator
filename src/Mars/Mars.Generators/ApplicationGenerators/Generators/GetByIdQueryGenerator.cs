@@ -11,8 +11,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 [Generator]
 public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 {
-    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -40,7 +38,7 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.QueryTemplatePath);
+        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.QueryTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -78,7 +76,7 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.DtoTemplatePath);
+        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.DtoTemplatePath);
         
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -115,7 +113,7 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetByIdQueryGenerator.HandlerTemplatePath);
+        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.HandlerTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();

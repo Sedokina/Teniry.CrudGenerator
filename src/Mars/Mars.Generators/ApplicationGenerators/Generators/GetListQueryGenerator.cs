@@ -10,8 +10,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 [Generator]
 public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 {
-    private readonly ApplicationGeneratorsConfiguration _configuration = ApplicationGeneratorsConfiguration.Instance;
-
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCreateCommandAttribute>());
@@ -41,7 +39,7 @@ public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetListQueryGenerator.QueryTemplatePath);
+        var template = ReadTemplate(Configuration.GetListQueryGenerator.QueryTemplatePath);
 
         var sourceCode = template.Render(new
         {
@@ -57,7 +55,7 @@ public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateListItemDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetListQueryGenerator.DtoListItemTemplatePath);
+        var template = ReadTemplate(Configuration.GetListQueryGenerator.DtoListItemTemplatePath);
 
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
@@ -94,7 +92,7 @@ public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateListDto(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetListQueryGenerator.DtoTemplatePath);
+        var template = ReadTemplate(Configuration.GetListQueryGenerator.DtoTemplatePath);
 
         var sourceCode = template.Render(new
         {
@@ -111,7 +109,7 @@ public class GetListQueryGenerator : CrudGenerator, ISourceGenerator
 
     private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(_configuration.GetListQueryGenerator.HandlerTemplatePath);
+        var template = ReadTemplate(Configuration.GetListQueryGenerator.HandlerTemplatePath);
 
         var sourceCode = template.Render(new
         {
