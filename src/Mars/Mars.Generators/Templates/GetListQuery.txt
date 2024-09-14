@@ -3,7 +3,7 @@ using ITech.Cqrs.Queryables.Page;
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Get{{class_name}}ListCommand : IPage
+public partial class Get{{class_name}}ListQuery : IPage
 {
     /// <inheritdoc />
     public int Page { get; set; }

@@ -9,7 +9,7 @@ using Scriban;
 namespace Mars.Generators;
 
 [Generator]
-public class GetByIdCommandGenerator : ISourceGenerator
+public class GetByIdQueryGenerator : ISourceGenerator
 {
     private const string QueryResourcePath = "Mars.Generators.Templates.GetByIdQuery.txt";
     private const string DtoResourcePath = "Mars.Generators.Templates.GetByIdDto.txt";

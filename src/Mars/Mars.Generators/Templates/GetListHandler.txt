@@ -7,7 +7,7 @@ using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Get{{entity_name}}ListHandler : IQueryHandler<{{command_name}}, {{dto_name}}>
+public partial class Get{{entity_name}}ListHandler : IQueryHandler<{{query_name}}, {{dto_name}}>
 {
     private readonly MarsDb _db;
 
@@ -15,7 +15,7 @@ public partial class Get{{entity_name}}ListHandler : IQueryHandler<{{command_nam
         _db = db;
     }
 
-    public async Task<{{dto_name}}> HandleAsync({{command_name}} query, CancellationToken cancellation) {
+    public async Task<{{dto_name}}> HandleAsync({{query_name}} query, CancellationToken cancellation) {
         var result = await _db.Set<{{entity_name}}>()
             .ProjectToType<{{dto_list_item_name}}>()
             .ToPagedListAsync(query, cancellation);

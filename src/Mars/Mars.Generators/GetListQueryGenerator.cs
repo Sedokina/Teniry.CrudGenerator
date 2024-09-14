@@ -8,9 +8,9 @@ using Scriban;
 namespace Mars.Generators;
 
 [Generator]
-public class GetListCommandGenerator : ISourceGenerator
+public class GetListQueryGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.GetListCommand.txt";
+    private const string QueryResourcePath = "Mars.Generators.Templates.GetListQuery.txt";
     private const string DtoListItemResourcePath = "Mars.Generators.Templates.GetListItemDto.txt";
     private const string DtoResourcePath = "Mars.Generators.Templates.GetListDto.txt";
     private const string HandlerResourcePath = "Mars.Generators.Templates.GetListHandler.txt";
@@ -34,7 +34,7 @@ public class GetListCommandGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            GenerateCommand(context, symbol);
+            GenerateQuery(context, symbol);
             GenerateListItemDto(context, symbol);
             GenerateListDto(context, symbol);
             GenerateHandler(context, symbol);
@@ -42,10 +42,10 @@ public class GetListCommandGenerator : ISourceGenerator
     }
 
 
-    private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(CommandResourcePath, GetType().Assembly));
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(QueryResourcePath, GetType().Assembly));
 
         var sourceCode = template.Render(new
         {
@@ -55,7 +55,7 @@ public class GetListCommandGenerator : ISourceGenerator
         });
 
         context.AddSource(
-            $"Get{symbol.Name}ListCommand.g.cs",
+            $"Get{symbol.Name}ListQuery.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 
@@ -68,7 +68,7 @@ public class GetListCommandGenerator : ISourceGenerator
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command if not primitive type
+            // skip adding to query if not primitive type
             if (!propertySymbol.Type.IsSimple())
             {
                 continue;
@@ -125,7 +125,7 @@ public class GetListCommandGenerator : ISourceGenerator
             EntityName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
-            CommandName = $"Get{symbol.Name}ListCommand",
+            QueryName = $"Get{symbol.Name}ListQuery",
             DtoName = $"{symbol.Name}ListDto",
             DtoListItemName = $"{symbol.Name}ListItemDto",
         });
