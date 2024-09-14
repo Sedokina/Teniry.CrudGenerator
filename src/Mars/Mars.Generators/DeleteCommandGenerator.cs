@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel;
-using System.IO;
 using System.Text;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
@@ -10,10 +8,10 @@ using Scriban;
 namespace Mars.Generators;
 
 [Generator]
-public class CreateCommandGenerator : ISourceGenerator
+public class DeleteCommandGenerator : ISourceGenerator
 {
-    private const string CommandResourcePath = "Mars.Generators.Templates.CreateCommand.txt";
-    private const string HandlerResourcePath = "Mars.Generators.Templates.CreateHandler.txt";
+    private const string CommandResourcePath = "Mars.Generators.Templates.DeleteCommand.txt";
+    private const string HandlerResourcePath = "Mars.Generators.Templates.DeleteHandler.txt";
 
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -35,10 +33,10 @@ public class CreateCommandGenerator : ISourceGenerator
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
             GenerateCommand(context, symbol);
-            GenerateHandler(context, symbol);
+            // GenerateHandler(context, symbol);
         }
     }
-
+    
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
@@ -48,15 +46,9 @@ public class CreateCommandGenerator : ISourceGenerator
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to command id of the entity
+            // skip adding to command property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
-            if (propertyNameLower.Equals("id") || propertyNameLower.Equals($"{symbol.Name}id"))
-            {
-                continue;
-            }
-
-            // skip adding to command if not primitive type
-            if (!propertySymbol.Type.IsSimple())
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
             {
                 continue;
             }
@@ -80,31 +72,7 @@ public class CreateCommandGenerator : ISourceGenerator
         });
 
         context.AddSource(
-            $"Create{symbol.Name}Command.g.cs",
+            $"Delete{symbol.Name}Command.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
-
-    private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
-    {
-        var template = Template
-            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(HandlerResourcePath, GetType().Assembly));
-
-        var sourceCode = template.Render(new
-        {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
-            CommandName = $"Create{symbol.Name}Command",
-            EntityName = symbol.Name
-        });
-
-        context.AddSource(
-            $"Create{symbol.Name}Handler.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
-    }
-}
-
-[AttributeUsage(AttributeTargets.Class)]
-public class GenerateCreateCommandAttribute : Attribute
-{
 }
