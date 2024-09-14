@@ -35,22 +35,17 @@ public class ListQueryGenerator : BaseGenerator
 
     private void GenerateQuery(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
-        var sourceCode = template.Render(new
+        var model = new
         {
             EntityNamespace = _usingEntityNamespace,
             QueryName = _queryName,
             PutIntoNamespace = _putIntoNamespace,
-        });
-
-        WriteFile(_queryName, sourceCode);
+        };
+        WriteFile(templatePath, model, _queryName);
     }
 
     private void GenerateListItemDto(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -71,35 +66,31 @@ public class ListQueryGenerator : BaseGenerator
 
         result = result.TrimEnd();
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             PutIntoNamespace = _putIntoNamespace,
             ListItemDtoName = _listItemDtoName,
             Properties = result,
-        });
+        };
 
-        WriteFile(_listItemDtoName, sourceCode);
+        WriteFile(templatePath, model, _listItemDtoName);
     }
 
     private void GenerateDto(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
-        var sourceCode = template.Render(new
+        var model = new
         {
             PutIntoNamespace = _putIntoNamespace,
             DtoName = _dtoName,
             ListItemDtoName = _listItemDtoName
-        });
+        };
 
-        WriteFile(_dtoName, sourceCode);
+        WriteFile(templatePath, model, _dtoName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
-        var sourceCode = template.Render(new
+        var model = new
         {
             EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
@@ -108,8 +99,8 @@ public class ListQueryGenerator : BaseGenerator
             HandlerName = _handlerName,
             DtoName = _dtoName,
             DtoListItemName = _listItemDtoName,
-        });
+        };
 
-        WriteFile(_handlerName, sourceCode);
+        WriteFile(templatePath, model, _handlerName);
     }
 }

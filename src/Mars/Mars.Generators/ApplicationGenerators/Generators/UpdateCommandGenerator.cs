@@ -30,8 +30,6 @@ public class UpdateCommandGenerator : BaseGenerator
 
     private void GenerateCommand(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -52,20 +50,18 @@ public class UpdateCommandGenerator : BaseGenerator
 
         result = result.TrimEnd();
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
             Properties = result
-        });
+        };
 
-        WriteFile(_commandName, sourceCode);
+        WriteFile(templatePath, model, _commandName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
@@ -80,7 +76,7 @@ public class UpdateCommandGenerator : BaseGenerator
             result.Add($"command.{propertySymbol.Name}");
         }
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
@@ -88,8 +84,8 @@ public class UpdateCommandGenerator : BaseGenerator
             CommandName = _commandName,
             HandlerName = _handlerName,
             FindProperties = string.Join(", ", result)
-        });
+        };
 
-        WriteFile(_handlerName, sourceCode);
+        WriteFile(templatePath, model, _handlerName);
     }
 }

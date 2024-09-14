@@ -65,8 +65,6 @@ public class GetByIdQueryGenerator : BaseGenerator
 
     private void GenerateDto(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -93,6 +91,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             DtoName = _dtoName,
             Properties = result,
         };
+        
         WriteFile(templatePath, model, _dtoName);
     }
 

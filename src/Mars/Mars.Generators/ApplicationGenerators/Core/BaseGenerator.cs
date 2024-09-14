@@ -20,7 +20,15 @@ public abstract class BaseGenerator
         Symbol = symbol;
     }
 
-    internal Template ReadTemplate(string templatePath)
+    protected void WriteFile(string templatePath, object model, string className)
+    {
+        var template = ReadTemplate(templatePath);
+        var sourceCode = template.Render(model);
+
+        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+    }
+
+    private Template ReadTemplate(string templatePath)
     {
         return Template.Parse(GetEmbeddedResource(templatePath, GetType().Assembly));
     }
@@ -30,18 +38,5 @@ public abstract class BaseGenerator
         using var stream = assembly.GetManifestResourceStream(path);
         using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
         return streamReader.ReadToEnd();
-    }
-
-    protected void WriteFile(string className, string sourceCode)
-    {
-        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
-    }
-
-    protected void WriteFile(string templatePath, object model, string className)
-    {
-        var template = ReadTemplate(templatePath);
-        var sourceCode = template.Render(model);
-        
-        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 }
