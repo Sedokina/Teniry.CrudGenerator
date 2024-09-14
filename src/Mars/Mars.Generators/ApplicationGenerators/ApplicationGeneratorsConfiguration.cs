@@ -56,7 +56,11 @@ public sealed class ApplicationGeneratorsConfiguration
             QueryTemplatePath = $"{TemplatesBasePath}.GetListQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetListDto.txt",
             DtoListItemTemplatePath = $"{TemplatesBasePath}.GetListItemDto.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.GetListHandler.txt"
+            HandlerTemplatePath = $"{TemplatesBasePath}.GetListHandler.txt",
+            QueryNameFormat = "Get{0}ListQuery",
+            DtoNameFormat = "{0}ListDto",
+            ListItemDtoNameFormat = "{0}ListItemDto",
+            HandlerNameFormat = "Get{0}ListHandler"
         };
     }
 }
@@ -90,4 +94,12 @@ public class ListQueryGeneratorConfiguration
     public string DtoTemplatePath { get; set; }
     public string DtoListItemTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
+    public string QueryNameFormat { get; set; }
+    public string DtoNameFormat { get; set; }
+    public string ListItemDtoNameFormat { get; set; }
+    public string HandlerNameFormat { get; set; }
+    public string GetQueryName(string entityName) => string.Format(QueryNameFormat, entityName);
+    public string GetDtoName(string entityName) => string.Format(DtoNameFormat, entityName);
+    public string GetListItemDtoName(string entityName) => string.Format(ListItemDtoNameFormat, entityName);
+    public string GetHandlerName(string entityName) => string.Format(HandlerNameFormat, entityName);
 }

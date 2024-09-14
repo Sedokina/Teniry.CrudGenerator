@@ -1,9 +1,9 @@
-using {{namespace}};
+using {{entity_namespace}};
 using ITech.Cqrs.Queryables.Page;
 
-namespace {{preferred_namespace}}.Controllers;
+namespace {{put_into_namespace}}.Controllers;
 
-public partial class Get{{class_name}}ListQuery : IPage
+public partial class Get{{entity_name}}ListQuery : IPage
 {
     /// <inheritdoc />
     public int Page { get; set; }

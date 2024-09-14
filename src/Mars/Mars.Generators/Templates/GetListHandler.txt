@@ -3,9 +3,9 @@ using ITech.Cqrs.Domain.Exceptions;
 using ITech.Cqrs.Queryables.Page;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using {{namespace}};
+using {{entity_namespace}};
 
-namespace {{preferred_namespace}}.Controllers;
+namespace {{put_into_namespace}}.Controllers;
 
 public partial class Get{{entity_name}}ListHandler : IQueryHandler<{{query_name}}, {{dto_name}}>
 {
