@@ -7,17 +7,11 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class UpdateCommandGenerator : BaseGenerator
 {
-    private readonly string _entityName;
-    private readonly string _usingEntityNamespace;
-    private readonly string _putIntoNamespace;
     private readonly string _commandName;
     private readonly string _handlerName;
 
     public UpdateCommandGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
-        _entityName = Symbol.Name;
-        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Symbol.ContainingAssembly.Name;
         _commandName = Configuration.UpdateCommandCommandGenerator.GetCommandName(_entityName);
         _handlerName = Configuration.UpdateCommandCommandGenerator.GetHandlerName(_entityName);
     }
@@ -52,7 +46,6 @@ public class UpdateCommandGenerator : BaseGenerator
 
         var model = new
         {
-            PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
             Properties = result
         };
@@ -78,9 +71,6 @@ public class UpdateCommandGenerator : BaseGenerator
 
         var model = new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
-            PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
             HandlerName = _handlerName,
             FindProperties = string.Join(", ", result)

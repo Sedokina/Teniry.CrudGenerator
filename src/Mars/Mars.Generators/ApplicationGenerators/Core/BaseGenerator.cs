@@ -5,6 +5,8 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
+using Scriban.Functions;
+using Scriban.Runtime;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
@@ -13,17 +15,38 @@ public abstract class BaseGenerator
     protected readonly GeneratorExecutionContext Context;
     protected readonly ISymbol Symbol;
     protected readonly CrudGeneratorConfiguration Configuration = CrudGeneratorConfiguration.Instance;
+    protected readonly string _entityName;
+    protected readonly string _usingEntityNamespace;
+    protected readonly string _putIntoNamespace;
 
     protected BaseGenerator(GeneratorExecutionContext context, ISymbol symbol)
     {
         Context = context;
         Symbol = symbol;
+        _entityName = Symbol.Name;
+        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
+        _putIntoNamespace = Symbol.ContainingAssembly.Name;
     }
 
     protected void WriteFile(string templatePath, object model, string className)
     {
         var template = ReadTemplate(templatePath);
-        var sourceCode = template.Render(model);
+
+        var customProps = new ScriptObject();
+        customProps.Import(model);
+
+        var baseProps = new ScriptObject();
+        baseProps.Import(new
+        {
+            EntityName = _entityName,
+            EntityNamespace = _usingEntityNamespace,
+            PutIntoNamespace = _putIntoNamespace
+        });
+
+        var context = new TemplateContext();
+        context.PushGlobal(customProps);
+        context.PushGlobal(baseProps);
+        var sourceCode = template.Render(context);
 
         Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }

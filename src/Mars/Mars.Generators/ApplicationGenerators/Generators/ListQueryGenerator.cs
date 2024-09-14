@@ -6,9 +6,6 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class ListQueryGenerator : BaseGenerator
 {
-    private readonly string _entityName;
-    private readonly string _usingEntityNamespace;
-    private readonly string _putIntoNamespace;
     private readonly string _queryName;
     private readonly string _dtoName;
     private readonly string _listItemDtoName;
@@ -16,9 +13,6 @@ public class ListQueryGenerator : BaseGenerator
 
     public ListQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
-        _entityName = Symbol.Name;
-        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Symbol.ContainingAssembly.Name;
         _queryName = Configuration.GetListQueryGenerator.GetQueryName(_entityName);
         _dtoName = Configuration.GetListQueryGenerator.GetDtoName(_entityName);
         _listItemDtoName = Configuration.GetListQueryGenerator.GetListItemDtoName(_entityName);
@@ -68,7 +62,6 @@ public class ListQueryGenerator : BaseGenerator
 
         var model = new
         {
-            PutIntoNamespace = _putIntoNamespace,
             ListItemDtoName = _listItemDtoName,
             Properties = result,
         };
@@ -92,9 +85,6 @@ public class ListQueryGenerator : BaseGenerator
     {
         var model = new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
-            PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,

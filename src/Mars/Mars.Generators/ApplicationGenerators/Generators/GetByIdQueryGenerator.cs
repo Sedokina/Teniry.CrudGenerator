@@ -7,18 +7,12 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 
 public class GetByIdQueryGenerator : BaseGenerator
 {
-    private readonly string _entityName;
-    private readonly string _usingEntityNamespace;
-    private readonly string _putIntoNamespace;
     private readonly string _queryName;
     private readonly string _dtoName;
     private readonly string _handlerName;
 
     public GetByIdQueryGenerator(GeneratorExecutionContext context, ISymbol symbol) : base(context, symbol)
     {
-        _entityName = Symbol.Name;
-        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Symbol.ContainingAssembly.Name;
         _queryName = Configuration.GetByIdQueryGenerator.GetQueryName(_entityName);
         _dtoName = Configuration.GetByIdQueryGenerator.GetDtoName(_entityName);
         _handlerName = Configuration.GetByIdQueryGenerator.GetHandlerName(_entityName);
@@ -56,7 +50,6 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         var model = new
         {
-            PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
             Properties = result
         };
@@ -87,7 +80,6 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         var model = new
         {
-            PutIntoNamespace = _putIntoNamespace,
             DtoName = _dtoName,
             Properties = result,
         };
@@ -113,9 +105,6 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         var model = new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
-            PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
