@@ -127,6 +127,7 @@ public class GetListCommandGenerator : ISourceGenerator
             PreferredNamespace = symbol.ContainingAssembly.Name,
             CommandName = $"Get{symbol.Name}ListCommand",
             DtoName = $"{symbol.Name}ListDto",
+            DtoListItemName = $"{symbol.Name}ListItemDto",
         });
 
         context.AddSource(

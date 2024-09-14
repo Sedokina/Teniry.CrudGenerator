@@ -1,8 +1,13 @@
 using {{namespace}};
+using ITech.Cqrs.Queryables.Page;
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Get{{class_name}}ListCommand
+public partial class Get{{class_name}}ListCommand : IPage
 {
-    {{properties}}
+    /// <inheritdoc />
+    public int Page { get; set; }
+    
+    /// <inheritdoc />
+    public int PageSize { get; set; }
 }

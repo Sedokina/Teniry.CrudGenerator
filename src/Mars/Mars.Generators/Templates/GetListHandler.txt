@@ -1,6 +1,8 @@
 using ITech.Cqrs.Cqrs.Queries;
 using ITech.Cqrs.Domain.Exceptions;
+using ITech.Cqrs.Queryables.Page;
 using Mapster;
+using Microsoft.EntityFrameworkCore;
 using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
@@ -13,8 +15,11 @@ public partial class Get{{entity_name}}ListHandler : IQueryHandler<{{command_nam
         _db = db;
     }
 
-    public async Task<{{dto_name}}> HandleAsync({{command_name}} command, CancellationToken cancellation) {
-       
-        return null;
+    public async Task<{{dto_name}}> HandleAsync({{command_name}} query, CancellationToken cancellation) {
+        var result = await _db.Set<{{entity_name}}>()
+            .ProjectToType<{{dto_list_item_name}}>()
+            .ToPagedListAsync(query, cancellation);
+            
+        return new {{dto_name}}(result.ToList(), result.GetPage());
     }
 }
