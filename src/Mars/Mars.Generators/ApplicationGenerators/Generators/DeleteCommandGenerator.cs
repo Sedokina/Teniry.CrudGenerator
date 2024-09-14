@@ -62,7 +62,7 @@ public class DeleteCommandGenerator : BaseGenerator
             Properties = result
         });
 
-        Context.AddSource($"{_commandName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_commandName, sourceCode);
     }
 
     private void GenerateHandler(string templatePath)
@@ -88,11 +88,10 @@ public class DeleteCommandGenerator : BaseGenerator
             EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
-            CommandName =  _commandName,
+            CommandName = _commandName,
             FindProperties = string.Join(", ", result)
         });
 
-
-        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_handlerName, sourceCode);
     }
 }

@@ -1,8 +1,6 @@
-using System.Text;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
@@ -46,7 +44,7 @@ public class ListQueryGenerator : BaseGenerator
             PutIntoNamespace = _putIntoNamespace,
         });
 
-        Context.AddSource($"{_queryName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_queryName, sourceCode);
     }
 
     private void GenerateListItemDto(string templatePath)
@@ -81,7 +79,7 @@ public class ListQueryGenerator : BaseGenerator
             Properties = result,
         });
 
-        Context.AddSource($"{_listItemDtoName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_listItemDtoName, sourceCode);
     }
 
     private void GenerateDto(string templatePath)
@@ -96,7 +94,7 @@ public class ListQueryGenerator : BaseGenerator
             ItemsType = _listItemDtoName
         });
 
-        Context.AddSource($"{_dtoName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_dtoName, sourceCode);
     }
 
     private void GenerateHandler(string templatePath)
@@ -113,6 +111,6 @@ public class ListQueryGenerator : BaseGenerator
             DtoListItemName = _listItemDtoName,
         });
 
-        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_handlerName, sourceCode);
     }
 }

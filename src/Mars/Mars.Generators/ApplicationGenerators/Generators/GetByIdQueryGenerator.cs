@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Text;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
@@ -66,7 +64,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             Properties = result
         });
 
-        Context.AddSource($"{_queryName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_queryName, sourceCode);
     }
 
     private void GenerateDto(string templatePath)
@@ -101,7 +99,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             Properties = result,
         });
 
-        Context.AddSource($"{_dtoName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_dtoName, sourceCode);
     }
 
     private void GenerateHandler(string templatePath)
@@ -132,6 +130,6 @@ public class GetByIdQueryGenerator : BaseGenerator
             FindProperties = string.Join(", ", result)
         });
 
-        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_handlerName, sourceCode);
     }
 }

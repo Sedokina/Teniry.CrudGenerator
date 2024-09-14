@@ -1,7 +1,9 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
@@ -28,5 +30,11 @@ public abstract class BaseGenerator
         using var stream = assembly.GetManifestResourceStream(path);
         using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
         return streamReader.ReadToEnd();
+    }
+
+    protected void WriteFile(string className, string sourceCode)
+    {
+        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+
     }
 }

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Text;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
@@ -61,7 +59,8 @@ public class UpdateCommandGenerator : BaseGenerator
             PutIntoNamespace = _putIntoNamespace,
             Properties = result
         });
-        Context.AddSource($"{_commandName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+
+        WriteFile(_commandName, sourceCode);
     }
 
     private void GenerateHandler(string templatePath)
@@ -91,7 +90,6 @@ public class UpdateCommandGenerator : BaseGenerator
             FindProperties = string.Join(", ", result)
         });
 
-
-        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_handlerName, sourceCode);
     }
 }

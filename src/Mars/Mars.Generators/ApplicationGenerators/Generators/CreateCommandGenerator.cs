@@ -1,8 +1,6 @@
-using System.Text;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
@@ -68,7 +66,7 @@ public class CreateCommandGenerator : BaseGenerator
             Properties = result
         });
 
-        Context.AddSource($"{_commandName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_commandName, sourceCode);
     }
 
     private void GenerateHandler(string templatePath)
@@ -83,6 +81,6 @@ public class CreateCommandGenerator : BaseGenerator
             CommandName = _commandName,
         });
 
-        Context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+        WriteFile(_handlerName, sourceCode);
     }
 }
