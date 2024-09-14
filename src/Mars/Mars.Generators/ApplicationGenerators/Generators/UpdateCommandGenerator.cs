@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
@@ -55,7 +54,7 @@ public class UpdateCommandGenerator : BaseGenerator
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol, "command");
+        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "command");
         var model = new
         {
             CommandName = _commandName,

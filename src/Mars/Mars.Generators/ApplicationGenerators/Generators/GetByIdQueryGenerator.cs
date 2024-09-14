@@ -27,32 +27,13 @@ public class GetByIdQueryGenerator : BaseGenerator
 
     private void GenerateQuery(string templatePath)
     {
-        var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
-        var result = "";
-        foreach (var propertySymbol in propertiesOfClass)
-        {
-            // skip adding to query property if it is not id of the entity
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{Symbol.Name}id"))
-            {
-                continue;
-            }
-
-            // For DateTimeOffset and other date variations remove system from the property type declaration
-            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
-                ? propertySymbol.Type.MetadataName
-                : propertySymbol.Type.ToString();
-
-            result += $"public {propertyTypeName} {propertySymbol.Name} {{ get; set; }}\n\t";
-        }
-
-        result = result.TrimEnd();
-
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntityAsProperties(Symbol);
         var model = new
         {
             QueryName = _queryName,
-            Properties = result
+            Properties = properties
         };
+
         WriteFile(templatePath, model, _queryName);
     }
 
@@ -89,7 +70,7 @@ public class GetByIdQueryGenerator : BaseGenerator
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol, "query");
+        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "query");
         var model = new
         {
             QueryName = _queryName,
@@ -97,6 +78,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             DtoName = _dtoName,
             FindProperties = string.Join(", ", properties)
         };
+        
         WriteFile(templatePath, model, _handlerName);
     }
 }
