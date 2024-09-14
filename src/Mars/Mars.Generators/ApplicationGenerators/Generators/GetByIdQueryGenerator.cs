@@ -33,8 +33,6 @@ public class GetByIdQueryGenerator : BaseGenerator
 
     private void GenerateQuery(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -56,14 +54,13 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         result = result.TrimEnd();
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             PutIntoNamespace = _putIntoNamespace,
             QueryName = _queryName,
             Properties = result
-        });
-
-        WriteFile(_queryName, sourceCode);
+        };
+        WriteFile(templatePath, model, _queryName);
     }
 
     private void GenerateDto(string templatePath)
@@ -90,20 +87,17 @@ public class GetByIdQueryGenerator : BaseGenerator
 
         result = result.TrimEnd();
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             PutIntoNamespace = _putIntoNamespace,
             DtoName = _dtoName,
             Properties = result,
-        });
-
-        WriteFile(_dtoName, sourceCode);
+        };
+        WriteFile(templatePath, model, _dtoName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
@@ -118,7 +112,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             result.Add($"query.{propertySymbol.Name}");
         }
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
@@ -127,8 +121,7 @@ public class GetByIdQueryGenerator : BaseGenerator
             HandlerName = _handlerName,
             DtoName = _dtoName,
             FindProperties = string.Join(", ", result)
-        });
-
-        WriteFile(_handlerName, sourceCode);
+        };
+        WriteFile(templatePath, model, _handlerName);
     }
 }

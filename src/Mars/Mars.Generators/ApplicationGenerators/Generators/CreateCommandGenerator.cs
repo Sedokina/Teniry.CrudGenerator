@@ -29,8 +29,6 @@ public class CreateCommandGenerator : BaseGenerator
 
     private void GenerateCommand(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
         var propertiesOfClass = ((INamedTypeSymbol)Symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
@@ -58,29 +56,26 @@ public class CreateCommandGenerator : BaseGenerator
 
         result = result.TrimEnd();
 
-        var sourceCode = template.Render(new
+        var model = new
         {
             CommandName = _commandName,
             PutIntoNamespace = _putIntoNamespace,
             Properties = result
-        });
-
-        WriteFile(_commandName, sourceCode);
+        };
+        WriteFile(templatePath, model, _commandName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var template = ReadTemplate(templatePath);
-
-        var sourceCode = template.Render(new
+        var model = new
         {
             EntityName = _entityName,
             EntityNamespace = _usingEntityNamespace,
             PutIntoNamespace = _putIntoNamespace,
             CommandName = _commandName,
             HandlerName = _handlerName
-        });
+        };
 
-        WriteFile(_handlerName, sourceCode);
+        WriteFile(templatePath, model, _handlerName);
     }
 }

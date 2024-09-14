@@ -35,6 +35,13 @@ public abstract class BaseGenerator
     protected void WriteFile(string className, string sourceCode)
     {
         Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+    }
 
+    protected void WriteFile(string templatePath, object model, string className)
+    {
+        var template = ReadTemplate(templatePath);
+        var sourceCode = template.Render(model);
+        
+        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 }
