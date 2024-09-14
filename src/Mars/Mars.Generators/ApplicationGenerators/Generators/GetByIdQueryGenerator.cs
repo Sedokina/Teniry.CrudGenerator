@@ -30,23 +30,53 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            GenerateQuery(context, symbol);
-            GenerateDto(context, symbol);
-            GenerateHandler(context, symbol);
+            var generateGetByIdQuery = new GenerateGetByIdQuery(context, symbol);
+            generateGetByIdQuery.RunGenerator();
         }
     }
+}
 
-    private void GenerateQuery(GeneratorExecutionContext context, ISymbol symbol)
+public class GenerateGetByIdQuery : CrudGenerator
+{
+    private readonly GeneratorExecutionContext _context;
+    private readonly ISymbol _symbol;
+    private readonly string _entityName;
+    private readonly string _usingEntityNamespace;
+    private readonly string _putIntoNamespace;
+    private readonly string _queryName;
+    private readonly string _dtoName;
+    private readonly string _handlerName;
+
+    public GenerateGetByIdQuery(GeneratorExecutionContext context, ISymbol symbol)
     {
-        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.QueryTemplatePath);
+        _context = context;
+        _symbol = symbol;
+        _entityName = _symbol.Name;
+        _usingEntityNamespace = _symbol.ContainingNamespace.ToString();
+        _putIntoNamespace = _symbol.ContainingAssembly.Name;
+        _queryName = Configuration.GetByIdQueryGenerator.GetQueryName(_entityName);
+        _dtoName = Configuration.GetByIdQueryGenerator.GetDtoName(_entityName);
+        _handlerName = Configuration.GetByIdQueryGenerator.GetHandlerName(_entityName);
+    }
 
-        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+    public void RunGenerator()
+    {
+        GenerateCommand(Configuration.GetByIdQueryGenerator.QueryTemplatePath);
+        GenerateDto(Configuration.GetByIdQueryGenerator.DtoTemplatePath);
+        GenerateHandler(Configuration.GetByIdQueryGenerator.HandlerTemplatePath);
+    }
+
+    private void GenerateCommand(string templatePath)
+    {
+        var template = ReadTemplate(templatePath);
+
+        var propertiesOfClass = ((INamedTypeSymbol)_symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
             // skip adding to query property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{_symbol.Name}id"))
             {
                 continue;
             }
@@ -63,22 +93,20 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
         var sourceCode = template.Render(new
         {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
+            EntityName = _entityName,
+            EntityNamespace = _usingEntityNamespace,
+            PutIntoNamespace = _putIntoNamespace,
             Properties = result
         });
 
-        context.AddSource(
-            $"Get{symbol.Name}Query.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
+        _context.AddSource($"{_queryName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 
-    private void GenerateDto(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateDto(string templatePath)
     {
-        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.DtoTemplatePath);
+        var template = ReadTemplate(templatePath);
 
-        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var propertiesOfClass = ((INamedTypeSymbol)_symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
@@ -100,28 +128,26 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
         var sourceCode = template.Render(new
         {
-            ClassName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
+            EntityName = _entityName,
+            EntityNamespace = _usingEntityNamespace,
+            PutIntoNamespace = _putIntoNamespace,
             Properties = result,
         });
 
-        context.AddSource(
-            $"{symbol.Name}Dto.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
+        _context.AddSource($"{_dtoName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 
-    private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
+    private void GenerateHandler(string templatePath)
     {
-        var template = ReadTemplate(Configuration.GetByIdQueryGenerator.HandlerTemplatePath);
+        var template = ReadTemplate(templatePath);
 
-        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var propertiesOfClass = ((INamedTypeSymbol)_symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<string>();
         foreach (var propertySymbol in propertiesOfClass)
         {
             // skip adding to query property if it is not id of the entity
             var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{_symbol.Name}id"))
             {
                 continue;
             }
@@ -131,16 +157,14 @@ public class GetByIdQueryGenerator : CrudGenerator, ISourceGenerator
 
         var sourceCode = template.Render(new
         {
-            EntityName = symbol.Name,
-            Namespace = symbol.ContainingNamespace,
-            PreferredNamespace = symbol.ContainingAssembly.Name,
-            QueryName = $"Get{symbol.Name}Query",
-            DtoName = $"{symbol.Name}Dto",
+            EntityName = _entityName,
+            EntityNamespace = _usingEntityNamespace,
+            PutIntoNamespace = _putIntoNamespace,
+            QueryName = _queryName,
+            DtoName = $"{_symbol.Name}Dto",
             FindProperties = string.Join(", ", result)
         });
 
-        context.AddSource(
-            $"Get{symbol.Name}Handler.g.cs",
-            SourceText.From(sourceCode, Encoding.UTF8));
+        _context.AddSource($"{_handlerName}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
     }
 }

@@ -1,9 +1,9 @@
 using ITech.Cqrs.Cqrs.Queries;
 using ITech.Cqrs.Domain.Exceptions;
 using Mapster;
-using {{namespace}};
+using {{entity_namespace}};
 
-namespace {{preferred_namespace}}.Controllers;
+namespace {{put_into_namespace}}.Controllers;
 
 public partial class Get{{entity_name}}Handler : IQueryHandler<{{query_name}}, {{dto_name}}>
 {
