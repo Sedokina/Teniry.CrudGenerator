@@ -1,0 +1,9 @@
+using ITech.Cqrs.Queryables.Page;
+using {{namespace}};
+
+namespace {{preferred_namespace}}.Controllers;
+
+public partial class {{class_name}}ListDto : PagedResult<{{items_type}}>
+{
+    public {{class_name}}ListDto(List<{{items_type}}> items, PageInfo page) : base(items, page) { }
+}

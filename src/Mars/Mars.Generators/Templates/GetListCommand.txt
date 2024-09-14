@@ -1,0 +1,8 @@
+using {{namespace}};
+
+namespace {{preferred_namespace}}.Controllers;
+
+public partial class Get{{class_name}}ListCommand
+{
+    {{properties}}
+}
