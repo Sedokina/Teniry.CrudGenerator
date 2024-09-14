@@ -1,10 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Mars.Generators;
 using Microsoft.EntityFrameworkCore;
 
 namespace Mars.Api;
 
-[GenerateService]
 public class Todo : IIdentifiable
 {
     [Key] // key is required for mongo

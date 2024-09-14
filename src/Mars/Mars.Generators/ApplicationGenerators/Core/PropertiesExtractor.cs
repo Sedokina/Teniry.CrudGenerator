@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Mars.Generators.Extensions;
+using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Core;

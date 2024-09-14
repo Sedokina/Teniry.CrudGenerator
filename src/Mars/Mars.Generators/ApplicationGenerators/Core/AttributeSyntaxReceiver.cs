@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Mars.Generators;
+namespace Mars.Generators.ApplicationGenerators.Core;
 
 public class AttributeSyntaxReceiver<TAttribute> : ISyntaxReceiver
     where TAttribute : Attribute

@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace Mars.Generators.Extensions;
+namespace Mars.Generators.ApplicationGenerators.Core.Extensions;
 
 public static class TypeExtensions
 {
@@ -8,7 +8,6 @@ public static class TypeExtensions
     ///     Returns true if type is primitive, nullable primitive or has type converter from and to primitive type
     /// </summary>
     /// <param name="type">Type to check</param>
-    /// <param name="compilation"></param>
     /// <returns>
     ///     This returns true for:<br />
     ///     - All primitive types<br />
