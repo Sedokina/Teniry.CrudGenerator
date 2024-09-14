@@ -38,7 +38,9 @@ public sealed class ApplicationGeneratorsConfiguration
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
             CommandTemplatePath = $"{TemplatesBasePath}.UpdateCommand.txt",
-            HandlerTemplatePath = $"{TemplatesBasePath}.UpdateHandler.txt"
+            HandlerTemplatePath = $"{TemplatesBasePath}.UpdateHandler.txt",
+            CommandNameFormat = "Update{0}Command",
+            HandlerNameFormat = "Update{0}Handler"
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
