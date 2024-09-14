@@ -91,11 +91,10 @@ public class CreateCommandGenerator : ISourceGenerator
 
         var sourceCode = template.Render(new
         {
-            ClassName = symbol.Name,
+            EntityName = symbol.Name,
             Namespace = symbol.ContainingNamespace,
             PreferredNamespace = symbol.ContainingAssembly.Name,
             CommandName = $"Create{symbol.Name}Command",
-            EntityName = symbol.Name
         });
 
         context.AddSource(

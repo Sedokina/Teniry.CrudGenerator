@@ -4,17 +4,18 @@ using {{namespace}};
 
 namespace {{preferred_namespace}}.Controllers;
 
-public partial class Create{{entity_name}}Handler : ICommandHandler<{{command_name}}>
+public partial class Delete{{entity_name}}Handler : ICommandHandler<{{command_name}}>
 {
     private readonly MarsDb _db;
 
-    public Create{{entity_name}}Handler(MarsDb db) {
+    public Delete{{entity_name}}Handler(MarsDb db) {
         _db = db;
     }
 
     public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {
-        var entity = command.Adapt<{{entity_name}}>();
-        await _db.AddAsync(entity, cancellation);
+        var entity = _db.Set<{{entity_name}}>().FindAsync([{{find_properties}}], cancellation);
+        if (entity == null) return;
+        _db.Remove(entity);
         await _db.SaveChangesAsync(cancellation);
     }
 }

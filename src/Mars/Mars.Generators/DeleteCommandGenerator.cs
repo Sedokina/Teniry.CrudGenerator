@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Mars.Generators.Extensions;
 using Microsoft.CodeAnalysis;
@@ -33,10 +34,10 @@ public class DeleteCommandGenerator : ISourceGenerator
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
             GenerateCommand(context, symbol);
-            // GenerateHandler(context, symbol);
+            GenerateHandler(context, symbol);
         }
     }
-    
+
     private void GenerateCommand(GeneratorExecutionContext context, ISymbol symbol)
     {
         var template = Template
@@ -73,6 +74,39 @@ public class DeleteCommandGenerator : ISourceGenerator
 
         context.AddSource(
             $"Delete{symbol.Name}Command.g.cs",
+            SourceText.From(sourceCode, Encoding.UTF8));
+    }
+
+    private void GenerateHandler(GeneratorExecutionContext context, ISymbol symbol)
+    {
+        var template = Template
+            .Parse(EmbeddedResourceExtensions.GetEmbeddedResource(HandlerResourcePath, GetType().Assembly));
+
+        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var result = new List<string>();
+        foreach (var propertySymbol in propertiesOfClass)
+        {
+            // skip adding to command property if it is not id of the entity
+            var propertyNameLower = propertySymbol.Name.ToLower();
+            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id"))
+            {
+                continue;
+            }
+
+            result.Add($"command.{propertySymbol.Name}");
+        }
+
+        var sourceCode = template.Render(new
+        {
+            EntityName = symbol.Name,
+            Namespace = symbol.ContainingNamespace,
+            PreferredNamespace = symbol.ContainingAssembly.Name,
+            CommandName = $"Delete{symbol.Name}Command",
+            FindProperties = string.Join(", ", result)
+        });
+
+        context.AddSource(
+            $"Delete{symbol.Name}Handler.g.cs",
             SourceText.From(sourceCode, Encoding.UTF8));
     }
 }
