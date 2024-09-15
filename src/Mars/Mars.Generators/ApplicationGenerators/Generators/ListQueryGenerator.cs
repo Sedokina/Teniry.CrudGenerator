@@ -9,6 +9,7 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
     private readonly string _handlerName;
     private readonly string _listItemDtoName;
     private readonly string _queryName;
+    private readonly string _endpointClassName;
 
     public ListQueryGenerator(
         GeneratorExecutionContext context,
@@ -19,6 +20,7 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _endpointClassName = $"Get{EntityName}ListEndpoint";
     }
 
     public void RunGenerator()
@@ -27,6 +29,7 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
         GenerateListItemDto(Configuration.DtoListItemTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt");
     }
 
     private void GenerateQuery(string templatePath)
@@ -56,7 +59,6 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
     {
         var model = new
         {
-            PutIntoNamespace = PutIntoNamespace,
             DtoName = _dtoName,
             ListItemDtoName = _listItemDtoName
         };
@@ -75,5 +77,19 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
         };
 
         WriteFile(templatePath, model, _handlerName);
+    }
+    
+    private void GenerateEndpoint(string templatePath)
+    {
+        var model = new
+        {
+            QueryNamespace = PutIntoNamespace,
+            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            EndpointClassName = _endpointClassName,
+            QueryName = _queryName,
+            DtoName = _dtoName
+        };
+
+        WriteFile(templatePath, model, _endpointClassName);
     }
 }
