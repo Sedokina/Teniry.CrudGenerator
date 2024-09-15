@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class DeleteCommandGenerator : BaseGenerator
+public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -11,17 +11,16 @@ public class DeleteCommandGenerator : BaseGenerator
     public DeleteCommandGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CrudGeneratorConfiguration configuration) 
-        : base(context, symbol, configuration, configuration.DeleteCommandCommandGenerator.FunctionNameConfiguration)
+        BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _commandName = Configuration.DeleteCommandCommandGenerator.CommandNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.DeleteCommandCommandGenerator.HandlerNameConfiguration.GetName(_entityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(_entityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
     }
 
     public void RunGenerator()
     {
-        GenerateCommand(Configuration.DeleteCommandCommandGenerator.CommandTemplatePath);
-        GenerateHandler(Configuration.DeleteCommandCommandGenerator.HandlerTemplatePath);
+        GenerateCommand(Configuration.CommandTemplatePath);
+        GenerateHandler(Configuration.HandlerTemplatePath);
     }
 
     private void GenerateCommand(string templatePath)

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class GetByIdQueryGenerator : BaseGenerator
+public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -12,19 +12,18 @@ public class GetByIdQueryGenerator : BaseGenerator
     public GetByIdQueryGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CrudGeneratorConfiguration configuration)
-        : base(context, symbol, configuration, configuration.GetByIdQueryGenerator.FunctionNameConfiguration)
+        BaseQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _queryName = Configuration.GetByIdQueryGenerator.QueryNameConfiguration.GetName(_entityName);
-        _dtoName = Configuration.GetByIdQueryGenerator.DtoNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.GetByIdQueryGenerator.HandlerNameConfiguration.GetName(_entityName);
+        _queryName = Configuration.QueryNameConfiguration.GetName(_entityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(_entityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
     }
 
     public void RunGenerator()
     {
-        GenerateQuery(Configuration.GetByIdQueryGenerator.QueryTemplatePath);
-        GenerateDto(Configuration.GetByIdQueryGenerator.DtoTemplatePath);
-        GenerateHandler(Configuration.GetByIdQueryGenerator.HandlerTemplatePath);
+        GenerateQuery(Configuration.QueryTemplatePath);
+        GenerateDto(Configuration.DtoTemplatePath);
+        GenerateHandler(Configuration.HandlerTemplatePath);
     }
 
     private void GenerateQuery(string templatePath)

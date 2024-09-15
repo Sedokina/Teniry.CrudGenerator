@@ -18,7 +18,6 @@ public sealed class CrudGeneratorConfiguration
     public BaseQueryGeneratorConfiguration GetByIdQueryGenerator { get; set; }
     public ListQueryGeneratorConfiguration GetListQueryGenerator { get; set; }
 
-    // TODO: типизировать
     private void InitDefault()
     {
         TemplatesBasePath = "Mars.Generators.Templates.Crud";
@@ -26,6 +25,7 @@ public sealed class CrudGeneratorConfiguration
         FeatureNameConfiguration = new("{{entity_name}}Feature");
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FullConfiguration = this,
             FunctionNameConfiguration = new("Create{{entity_name}}"),
             CommandTemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
@@ -34,6 +34,7 @@ public sealed class CrudGeneratorConfiguration
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FullConfiguration = this,
             FunctionNameConfiguration = new("Delete{{entity_name}}"),
             CommandTemplatePath = $"{TemplatesBasePath}.Delete.DeleteCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Delete.DeleteHandler.txt",
@@ -42,6 +43,7 @@ public sealed class CrudGeneratorConfiguration
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
+            FullConfiguration = this,
             FunctionNameConfiguration = new("Update{{entity_name}}"),
             CommandTemplatePath = $"{TemplatesBasePath}.Update.UpdateCommand.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Update.UpdateHandler.txt",
@@ -50,6 +52,7 @@ public sealed class CrudGeneratorConfiguration
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
+            FullConfiguration = this,
             FunctionNameConfiguration = new("Get{{entity_name}}"),
             QueryTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdDto.txt",
@@ -60,6 +63,7 @@ public sealed class CrudGeneratorConfiguration
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
+            FullConfiguration = this,
             FunctionNameConfiguration = new("GetList{{entity_name}}"),
             QueryTemplatePath = $"{TemplatesBasePath}.GetList.GetListQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetList.GetListDto.txt",
@@ -110,8 +114,15 @@ public class NameConfiguration(string name)
     }
 }
 
-public class BaseCommandGeneratorConfiguration
+public interface IQueryCommandGeneratorConfiguration
 {
+    public CrudGeneratorConfiguration FullConfiguration { get; set; }
+    public NameConfiguration FunctionNameConfiguration { get; set; }
+}
+
+public class BaseCommandGeneratorConfiguration : IQueryCommandGeneratorConfiguration
+{
+    public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
     public string CommandTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
@@ -119,8 +130,9 @@ public class BaseCommandGeneratorConfiguration
     public NameConfiguration HandlerNameConfiguration { get; set; }
 }
 
-public class BaseQueryGeneratorConfiguration
+public class BaseQueryGeneratorConfiguration : IQueryCommandGeneratorConfiguration
 {
+    public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
     public string QueryTemplatePath { get; set; }
     public string DtoTemplatePath { get; set; }
@@ -130,8 +142,9 @@ public class BaseQueryGeneratorConfiguration
     public NameConfiguration HandlerNameConfiguration { get; set; }
 }
 
-public class ListQueryGeneratorConfiguration
+public class ListQueryGeneratorConfiguration : IQueryCommandGeneratorConfiguration
 {
+    public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
     public string QueryTemplatePath { get; set; }
     public string DtoTemplatePath { get; set; }

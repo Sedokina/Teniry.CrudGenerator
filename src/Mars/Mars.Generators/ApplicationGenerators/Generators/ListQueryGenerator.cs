@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class ListQueryGenerator : BaseGenerator
+public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -13,21 +13,20 @@ public class ListQueryGenerator : BaseGenerator
     public ListQueryGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CrudGeneratorConfiguration configuration)
-        : base(context, symbol, configuration, configuration.GetListQueryGenerator.FunctionNameConfiguration)
+        ListQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _queryName = Configuration.GetListQueryGenerator.QueryNameConfiguration.GetName(_entityName);
-        _dtoName = Configuration.GetListQueryGenerator.DtoNameConfiguration.GetName(_entityName);
-        _listItemDtoName = Configuration.GetListQueryGenerator.ListItemDtoNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.GetListQueryGenerator.HandlerNameConfiguration.GetName(_entityName);
+        _queryName = Configuration.QueryNameConfiguration.GetName(_entityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(_entityName);
+        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(_entityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
     }
 
     public void RunGenerator()
     {
-        GenerateQuery(Configuration.GetListQueryGenerator.QueryTemplatePath);
-        GenerateListItemDto(Configuration.GetListQueryGenerator.DtoListItemTemplatePath);
-        GenerateDto(Configuration.GetListQueryGenerator.DtoTemplatePath);
-        GenerateHandler(Configuration.GetListQueryGenerator.HandlerTemplatePath);
+        GenerateQuery(Configuration.QueryTemplatePath);
+        GenerateListItemDto(Configuration.DtoListItemTemplatePath);
+        GenerateDto(Configuration.DtoTemplatePath);
+        GenerateHandler(Configuration.HandlerTemplatePath);
     }
 
     private void GenerateQuery(string templatePath)

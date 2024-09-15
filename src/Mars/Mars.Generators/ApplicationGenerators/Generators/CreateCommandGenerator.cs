@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class CreateCommandGenerator : BaseGenerator
+public class CreateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -11,17 +11,16 @@ public class CreateCommandGenerator : BaseGenerator
     public CreateCommandGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CrudGeneratorConfiguration configuration) 
-        : base(context, symbol, configuration, configuration.CreateCommandCommandGenerator.FunctionNameConfiguration)
+        BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _commandName = Configuration.CreateCommandCommandGenerator.CommandNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.CreateCommandCommandGenerator.HandlerNameConfiguration.GetName(_entityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(_entityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
     }
 
     public void RunGenerator()
     {
-        GenerateCommand(Configuration.CreateCommandCommandGenerator.CommandTemplatePath);
-        GenerateHandler(Configuration.CreateCommandCommandGenerator.HandlerTemplatePath);
+        GenerateCommand(Configuration.CommandTemplatePath);
+        GenerateHandler(Configuration.HandlerTemplatePath);
     }
 
     private void GenerateCommand(string templatePath)

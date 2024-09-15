@@ -26,19 +26,34 @@ public class CrudGenerator : ISourceGenerator
 
             var configuration = new CrudGeneratorConfiguration();
 
-            var generateCreateCommand = new CreateCommandGenerator(context, symbol, configuration);
+            var generateCreateCommand = new CreateCommandGenerator(
+                context,
+                symbol,
+                configuration.CreateCommandCommandGenerator);
             generateCreateCommand.RunGenerator();
 
-            var generateDeleteCommand = new DeleteCommandGenerator(context, symbol, configuration);
+            var generateDeleteCommand = new DeleteCommandGenerator(
+                context,
+                symbol,
+                configuration.DeleteCommandCommandGenerator);
             generateDeleteCommand.RunGenerator();
 
-            var generateGetByIdQuery = new GetByIdQueryGenerator(context, symbol, configuration);
+            var generateGetByIdQuery = new GetByIdQueryGenerator(
+                context,
+                symbol,
+                configuration.GetByIdQueryGenerator);
             generateGetByIdQuery.RunGenerator();
 
-            var generateListQuery = new ListQueryGenerator(context, symbol, configuration);
+            var generateListQuery = new ListQueryGenerator(
+                context,
+                symbol,
+                configuration.GetListQueryGenerator);
             generateListQuery.RunGenerator();
 
-            var generateUpdateCommand = new UpdateCommandGenerator(context, symbol, configuration);
+            var generateUpdateCommand = new UpdateCommandGenerator(
+                context,
+                symbol,
+                configuration.UpdateCommandCommandGenerator);
             generateUpdateCommand.RunGenerator();
         }
     }

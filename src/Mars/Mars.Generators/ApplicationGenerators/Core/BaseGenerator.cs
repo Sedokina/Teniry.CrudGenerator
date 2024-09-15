@@ -9,9 +9,9 @@ using Scriban.Runtime;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
-public abstract class BaseGenerator
+public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQueryCommandGeneratorConfiguration
 {
-    protected readonly CrudGeneratorConfiguration Configuration;
+    protected readonly TConfiguration Configuration;
     protected readonly GeneratorExecutionContext Context;
     protected readonly ISymbol Symbol;
     protected readonly string _entityName;
@@ -22,19 +22,18 @@ public abstract class BaseGenerator
     protected BaseGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CrudGeneratorConfiguration configuration,
-        NameConfiguration functionNameConfiguration)
+        TConfiguration configuration)
     {
         Configuration = configuration;
         Context = context;
         Symbol = symbol;
         _entityName = Symbol.Name;
         _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Configuration.PutIntoNamespaceBasePath.GetNamespacePath(
+        _putIntoNamespace = Configuration.FullConfiguration.PutIntoNamespaceBasePath.GetNamespacePath(
             _entityName,
             Symbol.ContainingAssembly.Name,
-            Configuration.FeatureNameConfiguration,
-            functionNameConfiguration);
+            Configuration.FullConfiguration.FeatureNameConfiguration,
+            configuration.FunctionNameConfiguration);
     }
 
     protected void WriteFile(string templatePath, object model, string className)
