@@ -8,6 +8,7 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
     private readonly string _dtoName;
     private readonly string _handlerName;
     private readonly string _queryName;
+    private readonly string _endpointClassName;
 
     public GetByIdQueryGenerator(
         GeneratorExecutionContext context,
@@ -17,6 +18,7 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _endpointClassName = $"Get{EntityName}Endpoint";
     }
 
     public void RunGenerator()
@@ -24,6 +26,7 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
         GenerateQuery(Configuration.QueryTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetById.GetByIdEndpoint.txt");
     }
 
     private void GenerateQuery(string templatePath)
@@ -62,5 +65,19 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
         };
 
         WriteFile(templatePath, model, _handlerName);
+    }
+    
+    private void GenerateEndpoint(string templatePath)
+    {
+        var model = new
+        {
+            QueryNamespace = PutIntoNamespace,
+            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            EndpointClassName = _endpointClassName,
+            QueryName = _queryName,
+            DtoName = _dtoName
+        };
+
+        WriteFile(templatePath, model, _endpointClassName);
     }
 }

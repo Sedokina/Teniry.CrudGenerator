@@ -1,0 +1,17 @@
+using ITech.Cqrs.Cqrs.Queries;
+using {{query_namespace}};
+
+namespace {{put_into_namespace}};
+
+public static partial class {{endpoint_class_name}}
+{
+    public static async Task<IResult> GetAsync(
+        {{query_name}} query,
+        IQueryDispatcher queryDispatcher,
+        CancellationToken cancellation)
+    {
+        var result = await queryDispatcher.DispatchAsync<{{query_name}}, {{dto_name}}>(query, cancellation);
+        
+        return TypedResults.Ok(result);
+    }
+}
