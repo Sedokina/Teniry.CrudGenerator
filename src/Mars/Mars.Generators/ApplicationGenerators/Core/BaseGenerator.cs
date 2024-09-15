@@ -23,7 +23,7 @@ public abstract class BaseGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         CrudGeneratorConfiguration configuration,
-        NameConfiguration functionNameFormat)
+        NameConfiguration functionNameConfiguration)
     {
         Configuration = configuration;
         Context = context;
@@ -34,7 +34,7 @@ public abstract class BaseGenerator
             _entityName,
             Symbol.ContainingAssembly.Name,
             Configuration.FeatureNameConfiguration,
-            functionNameFormat);
+            functionNameConfiguration);
     }
 
     protected void WriteFile(string templatePath, object model, string className)

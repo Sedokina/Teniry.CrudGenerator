@@ -12,10 +12,10 @@ public class UpdateCommandGenerator : BaseGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         CrudGeneratorConfiguration configuration)
-        : base(context, symbol, configuration, configuration.UpdateCommandCommandGenerator.FunctionName)
+        : base(context, symbol, configuration, configuration.UpdateCommandCommandGenerator.FunctionNameConfiguration)
     {
-        _commandName = Configuration.UpdateCommandCommandGenerator.CommandNameFormat.GetName(_entityName);
-        _handlerName = Configuration.UpdateCommandCommandGenerator.HandlerNameFormat.GetName(_entityName);
+        _commandName = Configuration.UpdateCommandCommandGenerator.CommandNameConfiguration.GetName(_entityName);
+        _handlerName = Configuration.UpdateCommandCommandGenerator.HandlerNameConfiguration.GetName(_entityName);
     }
 
     public void RunGenerator()
