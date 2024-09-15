@@ -1,0 +1,17 @@
+using ITech.Cqrs.Cqrs.Commands;
+using {{command_namespace}};
+
+namespace {{put_into_namespace}};
+
+public static partial class {{endpoints_class_name}}
+{
+    public static async Task<IResult> CreateAsync(
+        {{command_name}} command,
+        ICommandDispatcher commandDispatcher,
+        CancellationToken cancellation)
+    {
+        await commandDispatcher.DispatchAsync(command, cancellation);
+        
+        return TypedResults.Created();
+    }
+}
