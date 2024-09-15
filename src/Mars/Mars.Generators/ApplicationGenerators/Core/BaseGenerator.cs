@@ -40,9 +40,6 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
     {
         var template = ReadTemplate(templatePath);
 
-        var customProps = new ScriptObject();
-        customProps.Import(model);
-
         var baseProps = new ScriptObject();
         baseProps.Import(new
         {
@@ -50,10 +47,13 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
             EntityNamespace = UsingEntityNamespace,
             PutIntoNamespace = PutIntoNamespace
         });
+        
+        var customProps = new ScriptObject();
+        customProps.Import(model);
 
         var context = new TemplateContext();
-        context.PushGlobal(customProps);
         context.PushGlobal(baseProps);
+        context.PushGlobal(customProps);
         var sourceCode = template.Render(context);
 
         Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
