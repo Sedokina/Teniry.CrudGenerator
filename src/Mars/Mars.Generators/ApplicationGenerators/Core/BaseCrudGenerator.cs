@@ -9,23 +9,55 @@ using Scriban.Runtime;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
-public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQueryCommandGeneratorConfiguration
+public abstract class BaseGenerator
+{
+    protected readonly GeneratorExecutionContext Context;
+
+    protected BaseGenerator(GeneratorExecutionContext context)
+    {
+        Context = context;
+    }
+
+    public abstract void RunGenerator();
+    
+    protected virtual void WriteFile(string templatePath, object model, string className)
+    {
+        var template = ReadTemplate(templatePath);
+
+        var sourceCode = template.Render(model);
+
+        Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+    }
+
+    internal Template ReadTemplate(string templatePath)
+    {
+        return Template.Parse(GetEmbeddedResource(templatePath, GetType().Assembly));
+    }
+
+    private static string GetEmbeddedResource(string path, Assembly assembly)
+    {
+        using var stream = assembly.GetManifestResourceStream(path);
+        using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
+        return streamReader.ReadToEnd();
+    }
+}
+
+public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
+    where TConfiguration : IQueryCommandGeneratorConfiguration
 {
     protected readonly TConfiguration Configuration;
-    protected readonly GeneratorExecutionContext Context;
     protected readonly ISymbol Symbol;
     protected readonly string EntityName;
     protected readonly string PutIntoNamespace;
     protected readonly string UsingEntityNamespace;
-    public string EndpointMapCall { get; set; }
+    public (string, string) EndpointMapCall { get; set; }
 
-    protected BaseGenerator(
+    protected BaseCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        TConfiguration configuration)
+        TConfiguration configuration) : base(context)
     {
         Configuration = configuration;
-        Context = context;
         Symbol = symbol;
         EntityName = Symbol.Name;
         UsingEntityNamespace = Symbol.ContainingNamespace.ToString();
@@ -35,8 +67,8 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
             Configuration.FullConfiguration.FeatureNameConfiguration,
             configuration.FunctionNameConfiguration);
     }
-
-    protected void WriteFile(string templatePath, object model, string className)
+    
+    protected override void WriteFile(string templatePath, object model, string className)
     {
         var template = ReadTemplate(templatePath);
 
@@ -57,17 +89,5 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
         var sourceCode = template.Render(context);
 
         Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
-    }
-
-    private Template ReadTemplate(string templatePath)
-    {
-        return Template.Parse(GetEmbeddedResource(templatePath, GetType().Assembly));
-    }
-
-    private static string GetEmbeddedResource(string path, Assembly assembly)
-    {
-        using var stream = assembly.GetManifestResourceStream(path);
-        using var streamReader = new StreamReader(stream ?? throw new InvalidOperationException());
-        return streamReader.ReadToEnd();
     }
 }

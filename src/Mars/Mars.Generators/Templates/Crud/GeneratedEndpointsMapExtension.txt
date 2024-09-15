@@ -1,0 +1,10 @@
+{{usings}}
+
+namespace {{put_into_namespace}};
+
+public static class {{extension_class_name}}
+{
+    public static void MapGeneratedEndpoints(this WebApplication app) {
+        {{maps}}
+    }
+}

@@ -3,13 +3,13 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class CreateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfiguration>
+public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
 
-    public CreateCommandGenerator(
+    public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
@@ -19,7 +19,7 @@ public class CreateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         _endpointClassName = $"Create{EntityName}Endpoint";
     }
 
-    public void RunGenerator()
+    public override void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
@@ -51,15 +51,17 @@ public class CreateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
 
     private void GenerateEndpoint(string templatePath)
     {
+        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
             CommandNamespace = PutIntoNamespace,
-            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             CommandName = _commandName,
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = $".MapPost(\"/{EntityName.ToLower()}/create\", {_endpointClassName}.CreateAsync)";
+        EndpointMapCall = (endpointNamespace,
+            $".MapPost(\"/{EntityName.ToLower()}/create\", {_endpointClassName}.CreateAsync)");
     }
 }

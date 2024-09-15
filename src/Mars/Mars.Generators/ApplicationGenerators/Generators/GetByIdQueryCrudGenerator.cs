@@ -3,64 +3,51 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
+public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
-    private readonly string _listItemDtoName;
     private readonly string _queryName;
     private readonly string _endpointClassName;
 
-    public ListQueryGenerator(
+    public GetByIdQueryCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        ListQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        BaseQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
-        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = $"Get{EntityName}ListEndpoint";
+        _endpointClassName = $"Get{EntityName}Endpoint";
     }
 
-    public void RunGenerator()
+    public override void RunGenerator()
     {
         GenerateQuery(Configuration.QueryTemplatePath);
-        GenerateListItemDto(Configuration.DtoListItemTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt");
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetById.GetByIdEndpoint.txt");
     }
 
     private void GenerateQuery(string templatePath)
     {
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntityAsProperties(Symbol);
         var model = new
         {
-            EntityNamespace = UsingEntityNamespace,
             QueryName = _queryName,
-            PutIntoNamespace = PutIntoNamespace
-        };
-        WriteFile(templatePath, model, _queryName);
-    }
-
-    private void GenerateListItemDto(string templatePath)
-    {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
-        var model = new
-        {
-            ListItemDtoName = _listItemDtoName,
             Properties = properties
         };
 
-        WriteFile(templatePath, model, _listItemDtoName);
+        WriteFile(templatePath, model, _queryName);
     }
 
     private void GenerateDto(string templatePath)
     {
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
         var model = new
         {
             DtoName = _dtoName,
-            ListItemDtoName = _listItemDtoName
+            Properties = properties
         };
 
         WriteFile(templatePath, model, _dtoName);
@@ -68,12 +55,13 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
 
     private void GenerateHandler(string templatePath)
     {
+        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "query");
         var model = new
         {
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
-            DtoListItemName = _listItemDtoName
+            FindProperties = string.Join(", ", properties)
         };
 
         WriteFile(templatePath, model, _handlerName);
@@ -81,16 +69,17 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
     
     private void GenerateEndpoint(string templatePath)
     {
+        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
             QueryNamespace = PutIntoNamespace,
-            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             QueryName = _queryName,
             DtoName = _dtoName
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = $".MapGet(\"/{EntityName.ToLower()}/list\", {_endpointClassName}.GetAsync)";
+        EndpointMapCall = (endpointNamespace, $".MapGet(\"/{EntityName.ToLower()}\", {_endpointClassName}.GetAsync)");
     }
 }

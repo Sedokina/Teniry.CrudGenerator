@@ -3,37 +3,38 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfiguration>
+public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
 
-    public DeleteCommandGenerator(
+    public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = $"Delete{EntityName}Endpoint";
+        _endpointClassName = $"Update{EntityName}Endpoint";
     }
 
-    public void RunGenerator()
+    public override void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt");
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt");
     }
 
     private void GenerateCommand(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntityAsProperties(Symbol);
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
         var model = new
         {
             CommandName = _commandName,
             Properties = properties
         };
+
         WriteFile(templatePath, model, _commandName);
     }
 
@@ -52,15 +53,16 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
     
     private void GenerateEndpoint(string templatePath)
     {
+        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
             CommandNamespace = PutIntoNamespace,
-            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             CommandName = _commandName,
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = $".MapDelete(\"/{EntityName.ToLower()}/delete\", {_endpointClassName}.DeleteAsync)";
+        EndpointMapCall = (endpointNamespace, $".MapPut(\"/{EntityName.ToLower()}/update\", {_endpointClassName}.UpdateAsync)");
     }
 }

@@ -17,8 +17,4 @@
     <ItemGroup>
         <EmbeddedResource Include="Templates\**\*.txt"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Templates\Crud\"/>
-    </ItemGroup>
 </Project>
