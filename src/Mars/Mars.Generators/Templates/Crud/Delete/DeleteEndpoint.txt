@@ -12,6 +12,6 @@ public static partial class {{endpoint_class_name}}
     {
         await commandDispatcher.DispatchAsync(command, cancellation);
         
-        return TypedResults.Created();
+        return TypedResults.NoContent();
     }
 }

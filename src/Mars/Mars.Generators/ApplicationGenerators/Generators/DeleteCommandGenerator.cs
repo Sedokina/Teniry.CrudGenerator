@@ -7,6 +7,7 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
 {
     private readonly string _commandName;
     private readonly string _handlerName;
+    private readonly string _endpointClassName;
 
     public DeleteCommandGenerator(
         GeneratorExecutionContext context,
@@ -15,12 +16,14 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _endpointClassName = $"Delete{EntityName}Endpoint";
     }
 
     public void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt");
     }
 
     private void GenerateCommand(string templatePath)
@@ -45,5 +48,18 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         };
 
         WriteFile(templatePath, model, _handlerName);
+    }
+    
+    private void GenerateEndpoint(string templatePath)
+    {
+        var model = new
+        {
+            CommandNamespace = PutIntoNamespace,
+            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            EndpointClassName = _endpointClassName,
+            CommandName = _commandName,
+        };
+
+        WriteFile(templatePath, model, _endpointClassName);
     }
 }
