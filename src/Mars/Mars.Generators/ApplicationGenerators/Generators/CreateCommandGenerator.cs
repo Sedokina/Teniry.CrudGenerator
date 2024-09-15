@@ -60,5 +60,6 @@ public class CreateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        EndpointMapCall = $".MapPost(\"/{EntityName.ToLower()}/create\", {_endpointClassName}.CreateAsync)";
     }
 }

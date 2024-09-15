@@ -79,5 +79,6 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        EndpointMapCall = $".MapGet(\"/{EntityName.ToLower()}\", {_endpointClassName}.GetAsync)";
     }
 }

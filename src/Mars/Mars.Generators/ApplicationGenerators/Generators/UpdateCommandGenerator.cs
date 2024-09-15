@@ -62,5 +62,6 @@ public class UpdateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        EndpointMapCall = $".MapPut(\"/{EntityName.ToLower()}/update\", {_endpointClassName}.UpdateAsync)";
     }
 }

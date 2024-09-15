@@ -61,5 +61,6 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        EndpointMapCall = $".MapDelete(\"/{EntityName.ToLower()}/delete\", {_endpointClassName}.DeleteAsync)";
     }
 }

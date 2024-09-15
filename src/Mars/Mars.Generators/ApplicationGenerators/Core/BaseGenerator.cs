@@ -17,7 +17,7 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
     protected readonly string EntityName;
     protected readonly string PutIntoNamespace;
     protected readonly string UsingEntityNamespace;
-
+    public string EndpointMapCall { get; set; }
 
     protected BaseGenerator(
         GeneratorExecutionContext context,
@@ -47,7 +47,7 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
             EntityNamespace = UsingEntityNamespace,
             PutIntoNamespace = PutIntoNamespace
         });
-        
+
         var customProps = new ScriptObject();
         customProps.Import(model);
 

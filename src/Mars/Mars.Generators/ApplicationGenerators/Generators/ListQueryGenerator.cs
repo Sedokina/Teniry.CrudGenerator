@@ -91,5 +91,6 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        EndpointMapCall = $".MapGet(\"/{EntityName.ToLower()}/list\", {_endpointClassName}.GetAsync)";
     }
 }
