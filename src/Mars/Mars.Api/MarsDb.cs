@@ -1,5 +1,5 @@
-using Mapster;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace Mars.Api;
 
@@ -10,6 +10,12 @@ public class MarsDb : DbContext
 
     public MarsDb(DbContextOptions<MarsDb> options, IServiceProvider services) : base(options)
     {
-        // var a = this.Currencies.ProjectToType<Todo>().ToListAsync()
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Currency>().ToCollection("currencies");
     }
 }

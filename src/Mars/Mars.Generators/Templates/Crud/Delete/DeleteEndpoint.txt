@@ -6,7 +6,7 @@ namespace {{put_into_namespace}};
 public static partial class {{endpoint_class_name}}
 {
     public static async Task<IResult> DeleteAsync(
-        {{command_name}} command,
+        [AsParameters] {{command_name}} command,
         ICommandDispatcher commandDispatcher,
         CancellationToken cancellation)
     {

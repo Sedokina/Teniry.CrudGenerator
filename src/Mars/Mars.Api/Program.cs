@@ -1,3 +1,5 @@
+using ITech.Cqrs.Cqrs;
+using ITech.Cqrs.Cqrs.ApplicationEvents;
 using Mars.Api;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +22,9 @@ builder.Services.Add(
         typeof(IRepository<>),
         typeof(MongoDbRepository<>),
         ServiceLifetime.Transient));
+
+builder.Services.AddCqrs();
+builder.Services.AddApplicationEvents();
 
 var app = builder.Build();
 
@@ -51,6 +56,8 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+app.MapGeneratedEndpoints();
 
 app.Run();
 

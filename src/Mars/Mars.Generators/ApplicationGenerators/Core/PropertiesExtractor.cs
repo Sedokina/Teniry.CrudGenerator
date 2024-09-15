@@ -27,8 +27,7 @@ public static class PropertiesExtractor
         foreach (var propertySymbol in propertiesOfClass)
         {
             // skip adding to command property if it is not id of the entity
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id")) continue;
+            if (!isEntityId(symbol.Name, propertySymbol.Name)) continue;
 
             result.Add($"{objectPrefix}{propertySymbol.Name}");
         }
@@ -43,8 +42,7 @@ public static class PropertiesExtractor
         foreach (var propertySymbol in propertiesOfClass)
         {
             // skip adding to query property if it is not id of the entity
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (!propertyNameLower.Equals("id") && !propertyNameLower.Equals($"{symbol.Name}id")) continue;
+            if (!isEntityId(symbol.Name, propertySymbol.Name)) continue;
 
             // For DateTimeOffset and other date variations remove system from the property type declaration
             var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
@@ -58,15 +56,19 @@ public static class PropertiesExtractor
         return result;
     }
 
+    private static bool isEntityId(string className, string propertyName)
+    {
+        var lower = propertyName.ToLower();
+        return lower.Equals("id") || lower.Equals($"{className}id") || lower.Equals("_id");
+    }
+
     public static string GetAllPropertiesOfEntity(ISymbol symbol, bool skipPrimaryKeys = false)
     {
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = "";
         foreach (var propertySymbol in propertiesOfClass)
         {
-            var propertyNameLower = propertySymbol.Name.ToLower();
-            if (skipPrimaryKeys &&
-                (propertyNameLower.Equals("id") || propertyNameLower.Equals($"{symbol.Name}id"))) continue;
+            if (skipPrimaryKeys && isEntityId(symbol.Name, propertySymbol.Name)) continue;
 
             // skip adding to command if not primitive type
             if (!propertySymbol.Type.IsSimple()) continue;
