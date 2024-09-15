@@ -7,6 +7,7 @@ public class UpdateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
 {
     private readonly string _commandName;
     private readonly string _handlerName;
+    private readonly string _endpointClassName;
 
     public UpdateCommandGenerator(
         GeneratorExecutionContext context,
@@ -15,12 +16,14 @@ public class UpdateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _endpointClassName = $"Update{EntityName}Endpoint";
     }
 
     public void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt");
     }
 
     private void GenerateCommand(string templatePath)
@@ -46,5 +49,18 @@ public class UpdateCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         };
 
         WriteFile(templatePath, model, _handlerName);
+    }
+    
+    private void GenerateEndpoint(string templatePath)
+    {
+        var model = new
+        {
+            CommandNamespace = PutIntoNamespace,
+            PutIntoNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints",
+            EndpointClassName = _endpointClassName,
+            CommandName = _commandName,
+        };
+
+        WriteFile(templatePath, model, _endpointClassName);
     }
 }

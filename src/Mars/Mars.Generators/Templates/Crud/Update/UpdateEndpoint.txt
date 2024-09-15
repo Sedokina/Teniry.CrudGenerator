@@ -5,7 +5,7 @@ namespace {{put_into_namespace}};
 
 public static partial class {{endpoint_class_name}}
 {
-    public static async Task<IResult> DeleteAsync(
+    public static async Task<IResult> UpdateAsync(
         {{command_name}} command,
         ICommandDispatcher commandDispatcher,
         CancellationToken cancellation)
