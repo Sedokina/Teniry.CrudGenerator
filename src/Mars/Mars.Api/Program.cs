@@ -2,6 +2,8 @@ using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
 using Mars.Api;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.EntityFrameworkCore.Storage.ValueConversion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,7 @@ builder.Services.Add(
         typeof(MongoDbRepository<>),
         ServiceLifetime.Transient));
 
+// This is required because generated code uses cqrs
 builder.Services.AddCqrs();
 builder.Services.AddApplicationEvents();
 
@@ -57,6 +60,7 @@ app.MapGet("/weatherforecast", () =>
     .WithName("GetWeatherForecast")
     .WithOpenApi();
 
+// This is required to get access to generated endpoints
 app.MapGeneratedEndpoints();
 
 app.Run();

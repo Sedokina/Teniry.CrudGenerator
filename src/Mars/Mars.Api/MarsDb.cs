@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace Mars.Api;
@@ -17,5 +18,6 @@ public class MarsDb : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Currency>().ToCollection("currencies");
+        modelBuilder.Entity<Currency>().Property(x => x._id).HasBsonRepresentation(BsonType.ObjectId);
     }
 }
