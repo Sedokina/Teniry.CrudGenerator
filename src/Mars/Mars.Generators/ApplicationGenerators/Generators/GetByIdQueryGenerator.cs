@@ -14,9 +14,9 @@ public class GetByIdQueryGenerator : BaseGenerator<BaseQueryGeneratorConfigurati
         ISymbol symbol,
         BaseQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(_entityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
+        _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
     }
 
     public void RunGenerator()

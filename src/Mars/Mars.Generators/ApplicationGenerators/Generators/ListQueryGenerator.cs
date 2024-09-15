@@ -15,10 +15,10 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
         ISymbol symbol,
         ListQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(_entityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(_entityName);
-        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
+        _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
+        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
     }
 
     public void RunGenerator()
@@ -33,9 +33,9 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
     {
         var model = new
         {
-            EntityNamespace = _usingEntityNamespace,
+            EntityNamespace = UsingEntityNamespace,
             QueryName = _queryName,
-            PutIntoNamespace = _putIntoNamespace
+            PutIntoNamespace = PutIntoNamespace
         };
         WriteFile(templatePath, model, _queryName);
     }
@@ -56,7 +56,7 @@ public class ListQueryGenerator : BaseGenerator<ListQueryGeneratorConfiguration>
     {
         var model = new
         {
-            PutIntoNamespace = _putIntoNamespace,
+            PutIntoNamespace = PutIntoNamespace,
             DtoName = _dtoName,
             ListItemDtoName = _listItemDtoName
         };

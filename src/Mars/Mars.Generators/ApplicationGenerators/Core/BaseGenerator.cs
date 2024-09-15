@@ -14,9 +14,9 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
     protected readonly TConfiguration Configuration;
     protected readonly GeneratorExecutionContext Context;
     protected readonly ISymbol Symbol;
-    protected readonly string _entityName;
-    protected readonly string _putIntoNamespace;
-    protected readonly string _usingEntityNamespace;
+    protected readonly string EntityName;
+    protected readonly string PutIntoNamespace;
+    protected readonly string UsingEntityNamespace;
 
 
     protected BaseGenerator(
@@ -27,10 +27,10 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
         Configuration = configuration;
         Context = context;
         Symbol = symbol;
-        _entityName = Symbol.Name;
-        _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        _putIntoNamespace = Configuration.FullConfiguration.PutIntoNamespaceBasePath.GetNamespacePath(
-            _entityName,
+        EntityName = Symbol.Name;
+        UsingEntityNamespace = Symbol.ContainingNamespace.ToString();
+        PutIntoNamespace = Configuration.FullConfiguration.PutIntoNamespaceBasePath.GetNamespacePath(
+            EntityName,
             Symbol.ContainingAssembly.Name,
             Configuration.FullConfiguration.FeatureNameConfiguration,
             configuration.FunctionNameConfiguration);
@@ -46,9 +46,9 @@ public abstract class BaseGenerator<TConfiguration> where TConfiguration : IQuer
         var baseProps = new ScriptObject();
         baseProps.Import(new
         {
-            EntityName = _entityName,
-            EntityNamespace = _usingEntityNamespace,
-            PutIntoNamespace = _putIntoNamespace
+            EntityName = EntityName,
+            EntityNamespace = UsingEntityNamespace,
+            PutIntoNamespace = PutIntoNamespace
         });
 
         var context = new TemplateContext();

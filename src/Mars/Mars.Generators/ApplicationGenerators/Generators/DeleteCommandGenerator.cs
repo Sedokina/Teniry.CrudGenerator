@@ -13,8 +13,8 @@ public class DeleteCommandGenerator : BaseGenerator<BaseCommandGeneratorConfigur
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(_entityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(_entityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
     }
 
     public void RunGenerator()
