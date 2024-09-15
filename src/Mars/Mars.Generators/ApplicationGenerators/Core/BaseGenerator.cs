@@ -23,21 +23,18 @@ public abstract class BaseGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         CrudGeneratorConfiguration configuration,
-        string functionName)
+        NameConfiguration functionNameFormat)
     {
         Configuration = configuration;
         Context = context;
         Symbol = symbol;
         _entityName = Symbol.Name;
         _usingEntityNamespace = Symbol.ContainingNamespace.ToString();
-
-        var putIntoNamespaceTemplate = Template.Parse(Configuration.PutIntoNamespaceBasePath);
-        _putIntoNamespace = putIntoNamespaceTemplate.Render(new
-        {
-            AssemblyName = Symbol.ContainingAssembly.Name,
-            FeatureName = $"{_entityName}Feature",
-            FunctionName = string.Format(functionName, _entityName)
-        });
+        _putIntoNamespace = Configuration.PutIntoNamespaceBasePath.GetNamespacePath(
+            _entityName,
+            Symbol.ContainingAssembly.Name,
+            Configuration.FeatureNameConfiguration,
+            functionNameFormat);
     }
 
     protected void WriteFile(string templatePath, object model, string className)

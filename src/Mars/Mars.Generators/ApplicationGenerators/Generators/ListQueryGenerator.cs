@@ -16,10 +16,10 @@ public class ListQueryGenerator : BaseGenerator
         CrudGeneratorConfiguration configuration)
         : base(context, symbol, configuration, configuration.GetListQueryGenerator.FunctionName)
     {
-        _queryName = Configuration.GetListQueryGenerator.GetQueryName(_entityName);
-        _dtoName = Configuration.GetListQueryGenerator.GetDtoName(_entityName);
-        _listItemDtoName = Configuration.GetListQueryGenerator.GetListItemDtoName(_entityName);
-        _handlerName = Configuration.GetListQueryGenerator.GetHandlerName(_entityName);
+        _queryName = Configuration.GetListQueryGenerator.QueryNameFormat.GetName(_entityName);
+        _dtoName = Configuration.GetListQueryGenerator.DtoNameFormat.GetName(_entityName);
+        _listItemDtoName = Configuration.GetListQueryGenerator.ListItemDtoNameFormat.GetName(_entityName);
+        _handlerName = Configuration.GetListQueryGenerator.HandlerNameFormat.GetName(_entityName);
     }
 
     public void RunGenerator()

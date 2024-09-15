@@ -14,8 +14,8 @@ public class DeleteCommandGenerator : BaseGenerator
         CrudGeneratorConfiguration configuration) 
         : base(context, symbol, configuration, configuration.DeleteCommandCommandGenerator.FunctionName)
     {
-        _commandName = Configuration.DeleteCommandCommandGenerator.GetCommandName(_entityName);
-        _handlerName = Configuration.DeleteCommandCommandGenerator.GetHandlerName(_entityName);
+        _commandName = Configuration.DeleteCommandCommandGenerator.CommandNameFormat.GetName(_entityName);
+        _handlerName = Configuration.DeleteCommandCommandGenerator.HandlerNameFormat.GetName(_entityName);
     }
 
     public void RunGenerator()

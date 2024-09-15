@@ -13,11 +13,11 @@ public class GetByIdQueryGenerator : BaseGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         CrudGeneratorConfiguration configuration)
-        : base(context, symbol, configuration, configuration.GetByIdQueryGenerator.FunctionName)
+        : base(context, symbol, configuration, configuration.GetByIdQueryGenerator.FunctionNameFormat)
     {
-        _queryName = Configuration.GetByIdQueryGenerator.GetQueryName(_entityName);
-        _dtoName = Configuration.GetByIdQueryGenerator.GetDtoName(_entityName);
-        _handlerName = Configuration.GetByIdQueryGenerator.GetHandlerName(_entityName);
+        _queryName = Configuration.GetByIdQueryGenerator.QueryNameFormat.GetName(_entityName);
+        _dtoName = Configuration.GetByIdQueryGenerator.DtoNameFormat.GetName(_entityName);
+        _handlerName = Configuration.GetByIdQueryGenerator.HandlerNameFormat.GetName(_entityName);
     }
 
     public void RunGenerator()

@@ -14,8 +14,8 @@ public class UpdateCommandGenerator : BaseGenerator
         CrudGeneratorConfiguration configuration)
         : base(context, symbol, configuration, configuration.UpdateCommandCommandGenerator.FunctionName)
     {
-        _commandName = Configuration.UpdateCommandCommandGenerator.GetCommandName(_entityName);
-        _handlerName = Configuration.UpdateCommandCommandGenerator.GetHandlerName(_entityName);
+        _commandName = Configuration.UpdateCommandCommandGenerator.CommandNameFormat.GetName(_entityName);
+        _handlerName = Configuration.UpdateCommandCommandGenerator.HandlerNameFormat.GetName(_entityName);
     }
 
     public void RunGenerator()
