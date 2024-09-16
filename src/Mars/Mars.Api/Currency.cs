@@ -1,4 +1,5 @@
 using Mars.Generators.ApplicationGenerators.Core;
+using MongoDB.Bson;
 
 namespace Mars.Api;
 
@@ -6,7 +7,7 @@ namespace Mars.Api;
 public class Currency
 {
     // string with [BsonRepresentation(BsonType.ObjectId)] or ObjectId 
-    public string _id { get; set; }
+    public ObjectId _id { get; set; }
 
     public string Name { get; set; } = "";
     public string Code { get; set; } = "";

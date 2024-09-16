@@ -2,8 +2,6 @@ using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
 using Mars.Api;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.EntityFrameworkCore.Storage.ValueConversion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +14,19 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<MarsDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
 
+
+// This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new MongoObjectIdJsonConverter());
+});
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // This is required for swagger shows ObjectId as string in endpoints
+    options.SchemaFilter<MongoObjectIdSwaggerParameterFilter>();
+});
 builder.Services.AddControllers(); // remove to remove controllers
 builder.Services.Add(
     new ServiceDescriptor(
