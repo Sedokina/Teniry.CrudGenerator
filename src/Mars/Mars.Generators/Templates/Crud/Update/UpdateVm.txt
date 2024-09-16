@@ -1,0 +1,6 @@
+namespace {{endpoint_namespace}};
+
+public partial class {{vm_name}}
+{
+    {{properties}}
+}

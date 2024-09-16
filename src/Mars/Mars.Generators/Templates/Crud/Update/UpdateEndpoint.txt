@@ -1,4 +1,5 @@
 using ITech.Cqrs.Cqrs.Commands;
+using Mapster;
 using {{business_logic_namespace}};
 
 namespace {{endpoint_namespace}};
@@ -7,10 +8,12 @@ public static partial class {{endpoint_class_name}}
 {
     public static async Task<IResult> UpdateAsync(
         {{route_params}},
+        {{vm_name}} vm,
         ICommandDispatcher commandDispatcher,
         CancellationToken cancellation)
     {
         var command = new {{command_name}}({{command_constructor_parameters}});
+        vm.Adapt(command);
         await commandDispatcher.DispatchAsync(command, cancellation);
         
         return TypedResults.NoContent();

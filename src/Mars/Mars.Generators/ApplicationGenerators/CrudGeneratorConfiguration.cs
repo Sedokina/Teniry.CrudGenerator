@@ -61,7 +61,7 @@ public sealed class CrudGeneratorConfiguration
             HandlerNameConfiguration = new("Update{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Update.UpdateEndpoint.txt",
             EndpointNameConfiguration = new("Update{{entity_name}}Endpoint"),
-            EndpointRouteConfiguration = new("/{{entity_name}}/update", "UpdateAsync")
+            EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {

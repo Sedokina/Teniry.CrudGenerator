@@ -7,6 +7,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 {
     private readonly string _commandName;
     private readonly string _handlerName;
+    private readonly string _vmName;
     private readonly string _endpointClassName;
 
     public UpdateCommandCrudGenerator(
@@ -16,6 +17,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _vmName = $"Update{EntityName}Vm";
         _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
 
@@ -23,6 +25,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateViewModel($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
         GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
 
@@ -55,6 +58,18 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
         WriteFile(templatePath, model, _handlerName);
     }
+    
+    private void GenerateViewModel(string templatePath)
+    {
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol, true);
+        var model = new
+        {
+            VmName = _vmName,
+            Properties = properties,
+        };
+
+        WriteFile(templatePath, model, _vmName);
+    }
 
     private void GenerateEndpoint(string templatePath)
     {
@@ -65,6 +80,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         {
             EndpointClassName = _endpointClassName,
             RouteParams = routeParams,
+            VmName = _vmName,
             CommandName = _commandName,
             CommandConstructorParameters = string.Join(", ", constructorParams)
         };
