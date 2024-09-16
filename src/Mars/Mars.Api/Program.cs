@@ -27,12 +27,6 @@ builder.Services.AddSwaggerGen(options =>
     // This is required for swagger shows ObjectId as string in endpoints
     options.SchemaFilter<MongoObjectIdSwaggerParameterFilter>();
 });
-builder.Services.AddControllers(); // remove to remove controllers
-builder.Services.Add(
-    new ServiceDescriptor(
-        typeof(IRepository<>),
-        typeof(MongoDbRepository<>),
-        ServiceLifetime.Transient));
 
 // This is required because generated code uses cqrs
 builder.Services.AddCqrs();
@@ -53,21 +47,12 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
-app.MapControllers(); // remove to remove controllers
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+app.MapGet("/weatherforecast", async (MarsDb db) =>
+{
+    return await db.Currencies
+        .Include(x => x.Country)
+        .ToListAsync();
+});
 
 // This is required to get access to generated endpoints
 app.MapGeneratedEndpoints();

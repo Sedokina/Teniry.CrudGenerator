@@ -6,8 +6,8 @@ namespace Mars.Api;
 
 public class MarsDb : DbContext
 {
-    public DbSet<Todo> Todos { get; set; }
     public DbSet<Currency> Currencies { get; set; }
+    public DbSet<Country> Countries { get; set; }
 
     public MarsDb(DbContextOptions<MarsDb> options, IServiceProvider services) : base(options)
     {
@@ -18,6 +18,9 @@ public class MarsDb : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Currency>().ToCollection("currencies");
-        modelBuilder.Entity<Currency>().Property(x => x._id).HasBsonRepresentation(BsonType.ObjectId);
+        modelBuilder.Entity<Country>().ToCollection("countries");
+        modelBuilder.Entity<Currency>().HasOne(x => x.Country)
+            .WithMany(x => x.Currencies)
+            .HasForeignKey(x => x.CountryId);
     }
 }

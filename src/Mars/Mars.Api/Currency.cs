@@ -15,4 +15,14 @@ public class Currency
     public int? MyNumber { get; set; }
     public DateTime Dt1 { get; set; }
     public DateTimeOffset Dt3 { get; set; }
+    public ObjectId? CountryId { get; set; }
+    public Country Country { get; set; }
+}
+
+[GenerateCrud]
+public class Country
+{
+    public ObjectId _id { get; set; }
+    public string Name { get; set; }
+    public ICollection<Currency> Currencies { get; set; }
 }
