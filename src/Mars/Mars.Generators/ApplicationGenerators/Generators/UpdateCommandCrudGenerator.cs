@@ -40,7 +40,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "command");
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("command");
         var model = new
         {
             CommandName = _commandName,
@@ -50,7 +50,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
         WriteFile(templatePath, model, _handlerName);
     }
-    
+
     private void GenerateEndpoint(string templatePath)
     {
         var model = new

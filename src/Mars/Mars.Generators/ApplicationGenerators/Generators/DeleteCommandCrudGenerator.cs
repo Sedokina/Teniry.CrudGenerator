@@ -1,4 +1,6 @@
+using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
+using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
@@ -28,18 +30,23 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateCommand(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntityAsProperties(Symbol);
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var properties = primaryKeys.ToClassPropertiesString();
+        var constructorParameters = primaryKeys.ToMethodParametersString();
+        var constructorBody = primaryKeys.ToConstructorBodyString();
         var model = new
         {
             CommandName = _commandName,
-            Properties = properties
+            Properties = properties,
+            ConstructorParameters = constructorParameters,
+            ConstructorBody = constructorBody
         };
         WriteFile(templatePath, model, _commandName);
     }
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "command");
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("command");
         var model = new
         {
             CommandName = _commandName,
@@ -49,16 +56,23 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
         WriteFile(templatePath, model, _handlerName);
     }
-    
+
     private void GenerateEndpoint(string templatePath)
     {
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var routeParams = primaryKeys.ToMethodParametersString();
+        var constructorParams = primaryKeys.ToPropertiesNamesList();
+
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            RouteParams = routeParams,
             CommandName = _commandName,
+            CommandConstructorParameters = string.Join(", ", constructorParams)
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Delete",

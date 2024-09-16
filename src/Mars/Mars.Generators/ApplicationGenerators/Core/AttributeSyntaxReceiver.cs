@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -19,16 +20,5 @@ public class AttributeSyntaxReceiver<TAttribute> : ISyntaxReceiver
                 .Any(al => al.Attributes
                     .Any(a => a.Name.ToString().EnsureEndsWith("Attribute").Equals(typeof(TAttribute).Name))))
             Classes.Add(classDeclarationSyntax);
-    }
-}
-
-public static class StringExtensions
-{
-    public static string EnsureEndsWith(
-        this string source,
-        string suffix)
-    {
-        if (source.EndsWith(suffix)) return source;
-        return source + suffix;
     }
 }

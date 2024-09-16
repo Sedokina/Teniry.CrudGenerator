@@ -3,4 +3,9 @@ namespace {{business_logic_namespace}};
 public partial class {{command_name}}
 {
     {{properties}}
+    
+    public {{command_name}}({{constructor_parameters}})
+    {
+        {{constructor_body}}
+    }
 }

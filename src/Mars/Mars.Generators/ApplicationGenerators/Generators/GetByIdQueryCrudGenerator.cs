@@ -31,7 +31,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateQuery(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntityAsProperties(Symbol);
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToClassPropertiesString();
         var model = new
         {
             QueryName = _queryName,
@@ -55,7 +55,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeyNamesOfEntity(Symbol, "query");
+        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("query");
         var model = new
         {
             QueryName = _queryName,
