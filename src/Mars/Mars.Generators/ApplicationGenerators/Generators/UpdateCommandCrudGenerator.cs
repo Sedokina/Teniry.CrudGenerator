@@ -16,14 +16,14 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = $"Update{EntityName}Endpoint";
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
 
     public override void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt");
+        GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
 
     private void GenerateCommand(string templatePath)

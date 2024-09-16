@@ -20,7 +20,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = $"Get{EntityName}ListEndpoint";
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
 
     public override void RunGenerator()
@@ -29,7 +29,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         GenerateListItemDto(Configuration.DtoListItemTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt");
+        GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
 
     private void GenerateQuery(string templatePath)

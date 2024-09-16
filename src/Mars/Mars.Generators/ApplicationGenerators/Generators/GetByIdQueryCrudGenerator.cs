@@ -18,7 +18,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = $"Get{EntityName}Endpoint";
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
 
     public override void RunGenerator()
@@ -26,7 +26,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         GenerateQuery(Configuration.QueryTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint($"{Configuration.FullConfiguration.TemplatesBasePath}.GetById.GetByIdEndpoint.txt");
+        GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
 
     private void GenerateQuery(string templatePath)
