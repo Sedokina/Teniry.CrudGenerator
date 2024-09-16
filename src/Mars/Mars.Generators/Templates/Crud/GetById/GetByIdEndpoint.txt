@@ -6,10 +6,11 @@ namespace {{endpoint_namespace}};
 public static partial class {{endpoint_class_name}}
 {
     public static async Task<IResult> GetAsync(
-        [AsParameters] {{query_name}} query,
+        {{route_params}},
         IQueryDispatcher queryDispatcher,
         CancellationToken cancellation)
     {
+        var query = new {{query_name}}({{query_constructor_parameters}});
         var result = await queryDispatcher.DispatchAsync<{{query_name}}, {{dto_name}}>(query, cancellation);
         
         return TypedResults.Ok(result);

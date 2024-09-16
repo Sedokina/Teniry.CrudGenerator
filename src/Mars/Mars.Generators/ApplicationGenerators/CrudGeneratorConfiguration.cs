@@ -74,8 +74,8 @@ public sealed class CrudGeneratorConfiguration
             DtoNameConfiguration = new("{{entity_name}}Dto"),
             HandlerNameConfiguration = new("Get{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
-            EndpointNameConfiguration = new("GetById{{entity_name}}Endpoint"),
-            EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
+            EndpointNameConfiguration = new("Get{{entity_name}}Endpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}", "GetAsync")
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
@@ -154,6 +154,11 @@ public class NameConfiguration(string name)
     }
 }
 
+/// <summary>
+/// Available string in name:
+///  - {{entity_name}}<br/>
+///  - {{id_param_name}}<br/>
+/// </summary>
 public class EndpointRouteConfiguration(string name, string functionName)
 {
     public string FunctionName { get; } = functionName;
