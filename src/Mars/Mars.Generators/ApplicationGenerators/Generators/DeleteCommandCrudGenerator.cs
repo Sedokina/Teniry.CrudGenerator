@@ -52,16 +52,13 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     
     private void GenerateEndpoint(string templatePath)
     {
-        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
-            CommandNamespace = PutIntoNamespace,
-            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             CommandName = _commandName,
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (endpointNamespace, $".MapDelete(\"/{EntityName.ToLower()}/delete\", {_endpointClassName}.DeleteAsync)");
+        EndpointMapCall = (EndpointNamespace, $".MapDelete(\"/{EntityName.ToLower()}/delete\", {_endpointClassName}.DeleteAsync)");
     }
 }

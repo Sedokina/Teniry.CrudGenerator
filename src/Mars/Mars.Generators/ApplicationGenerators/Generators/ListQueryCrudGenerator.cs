@@ -38,7 +38,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         {
             EntityNamespace = UsingEntityNamespace,
             QueryName = _queryName,
-            PutIntoNamespace = PutIntoNamespace
+            PutIntoNamespace = BusinessLogicNamespace
         };
         WriteFile(templatePath, model, _queryName);
     }
@@ -81,17 +81,14 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     
     private void GenerateEndpoint(string templatePath)
     {
-        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
-            QueryNamespace = PutIntoNamespace,
-            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             QueryName = _queryName,
             DtoName = _dtoName
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (endpointNamespace, $".MapGet(\"/{EntityName.ToLower()}/list\", {_endpointClassName}.GetAsync)");
+        EndpointMapCall = (EndpointNamespace, $".MapGet(\"/{EntityName.ToLower()}/list\", {_endpointClassName}.GetAsync)");
     }
 }

@@ -3,7 +3,7 @@ using ITech.Cqrs.Domain.Exceptions;
 using Mapster;
 using {{entity_namespace}};
 
-namespace {{put_into_namespace}};
+namespace {{business_logic_namespace}};
 
 public partial class {{handler_name}}: IQueryHandler<{{query_name}}, {{dto_name}}>
 {

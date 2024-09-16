@@ -1,4 +1,4 @@
-namespace {{put_into_namespace}};
+namespace {{business_logic_namespace}};
 
 public partial class {{list_item_dto_name}}
 {

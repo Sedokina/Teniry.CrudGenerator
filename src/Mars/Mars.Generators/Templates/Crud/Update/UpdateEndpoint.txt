@@ -1,7 +1,7 @@
 using ITech.Cqrs.Cqrs.Commands;
-using {{command_namespace}};
+using {{business_logic_namespace}};
 
-namespace {{put_into_namespace}};
+namespace {{endpoint_namespace}};
 
 public static partial class {{endpoint_class_name}}
 {

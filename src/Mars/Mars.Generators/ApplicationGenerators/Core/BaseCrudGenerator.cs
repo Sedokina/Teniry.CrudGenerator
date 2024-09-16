@@ -19,7 +19,7 @@ public abstract class BaseGenerator
     }
 
     public abstract void RunGenerator();
-    
+
     protected virtual void WriteFile(string templatePath, object model, string className)
     {
         var template = ReadTemplate(templatePath);
@@ -48,7 +48,8 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     protected readonly TConfiguration Configuration;
     protected readonly ISymbol Symbol;
     protected readonly string EntityName;
-    protected readonly string PutIntoNamespace;
+    protected readonly string BusinessLogicNamespace;
+    public string EndpointNamespace { get; set; }
     protected readonly string UsingEntityNamespace;
     public (string, string) EndpointMapCall { get; set; }
 
@@ -61,11 +62,14 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
         Symbol = symbol;
         EntityName = Symbol.Name;
         UsingEntityNamespace = Symbol.ContainingNamespace.ToString();
-        PutIntoNamespace = Configuration.FullConfiguration.PutIntoNamespaceBasePath.GetNamespacePath(
+        BusinessLogicNamespace = Configuration.FullConfiguration.BusinessLogicNamespaceBasePath.GetNamespacePath(
             EntityName,
             Symbol.ContainingAssembly.Name,
             Configuration.FullConfiguration.FeatureNameConfiguration,
             configuration.FunctionNameConfiguration);
+        EndpointNamespace = Configuration.FullConfiguration.EndpointsNamespaceBasePath.GetNamespacePath(
+            EntityName,
+            Symbol.ContainingAssembly.Name);
     }
     
     protected override void WriteFile(string templatePath, object model, string className)
@@ -77,7 +81,8 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
         {
             EntityName = EntityName,
             EntityNamespace = UsingEntityNamespace,
-            PutIntoNamespace = PutIntoNamespace
+            BusinessLogicNamespace = BusinessLogicNamespace,
+            EndpointNamespace = EndpointNamespace
         });
 
         var customProps = new ScriptObject();

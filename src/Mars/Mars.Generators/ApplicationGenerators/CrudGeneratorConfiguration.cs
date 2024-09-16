@@ -10,7 +10,8 @@ public sealed class CrudGeneratorConfiguration
     }
 
     public string TemplatesBasePath { get; set; }
-    public PutIntoNamespaceConfiguration PutIntoNamespaceBasePath { get; set; }
+    public PutBusinessLogicIntoNamespaceConfiguration BusinessLogicNamespaceBasePath { get; set; }
+    public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; }
     public NameConfiguration FeatureNameConfiguration { get; set; }
     public BaseCommandGeneratorConfiguration CreateCommandCommandGenerator { get; set; }
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; }
@@ -21,7 +22,8 @@ public sealed class CrudGeneratorConfiguration
     private void InitDefault()
     {
         TemplatesBasePath = "Mars.Generators.Templates.Crud";
-        PutIntoNamespaceBasePath = new("{{assembly_name}}.Application.{{feature_name}}.{{function_name}}");
+        BusinessLogicNamespaceBasePath = new("{{assembly_name}}.Application.{{feature_name}}.{{function_name}}");
+        EndpointsNamespaceBasePath = new("{{assembly_name}}.Endpoints.{{entity_name}}Endpoints");
         FeatureNameConfiguration = new("{{entity_name}}Feature");
         CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -83,7 +85,7 @@ public sealed class CrudGeneratorConfiguration
 ///  - {{feature_name}}<br/>
 ///  - {{function_name}}<br/>
 /// </summary>
-public class PutIntoNamespaceConfiguration(string namespacePath)
+public class PutBusinessLogicIntoNamespaceConfiguration(string namespacePath)
 {
     public string GetNamespacePath(
         string entityName,
@@ -97,6 +99,27 @@ public class PutIntoNamespaceConfiguration(string namespacePath)
             AssemblyName = assemblyName,
             FeatureName = featureName.GetName(entityName),
             FunctionName = functionNameConfiguration.GetName(entityName)
+        });
+    }
+}
+
+/// <summary>
+/// Available string keys in namespace path:<br/>
+///  - {{assembly_name}} <br/>
+///  - {{feature_name}}<br/>
+///  - {{function_name}}<br/>
+/// </summary>
+public class PutEndpointsIntoNamespaceConfiguration(string namespacePath)
+{
+    public string GetNamespacePath(
+        string entityName,
+        string assemblyName)
+    {
+        var putIntoNamespaceTemplate = Template.Parse(namespacePath);
+        return putIntoNamespaceTemplate.Render(new
+        {
+            AssemblyName = assemblyName,
+            EntityName = entityName
         });
     }
 }

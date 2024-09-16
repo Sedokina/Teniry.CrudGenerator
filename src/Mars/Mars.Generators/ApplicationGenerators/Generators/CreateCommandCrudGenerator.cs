@@ -51,17 +51,14 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateEndpoint(string templatePath)
     {
-        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
-            CommandNamespace = PutIntoNamespace,
-            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             CommandName = _commandName,
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (endpointNamespace,
+        EndpointMapCall = (EndpointNamespace,
             $".MapPost(\"/{EntityName.ToLower()}/create\", {_endpointClassName}.CreateAsync)");
     }
 }

@@ -69,17 +69,14 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
     
     private void GenerateEndpoint(string templatePath)
     {
-        var endpointNamespace = $"Mars.Api.Endpoints.{EntityName}Endpoints";
         var model = new
         {
-            QueryNamespace = PutIntoNamespace,
-            PutIntoNamespace = endpointNamespace,
             EndpointClassName = _endpointClassName,
             QueryName = _queryName,
             DtoName = _dtoName
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (endpointNamespace, $".MapGet(\"/{EntityName.ToLower()}\", {_endpointClassName}.GetAsync)");
+        EndpointMapCall = (EndpointNamespace, $".MapGet(\"/{EntityName.ToLower()}\", {_endpointClassName}.GetAsync)");
     }
 }

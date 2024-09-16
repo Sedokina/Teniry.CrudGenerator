@@ -1,6 +1,6 @@
 using ITech.Cqrs.Queryables.Page;
 
-namespace {{put_into_namespace}};
+namespace {{business_logic_namespace}};
 
 public partial class {{query_name}} : IPage
 {
