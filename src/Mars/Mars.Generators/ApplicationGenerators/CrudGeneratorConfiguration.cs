@@ -91,7 +91,7 @@ public sealed class CrudGeneratorConfiguration
             HandlerNameConfiguration = new("Get{{entity_name}}ListHandler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
             EndpointNameConfiguration = new("Get{{entity_name}}ListEndpoint"),
-            EndpointRouteConfiguration = new("/{{entity_name}}/list", "GetAsync")
+            EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
         };
     }
 }

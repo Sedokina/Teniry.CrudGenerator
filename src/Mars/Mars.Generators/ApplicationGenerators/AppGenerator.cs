@@ -29,20 +29,6 @@ public class AppGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            var generateCreateCommand = new CreateCommandCrudGenerator(
-                context,
-                symbol,
-                configuration.CreateCommandCommandGenerator);
-            generateCreateCommand.RunGenerator();
-            endpointsMaps.Add(generateCreateCommand.EndpointMap);
-
-            var generateDeleteCommand = new DeleteCommandCrudGenerator(
-                context,
-                symbol,
-                configuration.DeleteCommandCommandGenerator);
-            generateDeleteCommand.RunGenerator();
-            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
-
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
                 symbol,
@@ -57,12 +43,26 @@ public class AppGenerator : ISourceGenerator
             generateListQuery.RunGenerator();
             endpointsMaps.Add(generateListQuery.EndpointMap);
 
+            var generateCreateCommand = new CreateCommandCrudGenerator(
+                context,
+                symbol,
+                configuration.CreateCommandCommandGenerator);
+            generateCreateCommand.RunGenerator();
+            endpointsMaps.Add(generateCreateCommand.EndpointMap);
+
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
                 symbol,
                 configuration.UpdateCommandCommandGenerator);
             generateUpdateCommand.RunGenerator();
             endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+
+            var generateDeleteCommand = new DeleteCommandCrudGenerator(
+                context,
+                symbol,
+                configuration.DeleteCommandCommandGenerator);
+            generateDeleteCommand.RunGenerator();
+            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
         }
 
         var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, configuration);
