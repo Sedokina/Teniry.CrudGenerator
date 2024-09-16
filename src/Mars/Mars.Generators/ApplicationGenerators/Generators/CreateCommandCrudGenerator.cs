@@ -61,7 +61,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Post",
-            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityName),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

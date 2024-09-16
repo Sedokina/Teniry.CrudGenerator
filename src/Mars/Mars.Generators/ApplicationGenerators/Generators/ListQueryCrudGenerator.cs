@@ -92,7 +92,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityName),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

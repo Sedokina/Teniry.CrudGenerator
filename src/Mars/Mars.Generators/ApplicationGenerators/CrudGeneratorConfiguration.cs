@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators;
@@ -47,7 +49,7 @@ public sealed class CrudGeneratorConfiguration
             HandlerNameConfiguration = new("Delete{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Delete.DeleteEndpoint.txt",
             EndpointNameConfiguration = new("Delete{{entity_name}}Endpoint"),
-            EndpointRouteConfiguration = new("/{{entity_name}}/delete", "DeleteAsync")
+            EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/delete", "DeleteAsync")
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -145,20 +147,29 @@ public class PutEndpointsIntoNamespaceConfiguration(string namespacePath)
 /// </summary>
 public class NameConfiguration(string name)
 {
-    public virtual string GetName(string entityName)
+    public string GetName(string entityName)
     {
         var putIntoNamespaceTemplate = Template.Parse(name);
         return putIntoNamespaceTemplate.Render(new { entityName });
     }
 }
 
-public class EndpointRouteConfiguration(string name, string functionName) : NameConfiguration(name)
+public class EndpointRouteConfiguration(string name, string functionName)
 {
     public string FunctionName { get; } = functionName;
 
-    public override string GetName(string entityName)
+    public string GetRoute(string entityName, List<string> idParams = null)
     {
-        return base.GetName(entityName.ToLower());
+        var putIntoNamespaceTemplate = Template.Parse(name);
+        entityName = entityName.ToLower();
+        
+        if (idParams == null)
+        {
+            return putIntoNamespaceTemplate.Render(new { entityName });
+        }
+
+        var idParamName = string.Join("/", idParams.Select(x => $"{{{x}}}"));
+        return putIntoNamespaceTemplate.Render(new { entityName, idParamName });
     }
 }
 

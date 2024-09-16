@@ -76,7 +76,7 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Delete",
-            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityName, constructorParams),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

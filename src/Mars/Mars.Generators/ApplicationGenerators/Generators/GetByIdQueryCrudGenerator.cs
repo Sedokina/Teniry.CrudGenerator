@@ -80,7 +80,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityName),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
