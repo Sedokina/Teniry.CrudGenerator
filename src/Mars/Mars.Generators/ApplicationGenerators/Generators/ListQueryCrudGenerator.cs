@@ -89,6 +89,10 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (EndpointNamespace, $".MapGet(\"/{EntityName.ToLower()}/list\", {_endpointClassName}.GetAsync)");
+        EndpointMap = new EndpointMap(EntityName,
+            EndpointNamespace,
+            "Get",
+            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

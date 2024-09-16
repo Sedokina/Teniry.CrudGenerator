@@ -19,7 +19,7 @@ public class AppGenerator : ISourceGenerator
     {
         if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver) return;
 
-        List<(string, string)> endpointsMaps = new List<(string, string)>();
+        List<EndpointMap> endpointsMaps = new();
         var configuration = new CrudGeneratorConfiguration();
 
         foreach (var classSyntax in syntaxReceiver.Classes)
@@ -34,35 +34,35 @@ public class AppGenerator : ISourceGenerator
                 symbol,
                 configuration.CreateCommandCommandGenerator);
             generateCreateCommand.RunGenerator();
-            endpointsMaps.Add(generateCreateCommand.EndpointMapCall);
+            endpointsMaps.Add(generateCreateCommand.EndpointMap);
 
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
                 symbol,
                 configuration.DeleteCommandCommandGenerator);
             generateDeleteCommand.RunGenerator();
-            endpointsMaps.Add(generateDeleteCommand.EndpointMapCall);
+            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
                 symbol,
                 configuration.GetByIdQueryGenerator);
             generateGetByIdQuery.RunGenerator();
-            endpointsMaps.Add(generateGetByIdQuery.EndpointMapCall);
+            endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
 
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
                 symbol,
                 configuration.GetListQueryGenerator);
             generateListQuery.RunGenerator();
-            endpointsMaps.Add(generateListQuery.EndpointMapCall);
+            endpointsMaps.Add(generateListQuery.EndpointMap);
 
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
                 symbol,
                 configuration.UpdateCommandCommandGenerator);
             generateUpdateCommand.RunGenerator();
-            endpointsMaps.Add(generateUpdateCommand.EndpointMapCall);
+            endpointsMaps.Add(generateUpdateCommand.EndpointMap);
         }
 
         var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, configuration);
@@ -72,13 +72,13 @@ public class AppGenerator : ISourceGenerator
 
 internal class MapEndpointsGenerator : BaseGenerator
 {
-    private readonly List<(string classNamespace, string map)> _endpointsMaps;
+    private readonly List<EndpointMap> _endpointsMaps;
     private readonly CrudGeneratorConfiguration _configuration;
     private readonly string _endpointMapsClassName;
 
     public MapEndpointsGenerator(
         GeneratorExecutionContext context,
-        List<(string, string)> endpointsMaps,
+        List<EndpointMap> endpointsMaps,
         CrudGeneratorConfiguration configuration) : base(context)
     {
         _endpointsMaps = endpointsMaps;
@@ -88,8 +88,11 @@ internal class MapEndpointsGenerator : BaseGenerator
 
     public override void RunGenerator()
     {
-        var usings = _endpointsMaps.Select(x => x.classNamespace).Distinct().Select(x => $"using {x};");
-        var maps = _endpointsMaps.Select(x => $"app{x.map};");
+        var usings = _endpointsMaps.Select(x => x.EndpointNamespace).Distinct().Select(x => $"using {x};");
+        var maps = _endpointsMaps
+            .Select(x =>
+                $"app.Map{x.HttpMethod}(\"{x.EndpointRoute}\", {x.FunctionCall}).WithTags(\"{x.EntityName}\");")
+            .ToList();
         var model = new
         {
             Usings = string.Join("\n", usings),

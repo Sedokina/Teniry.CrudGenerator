@@ -51,7 +51,7 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     protected readonly string BusinessLogicNamespace;
     public string EndpointNamespace { get; set; }
     protected readonly string UsingEntityNamespace;
-    public (string, string) EndpointMapCall { get; set; }
+    public EndpointMap EndpointMap { get; set; }
 
     protected BaseCrudGenerator(
         GeneratorExecutionContext context,
@@ -94,5 +94,24 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
         var sourceCode = template.Render(context);
 
         Context.AddSource($"{className}.g.cs", SourceText.From(sourceCode, Encoding.UTF8));
+    }
+}
+
+public class EndpointMap
+{
+    public string EntityName { get; set; }
+    public string EndpointNamespace { get; set; }
+    public string HttpMethod { get; }
+    public string EndpointRoute { get; set; }
+    public string FunctionCall { get; set; }
+
+    public EndpointMap(string entityName, string endpointNamespace, string httpMethod, string endpointRoute,
+        string functionCall)
+    {
+        EntityName = entityName;
+        EndpointNamespace = endpointNamespace;
+        HttpMethod = httpMethod;
+        EndpointRoute = endpointRoute;
+        FunctionCall = functionCall;
     }
 }

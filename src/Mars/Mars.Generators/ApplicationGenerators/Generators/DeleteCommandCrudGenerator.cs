@@ -59,6 +59,10 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (EndpointNamespace, $".MapDelete(\"/{EntityName.ToLower()}/delete\", {_endpointClassName}.DeleteAsync)");
+        EndpointMap = new EndpointMap(EntityName,
+            EndpointNamespace,
+            "Delete",
+            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

@@ -58,7 +58,11 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (EndpointNamespace,
-            $".MapPost(\"/{EntityName.ToLower()}/create\", {_endpointClassName}.CreateAsync)");
+        EndpointMap = new EndpointMap(EntityName,
+            EndpointNamespace,
+            "Post",
+            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
+

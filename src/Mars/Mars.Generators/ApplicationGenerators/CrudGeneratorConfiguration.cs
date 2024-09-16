@@ -34,7 +34,8 @@ public sealed class CrudGeneratorConfiguration
             CommandNameConfiguration = new("Create{{entity_name}}Command"),
             HandlerNameConfiguration = new("Create{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Create.CreateEndpoint.txt",
-            EndpointNameConfiguration = new("Create{{entity_name}}Endpoint")
+            EndpointNameConfiguration = new("Create{{entity_name}}Endpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}/create", "CreateAsync")
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -45,7 +46,8 @@ public sealed class CrudGeneratorConfiguration
             CommandNameConfiguration = new("Delete{{entity_name}}Command"),
             HandlerNameConfiguration = new("Delete{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Delete.DeleteEndpoint.txt",
-            EndpointNameConfiguration = new("Delete{{entity_name}}Endpoint")
+            EndpointNameConfiguration = new("Delete{{entity_name}}Endpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}/delete", "DeleteAsync")
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -56,7 +58,8 @@ public sealed class CrudGeneratorConfiguration
             CommandNameConfiguration = new("Update{{entity_name}}Command"),
             HandlerNameConfiguration = new("Update{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Update.UpdateEndpoint.txt",
-            EndpointNameConfiguration = new("Update{{entity_name}}Endpoint")
+            EndpointNameConfiguration = new("Update{{entity_name}}Endpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}/update", "UpdateAsync")
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
@@ -69,7 +72,8 @@ public sealed class CrudGeneratorConfiguration
             DtoNameConfiguration = new("{{entity_name}}Dto"),
             HandlerNameConfiguration = new("Get{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
-            EndpointNameConfiguration = new("GetById{{entity_name}}Endpoint")
+            EndpointNameConfiguration = new("GetById{{entity_name}}Endpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
@@ -84,7 +88,8 @@ public sealed class CrudGeneratorConfiguration
             ListItemDtoNameConfiguration = new("{{entity_name}}ListItemDto"),
             HandlerNameConfiguration = new("Get{{entity_name}}ListHandler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
-            EndpointNameConfiguration = new("Get{{entity_name}}ListEndpoint")
+            EndpointNameConfiguration = new("Get{{entity_name}}ListEndpoint"),
+            EndpointRouteConfiguration = new("/{{entity_name}}/list", "GetAsync")
         };
     }
 }
@@ -140,10 +145,20 @@ public class PutEndpointsIntoNamespaceConfiguration(string namespacePath)
 /// </summary>
 public class NameConfiguration(string name)
 {
-    public string GetName(string entityName)
+    public virtual string GetName(string entityName)
     {
         var putIntoNamespaceTemplate = Template.Parse(name);
         return putIntoNamespaceTemplate.Render(new { entityName });
+    }
+}
+
+public class EndpointRouteConfiguration(string name, string functionName) : NameConfiguration(name)
+{
+    public string FunctionName { get; } = functionName;
+
+    public override string GetName(string entityName)
+    {
+        return base.GetName(entityName.ToLower());
     }
 }
 
@@ -163,6 +178,7 @@ public class BaseCommandGeneratorConfiguration : IQueryCommandGeneratorConfigura
     public NameConfiguration CommandNameConfiguration { get; set; }
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
+    public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
 }
 
 public class BaseQueryGeneratorConfiguration : IQueryCommandGeneratorConfiguration
@@ -177,6 +193,7 @@ public class BaseQueryGeneratorConfiguration : IQueryCommandGeneratorConfigurati
     public NameConfiguration DtoNameConfiguration { get; set; }
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
+    public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
 }
 
 public class ListQueryGeneratorConfiguration : IQueryCommandGeneratorConfiguration
@@ -193,4 +210,5 @@ public class ListQueryGeneratorConfiguration : IQueryCommandGeneratorConfigurati
     public NameConfiguration ListItemDtoNameConfiguration { get; set; }
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
+    public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
 }

@@ -60,6 +60,10 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (EndpointNamespace, $".MapPut(\"/{EntityName.ToLower()}/update\", {_endpointClassName}.UpdateAsync)");
+        EndpointMap = new EndpointMap(EntityName,
+            EndpointNamespace,
+            "Put",
+            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

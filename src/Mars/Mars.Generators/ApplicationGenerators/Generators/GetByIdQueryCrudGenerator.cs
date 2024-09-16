@@ -77,6 +77,10 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMapCall = (EndpointNamespace, $".MapGet(\"/{EntityName.ToLower()}\", {_endpointClassName}.GetAsync)");
+        EndpointMap = new EndpointMap(EntityName,
+            EndpointNamespace,
+            "Get",
+            Configuration.EndpointRouteConfiguration.GetName(EntityName),
+            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
