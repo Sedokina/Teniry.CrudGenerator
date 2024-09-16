@@ -31,11 +31,16 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateQuery(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToClassPropertiesString();
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var properties = primaryKeys.ToClassPropertiesString();
+        var constructorParameters = primaryKeys.ToMethodParametersString();
+        var constructorBody = primaryKeys.ToConstructorBodyString();
         var model = new
         {
             QueryName = _queryName,
-            Properties = properties
+            Properties = properties,
+            ConstructorParameters = constructorParameters,
+            ConstructorBody = constructorBody
         };
 
         WriteFile(templatePath, model, _queryName);
@@ -66,14 +71,19 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
         WriteFile(templatePath, model, _handlerName);
     }
-    
+
     private void GenerateEndpoint(string templatePath)
     {
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var routeParams = primaryKeys.ToMethodParametersString();
+        var constructorParams = primaryKeys.ToPropertiesNamesList();
         var model = new
         {
             EndpointClassName = _endpointClassName,
             QueryName = _queryName,
-            DtoName = _dtoName
+            DtoName = _dtoName,
+            RouteParams = routeParams,
+            QueryConstructorParameters = string.Join(", ", constructorParams)
         };
 
         WriteFile(templatePath, model, _endpointClassName);
