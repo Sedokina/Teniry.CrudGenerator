@@ -29,10 +29,15 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     private void GenerateCommand(string templatePath)
     {
         var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var constructorParameters = primaryKeys.ToMethodParametersString();
+        var constructorBody = primaryKeys.ToConstructorBodyString();
         var model = new
         {
             CommandName = _commandName,
-            Properties = properties
+            Properties = properties,
+            ConstructorParameters = constructorParameters,
+            ConstructorBody = constructorBody
         };
 
         WriteFile(templatePath, model, _commandName);
@@ -53,17 +58,22 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateEndpoint(string templatePath)
     {
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var routeParams = primaryKeys.ToMethodParametersString();
+        var constructorParams = primaryKeys.ToPropertiesNamesList();
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            RouteParams = routeParams,
             CommandName = _commandName,
+            CommandConstructorParameters = string.Join(", ", constructorParams)
         };
 
         WriteFile(templatePath, model, _endpointClassName);
         EndpointMap = new EndpointMap(EntityName,
             EndpointNamespace,
             "Put",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityName, constructorParams),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
