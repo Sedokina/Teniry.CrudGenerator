@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 
@@ -33,7 +34,7 @@ public static class PropertiesExtractor
     /// <summary>
     ///     Get list of property names of the entity primary keys
     /// </summary>
-    /// <param name="symbol"></param>
+    /// <param name="properties"></param>
     /// <param name="objectPrefix">
     ///     If property name Id, by default it would be returned as is
     ///     if it has to be used in some expression, i.e.: myObject => myObject.Id
@@ -127,18 +128,36 @@ public static class PropertiesExtractor
                 ? propertySymbol.Type.MetadataName
                 : propertySymbol.Type.ToString();
 
+            if (propertySymbol.Type.NullableAnnotation != NullableAnnotation.Annotated)
+            {
+                propertyTypeName += "?";
+            }
+
             if (propertySymbol.Type.IsRangeType())
             {
-                result.Add(new FilterPropertyNameType(propertyTypeName, $"{propertySymbol.Name}From",
-                    propertySymbol.Name));
-                result.Add(
-                    new FilterPropertyNameType(propertyTypeName, $"{propertySymbol.Name}To", propertySymbol.Name));
+                result.Add(new FilterPropertyNameType(
+                    propertyTypeName,
+                    $"{propertySymbol.Name}From",
+                    propertySymbol.Name,
+                    PropertyFilterType.GreaterThanOrEqual));
+                result.Add(new FilterPropertyNameType(
+                    propertyTypeName,
+                    $"{propertySymbol.Name}To",
+                    propertySymbol.Name,
+                    PropertyFilterType.LessThan));
                 continue;
             }
 
             if (propertySymbol.Type.IsSimple())
             {
-                result.Add(new FilterPropertyNameType(propertyTypeName, propertySymbol.Name, propertySymbol.Name));
+                var filterType = propertySymbol.Type.SpecialType == SpecialType.System_String
+                    ? PropertyFilterType.Like
+                    : PropertyFilterType.Equals;
+                result.Add(new FilterPropertyNameType(
+                    propertyTypeName,
+                    propertySymbol.Name,
+                    propertySymbol.Name,
+                    filterType));
             }
         }
 
@@ -149,6 +168,62 @@ public static class PropertiesExtractor
     {
         var result = properties
             .Select(x => $"public {x.TypeName} {x.PropertyName} {{ get; set; }}");
+
+        return string.Join("\n\t", result);
+    }
+
+    public static string ToFilterString(this List<FilterPropertyNameType> properties)
+    {
+        var result = properties.Select(x =>
+        {
+            if (x.FilterType == PropertyFilterType.Equals)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"\tif({x.PropertyName} is not null)");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} == {x.PropertyName});");
+                sb.AppendLine("\t\t}");
+
+                return sb.ToString();
+            }
+
+            if (x.FilterType == PropertyFilterType.GreaterThanOrEqual)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"\tif({x.PropertyName} is not null)");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} >= {x.PropertyName});");
+                sb.AppendLine("\t\t}");
+
+                return sb.ToString();
+            }
+
+
+            if (x.FilterType == PropertyFilterType.LessThan)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"\tif({x.PropertyName} is not null)");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} < {x.PropertyName});");
+                sb.AppendLine("\t\t}");
+
+                return sb.ToString();
+            }
+
+            if (x.FilterType == PropertyFilterType.Like)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"\tif({x.PropertyName} is not null)");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine(
+                    $"\t\t\tquery = query.Where(x => EF.Functions.Like(x.{x.FilterForProperty}, $\"%{{{x.PropertyName}}}%\"));");
+                sb.AppendLine("\t\t}");
+
+                return sb.ToString();
+            }
+
+            return $"";
+        });
 
         return string.Join("\n\t", result);
     }
@@ -173,11 +248,25 @@ public struct FilterPropertyNameType
     public string TypeName { get; set; }
     public string PropertyName { get; set; }
     public string FilterForProperty { get; }
+    public PropertyFilterType FilterType { get; }
 
-    public FilterPropertyNameType(string typeName, string propertyName, string filterForProperty)
+    public FilterPropertyNameType(
+        string typeName,
+        string propertyName,
+        string filterForProperty,
+        PropertyFilterType filterType)
     {
         TypeName = typeName;
         PropertyName = propertyName;
         FilterForProperty = filterForProperty;
+        FilterType = filterType;
     }
+}
+
+public enum PropertyFilterType
+{
+    Equals,
+    Like,
+    GreaterThanOrEqual,
+    LessThan
 }

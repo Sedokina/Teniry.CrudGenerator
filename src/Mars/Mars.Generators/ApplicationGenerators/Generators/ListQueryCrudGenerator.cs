@@ -77,18 +77,21 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
     private void GenerateFilter(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
-            .ToClassPropertiesString();
+        var filterProperties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol);
+        var propertiesFormatted = filterProperties.ToClassPropertiesString();
+
+        var filter = filterProperties.ToFilterString();
 
         var model = new
         {
             EntityNamespace = UsingEntityNamespace,
             FilterName = _filterName,
-            Properties = properties
+            Properties = propertiesFormatted,
+            Filter = filter
         };
         WriteFile(templatePath, model, _filterName);
     }
-    
+
     private void GenerateHandler(string templatePath)
     {
         var model = new

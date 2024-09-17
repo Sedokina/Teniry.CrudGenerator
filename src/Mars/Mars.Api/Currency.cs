@@ -17,6 +17,7 @@ public class Currency
     public DateTimeOffset Dt3 { get; set; }
     public ObjectId? CountryId { get; set; }
     public Country Country { get; set; }
+    public bool IsCheck { get; set; }
 }
 
 [GenerateCrud]
