@@ -14,12 +14,12 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseQueryGeneratorConfiguration configuration,
-        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
+        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
+        _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
@@ -89,10 +89,10 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMap = new EndpointMap(EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityName, constructorParams),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParams),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

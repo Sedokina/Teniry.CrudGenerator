@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 
@@ -326,4 +327,98 @@ public enum PropertyFilterType
     GreaterThanOrEqual,
     LessThan,
     Contains
+}
+
+public class EntityScheme
+{
+    public ISymbol EntitySymbol { get; }
+    public string EntityName { get; set; }
+    public string EntityTitle { get; set; }
+    public string EntityNamespace { get; set; }
+    public List<EntityProperty> Properties { get; set; }
+    public List<EntityProperty> PrimaryKeys { get; }
+
+    public EntityScheme(
+        ISymbol entitySymbol,
+        string entityName,
+        string entityTitle,
+        string entityNamespace,
+        List<EntityProperty> properties,
+        List<EntityProperty> primaryKeys)
+    {
+        EntitySymbol = entitySymbol;
+        EntityName = entityName;
+        EntityTitle = entityTitle;
+        EntityNamespace = entityNamespace;
+        Properties = properties;
+        PrimaryKeys = primaryKeys;
+    }
+
+    public static EntityScheme Construct(ISymbol symbol)
+    {
+        var properties = GetEntityProperties(symbol);
+        return new EntityScheme(symbol,
+            symbol.Name,
+            GetTitleFromEntityName(symbol.Name),
+            symbol.ContainingNamespace.ToString(),
+            properties,
+            properties.Where(x => x.IsEntityId).ToList());
+    }
+
+    private static List<EntityProperty> GetEntityProperties(ISymbol symbol)
+    {
+        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var result = new List<EntityProperty>();
+        foreach (var propertySymbol in propertiesOfClass)
+        {
+            // skip adding to query property if it is not id of the entity
+            if (!isEntityId(symbol.Name, propertySymbol.Name)) continue;
+
+            // For DateTimeOffset and other date variations remove system from the property type declaration
+            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
+                ? propertySymbol.Type.MetadataName
+                : propertySymbol.Type.ToString();
+
+            result.Add(new EntityProperty(
+                propertyTypeName,
+                propertySymbol.Name,
+                propertySymbol.Name.ToLowerFirstChar(),
+                isEntityId(symbol.Name, propertySymbol.Name)));
+        }
+
+        return result;
+    }
+
+    private static bool isEntityId(string className, string propertyName)
+    {
+        var lower = propertyName.ToLower();
+        return lower.Equals("id") || lower.Equals($"{className}id") || lower.Equals("_id");
+    }
+
+    private static string GetTitleFromEntityName(string entityName)
+    {
+        var regex = new Regex("(?<=[A-Z])(?=[A-Z][a-z]) |  (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
+            RegexOptions.IgnorePatternWhitespace);
+        return regex.Replace(entityName, " ").ToLowerAllButFirstChart();
+    }
+}
+
+public struct EntityProperty
+{
+    public string TypeName { get; set; }
+    public string PropertyName { get; set; }
+    public string PropertyNameAsMethodParameterName { get; set; }
+    public bool IsEntityId { get; set; }
+
+    public EntityProperty(
+        string typeName,
+        string propertyName,
+        string propertyNameAsMethodParameterName,
+        bool isEntityId)
+    {
+        TypeName = typeName;
+        PropertyName = propertyName;
+        PropertyNameAsMethodParameterName = propertyNameAsMethodParameterName;
+        IsEntityId = isEntityId;
+    }
 }

@@ -14,12 +14,12 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
         GeneratorExecutionContext context,
         ISymbol symbol,
         CommandWithReturnTypeGeneratorConfiguration configuration,
-        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
+        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
@@ -78,7 +78,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
     {
         var props = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("result.");
         var getEntityRoute = Configuration.FullConfiguration.GetByIdQueryGenerator.EndpointRouteConfiguration
-            .GetRoute(EntityName, props);
+            .GetRoute(EntityScheme.EntityName, props);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
         var model = new
@@ -90,10 +90,10 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMap = new EndpointMap(EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Post",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

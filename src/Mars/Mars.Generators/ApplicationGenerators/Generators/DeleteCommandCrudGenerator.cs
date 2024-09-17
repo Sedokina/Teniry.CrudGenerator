@@ -13,11 +13,11 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration,
-        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
+        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
@@ -72,10 +72,10 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
         WriteFile(templatePath, model, _endpointClassName);
 
-        EndpointMap = new EndpointMap(EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Delete",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityName, constructorParams),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParams),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

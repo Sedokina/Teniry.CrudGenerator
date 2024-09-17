@@ -29,16 +29,13 @@ public class AppGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            var entityConfiguration = new EntityConfiguration
-            {
-                Title = EntityConfiguration.GetTitleFromEntityName(symbol.Name)
-            };
+            var entityScheme = EntityScheme.Construct(symbol);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
                 symbol,
                 configuration.GetByIdQueryGenerator,
-                entityConfiguration);
+                entityScheme);
             generateGetByIdQuery.RunGenerator();
             endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
 
@@ -46,7 +43,7 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.GetListQueryGenerator,
-                entityConfiguration);
+                entityScheme);
             generateListQuery.RunGenerator();
             endpointsMaps.Add(generateListQuery.EndpointMap);
 
@@ -54,7 +51,7 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.CreateCommandCommandGenerator,
-                entityConfiguration);
+                entityScheme);
             generateCreateCommand.RunGenerator();
             endpointsMaps.Add(generateCreateCommand.EndpointMap);
 
@@ -62,7 +59,7 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.UpdateCommandCommandGenerator,
-                entityConfiguration);
+                entityScheme);
             generateUpdateCommand.RunGenerator();
             endpointsMaps.Add(generateUpdateCommand.EndpointMap);
 
@@ -70,7 +67,7 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.DeleteCommandCommandGenerator,
-                entityConfiguration);
+                entityScheme);
             generateDeleteCommand.RunGenerator();
             endpointsMaps.Add(generateDeleteCommand.EndpointMap);
         }

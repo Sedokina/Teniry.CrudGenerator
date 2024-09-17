@@ -14,12 +14,12 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration,
-        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
+        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
-        _vmName = $"Update{EntityName}Vm";
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
+        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
+        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _vmName = $"Update{EntityScheme.EntityName}Vm";
+        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
@@ -87,10 +87,10 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMap = new EndpointMap(EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Put",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityName, constructorParams),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParams),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
