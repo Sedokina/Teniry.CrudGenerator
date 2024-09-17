@@ -120,19 +120,27 @@ public static class PropertiesExtractor
         var result = new List<FilterPropertyNameType>();
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip property if it is id of this or other entity
-            if (isId(symbol.Name, propertySymbol.Name)) continue;
-
             // For DateTimeOffset and other date variations remove system from the property type declaration
             var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
                 ? propertySymbol.Type.MetadataName
                 : propertySymbol.Type.ToString();
+            
+            // skip property if it is id of this or other entity
+            if (isId(symbol.Name, propertySymbol.Name))
+            {
+                result.Add(new FilterPropertyNameType(
+                    $"{propertyTypeName}[]",
+                    propertySymbol.Name,
+                    propertySymbol.Name,
+                    PropertyFilterType.Contains));
+                continue;
+            }
 
             if (propertySymbol.Type.NullableAnnotation != NullableAnnotation.Annotated)
             {
                 propertyTypeName += "?";
             }
-
+            
             if (propertySymbol.Type.IsRangeType())
             {
                 result.Add(new FilterPropertyNameType(
@@ -181,7 +189,7 @@ public static class PropertiesExtractor
                 var sb = new StringBuilder();
                 sb.AppendLine($"\tif({x.PropertyName} is not null)");
                 sb.AppendLine("\t\t{");
-                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} == {x.PropertyName});");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.PropertyToFilter} == {x.PropertyName});");
                 sb.AppendLine("\t\t}");
 
                 return sb.ToString();
@@ -192,7 +200,7 @@ public static class PropertiesExtractor
                 var sb = new StringBuilder();
                 sb.AppendLine($"\tif({x.PropertyName} is not null)");
                 sb.AppendLine("\t\t{");
-                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} >= {x.PropertyName});");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.PropertyToFilter} >= {x.PropertyName});");
                 sb.AppendLine("\t\t}");
 
                 return sb.ToString();
@@ -204,7 +212,7 @@ public static class PropertiesExtractor
                 var sb = new StringBuilder();
                 sb.AppendLine($"\tif({x.PropertyName} is not null)");
                 sb.AppendLine("\t\t{");
-                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.FilterForProperty} < {x.PropertyName});");
+                sb.AppendLine($"\t\t\tquery = query.Where(x => x.{x.PropertyToFilter} < {x.PropertyName});");
                 sb.AppendLine("\t\t}");
 
                 return sb.ToString();
@@ -216,7 +224,19 @@ public static class PropertiesExtractor
                 sb.AppendLine($"\tif({x.PropertyName} is not null)");
                 sb.AppendLine("\t\t{");
                 sb.AppendLine(
-                    $"\t\t\tquery = query.Where(x => EF.Functions.Like(x.{x.FilterForProperty}, $\"%{{{x.PropertyName}}}%\"));");
+                    $"\t\t\tquery = query.Where(x => EF.Functions.Like(x.{x.PropertyToFilter}, $\"%{{{x.PropertyName}}}%\"));");
+                sb.AppendLine("\t\t}");
+
+                return sb.ToString();
+            }
+
+            if (x.FilterType == PropertyFilterType.Contains)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"\tif({x.PropertyName} is not null && {x.PropertyName}.Length > 0)");
+                sb.AppendLine("\t\t{");
+                sb.AppendLine(
+                    $"\t\t\tquery = query.Where(x => {x.PropertyToFilter}.Contains(x.{x.PropertyToFilter}));");
                 sb.AppendLine("\t\t}");
 
                 return sb.ToString();
@@ -247,18 +267,18 @@ public struct FilterPropertyNameType
 {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }
-    public string FilterForProperty { get; }
+    public string PropertyToFilter { get; }
     public PropertyFilterType FilterType { get; }
 
     public FilterPropertyNameType(
         string typeName,
         string propertyName,
-        string filterForProperty,
+        string propertyToFilter,
         PropertyFilterType filterType)
     {
         TypeName = typeName;
         PropertyName = propertyName;
-        FilterForProperty = filterForProperty;
+        PropertyToFilter = propertyToFilter;
         FilterType = filterType;
     }
 }
@@ -268,5 +288,6 @@ public enum PropertyFilterType
     Equals,
     Like,
     GreaterThanOrEqual,
-    LessThan
+    LessThan,
+    Contains
 }
