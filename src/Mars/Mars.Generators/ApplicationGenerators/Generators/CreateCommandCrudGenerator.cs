@@ -8,6 +8,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
+    private readonly string _dtoName;
 
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
@@ -16,12 +17,14 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
+        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
 
     public override void RunGenerator()
     {
         GenerateCommand(Configuration.CommandTemplatePath);
+        GenerateDto(Configuration.DtoTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
         GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
@@ -38,12 +41,32 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         WriteFile(templatePath, model, _commandName);
     }
 
+    private void GenerateDto(string templatePath)
+    {
+        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
+        var properties = primaryKeys.ToClassPropertiesString();
+        var constructorParameters = primaryKeys.ToMethodParametersString();
+        var constructorBody = primaryKeys.ToConstructorBodyString();
+        var model = new
+        {
+            DtoName = _dtoName,
+            Properties = properties,
+            ConstructorParameters = constructorParameters,
+            ConstructorBody = constructorBody
+        };
+        WriteFile(templatePath, model, _dtoName);
+    }
+
     private void GenerateHandler(string templatePath)
     {
+        var constructorParams = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("entity.");
+
         var model = new
         {
             CommandName = _commandName,
-            HandlerName = _handlerName
+            DtoName = _dtoName,
+            HandlerName = _handlerName,
+            CreatedDtoConstructorParams = string.Join(", ", constructorParams)
         };
 
         WriteFile(templatePath, model, _handlerName);
@@ -51,10 +74,17 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateEndpoint(string templatePath)
     {
+        var props = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("result.");
+        var getEntityRoute = Configuration.FullConfiguration.GetByIdQueryGenerator.EndpointRouteConfiguration
+            .GetRoute(EntityName, props);
+        var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
+
         var model = new
         {
             EndpointClassName = _endpointClassName,
             CommandName = _commandName,
+            GetEntityRoute = interpolatedStringRoute,
+            DtoName = _dtoName
         };
 
         WriteFile(templatePath, model, _endpointClassName);
@@ -65,4 +95,3 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
-

@@ -32,8 +32,10 @@ public sealed class CrudGeneratorConfiguration
             FullConfiguration = this,
             FunctionNameConfiguration = new("Create{{entity_name}}"),
             CommandTemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",
+            DtoTemplatePath = $"{TemplatesBasePath}.Create.CreatedDto.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
             CommandNameConfiguration = new("Create{{entity_name}}Command"),
+            DtoNameConfiguration = new NameConfiguration("Created{{entity_name}}Dto"),
             HandlerNameConfiguration = new("Create{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Create.CreateEndpoint.txt",
             EndpointNameConfiguration = new("Create{{entity_name}}Endpoint"),
@@ -167,7 +169,7 @@ public class EndpointRouteConfiguration(string name, string functionName)
     {
         var putIntoNamespaceTemplate = Template.Parse(name);
         entityName = entityName.ToLower();
-        
+
         if (idParams == null)
         {
             return putIntoNamespaceTemplate.Render(new { entityName });
@@ -189,9 +191,11 @@ public class BaseCommandGeneratorConfiguration : IQueryCommandGeneratorConfigura
     public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
     public string CommandTemplatePath { get; set; }
+    public string DtoTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
     public string EndpointTemplatePath { get; set; }
     public NameConfiguration CommandNameConfiguration { get; set; }
+    public NameConfiguration DtoNameConfiguration { get; set; }
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
     public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
