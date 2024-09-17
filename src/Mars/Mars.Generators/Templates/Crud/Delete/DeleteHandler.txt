@@ -12,7 +12,7 @@ public partial class {{handler_name}} : ICommandHandler<{{command_name}}>
     }
 
     public async Task HandleAsync({{command_name}} command, CancellationToken cancellation) {
-        var entity = await _db.Set<{{entity_name}}>().FindAsync([{{find_properties}}], cancellation);
+        var entity = await _db.Set<{{entity_name}}>().FindAsync([{{find_parameters}}], cancellation);
         if (entity == null) return;
         
         _db.Remove(entity);

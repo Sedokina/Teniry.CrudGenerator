@@ -32,10 +32,9 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateQuery(string templatePath)
     {
-        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
-        var properties = primaryKeys.ToClassPropertiesString();
-        var constructorParameters = primaryKeys.ToMethodParametersString();
-        var constructorBody = primaryKeys.ToConstructorBodyString();
+        var properties = EntityScheme.PrimaryKeys.FormatAsProperties();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
+        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
         var model = new
         {
             QueryName = _queryName,
@@ -50,7 +49,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateDto(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
+        var properties = EntityScheme.Properties.FormatAsProperties();
         var model = new
         {
             DtoName = _dtoName,
@@ -62,13 +61,13 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("query");
+        var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("query");
         var model = new
         {
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
-            FindProperties = string.Join(", ", properties)
+            FindParameters = findParameters
         };
 
         WriteFile(templatePath, model, _handlerName);
@@ -76,23 +75,24 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
 
     private void GenerateEndpoint(string templatePath)
     {
-        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
-        var routeParams = primaryKeys.ToMethodParametersString();
-        var constructorParams = primaryKeys.ToPropertiesNamesList();
+        var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters();
         var model = new
         {
             EndpointClassName = _endpointClassName,
             QueryName = _queryName,
             DtoName = _dtoName,
             RouteParams = routeParams,
-            QueryConstructorParameters = string.Join(", ", constructorParams)
+            QueryConstructorParameters = constructorParameters
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        
+        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParams),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParametersForRoute),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

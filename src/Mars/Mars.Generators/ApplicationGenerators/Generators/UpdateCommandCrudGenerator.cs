@@ -32,10 +32,9 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateCommand(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
-        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
-        var constructorParameters = primaryKeys.ToMethodParametersString();
-        var constructorBody = primaryKeys.ToConstructorBodyString();
+        var properties = EntityScheme.Properties.FormatAsProperties();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
+        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
         var model = new
         {
             CommandName = _commandName,
@@ -49,12 +48,12 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateHandler(string templatePath)
     {
-        var properties = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("command");
+        var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("command");
         var model = new
         {
             CommandName = _commandName,
             HandlerName = _handlerName,
-            FindProperties = string.Join(", ", properties)
+            FindParameters = findParameters
         };
 
         WriteFile(templatePath, model, _handlerName);
@@ -62,7 +61,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     
     private void GenerateViewModel(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol, true);
+        var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
         var model = new
         {
             VmName = _vmName,
@@ -74,23 +73,24 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
     private void GenerateEndpoint(string templatePath)
     {
-        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
-        var routeParams = primaryKeys.ToMethodParametersString();
-        var constructorParams = primaryKeys.ToPropertiesNamesList();
+        var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters();
         var model = new
         {
             EndpointClassName = _endpointClassName,
             RouteParams = routeParams,
             VmName = _vmName,
             CommandName = _commandName,
-            CommandConstructorParameters = string.Join(", ", constructorParams)
+            CommandConstructorParameters = constructorParameters
         };
 
         WriteFile(templatePath, model, _endpointClassName);
+        
+        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName,
             EndpointNamespace,
             "Put",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParams),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParametersForRoute),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }
