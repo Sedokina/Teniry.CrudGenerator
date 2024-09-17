@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using ITech.Cqrs.Cqrs.Commands;
 using Mapster;
 using {{business_logic_namespace}};
@@ -6,6 +7,13 @@ namespace {{endpoint_namespace}};
 
 public static partial class {{endpoint_class_name}}
 {
+    /// <summary>
+    ///     Update {{entity_name}}
+    /// </summary>
+    /// <response code="204">{{entity_name}} updated</response>
+    /// <response code="404">{{entity_name}} not found</response>
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(ApiResponse), 404)]
     public static async Task<IResult> UpdateAsync(
         {{route_params}},
         {{vm_name}} vm,

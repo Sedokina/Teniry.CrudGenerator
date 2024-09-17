@@ -10,6 +10,8 @@ public static partial class {{endpoint_class_name}}
     /// </summary>
     /// <response code="204">{{entity_name}} deleted</response>
     /// <response code="404">{{entity_name}} not found</response>
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(ApiResponse), 404)]
     public static async Task<IResult> DeleteAsync(
         {{route_params}},
         ICommandDispatcher commandDispatcher,
