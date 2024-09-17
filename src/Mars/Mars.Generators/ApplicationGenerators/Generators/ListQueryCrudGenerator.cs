@@ -1,3 +1,4 @@
+using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
 using Microsoft.CodeAnalysis;
 
@@ -40,6 +41,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     {
         var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
             .ToClassPropertiesString();
+        var sortKeysList = PropertiesExtractor.GetAllPropertiesOfEntityForSort(Symbol).Select(x => $"\"{x.SortKey}\"");
+        var sortKeys = string.Join(",\n\t\t\t", sortKeysList);
 
         var model = new
         {
@@ -47,7 +50,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
             QueryName = _queryName,
             DtoName = _dtoName,
             PutIntoNamespace = BusinessLogicNamespace,
-            Properties = properties
+            Properties = properties,
+            SortKeys = sortKeys
         };
         WriteFile(templatePath, model, _queryName);
     }
@@ -79,15 +83,18 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     {
         var filterProperties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol);
         var propertiesFormatted = filterProperties.ToClassPropertiesString();
-
         var filter = filterProperties.ToFilterString();
+
+        var sortProperties = PropertiesExtractor.GetAllPropertiesOfEntityForSort(Symbol);
+        var sorts = sortProperties.ToSortString();
 
         var model = new
         {
             EntityNamespace = UsingEntityNamespace,
             FilterName = _filterName,
             Properties = propertiesFormatted,
-            Filter = filter
+            Filter = filter,
+            Sorts = sorts
         };
         WriteFile(templatePath, model, _filterName);
     }

@@ -11,11 +11,27 @@ public class MongoObjectIdJsonConverter : JsonConverter<ObjectId>
 {
     public override ObjectId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return new ObjectId(reader.GetString());
+        var value = reader.GetString();
+        try
+        {
+            return new ObjectId(value);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new FailedToParseMongoObjectIdException($"Value \"{value}\" is not allowed for ObjectId");
+        }
     }
 
     public override void Write(Utf8JsonWriter writer, ObjectId value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.ToString());
+    }
+}
+
+public class FailedToParseMongoObjectIdException : Exception
+{
+    public FailedToParseMongoObjectIdException(string message) : base(message)
+    {
     }
 }

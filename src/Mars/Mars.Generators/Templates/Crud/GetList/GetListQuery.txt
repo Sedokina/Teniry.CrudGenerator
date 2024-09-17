@@ -23,6 +23,9 @@ public partial class {{query_name}} : IDefineSortable, IPage
     /// <inheritdoc />
     public string[] GetSortKeys()
     {
-        return [];
+        return
+         [
+            {{sort_keys}}
+        ];
     }
 }

@@ -18,6 +18,8 @@ public partial class {{handler_name}} : IQueryHandler<{{query_name}}, {{dto_name
 
     public async Task<{{dto_name}}> HandleAsync({{query_name}} query, CancellationToken cancellation) {
         var filter = query.Adapt<{{filter_name}}>();
+        filter.Sorts = query.Sort;
+        
         var result = await _db.Set<{{entity_name}}>()
             .Filter(filter)
             .ProjectToType<{{dto_list_item_name}}>()

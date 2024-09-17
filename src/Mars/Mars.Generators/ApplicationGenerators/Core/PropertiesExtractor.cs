@@ -124,7 +124,7 @@ public static class PropertiesExtractor
             var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
                 ? propertySymbol.Type.MetadataName
                 : propertySymbol.Type.ToString();
-            
+
             // skip property if it is id of this or other entity
             if (isId(symbol.Name, propertySymbol.Name))
             {
@@ -140,7 +140,7 @@ public static class PropertiesExtractor
             {
                 propertyTypeName += "?";
             }
-            
+
             if (propertySymbol.Type.IsRangeType())
             {
                 result.Add(new FilterPropertyNameType(
@@ -247,6 +247,30 @@ public static class PropertiesExtractor
 
         return string.Join("\n\t", result);
     }
+
+    public static List<SortPropertyName> GetAllPropertiesOfEntityForSort(ISymbol symbol)
+    {
+        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var result = new List<SortPropertyName>();
+        foreach (var propertySymbol in propertiesOfClass)
+        {
+            if (propertySymbol.Type.IsSimple())
+            {
+                result.Add(new(propertySymbol.Name, propertySymbol.Name.ToLowerFirstChar()));
+            }
+        }
+
+        return result;
+    }
+
+
+    public static string ToSortString(this List<SortPropertyName> properties)
+    {
+        var result = properties
+            .Select(property => $"{{ \"{property.SortKey}\", x => x.{property.PropertyName} }}")
+            .ToList();
+        return string.Join(",\n\t\t\t", result);
+    }
 }
 
 public struct PropertyNameType
@@ -280,6 +304,18 @@ public struct FilterPropertyNameType
         PropertyName = propertyName;
         PropertyToFilter = propertyToFilter;
         FilterType = filterType;
+    }
+}
+
+public struct SortPropertyName
+{
+    public string PropertyName { get; set; }
+    public string SortKey { get; set; }
+
+    public SortPropertyName(string propertyName, string sortKey)
+    {
+        PropertyName = propertyName;
+        SortKey = sortKey;
     }
 }
 

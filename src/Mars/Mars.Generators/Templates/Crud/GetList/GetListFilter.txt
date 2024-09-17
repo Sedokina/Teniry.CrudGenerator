@@ -11,7 +11,10 @@ public partial class {{filter_name}} : QueryableFilter<{{entity_name}}>
     
     /// <inheritdoc />
     public override Dictionary<string, Expression<Func<{{entity_name}}, object>>> Sort() {
-        return new();
+        return new()
+        {
+            {{sorts}}
+        };
     }
     
     /// <inheritdoc />
