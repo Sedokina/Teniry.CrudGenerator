@@ -13,7 +13,8 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        BaseCommandGeneratorConfiguration configuration,
+        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);

@@ -1,7 +1,7 @@
 namespace {{business_logic_namespace}};
 
 /// <summary>
-///     Create {{entity_name}}
+///     Create {{entity_title}}
 /// </summary>
 // <returns>Nothing</returns>
 public partial class {{command_name}}

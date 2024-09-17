@@ -17,4 +17,9 @@ public static class StringExtensions
 
         return str;
     }
+
+    public static string ToLowerAllButFirstChart(this string str)
+    {
+        return string.Concat(str.Substring(0, 1).ToUpper(), str.Substring(1).ToLower());
+    }
 }

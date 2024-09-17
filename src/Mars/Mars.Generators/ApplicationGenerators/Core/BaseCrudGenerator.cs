@@ -45,6 +45,7 @@ public abstract class BaseGenerator
 public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     where TConfiguration : IQueryCommandGeneratorConfiguration
 {
+    protected readonly EntityConfiguration EntityConfiguration;
     protected readonly TConfiguration Configuration;
     protected readonly ISymbol Symbol;
     protected readonly string EntityName;
@@ -56,8 +57,10 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     protected BaseCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        TConfiguration configuration) : base(context)
+        TConfiguration configuration,
+        EntityConfiguration entityConfiguration) : base(context)
     {
+        EntityConfiguration = entityConfiguration;
         Configuration = configuration;
         Symbol = symbol;
         EntityName = Symbol.Name;
@@ -71,7 +74,7 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
             EntityName,
             Symbol.ContainingAssembly.Name);
     }
-    
+
     protected override void WriteFile(string templatePath, object model, string className)
     {
         var template = ReadTemplate(templatePath);
@@ -82,7 +85,8 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
             EntityName = EntityName,
             EntityNamespace = UsingEntityNamespace,
             BusinessLogicNamespace = BusinessLogicNamespace,
-            EndpointNamespace = EndpointNamespace
+            EndpointNamespace = EndpointNamespace,
+            EntityTitle = EntityConfiguration.Title
         });
 
         var customProps = new ScriptObject();

@@ -13,7 +13,8 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CommandWithReturnTypeGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        CommandWithReturnTypeGeneratorConfiguration configuration,
+        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);

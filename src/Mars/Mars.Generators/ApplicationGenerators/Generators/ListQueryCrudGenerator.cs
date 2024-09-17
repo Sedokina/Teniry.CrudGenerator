@@ -14,7 +14,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        ListQueryGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        ListQueryGeneratorConfiguration configuration,
+        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
     {
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
@@ -78,7 +79,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
         WriteFile(templatePath, model, _handlerName);
     }
-    
+
     private void GenerateEndpoint(string templatePath)
     {
         var model = new

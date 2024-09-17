@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Scriban;
 
 namespace Mars.Generators.ApplicationGenerators;
@@ -244,4 +246,16 @@ public class ListQueryGeneratorConfiguration : IQueryCommandGeneratorConfigurati
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
     public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
+}
+
+public class EntityConfiguration
+{
+    public string Title { get; set; }
+
+    public static string GetTitleFromEntityName(string entityName)
+    {
+        var regex = new Regex("(?<=[A-Z])(?=[A-Z][a-z]) |  (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
+            RegexOptions.IgnorePatternWhitespace);
+        return regex.Replace(entityName, " ").ToLowerAllButFirstChart();
+    }
 }

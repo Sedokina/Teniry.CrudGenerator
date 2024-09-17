@@ -1,6 +1,4 @@
-using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
@@ -14,7 +12,8 @@ public class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     public DeleteCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        BaseCommandGeneratorConfiguration configuration,
+        EntityConfiguration entityConfiguration) : base(context, symbol, configuration, entityConfiguration)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);

@@ -7,10 +7,10 @@ namespace {{endpoint_namespace}};
 public static partial class {{endpoint_class_name}}
 {
     /// <summary>
-    ///     Delete {{entity_name}}
+    ///     Delete {{entity_title}}
     /// </summary>
-    /// <response code="204">{{entity_name}} deleted</response>
-    /// <response code="404">{{entity_name}} not found</response>
+    /// <response code="204">{{entity_title}} deleted</response>
+    /// <response code="404">{{entity_title}} not found</response>
     [ProducesResponseType(204)]
     [ProducesResponseType(typeof(ApiResponse), 404)]
     public static async Task<IResult> DeleteAsync(
