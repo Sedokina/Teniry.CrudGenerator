@@ -84,6 +84,12 @@ public static class PropertiesExtractor
         return lower.Equals("id") || lower.Equals($"{className}id") || lower.Equals("_id");
     }
 
+    private static bool isId(string className, string propertyName)
+    {
+        var lower = propertyName.ToLower();
+        return isEntityId(className, propertyName) || lower.EndsWith("id") || lower.EndsWith("_id");
+    }
+
     public static string GetAllPropertiesOfEntity(ISymbol symbol, bool skipPrimaryKeys = false)
     {
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
@@ -106,6 +112,46 @@ public static class PropertiesExtractor
         result = result.TrimEnd();
         return result;
     }
+
+    public static List<FilterPropertyNameType> GetAllPropertiesOfEntityForFilter(ISymbol symbol)
+    {
+        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
+        var result = new List<FilterPropertyNameType>();
+        foreach (var propertySymbol in propertiesOfClass)
+        {
+            // skip property if it is id of this or other entity
+            if (isId(symbol.Name, propertySymbol.Name)) continue;
+
+            // For DateTimeOffset and other date variations remove system from the property type declaration
+            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
+                ? propertySymbol.Type.MetadataName
+                : propertySymbol.Type.ToString();
+
+            if (propertySymbol.Type.IsRangeType())
+            {
+                result.Add(new FilterPropertyNameType(propertyTypeName, $"{propertySymbol.Name}From",
+                    propertySymbol.Name));
+                result.Add(
+                    new FilterPropertyNameType(propertyTypeName, $"{propertySymbol.Name}To", propertySymbol.Name));
+                continue;
+            }
+
+            if (propertySymbol.Type.IsSimple())
+            {
+                result.Add(new FilterPropertyNameType(propertyTypeName, propertySymbol.Name, propertySymbol.Name));
+            }
+        }
+
+        return result;
+    }
+
+    public static string ToClassPropertiesString(this List<FilterPropertyNameType> properties)
+    {
+        var result = properties
+            .Select(x => $"public {x.TypeName} {x.PropertyName} {{ get; set; }}");
+
+        return string.Join("\n\t", result);
+    }
 }
 
 public struct PropertyNameType
@@ -119,5 +165,19 @@ public struct PropertyNameType
         TypeName = typeName;
         PropertyName = propertyName;
         MethodParameterName = methodParameterName;
+    }
+}
+
+public struct FilterPropertyNameType
+{
+    public string TypeName { get; set; }
+    public string PropertyName { get; set; }
+    public string FilterForProperty { get; }
+
+    public FilterPropertyNameType(string typeName, string propertyName, string filterForProperty)
+    {
+        TypeName = typeName;
+        PropertyName = propertyName;
+        FilterForProperty = filterForProperty;
     }
 }

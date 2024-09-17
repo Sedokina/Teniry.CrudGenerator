@@ -35,12 +35,16 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
     private void GenerateQuery(string templatePath)
     {
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
+            .ToClassPropertiesString();
+        
         var model = new
         {
             EntityNamespace = UsingEntityNamespace,
             QueryName = _queryName,
             DtoName = _dtoName,
-            PutIntoNamespace = BusinessLogicNamespace
+            PutIntoNamespace = BusinessLogicNamespace,
+            Properties = properties
         };
         WriteFile(templatePath, model, _queryName);
     }

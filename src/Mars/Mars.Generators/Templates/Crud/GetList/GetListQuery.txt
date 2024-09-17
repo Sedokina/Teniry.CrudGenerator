@@ -1,4 +1,5 @@
 using ITech.Cqrs.Queryables.Page;
+using ITech.Cqrs.Queryables.Sort;
 
 namespace {{business_logic_namespace}};
 
@@ -6,11 +7,16 @@ namespace {{business_logic_namespace}};
 ///     Get list of {{entity_title}}
 /// </summary>
 /// <returns>Returns all {{entity_title}} records of type <see cref="{{dto_name}}" /></returns>
-public partial class {{query_name}} : IPage
+public partial class {{query_name}} : ISorted, IPage
 {
+    {{properties}}
+
     /// <inheritdoc />
     public int Page { get; set; }
     
     /// <inheritdoc />
     public int PageSize { get; set; }
+    
+    /// <inheritdoc />
+    public string[]? Sort { get; set; }
 }
