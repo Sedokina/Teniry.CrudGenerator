@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using ITech.Cqrs.Cqrs.Commands;
 using {{business_logic_namespace}};
 

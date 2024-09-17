@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using ITech.Cqrs.Cqrs.Queries;
 using {{business_logic_namespace}};
 
@@ -5,6 +6,13 @@ namespace {{endpoint_namespace}};
 
 public static partial class {{endpoint_class_name}}
 {
+    /// <summary>
+    ///     Get {{entity_name}} by id
+    /// </summary>
+    /// <response code="200">Returns full {{entity_name}} data</response>
+    /// <response code="404">{{entity_name}} not found</response>
+    [ProducesResponseType(typeof({{dto_name}}), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 404)]
     public static async Task<IResult> GetAsync(
         {{route_params}},
         IQueryDispatcher queryDispatcher,
