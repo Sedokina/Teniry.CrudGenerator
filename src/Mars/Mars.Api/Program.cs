@@ -1,3 +1,4 @@
+using System.Reflection;
 using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
 using Mars.Api;
@@ -26,6 +27,10 @@ builder.Services.AddSwaggerGen(options =>
 {
     // This is required for swagger shows ObjectId as string in endpoints
     options.SchemaFilter<MongoObjectIdSwaggerParameterFilter>();
+    
+    // Add swagger documentation from an assembly xml file
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 // This is required because generated code uses cqrs
