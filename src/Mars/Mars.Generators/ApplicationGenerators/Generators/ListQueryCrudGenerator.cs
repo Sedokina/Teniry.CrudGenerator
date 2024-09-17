@@ -10,6 +10,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     private readonly string _listItemDtoName;
     private readonly string _queryName;
     private readonly string _endpointClassName;
+    private readonly string _filterName;
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
@@ -20,6 +21,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityName);
         _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityName);
+        _filterName = Configuration.FilterNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);
         _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityName);
     }
@@ -29,6 +31,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         GenerateQuery(Configuration.QueryTemplatePath);
         GenerateListItemDto(Configuration.DtoListItemTemplatePath);
         GenerateDto(Configuration.DtoTemplatePath);
+        GenerateFilter(Configuration.FilterTemplatePath);
         GenerateHandler(Configuration.HandlerTemplatePath);
         GenerateEndpoint(Configuration.EndpointTemplatePath);
     }
@@ -37,7 +40,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
     {
         var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
             .ToClassPropertiesString();
-        
+
         var model = new
         {
             EntityNamespace = UsingEntityNamespace,
@@ -72,6 +75,20 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         WriteFile(templatePath, model, _dtoName);
     }
 
+    private void GenerateFilter(string templatePath)
+    {
+        var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
+            .ToClassPropertiesString();
+
+        var model = new
+        {
+            EntityNamespace = UsingEntityNamespace,
+            FilterName = _filterName,
+            Properties = properties
+        };
+        WriteFile(templatePath, model, _filterName);
+    }
+    
     private void GenerateHandler(string templatePath)
     {
         var model = new

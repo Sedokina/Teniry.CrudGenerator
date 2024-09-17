@@ -88,10 +88,12 @@ public sealed class CrudGeneratorConfiguration
             QueryTemplatePath = $"{TemplatesBasePath}.GetList.GetListQuery.txt",
             DtoTemplatePath = $"{TemplatesBasePath}.GetList.GetListDto.txt",
             DtoListItemTemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
+            FilterTemplatePath = $"{TemplatesBasePath}.GetList.GetListFilter.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.GetList.GetListHandler.txt",
             QueryNameConfiguration = new("Get{{entity_name}}ListQuery"),
             DtoNameConfiguration = new("{{entity_name}}ListDto"),
             ListItemDtoNameConfiguration = new("{{entity_name}}ListItemDto"),
+            FilterNameConfiguration = new("Get{{entity_name}}ListFilter"),
             HandlerNameConfiguration = new("Get{{entity_name}}ListHandler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
             EndpointNameConfiguration = new("Get{{entity_name}}ListEndpoint"),
@@ -238,11 +240,13 @@ public class ListQueryGeneratorConfiguration : IQueryCommandGeneratorConfigurati
     public string QueryTemplatePath { get; set; }
     public string DtoTemplatePath { get; set; }
     public string DtoListItemTemplatePath { get; set; }
+    public string FilterTemplatePath { get; set; }
     public string HandlerTemplatePath { get; set; }
     public string EndpointTemplatePath { get; set; }
     public NameConfiguration QueryNameConfiguration { get; set; }
     public NameConfiguration DtoNameConfiguration { get; set; }
     public NameConfiguration ListItemDtoNameConfiguration { get; set; }
+    public NameConfiguration FilterNameConfiguration { get; set; }
     public NameConfiguration HandlerNameConfiguration { get; set; }
     public NameConfiguration EndpointNameConfiguration { get; set; }
     public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }

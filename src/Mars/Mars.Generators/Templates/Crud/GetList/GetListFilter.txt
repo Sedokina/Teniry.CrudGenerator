@@ -1,0 +1,25 @@
+using System.Linq.Expressions;
+using ITech.Cqrs.Queryables.Filter;
+using {{entity_namespace}};
+
+namespace {{business_logic_namespace}};
+
+public partial class {{filter_name}} : QueryableFilter<{{entity_name}}>
+{
+    {{properties}}
+    
+    /// <inheritdoc />
+    public override Dictionary<string, Expression<Func<{{entity_name}}, object>>> Sort() {
+        return new();
+    }
+    
+    /// <inheritdoc />
+    protected override IQueryable<{{entity_name}}> DefaultSort(IQueryable<{{entity_name}}> query) {
+        return base.DefaultSort(query);
+    }
+    
+    /// <inheritdoc />
+    protected override IQueryable<{{entity_name}}> Filter(IQueryable<{{entity_name}}> query) {
+        return query;
+    }
+}
