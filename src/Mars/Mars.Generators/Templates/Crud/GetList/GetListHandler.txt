@@ -1,6 +1,7 @@
 using ITech.Cqrs.Cqrs.Queries;
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.Cqrs.Queryables.Page;
+using ITech.Cqrs.Queryables.Filter;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using {{entity_namespace}};
@@ -16,7 +17,9 @@ public partial class {{handler_name}} : IQueryHandler<{{query_name}}, {{dto_name
     }
 
     public async Task<{{dto_name}}> HandleAsync({{query_name}} query, CancellationToken cancellation) {
+        var filter = query.Adapt<{{filter_name}}>();
         var result = await _db.Set<{{entity_name}}>()
+            .Filter(filter)
             .ProjectToType<{{dto_list_item_name}}>()
             .ToPagedListAsync(query, cancellation);
             

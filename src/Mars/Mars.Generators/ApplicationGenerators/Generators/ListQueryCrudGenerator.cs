@@ -96,7 +96,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
             QueryName = _queryName,
             HandlerName = _handlerName,
             DtoName = _dtoName,
-            DtoListItemName = _listItemDtoName
+            DtoListItemName = _listItemDtoName,
+            FilterName = _filterName
         };
 
         WriteFile(templatePath, model, _handlerName);
