@@ -337,6 +337,7 @@ public class EntityScheme
     public string EntityNamespace { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
+    public List<EntityProperty> NotPrimaryKeys { get; }
 
     public EntityScheme(
         ISymbol entitySymbol,
@@ -344,7 +345,8 @@ public class EntityScheme
         string entityTitle,
         string entityNamespace,
         List<EntityProperty> properties,
-        List<EntityProperty> primaryKeys)
+        List<EntityProperty> primaryKeys,
+        List<EntityProperty> notPrimaryKeys)
     {
         EntitySymbol = entitySymbol;
         EntityName = entityName;
@@ -352,6 +354,7 @@ public class EntityScheme
         EntityNamespace = entityNamespace;
         Properties = properties;
         PrimaryKeys = primaryKeys;
+        NotPrimaryKeys = notPrimaryKeys;
     }
 
     public static EntityScheme Construct(ISymbol symbol)
@@ -362,7 +365,8 @@ public class EntityScheme
             GetTitleFromEntityName(symbol.Name),
             symbol.ContainingNamespace.ToString(),
             properties,
-            properties.Where(x => x.IsEntityId).ToList());
+            properties.Where(x => x.IsEntityId).ToList(),
+            properties.Where(x => !x.IsEntityId).ToList());
     }
 
     private static List<EntityProperty> GetEntityProperties(ISymbol symbol)
@@ -371,9 +375,6 @@ public class EntityScheme
         var result = new List<EntityProperty>();
         foreach (var propertySymbol in propertiesOfClass)
         {
-            // skip adding to query property if it is not id of the entity
-            if (!isEntityId(symbol.Name, propertySymbol.Name)) continue;
-
             // For DateTimeOffset and other date variations remove system from the property type declaration
             var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
                 ? propertySymbol.Type.MetadataName
@@ -400,6 +401,56 @@ public class EntityScheme
         var regex = new Regex("(?<=[A-Z])(?=[A-Z][a-z]) |  (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
             RegexOptions.IgnorePatternWhitespace);
         return regex.Replace(entityName, " ").ToLowerAllButFirstChart();
+    }
+}
+
+public static class EntitySchemePropertiesFormatter
+{
+    public static string FormatAsProperties(this List<EntityProperty> properties)
+    {
+        var stringBuilder = new StringBuilder();
+        foreach (var property in properties)
+        {
+            stringBuilder.AppendLine($"\tpublic {property.TypeName} {property.PropertyName} {{ get; set; }}");
+        }
+
+        return stringBuilder.ToString().Trim();
+    }
+
+    public static string FormatAsMethodDeclarationParameters(this List<EntityProperty> properties)
+    {
+        var result = properties.Select(x => $"{x.TypeName} {x.PropertyNameAsMethodParameterName}");
+        return string.Join("\n\t\t", result);
+    }
+
+    public static string FormatAsConstructorBody(this List<EntityProperty> properties)
+    {
+        var result = properties.Select(x =>
+        {
+            if (x.PropertyName.Equals(x.PropertyNameAsMethodParameterName))
+            {
+                return $"this.{x.PropertyName} = {x.PropertyNameAsMethodParameterName};";
+            }
+
+            return $"{x.PropertyName} = {x.PropertyNameAsMethodParameterName};";
+        });
+        return string.Join("\n\t\t", result);
+    }
+
+    public static List<string> GetAsMethodCallParameters(this List<EntityProperty> properties, string objectPrefix = "")
+    {
+        objectPrefix = !string.IsNullOrEmpty(objectPrefix) && !objectPrefix.EndsWith(".")
+            ? objectPrefix + "."
+            : objectPrefix;
+        return properties
+            .Select(x => $"{objectPrefix}{x.PropertyName}")
+            .ToList();
+    }
+
+    public static string FormatAsMethodCallParameters(this List<EntityProperty> properties, string objectPrefix = "")
+    {
+        var result = GetAsMethodCallParameters(properties, objectPrefix);
+        return string.Join(", ", result);
     }
 }
 

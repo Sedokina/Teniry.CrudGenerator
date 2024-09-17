@@ -32,7 +32,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
 
     private void GenerateCommand(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol, true);
+        var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
         var model = new
         {
             CommandName = _commandName,
@@ -45,10 +45,9 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
 
     private void GenerateDto(string templatePath)
     {
-        var primaryKeys = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol);
-        var properties = primaryKeys.ToClassPropertiesString();
-        var constructorParameters = primaryKeys.ToMethodParametersString();
-        var constructorBody = primaryKeys.ToConstructorBodyString();
+        var properties = EntityScheme.PrimaryKeys.FormatAsProperties();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
+        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
         var model = new
         {
             DtoName = _dtoName,
@@ -61,14 +60,14 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
 
     private void GenerateHandler(string templatePath)
     {
-        var constructorParams = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("entity.");
+        var constructorParams = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("entity.");
 
         var model = new
         {
             CommandName = _commandName,
             DtoName = _dtoName,
             HandlerName = _handlerName,
-            CreatedDtoConstructorParams = string.Join(", ", constructorParams)
+            CreatedDtoConstructorParams = constructorParams
         };
 
         WriteFile(templatePath, model, _handlerName);
@@ -76,9 +75,9 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
 
     private void GenerateEndpoint(string templatePath)
     {
-        var props = PropertiesExtractor.GetPrimaryKeysOfEntity(Symbol).ToPropertiesNamesList("result.");
+        var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
         var getEntityRoute = Configuration.FullConfiguration.GetByIdQueryGenerator.EndpointRouteConfiguration
-            .GetRoute(EntityScheme.EntityName, props);
+            .GetRoute(EntityScheme.EntityName, parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
         var model = new
