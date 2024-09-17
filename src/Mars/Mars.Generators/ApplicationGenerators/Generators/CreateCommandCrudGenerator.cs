@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
+public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTypeGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -13,7 +13,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration) : base(context, symbol, configuration)
+        CommandWithReturnTypeGeneratorConfiguration configuration) : base(context, symbol, configuration)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityName);

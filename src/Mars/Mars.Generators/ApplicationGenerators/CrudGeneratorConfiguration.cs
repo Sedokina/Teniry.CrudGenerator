@@ -15,7 +15,7 @@ public sealed class CrudGeneratorConfiguration
     public PutBusinessLogicIntoNamespaceConfiguration BusinessLogicNamespaceBasePath { get; set; }
     public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; }
     public NameConfiguration FeatureNameConfiguration { get; set; }
-    public BaseCommandGeneratorConfiguration CreateCommandCommandGenerator { get; set; }
+    public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; }
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; }
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; }
     public BaseQueryGeneratorConfiguration GetByIdQueryGenerator { get; set; }
@@ -27,7 +27,7 @@ public sealed class CrudGeneratorConfiguration
         BusinessLogicNamespaceBasePath = new("{{assembly_name}}.Application.{{feature_name}}.{{function_name}}");
         EndpointsNamespaceBasePath = new("{{assembly_name}}.Endpoints.{{entity_name}}Endpoints");
         FeatureNameConfiguration = new("{{entity_name}}Feature");
-        CreateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
+        CreateCommandCommandGenerator = new CommandWithReturnTypeGeneratorConfiguration
         {
             FullConfiguration = this,
             FunctionNameConfiguration = new("Create{{entity_name}}"),
@@ -187,6 +187,19 @@ public interface IQueryCommandGeneratorConfiguration
 }
 
 public class BaseCommandGeneratorConfiguration : IQueryCommandGeneratorConfiguration
+{
+    public CrudGeneratorConfiguration FullConfiguration { get; set; }
+    public NameConfiguration FunctionNameConfiguration { get; set; }
+    public string CommandTemplatePath { get; set; }
+    public string HandlerTemplatePath { get; set; }
+    public string EndpointTemplatePath { get; set; }
+    public NameConfiguration CommandNameConfiguration { get; set; }
+    public NameConfiguration HandlerNameConfiguration { get; set; }
+    public NameConfiguration EndpointNameConfiguration { get; set; }
+    public EndpointRouteConfiguration EndpointRouteConfiguration { get; set; }
+}
+
+public class CommandWithReturnTypeGeneratorConfiguration : IQueryCommandGeneratorConfiguration
 {
     public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
