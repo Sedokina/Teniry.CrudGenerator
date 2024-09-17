@@ -36,6 +36,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
         var model = new
         {
             CommandName = _commandName,
+            DtoName = _dtoName,
             Properties = properties
         };
 

@@ -39,6 +39,7 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         var model = new
         {
             QueryName = _queryName,
+            DtoName = _dtoName,
             Properties = properties,
             ConstructorParameters = constructorParameters,
             ConstructorBody = constructorBody

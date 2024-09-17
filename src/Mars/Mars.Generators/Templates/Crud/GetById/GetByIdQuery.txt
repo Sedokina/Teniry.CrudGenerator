@@ -1,5 +1,14 @@
+using ITech.Cqrs.Domain.Exceptions;
+
 namespace {{business_logic_namespace}};
 
+/// <summary>
+///     Get {{entity_title}} by id
+/// </summary>
+/// <returns>Returns full entity data of type <see cref="{{dto_name}}" /></returns>
+/// <exception cref="EfEntityNotFoundException">
+///     When {{entity_title}} does not exist
+/// </exception>
 public partial class {{query_name}}
 {
     {{properties}}

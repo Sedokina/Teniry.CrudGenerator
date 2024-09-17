@@ -2,6 +2,10 @@ using ITech.Cqrs.Queryables.Page;
 
 namespace {{business_logic_namespace}};
 
+/// <summary>
+///     Get list of {{entity_title}}
+/// </summary>
+/// <returns>Returns all {{entity_title}} records of type <see cref="{{dto_name}}" /></returns>
 public partial class {{query_name}} : IPage
 {
     /// <inheritdoc />

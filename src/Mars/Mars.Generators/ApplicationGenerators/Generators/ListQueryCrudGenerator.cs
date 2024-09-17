@@ -39,6 +39,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         {
             EntityNamespace = UsingEntityNamespace,
             QueryName = _queryName,
+            DtoName = _dtoName,
             PutIntoNamespace = BusinessLogicNamespace
         };
         WriteFile(templatePath, model, _queryName);
