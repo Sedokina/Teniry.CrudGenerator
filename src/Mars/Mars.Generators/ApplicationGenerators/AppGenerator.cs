@@ -32,7 +32,7 @@ public class AppGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            var entityScheme = EntitySchemeFactory.Construct(symbol);
+            var entityScheme = EntitySchemeFactory.Construct(symbol, dbContextScheme);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,

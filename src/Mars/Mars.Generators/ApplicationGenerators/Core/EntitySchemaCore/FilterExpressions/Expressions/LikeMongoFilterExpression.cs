@@ -3,9 +3,9 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 
-public class LikeFilterExpression : FilterExpression
+public class LikeMongoFilterExpression : FilterExpression
 {
-    public LikeFilterExpression() : base(FilterType.Like)
+    public LikeMongoFilterExpression() : base(FilterType.Like)
     {
     }
 
@@ -14,7 +14,7 @@ public class LikeFilterExpression : FilterExpression
         sb.AppendLine($"if({filterPropertyName} is not null)");
         sb.AppendLine("{");
         sb.AppendLine(
-            $"query = query.Where(x => EF.Functions.Like(x.{entityPropertyToFilter}, $\"%{{{filterPropertyName}}}%\"));");
+            $"query = query.Where(x => x.{entityPropertyToFilter}.ToLower().Contains({filterPropertyName}.ToLower()));");
         sb.AppendLine("}");
 
         return sb;

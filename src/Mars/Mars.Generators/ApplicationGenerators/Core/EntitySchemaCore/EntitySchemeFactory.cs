@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
@@ -12,9 +11,9 @@ namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 public class EntitySchemeFactory
 {
-    public static EntityScheme Construct(ISymbol symbol)
+    public static EntityScheme Construct(ISymbol symbol, DbContextScheme dbContextScheme)
     {
-        var properties = GetEntityProperties(symbol);
+        var properties = GetEntityProperties(symbol, dbContextScheme);
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
         var entityTitle = new EntityTitle(GetTitleFromEntityName(entityName.ToString()),
             GetTitleFromEntityName(entityName.PluralName));
@@ -40,7 +39,7 @@ public class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private static List<EntityProperty> GetEntityProperties(ISymbol symbol)
+    private static List<EntityProperty> GetEntityProperties(ISymbol symbol, DbContextScheme dbContextScheme)
     {
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<EntityProperty>();
@@ -55,16 +54,18 @@ public class EntitySchemeFactory
 
             var isPrimaryKey = IsPrimaryKey(symbol.Name, propertySymbol.Name);
             var isForeignKey = IsForeignKey(propertySymbol.Name);
+            var filterProperties = ConstructFilterProperties(
+                isPrimaryKey || isForeignKey,
+                propertyTypeName,
+                propertySymbol.Name,
+                propertySymbol.Type,
+                dbContextScheme);
             result.Add(new EntityProperty(
                 propertyTypeName,
                 propertySymbol.Name,
                 propertySymbol.Name.ToLowerFirstChar(),
                 isPrimaryKey,
-                ConstructFilterProperties(
-                    isPrimaryKey || isForeignKey,
-                    propertyTypeName,
-                    propertySymbol.Name,
-                    propertySymbol.Type),
+                filterProperties,
                 propertySymbol.Type.IsSimple(),
                 propertySymbol.Name.ToLowerFirstChar()
             ));
@@ -77,11 +78,18 @@ public class EntitySchemeFactory
         bool isForeignOrPrimaryKey,
         string propertyTypeName,
         string propertyName,
-        ITypeSymbol propertyType)
+        ITypeSymbol propertyType,
+        DbContextScheme dbContextScheme)
     {
         if (isForeignOrPrimaryKey)
         {
-            return [new EntityFilterProperty($"{propertyTypeName}[]?", propertyName, new ContainsFilterExpression())];
+            return
+            [
+                new EntityFilterProperty(
+                    $"{propertyTypeName}[]?",
+                    propertyName,
+                    dbContextScheme.GetFilterExpression(FilterType.Contains))
+            ];
         }
 
         if (propertyType.NullableAnnotation != NullableAnnotation.Annotated)
@@ -96,19 +104,19 @@ public class EntitySchemeFactory
                 new EntityFilterProperty(
                     propertyTypeName,
                     $"{propertyName}From",
-                    new GreaterThanOrEqualFilterExpression()),
+                    dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)),
                 new EntityFilterProperty(
                     propertyTypeName,
                     $"{propertyName}To",
-                    new LessThanFilterExpression())
+                    dbContextScheme.GetFilterExpression(FilterType.LessThan))
             ];
         }
 
         if (propertyType.IsSimple())
         {
             FilterExpression filterExpression = propertyType.SpecialType == SpecialType.System_String
-                ? new LikeMongoFilterExpression()
-                : new EqualsFilterExpression();
+                ? dbContextScheme.GetFilterExpression(FilterType.Like)
+                : dbContextScheme.GetFilterExpression(FilterType.Equals);
             return [new EntityFilterProperty(propertyTypeName, propertyName, filterExpression)];
         }
 

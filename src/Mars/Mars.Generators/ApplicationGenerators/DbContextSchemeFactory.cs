@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -51,6 +54,44 @@ public class DbContextSchemeFactory
         return new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
             dbContextClassSymbol!.Name,
-            dbProviderArgumentValue);
+            dbProviderArgumentValue,
+            GetFilterExpressionsFor(dbProviderArgumentValue));
+    }
+
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider)
+    {
+        switch (provider)
+        {
+            case DbContextDbProvider.Mongo:
+                return GetFilterExpressionsForMongo();
+            case DbContextDbProvider.Postgres:
+                return GetFilterExpressionsForPostgres();
+            default:
+                throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
+        }
+    }
+
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForPostgres()
+    {
+        return new Dictionary<FilterType, FilterExpression>
+        {
+            { FilterType.Contains, new ContainsFilterExpression() },
+            { FilterType.Equals, new EqualsFilterExpression() },
+            { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
+            { FilterType.LessThan, new LessThanFilterExpression() },
+            { FilterType.Like, new LikeFilterExpression() },
+        };
+    }
+
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForMongo()
+    {
+        return new Dictionary<FilterType, FilterExpression>
+        {
+            { FilterType.Contains, new ContainsFilterExpression() },
+            { FilterType.Equals, new EqualsFilterExpression() },
+            { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
+            { FilterType.LessThan, new LessThanFilterExpression() },
+            { FilterType.Like, new LikeMongoFilterExpression() },
+        };
     }
 }
