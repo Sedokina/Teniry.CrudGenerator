@@ -1,5 +1,6 @@
-using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
@@ -39,10 +40,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
     private void GenerateQuery(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol)
-            .ToClassPropertiesString();
-        var sortKeysList = PropertiesExtractor.GetAllPropertiesOfEntityForSort(Symbol).Select(x => $"\"{x.SortKey}\"");
-        var sortKeys = string.Join(",\n\t\t\t", sortKeysList);
+        var properties = EntityScheme.Properties.FormatAsFilterProperties();
+        var sortKeys = EntityScheme.SortableProperties.FormatAsSortKeys();
 
         var model = new
         {
@@ -57,7 +56,7 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
     private void GenerateListItemDto(string templatePath)
     {
-        var properties = PropertiesExtractor.GetAllPropertiesOfEntity(Symbol);
+        var properties = EntityScheme.Properties.FormatAsProperties();
         var model = new
         {
             ListItemDtoName = _listItemDtoName,
@@ -80,17 +79,14 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
 
     private void GenerateFilter(string templatePath)
     {
-        var filterProperties = PropertiesExtractor.GetAllPropertiesOfEntityForFilter(Symbol);
-        var propertiesFormatted = filterProperties.ToClassPropertiesString();
-        var filter = filterProperties.ToFilterString();
-
-        var sortProperties = PropertiesExtractor.GetAllPropertiesOfEntityForSort(Symbol);
-        var sorts = sortProperties.ToSortString();
+        var properties = EntityScheme.Properties.FormatAsFilterProperties();
+        var filter = EntityScheme.Properties.FormatAsFilterBody();
+        var sorts = EntityScheme.SortableProperties.FormatAsSortCalls();
 
         var model = new
         {
             FilterName = _filterName,
-            Properties = propertiesFormatted,
+            Properties = properties,
             Filter = filter,
             Sorts = sorts
         };

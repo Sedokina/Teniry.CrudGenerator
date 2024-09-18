@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Generators;
 using Microsoft.CodeAnalysis;
 
@@ -29,7 +30,7 @@ public class AppGenerator : ISourceGenerator
             // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
             var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
 
-            var entityScheme = EntityScheme.Construct(symbol);
+            var entityScheme = EntitySchemeFactory.Construct(symbol);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
