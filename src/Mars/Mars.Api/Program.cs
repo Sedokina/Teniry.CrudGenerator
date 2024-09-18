@@ -1,12 +1,8 @@
 using System.Reflection;
 using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
-using ITech.Cqrs.Cqrs.Queries;
 using Mars.Api;
-using Mars.Api.Application.CountryFeature.GetListCountry;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 

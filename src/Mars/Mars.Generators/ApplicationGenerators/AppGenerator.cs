@@ -20,6 +20,8 @@ public class AppGenerator : ISourceGenerator
     {
         if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver) return;
 
+        var dbContextScheme = DbContextSchemeFactory.Construct(context);
+
         List<EndpointMap> endpointsMaps = new();
         var configuration = new CrudGeneratorConfiguration();
 

@@ -1,9 +1,10 @@
+using Mars.Generators.ApplicationGenerators.Core;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace Mars.Api;
 
+[UseDbContext(DbContextDbProvider.Mongo)]
 public class MarsDb : DbContext
 {
     public DbSet<Currency> Currencies { get; set; }
