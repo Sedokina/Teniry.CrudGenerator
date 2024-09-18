@@ -12,10 +12,10 @@ public static class EntitySchemeFilterPropertiesFormatter {
         foreach (var filterProperty in properties.SelectMany(property => property.FilterProperties))
         {
             stringBuilder
-                .AppendLine($"\tpublic {filterProperty.TypeName} {filterProperty.PropertyName} {{ get; set; }}");
+                .AppendLine($"public {filterProperty.TypeName} {filterProperty.PropertyName} {{ get; set; }}");
         }
 
-        return stringBuilder.ToString().Trim().TrimStart('\t');
+        return stringBuilder.ToString();
     }
 
     public static string FormatAsFilterBody(this List<EntityProperty> properties)
@@ -26,16 +26,14 @@ public static class EntitySchemeFilterPropertiesFormatter {
         {
             foreach (var filterProperty in property.FilterProperties)
             {
-                stringBuilder.Append("\t");
                 filterProperty.FilterExpression.Format(
                     stringBuilder,
                     filterProperty.PropertyName,
                     property.PropertyName);
-                stringBuilder.Append("\n");
             }
         }
 
 
-        return stringBuilder.ToString().Trim().TrimStart('\t');
+        return stringBuilder.ToString();
     }
 }

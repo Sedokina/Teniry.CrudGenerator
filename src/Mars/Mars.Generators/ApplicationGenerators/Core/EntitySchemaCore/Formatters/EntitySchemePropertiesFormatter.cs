@@ -12,7 +12,7 @@ public static class EntitySchemePropertiesFormatter
         var stringBuilder = new StringBuilder();
         foreach (var property in properties)
         {
-            stringBuilder.AppendLine($"\tpublic {property.TypeName} {property.PropertyName} {{ get; set; }}");
+            stringBuilder.AppendLine($"public {property.TypeName} {property.PropertyName} {{ get; set; }}");
         }
 
         return stringBuilder.ToString().Trim();
@@ -21,7 +21,7 @@ public static class EntitySchemePropertiesFormatter
     public static string FormatAsMethodDeclarationParameters(this List<EntityProperty> properties)
     {
         var result = properties.Select(x => $"{x.TypeName} {x.PropertyNameAsMethodParameterName}");
-        return string.Join("\n\t\t", result);
+        return string.Join("", result);
     }
 
     public static string FormatAsConstructorBody(this List<EntityProperty> properties)
@@ -35,7 +35,7 @@ public static class EntitySchemePropertiesFormatter
 
             return $"{x.PropertyName} = {x.PropertyNameAsMethodParameterName};";
         });
-        return string.Join("\n\t\t", result);
+        return string.Join("", result);
     }
 
     public static List<string> GetAsMethodCallParameters(this List<EntityProperty> properties, string objectPrefix = "")

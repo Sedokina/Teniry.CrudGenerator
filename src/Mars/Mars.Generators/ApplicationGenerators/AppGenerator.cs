@@ -103,10 +103,10 @@ internal class MapEndpointsGenerator : BaseGenerator
             .ToList();
         var model = new
         {
-            Usings = string.Join("\n", usings),
+            Usings = string.Join("", usings),
             PutIntoNamespace = "Mars.Api",
             ExtensionClassName = _endpointMapsClassName,
-            Maps = string.Join("\n\t\t", maps)
+            Maps = string.Join("", maps)
         };
         WriteFile(
             $"{_configuration.TemplatesBasePath}.GeneratedEndpointsMapExtension.txt",

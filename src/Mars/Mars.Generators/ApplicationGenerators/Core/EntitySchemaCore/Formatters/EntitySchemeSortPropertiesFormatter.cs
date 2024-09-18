@@ -8,7 +8,7 @@ public static class EntitySchemeSortPropertiesFormatter {
     public static string FormatAsSortKeys(this List<EntityProperty> properties)
     {
         var sortKeys = properties.Select(x => $"\"{x.SortKey}\"");
-        return string.Join(",\n\t\t\t", sortKeys);
+        return string.Join(",", sortKeys);
     }
 
     public static string FormatAsSortCalls(this List<EntityProperty> properties)
@@ -16,6 +16,6 @@ public static class EntitySchemeSortPropertiesFormatter {
         var result = properties
             .Select(property => $"{{ \"{property.SortKey}\", x => x.{property.PropertyName} }}")
             .ToList();
-        return string.Join(",\n\t\t\t", result);
+        return string.Join(",", result);
     }
 }

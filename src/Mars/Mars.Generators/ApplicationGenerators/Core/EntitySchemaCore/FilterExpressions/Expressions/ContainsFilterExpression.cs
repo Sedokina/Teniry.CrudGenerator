@@ -11,10 +11,10 @@ public class ContainsFilterExpression : FilterExpression
 
     public override StringBuilder Format(StringBuilder sb, string filterPropertyName, string entityPropertyToFilter)
     {
-        sb.AppendLine($"\tif({filterPropertyName} is not null)");
-        sb.AppendLine("\t\t{");
-        sb.AppendLine($"\t\t\tquery = query.Where(x => {entityPropertyToFilter}.Contains(x.{filterPropertyName}));");
-        sb.AppendLine("\t\t}");
+        sb.AppendLine($"if({filterPropertyName} is not null)");
+        sb.AppendLine("{");
+        sb.AppendLine($"query = query.Where(x => {entityPropertyToFilter}.Contains(x.{filterPropertyName}));");
+        sb.AppendLine("}");
 
         return sb;
     }

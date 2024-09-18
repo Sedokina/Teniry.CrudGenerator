@@ -11,11 +11,11 @@ public class LikeFilterExpression : FilterExpression
 
     public override StringBuilder Format(StringBuilder sb, string filterPropertyName, string entityPropertyToFilter)
     {
-        sb.AppendLine($"\tif({filterPropertyName} is not null)");
-        sb.AppendLine("\t\t{");
+        sb.AppendLine($"if({filterPropertyName} is not null)");
+        sb.AppendLine("{");
         sb.AppendLine(
-            $"\t\t\tquery = query.Where(x => EF.Functions.Like(x.{entityPropertyToFilter}, $\"%{{{filterPropertyName}}}%\"));");
-        sb.AppendLine("\t\t}");
+            $"query = query.Where(x => EF.Functions.Like(x.{entityPropertyToFilter}, $\"%{{{filterPropertyName}}}%\"));");
+        sb.AppendLine("}");
 
         return sb;
     }
