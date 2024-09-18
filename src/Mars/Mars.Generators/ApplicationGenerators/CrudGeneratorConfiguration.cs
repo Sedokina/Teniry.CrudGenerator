@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Scriban;
 
@@ -100,13 +101,13 @@ public sealed class CrudGeneratorConfiguration
             DtoListItemTemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
             FilterTemplatePath = $"{TemplatesBasePath}.GetList.GetListFilter.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.GetList.GetListHandler.txt",
-            QueryNameConfiguration = new("Get{{entity_name}}ListQuery"),
-            DtoNameConfiguration = new("{{entity_name}}ListDto"),
-            ListItemDtoNameConfiguration = new("{{entity_name}}ListItemDto"),
-            FilterNameConfiguration = new("Get{{entity_name}}ListFilter"),
-            HandlerNameConfiguration = new("Get{{entity_name}}ListHandler"),
+            QueryNameConfiguration = new("Get{{entity_name_plural}}Query"),
+            DtoNameConfiguration = new("{{entity_name_plural}}Dto"),
+            ListItemDtoNameConfiguration = new("{{entity_name_plural}}ListItemDto"),
+            FilterNameConfiguration = new("Get{{entity_name_plural}}Filter"),
+            HandlerNameConfiguration = new("Get{{entity_name_plural}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
-            EndpointNameConfiguration = new("Get{{entity_name}}ListEndpoint"),
+            EndpointNameConfiguration = new("Get{{entity_name_plural}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
         };
     }
@@ -121,7 +122,7 @@ public sealed class CrudGeneratorConfiguration
 public class PutBusinessLogicIntoNamespaceConfiguration(string namespacePath)
 {
     public string GetNamespacePath(
-        string entityName,
+        EntityName entityName,
         string assemblyName,
         NameConfiguration featureName,
         NameConfiguration functionNameConfiguration)
@@ -145,7 +146,7 @@ public class PutBusinessLogicIntoNamespaceConfiguration(string namespacePath)
 public class PutEndpointsIntoNamespaceConfiguration(string namespacePath)
 {
     public string GetNamespacePath(
-        string entityName,
+        EntityName entityName,
         string assemblyName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
@@ -163,10 +164,15 @@ public class PutEndpointsIntoNamespaceConfiguration(string namespacePath)
 /// </summary>
 public class NameConfiguration(string name)
 {
-    public string GetName(string entityName)
+    public string GetName(EntityName entityName)
     {
         var putIntoNamespaceTemplate = Template.Parse(name);
-        return putIntoNamespaceTemplate.Render(new { entityName });
+        var model = new
+        {
+            EntityName = entityName.Name,
+            EntityNamePlural = entityName.PluralName
+        };
+        return putIntoNamespaceTemplate.Render(model);
     }
 }
 

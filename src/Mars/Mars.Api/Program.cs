@@ -1,7 +1,9 @@
 using System.Reflection;
 using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
+using ITech.Cqrs.Cqrs.Queries;
 using Mars.Api;
+using Mars.Api.Application.CountryFeature.GetListCountry;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,13 +50,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", async (MarsDb db) =>
+app.MapGet("/weatherforecast", async ([AsParameters] GetCountriesQuery query, IQueryDispatcher queryDispatcher, CancellationToken cancellation) =>
 {
-    // return await db.Currencies
-    //     .Include(x => x.Country)
-    //     .ToListAsync();
-
-    return TypedResults.Created("CreateGwd", new { id = "awdawd" });
+    var result = await queryDispatcher.DispatchAsync<GetCountriesQuery, CountriesDto>(query, cancellation);
+    return TypedResults.Ok(result);
 });
 
 
@@ -62,8 +61,3 @@ app.MapGet("/weatherforecast", async (MarsDb db) =>
 app.MapGeneratedEndpoints();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

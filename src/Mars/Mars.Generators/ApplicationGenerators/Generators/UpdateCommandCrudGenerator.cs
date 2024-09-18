@@ -60,7 +60,7 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
 
         WriteFile(templatePath, model, _handlerName);
     }
-    
+
     private void GenerateViewModel(string templatePath)
     {
         var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
@@ -87,12 +87,13 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        
+
         var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
-        EndpointMap = new EndpointMap(EntityScheme.EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Put",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName, constructorParametersForRoute),
+            Configuration.EndpointRouteConfiguration
+                .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

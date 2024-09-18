@@ -117,10 +117,10 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMap = new EndpointMap(EntityScheme.EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

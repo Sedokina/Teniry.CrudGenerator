@@ -89,6 +89,7 @@ public abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
         baseProps.Import(new
         {
             EntityName = EntityScheme.EntityName,
+            EntityNamePlural = EntityScheme.EntityNamePlural,
             EntityNamespace = EntityScheme.EntityNamespace,
             BusinessLogicNamespace = BusinessLogicNamespace,
             EndpointNamespace = EndpointNamespace,

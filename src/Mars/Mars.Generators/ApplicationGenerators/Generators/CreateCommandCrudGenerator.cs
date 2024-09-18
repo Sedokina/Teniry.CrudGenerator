@@ -79,7 +79,7 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
         var getEntityRoute = Configuration.FullConfiguration.GetByIdQueryGenerator.EndpointRouteConfiguration
-            .GetRoute(EntityScheme.EntityName, parameters);
+            .GetRoute(EntityScheme.EntityName.ToString(), parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
         var model = new
@@ -91,10 +91,10 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
         };
 
         WriteFile(templatePath, model, _endpointClassName);
-        EndpointMap = new EndpointMap(EntityScheme.EntityName,
+        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Post",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName),
+            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
             $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
     }
 }

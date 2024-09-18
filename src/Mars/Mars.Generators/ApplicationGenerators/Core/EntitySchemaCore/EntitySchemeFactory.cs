@@ -17,8 +17,7 @@ public class EntitySchemeFactory
         var properties = GetEntityProperties(symbol);
         var pluralEntityName = GetPluralEntityName(symbol.Name);
         return new EntityScheme(symbol,
-            symbol.Name,
-            pluralEntityName,
+            new(symbol.Name, pluralEntityName),
             GetTitleFromEntityName(symbol.Name),
             GetTitleFromEntityName(pluralEntityName),
             symbol.ContainingNamespace.ToString(),

@@ -4,10 +4,21 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
+public class EntityName(string name, string pluralName)
+{
+    public string Name { get; set; } = name;
+    public string PluralName { get; set; } = pluralName;
+
+    public override string ToString()
+    {
+        return Name;
+    }
+}
+
 public class EntityScheme
 {
     public ISymbol EntitySymbol { get; }
-    public string EntityName { get; set; }
+    public EntityName EntityName { get; set; }
     public string EntityNamePlural { get; set; }
     public string EntityTitle { get; set; }
     public string EntityTitlePlural { get; set; }
@@ -19,8 +30,7 @@ public class EntityScheme
 
     public EntityScheme(
         ISymbol entitySymbol,
-        string entityName,
-        string entityNamePlural,
+        EntityName entityName,
         string entityTitle,
         string entityTitlePlural,
         string entityNamespace,

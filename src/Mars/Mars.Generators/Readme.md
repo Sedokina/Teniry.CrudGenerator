@@ -1,4 +1,6 @@
 # Подключение библиотеки к проекту с Source Generator
+см. https://www.youtube.com/watch?v=wp-dxZXRkJ4
+
 Ниже приведена конфигурация `.csproj`, которая нужна для того чтобы использовать подключаемые библиотеки
 в Source Generator'ах. В данном примере подключается библиотека `Inflector.NetStandard`
 ```xml
