@@ -8,7 +8,9 @@ public class EntityScheme
 {
     public ISymbol EntitySymbol { get; }
     public string EntityName { get; set; }
+    public string EntityNamePlural { get; set; }
     public string EntityTitle { get; set; }
+    public string EntityTitlePlural { get; set; }
     public string EntityNamespace { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
@@ -18,7 +20,9 @@ public class EntityScheme
     public EntityScheme(
         ISymbol entitySymbol,
         string entityName,
+        string entityNamePlural,
         string entityTitle,
+        string entityTitlePlural,
         string entityNamespace,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,

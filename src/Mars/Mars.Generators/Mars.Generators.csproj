@@ -4,9 +4,11 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Pluralize.NET" Version="1.0.2" PrivateAssets="all" GeneratePathProperty="true"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" PrivateAssets="all"/>
         <PackageReference Include="Scriban" Version="3.9.0" IncludeAssets="Build"/>
@@ -14,6 +16,19 @@
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
     </ItemGroup>
 
+    <PropertyGroup>
+        <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    </PropertyGroup>
+
+    <Target Name="GetDependencyTargetPaths">
+        <ItemGroup>
+            <TargetPathWithTargetPlatformMoniker Include="$(PKGpluralize_net)\lib\netstandard2.0\Pluralize.NET.dll" IncludeRuntimeDependency="false" />
+            <!-- Pack both our DLL and the Dependency DLL into a Generated Nuget Package -->
+            <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+            <None Include="$(PKGpluralize_net)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        </ItemGroup>
+    </Target>
+    
     <ItemGroup>
         <EmbeddedResource Include="Templates\**\*.txt"/>
     </ItemGroup>

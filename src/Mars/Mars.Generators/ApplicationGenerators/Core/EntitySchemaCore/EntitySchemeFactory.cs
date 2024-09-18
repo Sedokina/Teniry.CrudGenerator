@@ -6,6 +6,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
 using Microsoft.CodeAnalysis;
+using Pluralize.NET;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
@@ -14,14 +15,29 @@ public class EntitySchemeFactory
     public static EntityScheme Construct(ISymbol symbol)
     {
         var properties = GetEntityProperties(symbol);
+        var pluralEntityName = GetPluralEntityName(symbol.Name);
         return new EntityScheme(symbol,
             symbol.Name,
+            pluralEntityName,
             GetTitleFromEntityName(symbol.Name),
+            GetTitleFromEntityName(pluralEntityName),
             symbol.ContainingNamespace.ToString(),
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
             properties.Where(x => !x.IsEntityId).ToList(),
             properties.Where(x => x.CanBeSorted).ToList());
+    }
+
+    private static string GetPluralEntityName(string entityName)
+    {
+        var pluralizer = new Pluralizer();
+        var pluralEntityName = pluralizer.Pluralize(entityName);
+        if (entityName.Equals(pluralEntityName))
+        {
+            return $"{entityName}List";
+        }
+
+        return pluralEntityName;
     }
 
     private static List<EntityProperty> GetEntityProperties(ISymbol symbol)
