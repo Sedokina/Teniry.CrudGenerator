@@ -5,6 +5,8 @@ using ITech.Cqrs.Cqrs.Queries;
 using Mars.Api;
 using Mars.Api.Application.CountryFeature.GetListCountry;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +31,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     // This is required for swagger shows ObjectId as string in endpoints
     options.SchemaFilter<MongoObjectIdSwaggerParameterFilter>();
-    
+
     // Add swagger documentation from an assembly xml file
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
@@ -50,9 +52,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/weatherforecast", async ([AsParameters] GetCountriesQuery query, IQueryDispatcher queryDispatcher, CancellationToken cancellation) =>
+app.MapGet("/weatherforecast", async (string name, MarsDb db) =>
 {
-    var result = await queryDispatcher.DispatchAsync<GetCountriesQuery, CountriesDto>(query, cancellation);
+    var result = await db.Set<Country>()
+        .Where(x => x.Name.ToLower().Contains(name.ToLower()))
+        .ToListAsync();
     return TypedResults.Ok(result);
 });
 

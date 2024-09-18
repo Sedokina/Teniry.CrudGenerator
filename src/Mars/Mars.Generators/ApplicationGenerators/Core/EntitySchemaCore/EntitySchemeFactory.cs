@@ -107,7 +107,7 @@ public class EntitySchemeFactory
         if (propertyType.IsSimple())
         {
             FilterExpression filterExpression = propertyType.SpecialType == SpecialType.System_String
-                ? new LikeFilterExpression()
+                ? new LikeMongoFilterExpression()
                 : new EqualsFilterExpression();
             return [new EntityFilterProperty(propertyTypeName, propertyName, filterExpression)];
         }
