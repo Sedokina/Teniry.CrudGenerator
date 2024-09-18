@@ -16,7 +16,8 @@ public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorCon
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseQueryGeneratorConfiguration configuration,
-        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);

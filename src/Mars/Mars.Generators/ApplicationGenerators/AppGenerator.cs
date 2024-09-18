@@ -38,7 +38,8 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.GetByIdQueryGenerator,
-                entityScheme);
+                entityScheme,
+                dbContextScheme);
             generateGetByIdQuery.RunGenerator();
             endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
 
@@ -46,7 +47,8 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.GetListQueryGenerator,
-                entityScheme);
+                entityScheme,
+                dbContextScheme);
             generateListQuery.RunGenerator();
             endpointsMaps.Add(generateListQuery.EndpointMap);
 
@@ -54,7 +56,8 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.CreateCommandCommandGenerator,
-                entityScheme);
+                entityScheme,
+                dbContextScheme);
             generateCreateCommand.RunGenerator();
             endpointsMaps.Add(generateCreateCommand.EndpointMap);
 
@@ -62,7 +65,8 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.UpdateCommandCommandGenerator,
-                entityScheme);
+                entityScheme,
+                dbContextScheme);
             generateUpdateCommand.RunGenerator();
             endpointsMaps.Add(generateUpdateCommand.EndpointMap);
 
@@ -70,7 +74,8 @@ public class AppGenerator : ISourceGenerator
                 context,
                 symbol,
                 configuration.DeleteCommandCommandGenerator,
-                entityScheme);
+                entityScheme,
+                dbContextScheme);
             generateDeleteCommand.RunGenerator();
             endpointsMaps.Add(generateDeleteCommand.EndpointMap);
         }

@@ -16,7 +16,8 @@ public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTyp
         GeneratorExecutionContext context,
         ISymbol symbol,
         CommandWithReturnTypeGeneratorConfiguration configuration,
-        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);

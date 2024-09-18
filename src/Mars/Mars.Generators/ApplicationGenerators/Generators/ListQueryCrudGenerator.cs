@@ -18,7 +18,8 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         GeneratorExecutionContext context,
         ISymbol symbol,
         ListQueryGeneratorConfiguration configuration,
-        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
         _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
         _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);

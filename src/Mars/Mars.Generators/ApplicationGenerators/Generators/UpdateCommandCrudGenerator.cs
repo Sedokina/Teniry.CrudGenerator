@@ -16,7 +16,8 @@ public class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerator
         GeneratorExecutionContext context,
         ISymbol symbol,
         BaseCommandGeneratorConfiguration configuration,
-        EntityScheme entityScheme) : base(context, symbol, configuration, entityScheme)
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
         _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
         _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
