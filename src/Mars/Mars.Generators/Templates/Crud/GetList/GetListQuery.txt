@@ -4,9 +4,9 @@ using ITech.Cqrs.Queryables.Sort;
 namespace {{business_logic_namespace}};
 
 /// <summary>
-///     Get list of {{entity_title}}
+///     Get {{plural_entity_title}}
 /// </summary>
-/// <returns>Returns all {{entity_title}} records of type <see cref="{{dto_name}}" /></returns>
+/// <returns>Returns {{plural_entity_title}} of type <see cref="{{dto_name}}" /></returns>
 public partial class {{query_name}} : IDefineSortable, IPage
 {
     {{properties}}

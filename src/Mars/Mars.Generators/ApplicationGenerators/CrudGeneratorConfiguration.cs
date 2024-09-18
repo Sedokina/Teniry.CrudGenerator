@@ -101,13 +101,13 @@ public sealed class CrudGeneratorConfiguration
             DtoListItemTemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
             FilterTemplatePath = $"{TemplatesBasePath}.GetList.GetListFilter.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.GetList.GetListHandler.txt",
-            QueryNameConfiguration = new("Get{{entity_name_plural}}Query"),
-            DtoNameConfiguration = new("{{entity_name_plural}}Dto"),
-            ListItemDtoNameConfiguration = new("{{entity_name_plural}}ListItemDto"),
-            FilterNameConfiguration = new("Get{{entity_name_plural}}Filter"),
-            HandlerNameConfiguration = new("Get{{entity_name_plural}}Handler"),
+            QueryNameConfiguration = new("Get{{plural_entity_name}}Query"),
+            DtoNameConfiguration = new("{{plural_entity_name}}Dto"),
+            ListItemDtoNameConfiguration = new("{{plural_entity_name}}ListItemDto"),
+            FilterNameConfiguration = new("Get{{plural_entity_name}}Filter"),
+            HandlerNameConfiguration = new("Get{{plural_entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
-            EndpointNameConfiguration = new("Get{{entity_name_plural}}Endpoint"),
+            EndpointNameConfiguration = new("Get{{plural_entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
         };
     }
@@ -170,7 +170,7 @@ public class NameConfiguration(string name)
         var model = new
         {
             EntityName = entityName.Name,
-            EntityNamePlural = entityName.PluralName
+            PluralEntityName = entityName.PluralName
         };
         return putIntoNamespaceTemplate.Render(model);
     }

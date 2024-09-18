@@ -7,9 +7,9 @@ namespace {{endpoint_namespace}};
 public static partial class {{endpoint_class_name}}
 {
     /// <summary>
-    ///     Get list of {{entity_title}}
+    ///     Get {{plural_entity_title}}
     /// </summary>
-    /// <response code="200">Returns full {{entity_title}} data</response>
+    /// <response code="200">Returns {{entity_title}} list</response>
     [ProducesResponseType(typeof({{dto_name}}), 200)]
     public static async Task<IResult> GetAsync(
         [AsParameters] {{query_name}} query,

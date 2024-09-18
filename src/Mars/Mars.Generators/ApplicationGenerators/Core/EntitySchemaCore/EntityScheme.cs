@@ -4,24 +4,11 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
-public class EntityName(string name, string pluralName)
-{
-    public string Name { get; set; } = name;
-    public string PluralName { get; set; } = pluralName;
-
-    public override string ToString()
-    {
-        return Name;
-    }
-}
-
 public class EntityScheme
 {
     public ISymbol EntitySymbol { get; }
     public EntityName EntityName { get; set; }
-    public string EntityNamePlural { get; set; }
-    public string EntityTitle { get; set; }
-    public string EntityTitlePlural { get; set; }
+    public EntityTitle EntityTitle { get; set; }
     public string EntityNamespace { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
@@ -31,8 +18,7 @@ public class EntityScheme
     public EntityScheme(
         ISymbol entitySymbol,
         EntityName entityName,
-        string entityTitle,
-        string entityTitlePlural,
+        EntityTitle entityTitle,
         string entityNamespace,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
@@ -47,5 +33,27 @@ public class EntityScheme
         PrimaryKeys = primaryKeys;
         NotPrimaryKeys = notPrimaryKeys;
         SortableProperties = sortableProperties;
+    }
+}
+
+public class EntityName(string name, string pluralName)
+{
+    public string Name { get; set; } = name;
+    public string PluralName { get; set; } = pluralName;
+
+    public override string ToString()
+    {
+        return Name;
+    }
+}
+
+public class EntityTitle(string title, string pluralTitle)
+{
+    public string Title { get; set; } = title;
+    public string PluralTitle { get; set; } = pluralTitle;
+
+    public override string ToString()
+    {
+        return Title;
     }
 }

@@ -15,11 +15,12 @@ public class EntitySchemeFactory
     public static EntityScheme Construct(ISymbol symbol)
     {
         var properties = GetEntityProperties(symbol);
-        var pluralEntityName = GetPluralEntityName(symbol.Name);
+        var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
+        var entityTitle = new EntityTitle(GetTitleFromEntityName(entityName.ToString()),
+            GetTitleFromEntityName(entityName.PluralName));
         return new EntityScheme(symbol,
-            new(symbol.Name, pluralEntityName),
-            GetTitleFromEntityName(symbol.Name),
-            GetTitleFromEntityName(pluralEntityName),
+            entityName,
+            entityTitle,
             symbol.ContainingNamespace.ToString(),
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
