@@ -4,8 +4,7 @@ using ITech.Cqrs.Queryables.Page;
 using ITech.Cqrs.Queryables.Filter;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using {{entity_namespace}};
-using {{db_context_namespace}};
+{{using_namespaces}}
 
 namespace {{business_logic_namespace}};
 

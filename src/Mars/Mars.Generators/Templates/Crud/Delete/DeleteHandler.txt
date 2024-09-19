@@ -1,6 +1,5 @@
 using ITech.Cqrs.Cqrs.Commands;
-using {{entity_namespace}};
-using {{db_context_namespace}};
+{{using_namespaces}}
 
 namespace {{business_logic_namespace}};
 
