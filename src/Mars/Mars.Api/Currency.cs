@@ -3,7 +3,6 @@ using MongoDB.Bson;
 
 namespace Mars.Api;
 
-[GenerateCrud]
 public class Currency
 {
     // string with [BsonRepresentation(BsonType.ObjectId)] or ObjectId 
@@ -20,7 +19,7 @@ public class Currency
     public bool IsCheck { get; set; }
 }
 
-[GenerateCrud]
+// [GenerateCrud]
 public class Country
 {
     public ObjectId _id { get; set; }

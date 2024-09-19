@@ -14,30 +14,31 @@ public class AppGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new AttributeSyntaxReceiver<GenerateCrudAttribute>());
+        context.RegisterForSyntaxNotifications(() => new EntityGeneratorConfigurationSyntaxReceiver());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not AttributeSyntaxReceiver<GenerateCrudAttribute> syntaxReceiver) return;
+        if (context.SyntaxReceiver is not EntityGeneratorConfigurationSyntaxReceiver syntaxReceiver) return;
 
         var dbContextScheme = DbContextSchemeFactory.Construct(context);
 
         List<EndpointMap> endpointsMaps = new();
         var configuration = new CrudGeneratorConfiguration();
 
-        foreach (var classSyntax in syntaxReceiver.Classes)
+        foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {
-            // Converting the class to semantic model to access much more meaningful data.
-            var model = context.Compilation.GetSemanticModel(classSyntax.SyntaxTree);
-            // Parse to declared symbol, so you can access each part of code separately, such as interfaces, methods, members, contructor parameters etc.
-            var symbol = model.GetDeclaredSymbol(classSyntax) ?? throw new ArgumentException("symbol");
+            var (entityGeneratorConfigurationSymbol, entitySymbol) = classSyntax.AsSymbol(context);
 
-            var entityScheme = EntitySchemeFactory.Construct(symbol, dbContextScheme);
+            var md = context.Compilation.ToMetadataReference();
+            
+            // Activator.CreateInstance(entityGeneratorConfigurationSymbol.Name);
+
+            var entityScheme = EntitySchemeFactory.Construct(entitySymbol, dbContextScheme);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
-                symbol,
+                entitySymbol,
                 configuration.GetByIdQueryGenerator,
                 entityScheme,
                 dbContextScheme);
@@ -46,7 +47,7 @@ public class AppGenerator : ISourceGenerator
 
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
-                symbol,
+                entitySymbol,
                 configuration.GetListQueryGenerator,
                 entityScheme,
                 dbContextScheme);
@@ -55,7 +56,7 @@ public class AppGenerator : ISourceGenerator
 
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
-                symbol,
+                entitySymbol,
                 configuration.CreateCommandCommandGenerator,
                 entityScheme,
                 dbContextScheme);
@@ -64,7 +65,7 @@ public class AppGenerator : ISourceGenerator
 
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
-                symbol,
+                entitySymbol,
                 configuration.UpdateCommandCommandGenerator,
                 entityScheme,
                 dbContextScheme);
@@ -73,7 +74,7 @@ public class AppGenerator : ISourceGenerator
 
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
-                symbol,
+                entitySymbol,
                 configuration.DeleteCommandCommandGenerator,
                 entityScheme,
                 dbContextScheme);
