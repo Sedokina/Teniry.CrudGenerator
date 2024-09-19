@@ -2,14 +2,15 @@ using ITech.Cqrs.Cqrs.Queries;
 using ITech.Cqrs.Domain.Exceptions;
 using Mapster;
 using {{entity_namespace}};
+using {{db_context_namespace}};
 
 namespace {{business_logic_namespace}};
 
 public partial class {{handler_name}}: IQueryHandler<{{query_name}}, {{dto_name}}>
 {
-    private readonly MarsDb _db;
+    private readonly {{db_context_name}} _db;
 
-    public {{handler_name}}(MarsDb db) {
+    public {{handler_name}}({{db_context_name}} db) {
         _db = db;
     }
 
