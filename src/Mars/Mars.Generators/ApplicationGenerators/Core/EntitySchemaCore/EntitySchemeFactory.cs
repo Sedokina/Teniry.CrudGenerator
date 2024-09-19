@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;

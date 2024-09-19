@@ -1,6 +1,6 @@
 using System;
 
-namespace Mars.Generators.ApplicationGenerators.Core;
+namespace Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class UseDbContextAttribute(DbContextDbProvider provider) : Attribute
