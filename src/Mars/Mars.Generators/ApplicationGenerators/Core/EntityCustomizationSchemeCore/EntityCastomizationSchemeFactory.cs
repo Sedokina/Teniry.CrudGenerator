@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore.ExpressionSyntaxParsers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -9,11 +9,17 @@ namespace Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCo
 
 internal class EntityCastomizationSchemeFactory
 {
-    internal static EntityCustomizationScheme Constrcut(
+    private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
+    [
+        new LiteralExpressionSyntaxToValueParser(),
+        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionSyntaxToValueParser()),
+    ];
+
+    internal static EntityCustomizationScheme Construct(
         INamedTypeSymbol? generatorSymbol,
         GeneratorExecutionContext context)
     {
-        var generatorConstructorDeclaration = ExtractValidConstrcutorDeclaration(generatorSymbol);
+        var generatorConstructorDeclaration = ExtractValidConstructorDeclaration(generatorSymbol);
         var generatorScheme = new EntityCustomizationScheme();
         if (!TryGetConstructorStatements(generatorConstructorDeclaration, out var constructorStatements))
         {
@@ -82,58 +88,17 @@ internal class EntityCastomizationSchemeFactory
         ExpressionSyntax expressionRightSide,
         ref object value)
     {
-        if (expressionRightSide is LiteralExpressionSyntax)
+        foreach (var expressionSyntaxParser in ExpressionSyntaxParsers)
         {
-            value = GetSyntaxNodeAsLiteral(context, expressionRightSide);
-            return true;
-        }
-
-        if (expressionRightSide is ObjectCreationExpressionSyntax objectCreationExpression)
-        {
-            var model = context.Compilation.GetSemanticModel(expressionRightSide.SyntaxTree);
-            var symbolInfo = model.GetSymbolInfo(expressionRightSide);
-            if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol)
+            if (expressionSyntaxParser.CanParse(context, expressionRightSide))
             {
-                return false;
-            }
-
-            var name = constructorSymbol.ContainingSymbol.Name;
-            if (name != "EntityGeneratorDefaultSort")
-            {
-                return false;
-            }
-
-            if (objectCreationExpression.ArgumentList is null ||
-                objectCreationExpression.ArgumentList.Arguments.Count != 2)
-            {
-                return false;
-            }
-
-            if (objectCreationExpression.ArgumentList.Arguments[0].Expression is LiteralExpressionSyntax
-                    literalExpressionSyntax &&
-                objectCreationExpression.ArgumentList.Arguments[1].Expression is SimpleLambdaExpressionSyntax
-                    lambdaExpressionSyntax &&
-                lambdaExpressionSyntax.ExpressionBody is MemberAccessExpressionSyntax memberAccessExpressionSyntax)
-            {
-                var direction = GetSyntaxNodeAsLiteral(context, literalExpressionSyntax);
-                var fieldName = memberAccessExpressionSyntax.Name.ToString();
-                value = new EntityDefaultSort(direction.ToString(), fieldName);
+                value = expressionSyntaxParser.Parse(context, expressionRightSide);
                 return true;
             }
         }
 
         return false;
     }
-
-    private static object GetSyntaxNodeAsLiteral(
-        GeneratorExecutionContext context,
-        SyntaxNode expressionRightSide)
-    {
-        var model = context.Compilation.GetSemanticModel(expressionRightSide.SyntaxTree);
-        var constant = model.GetConstantValue(expressionRightSide);
-        return constant.Value;
-    }
-
 
     private static bool TryGetConstructorStatements(
         ConstructorDeclarationSyntax generatorConstructorDeclaration,
@@ -172,7 +137,7 @@ internal class EntityCastomizationSchemeFactory
     ///     - failed to get constructor of <see cref="EntityGeneratorConfiguration{T}"/>
     ///         as <see cref="ConstructorDeclarationSyntax"/> <br/>
     /// </exception>
-    private static ConstructorDeclarationSyntax ExtractValidConstrcutorDeclaration(INamedTypeSymbol generatorSymbol)
+    private static ConstructorDeclarationSyntax ExtractValidConstructorDeclaration(INamedTypeSymbol generatorSymbol)
     {
         if (generatorSymbol is null)
         {

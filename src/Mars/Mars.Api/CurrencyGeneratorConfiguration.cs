@@ -7,13 +7,8 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
 {
     protected CurrencyGeneratorConfiguration()
     {
-        // Title = "Curr";
-        // TitlePlural = "Currsive";
-        // DefaultSort = new EntityGeneratorDefaultSort<Currency>("desc", x => x.Name);
+        Title = "Curr";
+        TitlePlural = "Currsive";
+        DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
     }
-
-    // public CurrencyGeneratorConfiguration(string someParam)
-    // {
-    //     Title = someParam;
-    // }
 }
