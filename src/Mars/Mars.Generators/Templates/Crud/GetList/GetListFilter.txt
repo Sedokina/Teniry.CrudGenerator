@@ -19,7 +19,7 @@ public partial class {{filter_name}} : QueryableFilter<{{entity_name}}>
     
     /// <inheritdoc />
     protected override IQueryable<{{entity_name}}> DefaultSort(IQueryable<{{entity_name}}> query) {
-        return base.DefaultSort(query);
+        return {{default_sort}}
     }
     
     /// <inheritdoc />

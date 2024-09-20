@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -84,15 +84,29 @@ public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfig
         var properties = EntityScheme.Properties.FormatAsFilterProperties();
         var filter = EntityScheme.Properties.FormatAsFilterBody();
         var sorts = EntityScheme.SortableProperties.FormatAsSortCalls();
+        var defaultSort = FormatDefaultSort(EntityScheme.DefaultSort);
 
         var model = new
         {
             FilterName = _filterName,
             Properties = properties,
             Filter = filter,
-            Sorts = sorts
+            Sorts = sorts,
+            DefaultSort = defaultSort
         };
         WriteFile(templatePath, model, _filterName);
+    }
+
+    private static string FormatDefaultSort(EntityDefaultSort defaultSort)
+    {
+        if (defaultSort != null)
+        {
+            return defaultSort.Direction.Equals("asc")
+                ? $"query.OrderBy(x => x.{defaultSort.PropertyName});"
+                : $"query.OrderByDescending(x => x.{defaultSort.PropertyName});";
+        }
+
+        return "base.DefaultSort(query);";
     }
 
     private void GenerateHandler(string templatePath)
