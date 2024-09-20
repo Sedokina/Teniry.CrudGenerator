@@ -60,22 +60,6 @@ internal class EntityCastomizationSchemeFactory
         return true;
     }
 
-    private static bool TryParseExpressionRightSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionRightSide,
-        ref object value)
-    {
-        if (expressionRightSide is not LiteralExpressionSyntax)
-        {
-            return false;
-        }
-
-        var rightModel = context.Compilation.GetSemanticModel(expressionRightSide.SyntaxTree);
-        var constant = rightModel.GetConstantValue(expressionRightSide);
-        value = constant.Value;
-        return true;
-    }
-
     private static bool TryParseConstructorStatementLeftSide(
         GeneratorExecutionContext context,
         ExpressionSyntax expressionLeftSide,
@@ -91,6 +75,71 @@ internal class EntityCastomizationSchemeFactory
         propertyName = propertySymbol.Name;
         return true;
     }
+
+    private static bool TryParseExpressionRightSide(
+        GeneratorExecutionContext context,
+        ExpressionSyntax expressionRightSide,
+        ref object value)
+    {
+        if (expressionRightSide is LiteralExpressionSyntax)
+        {
+            value = GetSyntaxNodeAsLiteral(context, expressionRightSide);
+            return true;
+        }
+
+        if (expressionRightSide is ObjectCreationExpressionSyntax objectCreationExpression)
+        {
+            var model = context.Compilation.GetSemanticModel(expressionRightSide.SyntaxTree);
+            var symbolInfo = model.GetSymbolInfo(expressionRightSide);
+            if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol)
+            {
+                return false;
+            }
+
+            var name = constructorSymbol.ContainingSymbol.Name;
+            if (name != "EntityGeneratorDefaultSort")
+            {
+                return false;
+            }
+
+            if (objectCreationExpression.ArgumentList is null ||
+                objectCreationExpression.ArgumentList.Arguments.Count != 2)
+            {
+                return false;
+            }
+
+            foreach (var argumentSyntax in objectCreationExpression.ArgumentList.Arguments)
+            {
+                if (objectCreationExpression.ArgumentList.Arguments[0].Expression is LiteralExpressionSyntax literalExpressionSyntax)
+                {
+                    var d = GetSyntaxNodeAsLiteral(context, literalExpressionSyntax);
+                }
+
+                if (objectCreationExpression.ArgumentList.Arguments[0].Expression is SimpleLambdaExpressionSyntax lambdaExpressionSyntax)
+                {
+                    if (lambdaExpressionSyntax.ExpressionBody is not MemberAccessExpressionSyntax
+                        memberAccessExpressionSyntax)
+                    {
+                        continue;
+                    }
+
+                    var fieldName = memberAccessExpressionSyntax.Name.ToString();
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static object GetSyntaxNodeAsLiteral(
+        GeneratorExecutionContext context,
+        SyntaxNode expressionRightSide)
+    {
+        var model = context.Compilation.GetSemanticModel(expressionRightSide.SyntaxTree);
+        var constant = model.GetConstantValue(expressionRightSide);
+        return constant.Value;
+    }
+
 
     private static bool TryGetConstructorStatements(
         ConstructorDeclarationSyntax generatorConstructorDeclaration,
