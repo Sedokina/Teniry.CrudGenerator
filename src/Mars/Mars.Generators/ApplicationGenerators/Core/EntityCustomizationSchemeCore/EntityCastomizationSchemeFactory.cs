@@ -19,8 +19,12 @@ internal class EntityCastomizationSchemeFactory
         INamedTypeSymbol? generatorSymbol,
         GeneratorExecutionContext context)
     {
-        var generatorConstructorDeclaration = ExtractValidConstructorDeclaration(generatorSymbol);
         var generatorScheme = new EntityCustomizationScheme();
+        if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration))
+        {
+            return generatorScheme;
+        }
+
         if (!TryGetConstructorStatements(generatorConstructorDeclaration, out var constructorStatements))
         {
             return generatorScheme;
@@ -137,32 +141,38 @@ internal class EntityCastomizationSchemeFactory
     ///     - failed to get constructor of <see cref="EntityGeneratorConfiguration{T}"/>
     ///         as <see cref="ConstructorDeclarationSyntax"/> <br/>
     /// </exception>
-    private static ConstructorDeclarationSyntax ExtractValidConstructorDeclaration(INamedTypeSymbol generatorSymbol)
+    private static bool TryExtractValidConstructorDeclaration(
+        INamedTypeSymbol generatorSymbol,
+        out ConstructorDeclarationSyntax? constructorDeclarationSyntax)
     {
         if (generatorSymbol is null)
         {
             throw new Exception("Failed to read one of declared Entity Generator Configuration");
         }
 
+        constructorDeclarationSyntax = null;
         // Get first parameterless constructor
         var generatorConstructorMethodSymbol = generatorSymbol
             .Constructors
             .FirstOrDefault(x => x.Parameters.Length == 0);
         if (generatorConstructorMethodSymbol == null)
         {
-            throw new Exception($"Constructor of {generatorSymbol.Name} should be parameterless");
+            return false;
         }
 
         var generatorConstructorDeclaration = generatorConstructorMethodSymbol.DeclaringSyntaxReferences
-            .First(x => x.GetSyntax() is ConstructorDeclarationSyntax)
+            .FirstOrDefault(x => x.GetSyntax() is ConstructorDeclarationSyntax)?
             .GetSyntax() as ConstructorDeclarationSyntax;
 
-        if (generatorConstructorDeclaration is null)
+        // When this is default parameterless constructor, not defined by user,
+        // declaration is null
+        if (generatorConstructorDeclaration == null)
         {
-            throw new Exception(
-                $"Failed to read constructor of {generatorSymbol.Name} as {nameof(ConstructorDeclarationSyntax)}");
+            return false;
         }
 
-        return generatorConstructorDeclaration;
+
+        constructorDeclarationSyntax = generatorConstructorDeclaration;
+        return true;
     }
 }

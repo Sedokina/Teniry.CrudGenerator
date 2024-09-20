@@ -2,7 +2,6 @@ using Mars.Generators.ApplicationGenerators.Core;
 
 namespace Mars.Api;
 
-[GenerateCrud]
 public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency>
 {
     protected CurrencyGeneratorConfiguration()
@@ -11,4 +10,8 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         TitlePlural = "Currsive";
         DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
     }
+}
+
+public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
+{
 }
