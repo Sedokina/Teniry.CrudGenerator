@@ -57,6 +57,6 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
 
         var direction = _literalExpressionSyntaxToValueParser.Parse(context, literalExpressionSyntax);
         var fieldName = memberAccessExpressionSyntax.Name.ToString();
-        return new EntityDefaultSort(direction.ToString(), fieldName);
+        return new EntityDefaultSort(direction.ToString().Equals("asc") ? "asc" : "desc", fieldName);
     }
 }
