@@ -13,7 +13,7 @@ namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 public class EntitySchemeFactory
 {
-    public static EntityScheme Construct(
+    internal static EntityScheme Construct(
         ISymbol symbol,
         EntityCustomizationScheme entityCustomizationScheme,
         DbContextScheme dbContextScheme)

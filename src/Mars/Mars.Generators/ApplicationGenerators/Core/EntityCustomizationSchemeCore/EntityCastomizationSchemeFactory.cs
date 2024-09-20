@@ -108,23 +108,16 @@ internal class EntityCastomizationSchemeFactory
                 return false;
             }
 
-            foreach (var argumentSyntax in objectCreationExpression.ArgumentList.Arguments)
+            if (objectCreationExpression.ArgumentList.Arguments[0].Expression is LiteralExpressionSyntax
+                    literalExpressionSyntax &&
+                objectCreationExpression.ArgumentList.Arguments[1].Expression is SimpleLambdaExpressionSyntax
+                    lambdaExpressionSyntax &&
+                lambdaExpressionSyntax.ExpressionBody is MemberAccessExpressionSyntax memberAccessExpressionSyntax)
             {
-                if (objectCreationExpression.ArgumentList.Arguments[0].Expression is LiteralExpressionSyntax literalExpressionSyntax)
-                {
-                    var d = GetSyntaxNodeAsLiteral(context, literalExpressionSyntax);
-                }
-
-                if (objectCreationExpression.ArgumentList.Arguments[0].Expression is SimpleLambdaExpressionSyntax lambdaExpressionSyntax)
-                {
-                    if (lambdaExpressionSyntax.ExpressionBody is not MemberAccessExpressionSyntax
-                        memberAccessExpressionSyntax)
-                    {
-                        continue;
-                    }
-
-                    var fieldName = memberAccessExpressionSyntax.Name.ToString();
-                }
+                var direction = GetSyntaxNodeAsLiteral(context, literalExpressionSyntax);
+                var fieldName = memberAccessExpressionSyntax.Name.ToString();
+                value = new EntityCustomizationSchemeDefaultSort(direction.ToString(), fieldName);
+                return true;
             }
         }
 
