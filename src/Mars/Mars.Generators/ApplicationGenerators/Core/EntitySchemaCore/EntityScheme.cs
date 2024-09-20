@@ -4,12 +4,13 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
-public class EntityScheme
+internal class EntityScheme
 {
     public ISymbol EntitySymbol { get; }
     public EntityName EntityName { get; set; }
     public EntityTitle EntityTitle { get; set; }
     public string EntityNamespace { get; set; }
+    public EntityDefaultSort? DefaultSort { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
     public List<EntityProperty> NotPrimaryKeys { get; }
@@ -20,6 +21,7 @@ public class EntityScheme
         EntityName entityName,
         EntityTitle entityTitle,
         string entityNamespace,
+        EntityDefaultSort defaultSort,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
         List<EntityProperty> notPrimaryKeys,
@@ -29,6 +31,7 @@ public class EntityScheme
         EntityName = entityName;
         EntityTitle = entityTitle;
         EntityNamespace = entityNamespace;
+        DefaultSort = defaultSort;
         Properties = properties;
         PrimaryKeys = primaryKeys;
         NotPrimaryKeys = notPrimaryKeys;
@@ -56,4 +59,10 @@ public class EntityTitle(string title, string pluralTitle)
     {
         return Title;
     }
+}
+
+internal class EntityDefaultSort(string direction, string propertyName)
+{
+    public string Direction { get; set; } = direction;
+    public string PropertyName { get; set; } = propertyName;
 }

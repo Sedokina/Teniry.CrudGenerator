@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -116,7 +117,7 @@ internal class EntityCastomizationSchemeFactory
             {
                 var direction = GetSyntaxNodeAsLiteral(context, literalExpressionSyntax);
                 var fieldName = memberAccessExpressionSyntax.Name.ToString();
-                value = new EntityCustomizationSchemeDefaultSort(direction.ToString(), fieldName);
+                value = new EntityDefaultSort(direction.ToString(), fieldName);
                 return true;
             }
         }

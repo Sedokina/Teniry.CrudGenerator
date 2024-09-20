@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;

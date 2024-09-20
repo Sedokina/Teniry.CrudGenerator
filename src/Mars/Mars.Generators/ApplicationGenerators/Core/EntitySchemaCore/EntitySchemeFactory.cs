@@ -25,6 +25,7 @@ public class EntitySchemeFactory
             entityName,
             entityTitle,
             symbol.ContainingNamespace.ToString(),
+            entityCustomizationScheme.DefaultSort,
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
             properties.Where(x => !x.IsEntityId).ToList(),

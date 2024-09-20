@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;

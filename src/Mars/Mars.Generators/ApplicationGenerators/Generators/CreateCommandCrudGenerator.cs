@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-public class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTypeGeneratorConfiguration>
+internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTypeGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
