@@ -1,16 +1,16 @@
 using System;
 using System.Linq.Expressions;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Core;
 
-public class EntityGeneratorConfiguration
+public abstract class EntityGeneratorConfiguration
 {
 }
 
-public class EntityGeneratorConfiguration<TEntity> : EntityGeneratorConfiguration where TEntity : class
+public abstract class EntityGeneratorConfiguration<TEntity> : EntityGeneratorConfiguration where TEntity : class
 {
-    public EntityTitle? Title { get; set; }
+    public string? Title { get; set; }
+    public string? TitlePlural { get; set; }
     public EntityGeneratorDefaultSort<TEntity>? DefaultSort { get; set; }
 }
 

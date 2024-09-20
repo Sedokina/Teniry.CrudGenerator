@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
+using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 using Mars.Generators.ApplicationGenerators.Core.Extensions;
@@ -12,12 +13,14 @@ namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 public class EntitySchemeFactory
 {
-    public static EntityScheme Construct(ISymbol symbol, DbContextScheme dbContextScheme)
+    public static EntityScheme Construct(
+        ISymbol symbol,
+        EntityCustomizationScheme entityCustomizationScheme,
+        DbContextScheme dbContextScheme)
     {
         var properties = GetEntityProperties(symbol, dbContextScheme);
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
-        var entityTitle = new EntityTitle(GetTitleFromEntityName(entityName.ToString()),
-            GetTitleFromEntityName(entityName.PluralName));
+        var entityTitle = CreateEntityTitle(entityCustomizationScheme, entityName);
         return new EntityScheme(symbol,
             entityName,
             entityTitle,
@@ -28,6 +31,17 @@ public class EntitySchemeFactory
             properties.Where(x => x.CanBeSorted).ToList());
     }
 
+    private static EntityTitle CreateEntityTitle(
+        EntityCustomizationScheme entityCustomizationScheme,
+        EntityName entityName)
+    {
+        var entityTitle = entityCustomizationScheme.Title ?? GetTitleFromEntityName(entityName.ToString());
+        var title = new EntityTitle(
+            entityTitle,
+            entityCustomizationScheme.TitlePlural ?? GetPluralEntityTitle(entityTitle));
+        return title;
+    }
+
     private static string GetPluralEntityName(string entityName)
     {
         var pluralizer = new Pluralizer();
@@ -35,6 +49,18 @@ public class EntitySchemeFactory
         if (entityName.Equals(pluralEntityName))
         {
             return $"{entityName}List";
+        }
+
+        return pluralEntityName;
+    }
+
+    private static string GetPluralEntityTitle(string entityTitle)
+    {
+        var pluralizer = new Pluralizer();
+        var pluralEntityName = pluralizer.Pluralize(entityTitle);
+        if (entityTitle.Equals(pluralEntityName))
+        {
+            return $"{entityTitle} list";
         }
 
         return pluralEntityName;

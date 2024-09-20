@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
+using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Generators;
 using Microsoft.CodeAnalysis;
@@ -30,11 +30,9 @@ public class AppGenerator : ISourceGenerator
         {
             var (entityGeneratorConfigurationSymbol, entitySymbol) = classSyntax.AsSymbol(context);
 
-            var md = context.Compilation.ToMetadataReference();
-            
-            // Activator.CreateInstance(entityGeneratorConfigurationSymbol.Name);
-
-            var entityScheme = EntitySchemeFactory.Construct(entitySymbol, dbContextScheme);
+            var entityCustomizationScheme = EntityCastomizationSchemeFactory
+                .Constrcut(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context);
+            var entityScheme = EntitySchemeFactory.Construct(entitySymbol, entityCustomizationScheme, dbContextScheme);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
