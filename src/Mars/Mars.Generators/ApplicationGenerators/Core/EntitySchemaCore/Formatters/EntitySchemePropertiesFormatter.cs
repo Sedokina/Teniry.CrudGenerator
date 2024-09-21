@@ -13,6 +13,10 @@ public static class EntitySchemePropertiesFormatter
         foreach (var property in properties)
         {
             stringBuilder.AppendLine($"public {property.TypeName} {property.PropertyName} {{ get; set; }}");
+            if (property.DefaultValue is not null)
+            {
+                stringBuilder.Append($" = {property.DefaultValue};");
+            }
         }
 
         return stringBuilder.ToString().Trim();

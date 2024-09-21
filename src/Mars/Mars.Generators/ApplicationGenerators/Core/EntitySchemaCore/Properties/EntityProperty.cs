@@ -8,12 +8,14 @@ public class EntityProperty
     public bool IsEntityId { get; set; }
     public bool CanBeSorted { get; set; }
     public string SortKey { get; set; }
+    public string? DefaultValue { get; set; }
     public EntityFilterProperty[] FilterProperties { get; set; }
 
     public EntityProperty(
         string typeName,
         string propertyName,
         string propertyNameAsMethodParameterName,
+        string? defaultValue,
         bool isEntityId,
         EntityFilterProperty[] filterProperties,
         bool canBeSorted,
@@ -22,6 +24,7 @@ public class EntityProperty
         TypeName = typeName;
         PropertyName = propertyName;
         PropertyNameAsMethodParameterName = propertyNameAsMethodParameterName;
+        DefaultValue = defaultValue;
         IsEntityId = isEntityId;
         FilterProperties = filterProperties;
         CanBeSorted = canBeSorted;

@@ -80,6 +80,8 @@ public class EntitySchemeFactory
                 ? propertySymbol.Type.MetadataName
                 : propertySymbol.Type.ToString();
 
+            var defaultValue = propertySymbol.Type.SpecialType == SpecialType.System_String ? "\"\"" : null;
+
             var isPrimaryKey = IsPrimaryKey(symbol.Name, propertySymbol.Name);
             var isForeignKey = IsForeignKey(propertySymbol.Name);
             var filterProperties = ConstructFilterProperties(
@@ -92,6 +94,7 @@ public class EntitySchemeFactory
                 propertyTypeName,
                 propertySymbol.Name,
                 propertySymbol.Name.ToLowerFirstChar(),
+                defaultValue,
                 isPrimaryKey,
                 filterProperties,
                 propertySymbol.Type.IsSimple(),
