@@ -1,5 +1,4 @@
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
@@ -17,27 +16,24 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListConfiguration>
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        CqrsListConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsListConfiguration> scheme) : base(context, scheme)
     {
-        _queryName = entityScheme.Configuration.GetListQuery.Operation.GetName(EntityScheme.EntityName);
-        _listItemDtoName = entityScheme.Configuration.GetListQuery.DtoListItem.GetName(EntityScheme.EntityName);
-        _dtoName = entityScheme.Configuration.GetListQuery.Dto.GetName(EntityScheme.EntityName);
-        _filterName = entityScheme.Configuration.GetListQuery.Filter.GetName(EntityScheme.EntityName);
-        _handlerName = entityScheme.Configuration.GetListQuery.Handler.GetName(EntityScheme.EntityName);
-        _endpointClassName = entityScheme.Configuration.GetListQuery.Endpoint.GetName(EntityScheme.EntityName);
+        _queryName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
+        _listItemDtoName = Scheme.Configuration.DtoListItem.GetName(EntityScheme.EntityName);
+        _dtoName = Scheme.Configuration.Dto.GetName(EntityScheme.EntityName);
+        _filterName = Scheme.Configuration.Filter.GetName(EntityScheme.EntityName);
+        _handlerName = Scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
+        _endpointClassName = Scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(EntityScheme.Configuration.GetListQuery.Operation.TemplatePath);
-        GenerateListItemDto(EntityScheme.Configuration.GetListQuery.DtoListItem.TemplatePath);
-        GenerateDto(EntityScheme.Configuration.GetListQuery.Dto.TemplatePath);
-        GenerateFilter(EntityScheme.Configuration.GetListQuery.Filter.TemplatePath);
-        GenerateHandler(EntityScheme.Configuration.GetListQuery.Handler.TemplatePath);
-        GenerateEndpoint(EntityScheme.Configuration.GetListQuery.Endpoint.TemplatePath);
+        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateListItemDto(Scheme.Configuration.DtoListItem.TemplatePath);
+        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateQuery(string templatePath)
@@ -136,7 +132,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListConfiguration>
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Configuration.Endpoint.RouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Configuration.Endpoint.RouteConfiguration.FunctionName}");
+            Scheme.Configuration.Endpoint.RouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

@@ -10,35 +10,35 @@ internal class EntityScheme
     public EntityName EntityName { get; set; }
     public EntityTitle EntityTitle { get; set; }
     public string EntityNamespace { get; set; }
+    public string ContainingAssembly { get; set; }
     public EntityDefaultSort? DefaultSort { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
     public List<EntityProperty> NotPrimaryKeys { get; }
     public List<EntityProperty> SortableProperties { get; }
-    public CrudGeneratorConfiguration Configuration { get; set; }
 
     public EntityScheme(
         ISymbol entitySymbol,
         EntityName entityName,
         EntityTitle entityTitle,
         string entityNamespace,
+        string containingAssembly,
         EntityDefaultSort? defaultSort,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
         List<EntityProperty> notPrimaryKeys,
-        List<EntityProperty> sortableProperties,
-        CrudGeneratorConfiguration configuration)
+        List<EntityProperty> sortableProperties)
     {
         EntitySymbol = entitySymbol;
         EntityName = entityName;
         EntityTitle = entityTitle;
         EntityNamespace = entityNamespace;
+        ContainingAssembly = containingAssembly;
         DefaultSort = defaultSort;
         Properties = properties;
         PrimaryKeys = primaryKeys;
         NotPrimaryKeys = notPrimaryKeys;
         SortableProperties = sortableProperties;
-        Configuration = configuration;
     }
 }
 

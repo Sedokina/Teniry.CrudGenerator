@@ -14,21 +14,18 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
 
     public DeleteCommandCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        CqrsConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsConfiguration> scheme) : base(context, scheme)
     {
-        _commandName = entityScheme.Configuration.DeleteCommand.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = entityScheme.Configuration.DeleteCommand.Handler.GetName(EntityScheme.EntityName);
-        _endpointClassName = entityScheme.Configuration.DeleteCommand.Endpoint.GetName(EntityScheme.EntityName);
+        _commandName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = Scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
+        _endpointClassName = Scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(EntityScheme.Configuration.DeleteCommand.Operation.TemplatePath);
-        GenerateHandler(EntityScheme.Configuration.DeleteCommand.Handler.TemplatePath);
-        GenerateEndpoint(EntityScheme.Configuration.DeleteCommand.Endpoint.TemplatePath);
+        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -78,8 +75,8 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Delete",
-            EntityScheme.Configuration.DeleteCommand.Endpoint.RouteConfiguration
+            Scheme.Configuration.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{EntityScheme.Configuration.DeleteCommand.Endpoint.RouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

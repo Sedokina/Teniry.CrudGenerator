@@ -15,23 +15,20 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        CqrsConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsConfiguration> scheme) : base(context, scheme)
     {
-        _commandName = entityScheme.Configuration.UpdateCommand.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = entityScheme.Configuration.UpdateCommand.Handler.GetName(EntityScheme.EntityName);
+        _commandName = scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
         _vmName = $"Update{EntityScheme.EntityName}Vm";
-        _endpointClassName = entityScheme.Configuration.UpdateCommand.Endpoint.GetName(EntityScheme.EntityName);
+        _endpointClassName = scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(EntityScheme.Configuration.UpdateCommand.Operation.TemplatePath);
-        GenerateHandler(EntityScheme.Configuration.UpdateCommand.Handler.TemplatePath);
-        GenerateViewModel($"{EntityScheme.Configuration.TemplatesBasePath}.Update.UpdateVm.txt");
-        GenerateEndpoint(EntityScheme.Configuration.UpdateCommand.Endpoint.TemplatePath);
+        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateViewModel($"{Scheme.Configuration.GlobalConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -94,8 +91,8 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Put",
-            EntityScheme.Configuration.UpdateCommand.Endpoint.RouteConfiguration
+            Scheme.Configuration.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{EntityScheme.Configuration.UpdateCommand.Endpoint.RouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

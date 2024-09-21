@@ -1,13 +1,12 @@
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnValueConfiguration>
+internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsWithReturnValueConfiguration>
 {
+    private readonly EndpointRouteConfiguration _getByIdEndpointRouteConfiguration;
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
@@ -15,23 +14,22 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnVal
 
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        CqrsWithReturnValueConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsWithReturnValueConfiguration> scheme,
+        EndpointRouteConfiguration getByIdEndpointRouteConfiguration) : base(context, scheme)
     {
-        _commandName = entityScheme.Configuration.CreateCommand.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = entityScheme.Configuration.CreateCommand.Handler.GetName(EntityScheme.EntityName);
-        _dtoName = entityScheme.Configuration.CreateCommand.Dto.GetName(EntityScheme.EntityName);
-        _endpointClassName = entityScheme.Configuration.CreateCommand.Endpoint.GetName(EntityScheme.EntityName);
+        _getByIdEndpointRouteConfiguration = getByIdEndpointRouteConfiguration;
+        _commandName = scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
+        _dtoName = scheme.Configuration.Dto.GetName(EntityScheme.EntityName);
+        _endpointClassName = scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(EntityScheme.Configuration.CreateCommand.Operation.TemplatePath);
-        GenerateHandler(EntityScheme.Configuration.CreateCommand.Handler.TemplatePath);
-        GenerateDto(EntityScheme.Configuration.CreateCommand.Dto.TemplatePath);
-        GenerateEndpoint(EntityScheme.Configuration.CreateCommand.Endpoint.TemplatePath);
+        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -80,7 +78,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnVal
     private void GenerateEndpoint(string templatePath)
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getEntityRoute = EntityScheme.Configuration.GetByIdQuery.Endpoint.RouteConfiguration
+        var getEntityRoute = _getByIdEndpointRouteConfiguration
             .GetRoute(EntityScheme.EntityName.ToString(), parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
@@ -96,8 +94,8 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnVal
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Post",
-            EntityScheme.Configuration.CreateCommand.Endpoint.RouteConfiguration
+            Scheme.Configuration.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{EntityScheme.Configuration.CreateCommand.Endpoint.RouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
     }
 }
