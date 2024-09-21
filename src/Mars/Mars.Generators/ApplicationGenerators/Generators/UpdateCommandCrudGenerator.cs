@@ -1,3 +1,5 @@
+using Mars.Generators.ApplicationGenerators.Configurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
@@ -6,7 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
+internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -15,7 +17,7 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationGeneratorConfiguration> scheme) : base(context, scheme)
     {
         _commandName = scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
         _handlerName = scheme.Configuration.Handler.GetName(EntityScheme.EntityName);

@@ -1,3 +1,5 @@
+using Mars.Generators.ApplicationGenerators.Configurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
@@ -5,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -16,7 +18,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListConfiguration>
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsListConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(context, scheme)
     {
         _queryName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
         _listItemDtoName = Scheme.Configuration.DtoListItem.GetName(EntityScheme.EntityName);

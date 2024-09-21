@@ -1,10 +1,13 @@
+using Mars.Generators.ApplicationGenerators.Configurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsWithReturnValueConfiguration>
+internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly EndpointRouteConfiguration _getByIdEndpointRouteConfiguration;
     private readonly string _commandName;
@@ -14,7 +17,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsWithReturnValu
 
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsWithReturnValueConfiguration> scheme,
+        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
         EndpointRouteConfiguration getByIdEndpointRouteConfiguration) : base(context, scheme)
     {
         _getByIdEndpointRouteConfiguration = getByIdEndpointRouteConfiguration;
