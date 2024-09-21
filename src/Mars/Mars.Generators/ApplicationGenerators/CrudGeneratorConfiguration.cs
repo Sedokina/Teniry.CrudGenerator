@@ -20,8 +20,9 @@ public sealed class CrudGeneratorConfiguration
     public PutBusinessLogicIntoNamespaceConfiguration BusinessLogicNamespaceBasePath { get; set; } = null!;
     public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; } = null!;
     public NameConfiguration FeatureNameConfiguration { get; set; } = null!;
-    public CqrsConfiguration CreateCommand { get; set; } = null!;
+    public CqrsWithReturnValueConfiguration CreateCommand { get; set; } = null!;
     public CqrsConfiguration DeleteCommand { get; set; } = null!;
+    public CqrsConfiguration UpdateCommand { get; set; } = null!;
     public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; } = null!;
@@ -60,7 +61,8 @@ public sealed class CrudGeneratorConfiguration
         };
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
-        CreateCommand = new CqrsConfiguration
+        // TODO: move function name from route configuration
+        CreateCommand = new()
         {
             OperationType = CqrsOperationType.Command,
             FunctionName = new("Create{{entity_name}}"),
@@ -107,7 +109,6 @@ public sealed class CrudGeneratorConfiguration
                 TemplatePath = $"{TemplatesBasePath}.Delete.DeleteCommand.txt",
                 NameConfiguration = new("Delete{{entity_name}}Command")
             },
-            Dto = null,
             Handler = new()
             {
                 TemplatePath = $"{TemplatesBasePath}.Delete.DeleteHandler.txt",
@@ -131,6 +132,27 @@ public sealed class CrudGeneratorConfiguration
             EndpointTemplatePath = $"{TemplatesBasePath}.Update.UpdateEndpoint.txt",
             EndpointNameConfiguration = new("Update{{entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
+        };
+        UpdateCommand = new CqrsConfiguration
+        {
+            OperationType = CqrsOperationType.Command,
+            FunctionName = new("Update{{entity_name}}"),
+            Operation = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Update.UpdateCommand.txt",
+                NameConfiguration = new("Update{{entity_name}}Command"),
+            },
+            Handler = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Update.UpdateHandler.txt",
+                NameConfiguration = new("Update{{entity_name}}Handler"),
+            },
+            Endpoint = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Update.UpdateEndpoint.txt",
+                NameConfiguration = new("Update{{entity_name}}Endpoint"),
+                RouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
+            }
         };
         GetByIdQueryGenerator = new BaseQueryGeneratorConfiguration
         {
@@ -266,8 +288,12 @@ public class CqrsConfiguration
     public NameConfiguration FunctionName { get; set; }
     public CqrsTemplateConfiguration Operation { get; set; }
     public CqrsTemplateConfiguration Handler { get; set; }
-    public CqrsTemplateConfiguration Dto { get; set; }
     public MinimalApiEndpointConfiguration Endpoint { get; set; }
+}
+
+public class CqrsWithReturnValueConfiguration : CqrsConfiguration
+{
+    public CqrsTemplateConfiguration Dto { get; set; }
 }
 
 public class CqrsTemplateConfiguration

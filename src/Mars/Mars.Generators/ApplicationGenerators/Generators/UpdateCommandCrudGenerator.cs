@@ -20,18 +20,18 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _commandName = entityScheme.Configuration.UpdateCommand.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = entityScheme.Configuration.UpdateCommand.Handler.GetName(EntityScheme.EntityName);
         _vmName = $"Update{EntityScheme.EntityName}Vm";
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _endpointClassName = entityScheme.Configuration.UpdateCommand.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Configuration.CommandTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
+        GenerateCommand(EntityScheme.Configuration.UpdateCommand.Operation.TemplatePath);
+        GenerateHandler(EntityScheme.Configuration.UpdateCommand.Handler.TemplatePath);
         GenerateViewModel($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateEndpoint(EntityScheme.Configuration.UpdateCommand.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -94,8 +94,8 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Put",
-            Configuration.EndpointRouteConfiguration
+            EntityScheme.Configuration.UpdateCommand.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{EntityScheme.Configuration.UpdateCommand.Endpoint.RouteConfiguration.FunctionName}");
     }
 }
