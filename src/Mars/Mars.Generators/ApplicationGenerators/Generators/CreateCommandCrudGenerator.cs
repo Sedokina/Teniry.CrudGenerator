@@ -80,7 +80,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnVal
     private void GenerateEndpoint(string templatePath)
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getEntityRoute = EntityScheme.Configuration.GetByIdQueryGenerator.EndpointRouteConfiguration
+        var getEntityRoute = EntityScheme.Configuration.GetByIdQuery.Endpoint.RouteConfiguration
             .GetRoute(EntityScheme.EntityName.ToString(), parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
