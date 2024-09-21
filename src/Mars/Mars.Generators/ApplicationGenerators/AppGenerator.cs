@@ -24,7 +24,7 @@ public class AppGenerator : ISourceGenerator
         var dbContextScheme = DbContextSchemeFactory.Construct(context);
 
         List<EndpointMap> endpointsMaps = new();
-        var configuration = new CrudGeneratorConfiguration();
+        var configuration = CrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
 
         foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {
