@@ -36,7 +36,7 @@ public class DbContextSchemeFactory
         }
 
         var dbContextClassSemanticModel = context.Compilation.GetSemanticModel(dbContextClass!.SyntaxTree);
-        var dbContextClassSymbol = (INamedTypeSymbol)dbContextClassSemanticModel.GetDeclaredSymbol(dbContextClass);
+        var dbContextClassSymbol = (INamedTypeSymbol)dbContextClassSemanticModel.GetDeclaredSymbol(dbContextClass)!;
         var baseName = dbContextClassSymbol!.BaseType!.Name;
 
         if (!baseName.ToLower().EndsWith("dbcontext"))
@@ -49,7 +49,7 @@ public class DbContextSchemeFactory
 
         var dbProviderArgumentSemanticModel = context.Compilation.GetSemanticModel(dbProviderArgument.SyntaxTree);
         var dbProviderArgumentValue = (DbContextDbProvider)dbProviderArgumentSemanticModel
-            .GetOperation(dbProviderArgument.Expression)!.ConstantValue.Value;
+            .GetOperation(dbProviderArgument.Expression)!.ConstantValue.Value!;
         return new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
             dbContextClassSymbol!.Name,

@@ -49,7 +49,7 @@ internal class EntityCastomizationSchemeFactory
         GeneratorExecutionContext context,
         ExpressionStatementSyntax statementSyntax,
         out string propertyName,
-        out object value)
+        out object? value)
     {
         propertyName = "";
         value = null;
@@ -90,7 +90,7 @@ internal class EntityCastomizationSchemeFactory
     private static bool TryParseExpressionRightSide(
         GeneratorExecutionContext context,
         ExpressionSyntax expressionRightSide,
-        ref object value)
+        ref object? value)
     {
         foreach (var expressionSyntaxParser in ExpressionSyntaxParsers)
         {
@@ -105,11 +105,11 @@ internal class EntityCastomizationSchemeFactory
     }
 
     private static bool TryGetConstructorStatements(
-        ConstructorDeclarationSyntax generatorConstructorDeclaration,
+        ConstructorDeclarationSyntax? generatorConstructorDeclaration,
         out List<ExpressionStatementSyntax> constructorStatements)
     {
         constructorStatements = [];
-        if (generatorConstructorDeclaration.Body is null || generatorConstructorDeclaration.Body.Statements.Count == 0)
+        if (generatorConstructorDeclaration?.Body is null || generatorConstructorDeclaration.Body.Statements.Count == 0)
         {
             return false;
         }
@@ -133,6 +133,7 @@ internal class EntityCastomizationSchemeFactory
     /// <param name="generatorSymbol">
     ///     <see cref="EntityGeneratorConfiguration{T}"/>'s Symbol received from class defined in client's assembly
     /// </param>
+    /// <param name="constructorDeclarationSyntax"></param>
     /// <returns>Parameterless constructor declaration of <see cref="EntityGeneratorConfiguration{T}"/></returns>
     /// <exception cref="Exception">
     ///     When: <br/>
@@ -142,7 +143,7 @@ internal class EntityCastomizationSchemeFactory
     ///         as <see cref="ConstructorDeclarationSyntax"/> <br/>
     /// </exception>
     private static bool TryExtractValidConstructorDeclaration(
-        INamedTypeSymbol generatorSymbol,
+        INamedTypeSymbol? generatorSymbol,
         out ConstructorDeclarationSyntax? constructorDeclarationSyntax)
     {
         if (generatorSymbol is null)

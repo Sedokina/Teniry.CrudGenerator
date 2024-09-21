@@ -62,7 +62,7 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     protected readonly ISymbol Symbol;
     protected readonly string BusinessLogicNamespace;
     public string EndpointNamespace { get; set; }
-    public EndpointMap EndpointMap { get; set; }
+    public EndpointMap? EndpointMap { get; set; }
 
     protected BaseCrudGenerator(
         GeneratorExecutionContext context,

@@ -41,7 +41,10 @@ public class AppGenerator : ISourceGenerator
                 entityScheme,
                 dbContextScheme);
             generateGetByIdQuery.RunGenerator();
-            endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
+            if (generateGetByIdQuery.EndpointMap is not null)
+            {
+                endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
+            }
 
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
@@ -50,7 +53,10 @@ public class AppGenerator : ISourceGenerator
                 entityScheme,
                 dbContextScheme);
             generateListQuery.RunGenerator();
-            endpointsMaps.Add(generateListQuery.EndpointMap);
+            if (generateListQuery.EndpointMap is not null)
+            {
+                endpointsMaps.Add(generateListQuery.EndpointMap);
+            }
 
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
@@ -59,7 +65,10 @@ public class AppGenerator : ISourceGenerator
                 entityScheme,
                 dbContextScheme);
             generateCreateCommand.RunGenerator();
-            endpointsMaps.Add(generateCreateCommand.EndpointMap);
+            if (generateCreateCommand.EndpointMap is not null)
+            {
+                endpointsMaps.Add(generateCreateCommand.EndpointMap);
+            }
 
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
@@ -68,7 +77,10 @@ public class AppGenerator : ISourceGenerator
                 entityScheme,
                 dbContextScheme);
             generateUpdateCommand.RunGenerator();
-            endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+            if (generateUpdateCommand.EndpointMap is not null)
+            {
+                endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+            }
 
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
@@ -77,7 +89,10 @@ public class AppGenerator : ISourceGenerator
                 entityScheme,
                 dbContextScheme);
             generateDeleteCommand.RunGenerator();
-            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+            if (generateDeleteCommand.EndpointMap is not null)
+            {
+                endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+            }
         }
 
         var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, configuration);

@@ -10,7 +10,7 @@ internal class LiteralExpressionSyntaxToValueParser : IExpressionSyntaxToValuePa
         return expression is LiteralExpressionSyntax;
     }
 
-    public object Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
         var model = context.Compilation.GetSemanticModel(expression.SyntaxTree);
         var constant = model.GetConstantValue(expression);

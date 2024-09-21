@@ -97,7 +97,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
         WriteFile(templatePath, model, _filterName);
     }
 
-    private static string FormatDefaultSort(EntityDefaultSort defaultSort)
+    private static string FormatDefaultSort(EntityDefaultSort? defaultSort)
     {
         if (defaultSort != null)
         {

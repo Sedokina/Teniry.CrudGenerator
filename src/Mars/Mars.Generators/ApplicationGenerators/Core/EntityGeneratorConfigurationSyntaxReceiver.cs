@@ -19,7 +19,7 @@ internal class EntityGeneratorConfigurationSyntaxReceiver : ISyntaxReceiver
                 .First(x => x.Type is GenericNameSyntax baseClass &&
                             baseClass.Identifier.ToString().Equals(nameof(EntityGeneratorConfiguration)));
             var entityClass = (baseTypeSyntax.Type as GenericNameSyntax)!.TypeArgumentList.Arguments.First();
-            ClassesForCrudGeneration.Add(new(classDeclarationSyntax, entityClass as IdentifierNameSyntax));
+            ClassesForCrudGeneration.Add(new(classDeclarationSyntax, (IdentifierNameSyntax)entityClass));
         }
     }
 
@@ -49,6 +49,6 @@ internal class ClassForCrudGeneration(
         // Parse to type symbol, to access each part of code separately,
         // such as interfaces, methods, members, contructor parameters etc.
         var entitySymbol = model.GetTypeInfo(entityDeclaration).Type;
-        return (entityGeneratorConfigurationSymbol, entitySymbol);
+        return (entityGeneratorConfigurationSymbol, entitySymbol!);
     }
 }

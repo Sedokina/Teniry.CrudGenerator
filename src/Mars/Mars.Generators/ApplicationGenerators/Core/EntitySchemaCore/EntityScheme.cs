@@ -21,7 +21,7 @@ internal class EntityScheme
         EntityName entityName,
         EntityTitle entityTitle,
         string entityNamespace,
-        EntityDefaultSort defaultSort,
+        EntityDefaultSort? defaultSort,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
         List<EntityProperty> notPrimaryKeys,
