@@ -22,22 +22,22 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _filterName = Configuration.FilterNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _queryName = entityScheme.Configuration.GetListQuery.Operation.GetName(EntityScheme.EntityName);
+        _listItemDtoName = entityScheme.Configuration.GetListQuery.DtoListItem.GetName(EntityScheme.EntityName);
+        _dtoName = entityScheme.Configuration.GetListQuery.Dto.GetName(EntityScheme.EntityName);
+        _filterName = entityScheme.Configuration.GetListQuery.Filter.GetName(EntityScheme.EntityName);
+        _handlerName = entityScheme.Configuration.GetListQuery.Handler.GetName(EntityScheme.EntityName);
+        _endpointClassName = entityScheme.Configuration.GetListQuery.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Configuration.QueryTemplatePath);
-        GenerateListItemDto(Configuration.DtoListItemTemplatePath);
-        GenerateDto(Configuration.DtoTemplatePath);
-        GenerateFilter(Configuration.FilterTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateQuery(EntityScheme.Configuration.GetListQuery.Operation.TemplatePath);
+        GenerateListItemDto(EntityScheme.Configuration.GetListQuery.DtoListItem.TemplatePath);
+        GenerateDto(EntityScheme.Configuration.GetListQuery.Dto.TemplatePath);
+        GenerateFilter(EntityScheme.Configuration.GetListQuery.Filter.TemplatePath);
+        GenerateHandler(EntityScheme.Configuration.GetListQuery.Handler.TemplatePath);
+        GenerateEndpoint(EntityScheme.Configuration.GetListQuery.Endpoint.TemplatePath);
     }
 
     private void GenerateQuery(string templatePath)

@@ -24,6 +24,7 @@ public sealed class CrudGeneratorConfiguration
     public CqrsConfiguration DeleteCommand { get; set; } = null!;
     public CqrsConfiguration UpdateCommand { get; set; } = null!;
     public CqrsWithReturnValueConfiguration GetByIdQuery { get; set; } = null!;
+    public CqrsListConfiguration GetListQuery { get; set; } = null!;
     public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; } = null!;
@@ -213,6 +214,42 @@ public sealed class CrudGeneratorConfiguration
             EndpointNameConfiguration = new("Get{{plural_entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}", "GetAsync")
         };
+        GetListQuery = new()
+        {
+            OperationType = CqrsOperationType.Query,
+            FunctionName = new("GetList{{entity_name}}"),
+            Operation = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListQuery.txt",
+                NameConfiguration = new("Get{{plural_entity_name}}Query"),
+            },
+            Dto = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListDto.txt",
+                NameConfiguration = new("{{plural_entity_name}}Dto"),
+            },
+            DtoListItem = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListItemDto.txt",
+                NameConfiguration = new("{{plural_entity_name}}ListItemDto"),
+            },
+            Filter = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListFilter.txt",
+                NameConfiguration = new("Get{{plural_entity_name}}Filter"),
+            },
+            Handler = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListHandler.txt",
+                NameConfiguration = new("Get{{plural_entity_name}}Handler"),
+            },
+            Endpoint = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetList.GetListEndpoint.txt",
+                NameConfiguration = new("Get{{plural_entity_name}}Endpoint"),
+                RouteConfiguration = new("/{{entity_name}}", "GetAsync")
+            }
+        };
     }
 }
 
@@ -321,6 +358,12 @@ public class CqrsConfiguration
 public class CqrsWithReturnValueConfiguration : CqrsConfiguration
 {
     public CqrsTemplateConfiguration Dto { get; set; }
+}
+
+public class CqrsListConfiguration : CqrsWithReturnValueConfiguration
+{
+    public CqrsTemplateConfiguration Filter { get; set; }
+    public CqrsTemplateConfiguration DtoListItem { get; set; }
 }
 
 public class CqrsTemplateConfiguration
