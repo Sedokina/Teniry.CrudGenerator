@@ -69,7 +69,6 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
 {
     protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     protected readonly EntityScheme EntityScheme;
-    protected readonly TConfiguration Configuration;
     protected readonly string BusinessLogicNamespace;
     public string EndpointNamespace { get; set; }
     public EndpointMap? EndpointMap { get; set; }
@@ -83,13 +82,13 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     {
         Scheme = scheme;
         EntityScheme = scheme.EntityScheme;
-        Configuration = scheme.Configuration;
-        BusinessLogicNamespace = Configuration.GlobalConfiguration.BusinessLogicNamespaceBasePath.GetNamespacePath(
-            EntityScheme.EntityName,
-            Scheme.EntityScheme.ContainingAssembly,
-            Configuration.GlobalConfiguration.FeatureNameConfiguration,
-            Configuration.FunctionName);
-        EndpointNamespace = Configuration.GlobalConfiguration.EndpointsNamespaceBasePath.GetNamespacePath(
+        BusinessLogicNamespace = scheme.Configuration.GlobalConfiguration.BusinessLogicNamespaceBasePath
+            .GetNamespacePath(
+                EntityScheme.EntityName,
+                Scheme.EntityScheme.ContainingAssembly,
+                scheme.Configuration.GlobalConfiguration.FeatureNameConfiguration,
+                scheme.Configuration.FunctionName);
+        EndpointNamespace = scheme.Configuration.GlobalConfiguration.EndpointsNamespaceBasePath.GetNamespacePath(
             EntityScheme.EntityName,
             Scheme.EntityScheme.ContainingAssembly);
     }
