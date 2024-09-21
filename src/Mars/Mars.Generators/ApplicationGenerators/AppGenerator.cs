@@ -32,7 +32,11 @@ public class AppGenerator : ISourceGenerator
 
             var entityCustomizationScheme = EntityCastomizationSchemeFactory
                 .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context);
-            var entityScheme = EntitySchemeFactory.Construct(entitySymbol, entityCustomizationScheme, dbContextScheme);
+            var entityScheme = EntitySchemeFactory.Construct(
+                entitySymbol,
+                entityCustomizationScheme,
+                dbContextScheme,
+                configuration);
 
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,

@@ -20,6 +20,7 @@ public sealed class CrudGeneratorConfiguration
     public PutBusinessLogicIntoNamespaceConfiguration BusinessLogicNamespaceBasePath { get; set; } = null!;
     public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; } = null!;
     public NameConfiguration FeatureNameConfiguration { get; set; } = null!;
+    public CqrsConfiguration CreateCommand { get; set; } = null!;
     public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; } = null!;
@@ -50,11 +51,39 @@ public sealed class CrudGeneratorConfiguration
             DtoTemplatePath = $"{TemplatesBasePath}.Create.CreatedDto.txt",
             HandlerTemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
             CommandNameConfiguration = new("Create{{entity_name}}Command"),
-            DtoNameConfiguration = new NameConfiguration("Created{{entity_name}}Dto"),
+            DtoNameConfiguration = new("Created{{entity_name}}Dto"),
             HandlerNameConfiguration = new("Create{{entity_name}}Handler"),
             EndpointTemplatePath = $"{TemplatesBasePath}.Create.CreateEndpoint.txt",
             EndpointNameConfiguration = new("Create{{entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}/create", "CreateAsync")
+        };
+        // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
+        // TODO: create operation name and move Create into it, than use like {{ }}
+        CreateCommand = new CqrsConfiguration
+        {
+            OperationType = CqrsOperationType.Command,
+            FunctionName = new("Create{{entity_name}}"),
+            Operation = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Create.CreateCommand.txt",
+                NameConfiguration = new("Create{{entity_name}}Command")
+            },
+            Dto = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Create.CreatedDto.txt",
+                NameConfiguration = new("Created{{entity_name}}Dto"),
+            },
+            Handler = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Create.CreateHandler.txt",
+                NameConfiguration = new("Create{{entity_name}}Handler"),
+            },
+            Endpoint = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Create.CreateEndpoint.txt",
+                NameConfiguration = new("Create{{entity_name}}Endpoint"),
+                RouteConfiguration = new("/{{entity_name}}/create", "CreateAsync")
+            }
         };
         DeleteCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
@@ -206,6 +235,48 @@ public interface IQueryCommandGeneratorConfiguration
 {
     public CrudGeneratorConfiguration FullConfiguration { get; set; }
     public NameConfiguration FunctionNameConfiguration { get; set; }
+}
+
+public class CqrsConfiguration
+{
+    public CqrsOperationType OperationType { get; set; }
+    public NameConfiguration FunctionName { get; set; }
+    public CqrsTemplateConfiguration Operation { get; set; }
+    public CqrsTemplateConfiguration Handler { get; set; }
+    public CqrsTemplateConfiguration Dto { get; set; }
+    public MinimalApiEndpointConfiguration Endpoint { get; set; }
+}
+
+public class CqrsTemplateConfiguration
+{
+    public string TemplatePath { get; set; } = null!;
+    public NameConfiguration NameConfiguration { get; set; } = null!;
+
+    // TODO: remove direct usage of entity name, get it from entity
+    public string GetName(EntityName entityName)
+    {
+        return NameConfiguration.GetName(entityName);
+    }
+}
+
+public class MinimalApiEndpointConfiguration
+{
+    public string TemplatePath { get; set; } = null!;
+    public NameConfiguration NameConfiguration { get; set; } = null!;
+
+    public EndpointRouteConfiguration RouteConfiguration { get; set; } = null!;
+
+    // TODO: remove direct usage of entity name, get it from entity
+    public string GetName(EntityName entityName)
+    {
+        return NameConfiguration.GetName(entityName);
+    }
+}
+
+public enum CqrsOperationType
+{
+    Query,
+    Command
 }
 
 public class BaseCommandGeneratorConfiguration : IQueryCommandGeneratorConfiguration

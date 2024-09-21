@@ -15,6 +15,7 @@ internal class EntityScheme
     public List<EntityProperty> PrimaryKeys { get; }
     public List<EntityProperty> NotPrimaryKeys { get; }
     public List<EntityProperty> SortableProperties { get; }
+    public CrudGeneratorConfiguration Configuration { get; set; }
 
     public EntityScheme(
         ISymbol entitySymbol,
@@ -25,7 +26,8 @@ internal class EntityScheme
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
         List<EntityProperty> notPrimaryKeys,
-        List<EntityProperty> sortableProperties)
+        List<EntityProperty> sortableProperties,
+        CrudGeneratorConfiguration configuration)
     {
         EntitySymbol = entitySymbol;
         EntityName = entityName;
@@ -36,6 +38,7 @@ internal class EntityScheme
         PrimaryKeys = primaryKeys;
         NotPrimaryKeys = notPrimaryKeys;
         SortableProperties = sortableProperties;
+        Configuration = configuration;
     }
 }
 

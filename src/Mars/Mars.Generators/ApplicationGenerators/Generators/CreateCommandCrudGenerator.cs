@@ -20,18 +20,18 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnT
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _commandName = entityScheme.Configuration.CreateCommand.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = entityScheme.Configuration.CreateCommand.Handler.GetName(EntityScheme.EntityName);
+        _dtoName = entityScheme.Configuration.CreateCommand.Dto.GetName(EntityScheme.EntityName);
+        _endpointClassName = entityScheme.Configuration.CreateCommand.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Configuration.CommandTemplatePath);
-        GenerateDto(Configuration.DtoTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateCommand(EntityScheme.Configuration.CreateCommand.Operation.TemplatePath);
+        GenerateHandler(EntityScheme.Configuration.CreateCommand.Handler.TemplatePath);
+        GenerateDto(EntityScheme.Configuration.CreateCommand.Dto.TemplatePath);
+        GenerateEndpoint(EntityScheme.Configuration.CreateCommand.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -80,7 +80,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnT
     private void GenerateEndpoint(string templatePath)
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getEntityRoute = Configuration.FullConfiguration.GetByIdQueryGenerator.EndpointRouteConfiguration
+        var getEntityRoute = EntityScheme.Configuration.GetByIdQueryGenerator.EndpointRouteConfiguration
             .GetRoute(EntityScheme.EntityName.ToString(), parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
@@ -96,7 +96,8 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnT
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Post",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            EntityScheme.Configuration.CreateCommand.Endpoint.RouteConfiguration
+                .GetRoute(EntityScheme.EntityName.ToString()),
+            $"{_endpointClassName}.{EntityScheme.Configuration.CreateCommand.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

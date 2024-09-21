@@ -16,7 +16,8 @@ public class EntitySchemeFactory
     internal static EntityScheme Construct(
         ISymbol symbol,
         EntityCustomizationScheme entityCustomizationScheme,
-        DbContextScheme dbContextScheme)
+        DbContextScheme dbContextScheme,
+        CrudGeneratorConfiguration crudGeneratorConfiguration)
     {
         var properties = GetEntityProperties(symbol, dbContextScheme);
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
@@ -29,7 +30,8 @@ public class EntitySchemeFactory
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
             properties.Where(x => !x.IsEntityId).ToList(),
-            properties.Where(x => x.CanBeSorted).ToList());
+            properties.Where(x => x.CanBeSorted).ToList(),
+            crudGeneratorConfiguration);
     }
 
     private static EntityTitle CreateEntityTitle(
