@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
+internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -16,7 +16,7 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration,
+        CqrsConfiguration configuration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
@@ -30,7 +30,7 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
     {
         GenerateCommand(EntityScheme.Configuration.UpdateCommand.Operation.TemplatePath);
         GenerateHandler(EntityScheme.Configuration.UpdateCommand.Handler.TemplatePath);
-        GenerateViewModel($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
+        GenerateViewModel($"{EntityScheme.Configuration.TemplatesBasePath}.Update.UpdateVm.txt");
         GenerateEndpoint(EntityScheme.Configuration.UpdateCommand.Endpoint.TemplatePath);
     }
 

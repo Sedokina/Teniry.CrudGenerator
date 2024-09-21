@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnTypeGeneratorConfiguration>
+internal class CreateCommandCrudGenerator : BaseCrudGenerator< CqrsWithReturnValueConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -16,7 +16,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CommandWithReturnT
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        CommandWithReturnTypeGeneratorConfiguration configuration,
+        CqrsWithReturnValueConfiguration configuration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {

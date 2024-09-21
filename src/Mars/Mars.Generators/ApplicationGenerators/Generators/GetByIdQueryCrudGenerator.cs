@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsWithReturnValueConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -16,7 +16,7 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorC
     public GetByIdQueryCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseQueryGeneratorConfiguration configuration,
+        CqrsWithReturnValueConfiguration configuration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {

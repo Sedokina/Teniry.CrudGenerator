@@ -41,7 +41,7 @@ public class AppGenerator : ISourceGenerator
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
                 entitySymbol,
-                configuration.GetByIdQueryGenerator,
+                configuration.GetByIdQuery,
                 entityScheme,
                 dbContextScheme);
             generateGetByIdQuery.RunGenerator();
@@ -53,7 +53,7 @@ public class AppGenerator : ISourceGenerator
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
                 entitySymbol,
-                configuration.GetListQueryGenerator,
+                configuration.GetListQuery,
                 entityScheme,
                 dbContextScheme);
             generateListQuery.RunGenerator();
@@ -65,7 +65,7 @@ public class AppGenerator : ISourceGenerator
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
                 entitySymbol,
-                configuration.CreateCommandCommandGenerator,
+                configuration.CreateCommand,
                 entityScheme,
                 dbContextScheme);
             generateCreateCommand.RunGenerator();
@@ -77,7 +77,7 @@ public class AppGenerator : ISourceGenerator
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
                 entitySymbol,
-                configuration.UpdateCommandCommandGenerator,
+                configuration.UpdateCommand,
                 entityScheme,
                 dbContextScheme);
             generateUpdateCommand.RunGenerator();
@@ -89,7 +89,7 @@ public class AppGenerator : ISourceGenerator
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
                 entitySymbol,
-                configuration.DeleteCommandCommandGenerator,
+                configuration.DeleteCommand,
                 entityScheme,
                 dbContextScheme);
             generateDeleteCommand.RunGenerator();

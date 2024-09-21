@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -18,7 +18,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        ListQueryGeneratorConfiguration configuration,
+        CqrsListConfiguration configuration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
@@ -136,7 +136,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            Configuration.Endpoint.RouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
+            $"{_endpointClassName}.{Configuration.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

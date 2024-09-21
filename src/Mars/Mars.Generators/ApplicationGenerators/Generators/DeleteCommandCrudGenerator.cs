@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
+internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -15,7 +15,7 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
     public DeleteCommandCrudGenerator(
         GeneratorExecutionContext context,
         ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration,
+        CqrsConfiguration configuration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
