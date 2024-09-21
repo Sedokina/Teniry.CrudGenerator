@@ -20,18 +20,18 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorC
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _queryName = entityScheme.Configuration.GetByIdQuery.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = entityScheme.Configuration.GetByIdQuery.Handler.GetName(EntityScheme.EntityName);
+        _dtoName = entityScheme.Configuration.GetByIdQuery.Dto.GetName(EntityScheme.EntityName);
+        _endpointClassName = entityScheme.Configuration.GetByIdQuery.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Configuration.QueryTemplatePath);
-        GenerateDto(Configuration.DtoTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateQuery(EntityScheme.Configuration.GetByIdQuery.Operation.TemplatePath);
+        GenerateHandler(EntityScheme.Configuration.GetByIdQuery.Handler.TemplatePath);
+        GenerateDto(EntityScheme.Configuration.GetByIdQuery.Dto.TemplatePath);
+        GenerateEndpoint(EntityScheme.Configuration.GetByIdQuery.Endpoint.TemplatePath);
     }
 
     private void GenerateQuery(string templatePath)
@@ -96,8 +96,8 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorC
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Configuration.EndpointRouteConfiguration
+            EntityScheme.Configuration.GetByIdQuery.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{EntityScheme.Configuration.GetByIdQuery.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

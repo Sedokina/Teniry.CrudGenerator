@@ -23,6 +23,7 @@ public sealed class CrudGeneratorConfiguration
     public CqrsWithReturnValueConfiguration CreateCommand { get; set; } = null!;
     public CqrsConfiguration DeleteCommand { get; set; } = null!;
     public CqrsConfiguration UpdateCommand { get; set; } = null!;
+    public CqrsWithReturnValueConfiguration GetByIdQuery { get; set; } = null!;
     public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; } = null!;
@@ -167,6 +168,32 @@ public sealed class CrudGeneratorConfiguration
             EndpointTemplatePath = $"{TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
             EndpointNameConfiguration = new("Get{{entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}", "GetAsync")
+        };
+        GetByIdQuery = new()
+        {
+            OperationType = CqrsOperationType.Query,
+            FunctionName = new("Get{{entity_name}}"),
+            Operation = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetById.GetByIdQuery.txt",
+                NameConfiguration = new("Get{{entity_name}}Query")
+            },
+            Dto = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetById.GetByIdDto.txt",
+                NameConfiguration = new("{{entity_name}}Dto"),
+            },
+            Handler = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetById.GetByIdHandler.txt",
+                NameConfiguration = new("Get{{entity_name}}Handler"),
+            },
+            Endpoint = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
+                NameConfiguration = new("Get{{entity_name}}Endpoint"),
+                RouteConfiguration = new("/{{entity_name}}/{{id_param_name}}", "GetAsync")
+            }
         };
         GetListQueryGenerator = new ListQueryGeneratorConfiguration
         {
