@@ -84,15 +84,16 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     {
         Scheme = scheme;
         EntityScheme = scheme.EntityScheme;
-        BusinessLogicNamespace = scheme.Configuration.GlobalConfiguration.BusinessLogicNamespaceBasePath
+        BusinessLogicNamespace = scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceBasePath
             .GetNamespacePath(
                 EntityScheme.EntityName,
                 Scheme.EntityScheme.ContainingAssembly,
-                scheme.Configuration.GlobalConfiguration.FeatureNameConfiguration,
+                scheme.Configuration.OperationsSharedConfiguration.FeatureNameConfiguration,
                 scheme.Configuration.FunctionName);
-        EndpointNamespace = scheme.Configuration.GlobalConfiguration.EndpointsNamespaceBasePath.GetNamespacePath(
-            EntityScheme.EntityName,
-            Scheme.EntityScheme.ContainingAssembly);
+        EndpointNamespace = scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceBasePath
+            .GetNamespacePath(
+                EntityScheme.EntityName,
+                Scheme.EntityScheme.ContainingAssembly);
     }
 
     protected override void WriteFile(string templatePath, object model, string className)

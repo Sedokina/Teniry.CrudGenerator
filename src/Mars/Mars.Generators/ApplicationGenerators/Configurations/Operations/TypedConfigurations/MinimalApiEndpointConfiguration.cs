@@ -1,4 +1,3 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;

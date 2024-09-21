@@ -1,16 +1,18 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
 public class UpdateCommandDefaultConfigurationFactory
 {
-    public static CqrsOperationGeneratorConfiguration Construct(GlobalCqrsGeneratorConfiguration globalConfiguration)
+    public static CqrsOperationGeneratorConfiguration Construct(
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
         return new CqrsOperationGeneratorConfiguration
         {
             GlobalConfiguration = globalConfiguration,
+            OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
             FunctionName = new NameConfiguration("Update{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfiguration

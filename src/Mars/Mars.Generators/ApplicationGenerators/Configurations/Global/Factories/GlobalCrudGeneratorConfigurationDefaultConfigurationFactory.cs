@@ -1,5 +1,3 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
-
 namespace Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
 
 public class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
@@ -19,12 +17,6 @@ public class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
 //------------------------------------------------------------------------------",
             NullableEnable = true,
             TemplatesBasePath = "Mars.Generators.Templates.Crud",
-            BusinessLogicNamespaceBasePath =
-                new PutBusinessLogicIntoNamespaceConfiguration(
-                    "{{assembly_name}}.Application.{{feature_name}}.{{function_name}}"),
-            EndpointsNamespaceBasePath =
-                new PutEndpointsIntoNamespaceConfiguration("{{assembly_name}}.Endpoints.{{entity_name}}Endpoints"),
-            FeatureNameConfiguration = new NameConfiguration("{{entity_name}}Feature")
         };
     }
 }

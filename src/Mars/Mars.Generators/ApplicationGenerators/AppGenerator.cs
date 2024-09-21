@@ -29,6 +29,7 @@ public class AppGenerator : ISourceGenerator
 
         List<EndpointMap> endpointsMaps = new();
         var globalConfiguration = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+        var sharedConfiguration = SharedCqrsOperationDefaultConfigurationFactory.Construct();
 
         foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {
@@ -44,7 +45,7 @@ public class AppGenerator : ISourceGenerator
             var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                GetByIdQueryDefaultConfigurationFactory.Construct(globalConfiguration));
+                GetByIdQueryDefaultConfigurationFactory.Construct(globalConfiguration, sharedConfiguration));
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
                 getByIdQueryScheme);
@@ -57,7 +58,7 @@ public class AppGenerator : ISourceGenerator
             var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                GetListQueryDefaultConfigurationFactory.Construct(globalConfiguration));
+                GetListQueryDefaultConfigurationFactory.Construct(globalConfiguration, sharedConfiguration));
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
                 getListQueryScheme);
@@ -70,7 +71,7 @@ public class AppGenerator : ISourceGenerator
             var createCommandScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                CreateCommandDefaultConfigurationFactory.Construct(globalConfiguration));
+                CreateCommandDefaultConfigurationFactory.Construct(globalConfiguration, sharedConfiguration));
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
                 createCommandScheme,
@@ -84,7 +85,7 @@ public class AppGenerator : ISourceGenerator
             var updateCommandScheme = new CrudGeneratorScheme<CqrsOperationGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                UpdateCommandDefaultConfigurationFactory.Construct(globalConfiguration));
+                UpdateCommandDefaultConfigurationFactory.Construct(globalConfiguration, sharedConfiguration));
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
                 updateCommandScheme);
@@ -97,7 +98,7 @@ public class AppGenerator : ISourceGenerator
             var deleteCommandScheme = new CrudGeneratorScheme<CqrsOperationGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                DeleteCommandDefaultConfigurationFactory.Construct(globalConfiguration));
+                DeleteCommandDefaultConfigurationFactory.Construct(globalConfiguration, sharedConfiguration));
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
                 deleteCommandScheme);

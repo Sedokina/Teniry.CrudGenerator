@@ -1,7 +1,7 @@
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
+namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 /// <summary>
 ///     Available string in name:

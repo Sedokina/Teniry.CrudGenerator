@@ -1,5 +1,4 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
@@ -7,11 +6,13 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factor
 public class GetListQueryDefaultConfigurationFactory
 {
     public static CqrsListOperationGeneratorConfiguration Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration)
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
         return new CqrsListOperationGeneratorConfiguration
         {
             GlobalConfiguration = globalConfiguration,
+            OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Query,
             FunctionName = new NameConfiguration("GetList{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfiguration

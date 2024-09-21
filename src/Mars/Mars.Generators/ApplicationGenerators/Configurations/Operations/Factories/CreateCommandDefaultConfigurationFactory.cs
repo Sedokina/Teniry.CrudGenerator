@@ -1,5 +1,4 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Global.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
@@ -7,7 +6,8 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factor
 public class CreateCommandDefaultConfigurationFactory
 {
     public static CqrsOperationWithReturnValueGeneratorConfiguration Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration)
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
@@ -15,6 +15,7 @@ public class CreateCommandDefaultConfigurationFactory
         return new CqrsOperationWithReturnValueGeneratorConfiguration
         {
             GlobalConfiguration = globalConfiguration,
+            OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
             FunctionName = new NameConfiguration("Create{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfiguration
