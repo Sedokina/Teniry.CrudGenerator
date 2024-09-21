@@ -19,16 +19,16 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _commandName = entityScheme.Configuration.DeleteCommand.Operation.GetName(EntityScheme.EntityName);
+        _handlerName = entityScheme.Configuration.DeleteCommand.Handler.GetName(EntityScheme.EntityName);
+        _endpointClassName = entityScheme.Configuration.DeleteCommand.Endpoint.GetName(EntityScheme.EntityName);
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Configuration.CommandTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateCommand(EntityScheme.Configuration.DeleteCommand.Operation.TemplatePath);
+        GenerateHandler(EntityScheme.Configuration.DeleteCommand.Handler.TemplatePath);
+        GenerateEndpoint(EntityScheme.Configuration.DeleteCommand.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -78,8 +78,8 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Delete",
-            Configuration.EndpointRouteConfiguration
+            EntityScheme.Configuration.DeleteCommand.Endpoint.RouteConfiguration
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{EntityScheme.Configuration.DeleteCommand.Endpoint.RouteConfiguration.FunctionName}");
     }
 }

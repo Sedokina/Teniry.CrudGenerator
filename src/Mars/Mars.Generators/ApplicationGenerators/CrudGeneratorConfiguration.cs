@@ -21,6 +21,7 @@ public sealed class CrudGeneratorConfiguration
     public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; } = null!;
     public NameConfiguration FeatureNameConfiguration { get; set; } = null!;
     public CqrsConfiguration CreateCommand { get; set; } = null!;
+    public CqrsConfiguration DeleteCommand { get; set; } = null!;
     public CommandWithReturnTypeGeneratorConfiguration CreateCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration DeleteCommandCommandGenerator { get; set; } = null!;
     public BaseCommandGeneratorConfiguration UpdateCommandCommandGenerator { get; set; } = null!;
@@ -96,6 +97,28 @@ public sealed class CrudGeneratorConfiguration
             EndpointTemplatePath = $"{TemplatesBasePath}.Delete.DeleteEndpoint.txt",
             EndpointNameConfiguration = new("Delete{{entity_name}}Endpoint"),
             EndpointRouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/delete", "DeleteAsync")
+        };
+        DeleteCommand = new CqrsConfiguration
+        {
+            OperationType = CqrsOperationType.Command,
+            FunctionName = new("Delete{{entity_name}}"),
+            Operation = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Delete.DeleteCommand.txt",
+                NameConfiguration = new("Delete{{entity_name}}Command")
+            },
+            Dto = null,
+            Handler = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Delete.DeleteHandler.txt",
+                NameConfiguration = new("Delete{{entity_name}}Handler"),
+            },
+            Endpoint = new()
+            {
+                TemplatePath = $"{TemplatesBasePath}.Delete.DeleteEndpoint.txt",
+                NameConfiguration = new("Delete{{entity_name}}Endpoint"),
+                RouteConfiguration = new("/{{entity_name}}/{{id_param_name}}/delete", "DeleteAsync")
+            }
         };
         UpdateCommandCommandGenerator = new BaseCommandGeneratorConfiguration
         {
