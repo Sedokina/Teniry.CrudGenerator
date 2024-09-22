@@ -1,5 +1,5 @@
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
@@ -15,7 +15,7 @@ public class CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguratio
         built.Dto = new()
         {
             TemplatePath = Dto.TemplatePath,
-            Name = Dto.NameConfiguration.GetName(entityName),
+            Name = Dto.NameConfigurationBuilder.GetName(entityName),
         };
         return built;
     }

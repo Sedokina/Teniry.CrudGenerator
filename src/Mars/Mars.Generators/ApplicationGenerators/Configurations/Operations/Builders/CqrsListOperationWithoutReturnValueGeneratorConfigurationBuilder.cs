@@ -1,5 +1,5 @@
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
@@ -16,19 +16,19 @@ public class CqrsListOperationWithoutReturnValueGeneratorConfigurationBuilder : 
         built.Dto = new()
         {
             TemplatePath = Dto.TemplatePath,
-            Name = Dto.NameConfiguration.GetName(entityName),
+            Name = Dto.NameConfigurationBuilder.GetName(entityName),
         };
 
         built.Filter = new()
         {
             TemplatePath = Filter.TemplatePath,
-            Name = Filter.NameConfiguration.GetName(entityName),
+            Name = Filter.NameConfigurationBuilder.GetName(entityName),
         };
 
         built.DtoListItem = new()
         {
             TemplatePath = DtoListItem.TemplatePath,
-            Name = DtoListItem.NameConfiguration.GetName(entityName),
+            Name = DtoListItem.NameConfigurationBuilder.GetName(entityName),
         };
 
         return built;

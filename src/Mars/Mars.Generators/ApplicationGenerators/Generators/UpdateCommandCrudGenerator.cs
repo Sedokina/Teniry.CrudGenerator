@@ -91,8 +91,8 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Put",
-            Scheme.Configuration.Endpoint.RouteConfiguration
+            Scheme.Configuration.Endpoint.RouteConfigurationBuilder
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfigurationBuilder.FunctionName}");
     }
 }

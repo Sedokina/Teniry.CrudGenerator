@@ -1,6 +1,6 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
@@ -9,7 +9,7 @@ namespace Mars.Generators.ApplicationGenerators.Generators;
 
 internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration>
 {
-    private readonly EndpointRouteConfiguration _getByIdEndpointRouteConfiguration;
+    private readonly EndpointRouteConfigurationBuilder _getByIdEndpointRouteConfigurationBuilder;
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
@@ -18,9 +18,9 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration> scheme,
-        EndpointRouteConfiguration getByIdEndpointRouteConfiguration) : base(context, scheme)
+        EndpointRouteConfigurationBuilder getByIdEndpointRouteConfigurationBuilder) : base(context, scheme)
     {
-        _getByIdEndpointRouteConfiguration = getByIdEndpointRouteConfiguration;
+        _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;
         _dtoName = scheme.Configuration.Dto.Name;
@@ -81,7 +81,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
     private void GenerateEndpoint(string templatePath)
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getEntityRoute = _getByIdEndpointRouteConfiguration
+        var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
             .GetRoute(EntityScheme.EntityName.ToString(), parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
@@ -97,8 +97,8 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Post",
-            Scheme.Configuration.Endpoint.RouteConfiguration
+            Scheme.Configuration.Endpoint.RouteConfigurationBuilder
                 .GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfiguration.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfigurationBuilder.FunctionName}");
     }
 }

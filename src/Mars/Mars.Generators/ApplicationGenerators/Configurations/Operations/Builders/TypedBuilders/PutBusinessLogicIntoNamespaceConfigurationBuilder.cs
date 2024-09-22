@@ -1,7 +1,7 @@
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
+namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
@@ -9,12 +9,12 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedC
 ///     - {{feature_name}}<br />
 ///     - {{function_name}}<br />
 /// </summary>
-public class PutBusinessLogicIntoNamespaceConfiguration(string namespacePath)
+public class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
         EntityName entityName,
         string assemblyName,
-        NameConfiguration featureName,
+        NameConfigurationBuilder featureName,
         string functionName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);

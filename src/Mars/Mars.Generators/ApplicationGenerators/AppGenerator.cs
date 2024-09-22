@@ -76,7 +76,7 @@ public class AppGenerator : ISourceGenerator
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
                 createCommandScheme,
-                getByIdQueryScheme.Configuration.Endpoint.RouteConfiguration);
+                getByIdQueryScheme.Configuration.Endpoint.RouteConfigurationBuilder);
             generateCreateCommand.RunGenerator();
             if (generateCreateCommand.EndpointMap is not null)
             {

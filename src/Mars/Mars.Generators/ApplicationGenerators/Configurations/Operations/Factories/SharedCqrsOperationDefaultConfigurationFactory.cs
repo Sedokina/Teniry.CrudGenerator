@@ -8,7 +8,7 @@ public class SharedCqrsOperationDefaultConfigurationFactory
         {
             BusinessLogicNamespaceBasePath = new("{{assembly_name}}.Application.{{feature_name}}.{{function_name}}"),
             EndpointsNamespaceBasePath = new("{{assembly_name}}.Endpoints.{{entity_name}}Endpoints"),
-            FeatureNameConfiguration = new("{{entity_name}}Feature")
+            FeatureNameConfigurationBuilder = new("{{entity_name}}Feature")
         };
     }
 }

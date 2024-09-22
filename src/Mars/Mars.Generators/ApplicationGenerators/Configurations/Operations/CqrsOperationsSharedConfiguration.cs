@@ -1,10 +1,10 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations;
 
 public class CqrsOperationsSharedConfiguration
 {
-    public PutBusinessLogicIntoNamespaceConfiguration BusinessLogicNamespaceBasePath { get; set; } = null!;
-    public PutEndpointsIntoNamespaceConfiguration EndpointsNamespaceBasePath { get; set; } = null!;
-    public NameConfiguration FeatureNameConfiguration { get; set; } = null!;
+    public PutBusinessLogicIntoNamespaceConfigurationBuilder BusinessLogicNamespaceBasePath { get; set; } = null!;
+    public PutEndpointsIntoNamespaceConfigurationBuilder EndpointsNamespaceBasePath { get; set; } = null!;
+    public NameConfigurationBuilder FeatureNameConfigurationBuilder { get; set; } = null!;
 }

@@ -1,6 +1,6 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
@@ -18,27 +18,27 @@ public class CreateCommandDefaultConfigurationFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            FunctionName = new NameConfiguration("Create{{entity_name}}"),
+            FunctionName = new NameConfigurationBuilder("Create{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",
-                NameConfiguration = new NameConfiguration("Create{{entity_name}}Command")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Command")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreatedDto.txt",
-                NameConfiguration = new NameConfiguration("Created{{entity_name}}Dto")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Created{{entity_name}}Dto")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateHandler.txt",
-                NameConfiguration = new NameConfiguration("Create{{entity_name}}Handler")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateEndpoint.txt",
-                NameConfiguration = new NameConfiguration("Create{{entity_name}}Endpoint"),
-                RouteConfiguration = new EndpointRouteConfiguration("/{{entity_name}}/create", "CreateAsync")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Endpoint"),
+                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/create", "CreateAsync")
             }
         };
     }

@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
+namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
 /// <summary>
 ///     Available string in name:
 ///     - {{entity_name}}<br />
 ///     - {{id_param_name}}<br />
 /// </summary>
-public class EndpointRouteConfiguration(string name, string functionName)
+public class EndpointRouteConfigurationBuilder(string name, string functionName)
 {
     public string FunctionName { get; } = functionName;
 

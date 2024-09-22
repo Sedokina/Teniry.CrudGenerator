@@ -89,7 +89,7 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
             .GetNamespacePath(
                 EntityScheme.EntityName,
                 Scheme.EntityScheme.ContainingAssembly,
-                scheme.Configuration.OperationsSharedConfiguration.FeatureNameConfiguration,
+                scheme.Configuration.OperationsSharedConfiguration.FeatureNameConfigurationBuilder,
                 scheme.Configuration.FunctionName);
         EndpointNamespace = scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceBasePath
             .GetNamespacePath(

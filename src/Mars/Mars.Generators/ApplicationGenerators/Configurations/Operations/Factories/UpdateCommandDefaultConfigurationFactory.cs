@@ -1,6 +1,6 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
@@ -15,23 +15,23 @@ public class UpdateCommandDefaultConfigurationFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            FunctionName = new NameConfiguration("Update{{entity_name}}"),
+            FunctionName = new NameConfigurationBuilder("Update{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateCommand.txt",
-                NameConfiguration = new NameConfiguration("Update{{entity_name}}Command")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Command")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateHandler.txt",
-                NameConfiguration = new NameConfiguration("Update{{entity_name}}Handler")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt",
-                NameConfiguration = new NameConfiguration("Update{{entity_name}}Endpoint"),
-                RouteConfiguration =
-                    new EndpointRouteConfiguration("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Endpoint"),
+                RouteConfigurationBuilder =
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
             }
         };
     }
