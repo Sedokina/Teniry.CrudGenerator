@@ -1,5 +1,4 @@
-using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
+using Mars.Generators.CrudGeneratorCore.Schemes.DbContext;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
 
