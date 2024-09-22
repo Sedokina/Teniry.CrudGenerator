@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Mars.Generators.ApplicationGenerators.Core;
+namespace Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
 
 public abstract class EntityGeneratorConfiguration
 {

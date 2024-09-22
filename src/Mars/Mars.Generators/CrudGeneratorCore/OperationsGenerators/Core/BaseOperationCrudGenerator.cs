@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Text;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 using Scriban.Runtime;
 
-namespace Mars.Generators.ApplicationGenerators.Core;
+namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators.Core;
 
 internal abstract class BaseOperationCrudGenerator<TConfiguration> : BaseGenerator
     where TConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration

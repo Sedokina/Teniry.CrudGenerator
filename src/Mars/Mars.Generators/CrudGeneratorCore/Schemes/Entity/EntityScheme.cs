@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 
 internal class EntityScheme
 {

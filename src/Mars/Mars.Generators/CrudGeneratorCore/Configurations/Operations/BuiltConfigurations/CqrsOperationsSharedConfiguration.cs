@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 
 internal class CqrsOperationsSharedConfiguration
 {

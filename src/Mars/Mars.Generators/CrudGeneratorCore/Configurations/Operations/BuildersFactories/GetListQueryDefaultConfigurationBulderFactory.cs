@@ -1,8 +1,8 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
+using Mars.Generators.CrudGeneratorCore.Configurations.Global;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class GetListQueryDefaultConfigurationBulderFactory
 {

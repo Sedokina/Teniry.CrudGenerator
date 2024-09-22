@@ -1,6 +1,6 @@
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 
 internal class MinimalApiEndpointConfigurationBuilder
 {

@@ -1,6 +1,6 @@
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity.Properties;
 
 internal class EntityFilterProperty
 {

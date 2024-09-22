@@ -1,6 +1,6 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class CqrsOperationsSharedConfigurationBuilderFactory
 {

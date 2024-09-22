@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Global.Factories;
 
 internal class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
 {

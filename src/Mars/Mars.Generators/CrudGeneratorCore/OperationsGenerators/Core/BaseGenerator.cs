@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Core;
+namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators.Core;
 
 internal abstract class BaseGenerator
 {

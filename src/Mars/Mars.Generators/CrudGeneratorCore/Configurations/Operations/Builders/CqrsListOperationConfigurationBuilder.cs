@@ -1,8 +1,8 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
 
 internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
 {

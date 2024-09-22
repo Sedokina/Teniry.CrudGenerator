@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
 
 internal class FileTemplateBasedOperationConfiguration
 {

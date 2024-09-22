@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
 public abstract class FilterExpression
 {

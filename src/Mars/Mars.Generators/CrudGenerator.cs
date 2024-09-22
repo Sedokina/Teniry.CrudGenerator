@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
-using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
-using Mars.Generators.ApplicationGenerators.Generators;
+using Mars.Generators.CrudGeneratorCore.Configurations.Global;
+using Mars.Generators.CrudGeneratorCore.Configurations.Global.Factories;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
+using Mars.Generators.CrudGeneratorCore.OperationsGenerators;
+using Mars.Generators.CrudGeneratorCore.OperationsGenerators.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.DbContext;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
+using Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 using Microsoft.CodeAnalysis;
 
-namespace Mars.Generators.ApplicationGenerators;
+namespace Mars.Generators;
 
 [Generator]
 public class CrudGenerator : ISourceGenerator

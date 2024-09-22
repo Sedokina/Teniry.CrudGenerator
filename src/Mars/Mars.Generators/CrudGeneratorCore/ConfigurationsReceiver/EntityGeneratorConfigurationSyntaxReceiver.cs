@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Mars.Generators.ApplicationGenerators.Core;
+namespace Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
 
 internal class EntityGeneratorConfigurationSyntaxReceiver : ISyntaxReceiver
 {

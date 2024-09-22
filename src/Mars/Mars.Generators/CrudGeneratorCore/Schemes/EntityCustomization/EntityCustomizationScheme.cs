@@ -1,6 +1,6 @@
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 internal class EntityCustomizationScheme
 {

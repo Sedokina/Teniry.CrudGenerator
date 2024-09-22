@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Mars.Generators.ApplicationGenerators.Core.DbContextCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.DbContext;
 
 internal class DbContextSchemeFactory
 {

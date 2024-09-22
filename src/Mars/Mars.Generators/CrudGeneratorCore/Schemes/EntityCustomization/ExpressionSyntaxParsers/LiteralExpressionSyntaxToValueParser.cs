@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore.ExpressionSyntaxParsers;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
 internal class LiteralExpressionSyntaxToValueParser : IExpressionSyntaxToValueParser
 {

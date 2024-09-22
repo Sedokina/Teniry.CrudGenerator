@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations;
 
 public enum CqrsOperationType
 {

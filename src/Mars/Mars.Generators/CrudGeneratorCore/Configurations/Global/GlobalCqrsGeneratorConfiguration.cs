@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Global;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Global;
 
 public sealed class GlobalCqrsGeneratorConfiguration
 {

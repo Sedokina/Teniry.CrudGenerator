@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
-namespace Mars.Generators.ApplicationGenerators.Core.DbContextCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.DbContext;
 
 internal class DbContextScheme
 {

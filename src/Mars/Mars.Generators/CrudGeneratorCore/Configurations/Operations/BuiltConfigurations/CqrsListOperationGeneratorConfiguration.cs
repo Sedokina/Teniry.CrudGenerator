@@ -1,6 +1,6 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 
 internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
 {

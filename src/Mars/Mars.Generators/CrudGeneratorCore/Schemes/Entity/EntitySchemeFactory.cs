@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Core;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
-using Mars.Generators.ApplicationGenerators.Core.Extensions;
+using Mars.Generators.CrudGeneratorCore.Schemes.DbContext;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.Extensions;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.Properties;
+using Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 using Microsoft.CodeAnalysis;
 using Pluralize.NET;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 
 internal class EntitySchemeFactory
 {

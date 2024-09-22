@@ -1,11 +1,10 @@
-using Mars.Generators.ApplicationGenerators.Configurations.Operations;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
-using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
+using Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using Mars.Generators.CrudGeneratorCore.OperationsGenerators.Core;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
 
-namespace Mars.Generators.ApplicationGenerators.Generators;
+namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
 internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOperationGeneratorConfiguration>
 {

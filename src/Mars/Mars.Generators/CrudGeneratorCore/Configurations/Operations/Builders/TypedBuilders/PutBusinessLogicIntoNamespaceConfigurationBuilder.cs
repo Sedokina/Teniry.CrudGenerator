@@ -1,7 +1,7 @@
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 
 /// <summary>
 ///     Available string keys in namespace path:<br />

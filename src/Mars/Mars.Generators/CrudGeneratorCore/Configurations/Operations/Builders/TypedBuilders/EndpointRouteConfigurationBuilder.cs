@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Scriban;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
+namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 
 /// <summary>
 ///     Available string in name:

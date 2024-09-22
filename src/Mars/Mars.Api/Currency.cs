@@ -1,4 +1,3 @@
-using Mars.Generators.ApplicationGenerators.Core;
 using MongoDB.Bson;
 
 namespace Mars.Api;

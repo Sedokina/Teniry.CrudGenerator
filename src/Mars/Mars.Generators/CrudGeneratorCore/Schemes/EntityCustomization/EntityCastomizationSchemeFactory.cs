@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore.ExpressionSyntaxParsers;
+using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
+using Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 internal class EntityCastomizationSchemeFactory
 {

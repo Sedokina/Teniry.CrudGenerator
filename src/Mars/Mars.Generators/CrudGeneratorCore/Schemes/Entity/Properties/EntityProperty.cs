@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity.Properties;
 
 internal class EntityProperty
 {

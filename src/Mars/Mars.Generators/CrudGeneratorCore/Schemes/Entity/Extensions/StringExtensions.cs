@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Core.Extensions;
+namespace Mars.Generators.CrudGeneratorCore.Schemes.Entity.Extensions;
 
 public static class StringExtensions
 {

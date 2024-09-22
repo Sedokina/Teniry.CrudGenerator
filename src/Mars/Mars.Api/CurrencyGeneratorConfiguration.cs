@@ -1,4 +1,4 @@
-using Mars.Generators.ApplicationGenerators.Core;
+using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
 
 namespace Mars.Api;
 
