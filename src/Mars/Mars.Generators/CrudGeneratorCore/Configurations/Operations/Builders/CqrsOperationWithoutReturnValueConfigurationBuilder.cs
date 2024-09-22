@@ -11,7 +11,7 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; } = null!;
     public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
-    public NameConfigurationBuilder OperationName { get; set; } = null!;
+    public NameConfigurationBuilder OperationGroup { get; set; } = null!;
     public FileTemplateBasedOperationConfigurationBuilder Operation { get; set; } = null!;
     public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; } = null!;
     public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; } = null!;
@@ -19,9 +19,9 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {
         configuration.GlobalConfiguration = GlobalConfiguration.Build();
-        configuration.FunctionName = OperationName.GetName(entityScheme.EntityName);
+        configuration.OperationGroup = OperationGroup.GetName(entityScheme.EntityName);
         configuration.OperationsSharedConfiguration =
-            OperationsSharedConfiguration.Build(entityScheme, configuration.FunctionName);
+            OperationsSharedConfiguration.Build(entityScheme, configuration.OperationGroup);
         configuration.OperationType = CqrsOperationType.Command;
         configuration.Operation = new()
         {

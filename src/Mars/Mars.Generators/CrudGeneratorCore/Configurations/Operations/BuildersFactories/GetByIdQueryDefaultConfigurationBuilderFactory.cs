@@ -15,7 +15,7 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Query,
-            OperationName = new NameConfigurationBuilder("Get{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("Get{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdQuery.txt",

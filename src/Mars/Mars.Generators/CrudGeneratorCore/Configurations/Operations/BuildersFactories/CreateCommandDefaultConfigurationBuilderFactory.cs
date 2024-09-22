@@ -17,7 +17,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            OperationName = new NameConfigurationBuilder("Create{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("Create{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",

@@ -15,7 +15,7 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            OperationName = new NameConfigurationBuilder("Update{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("Update{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateCommand.txt",

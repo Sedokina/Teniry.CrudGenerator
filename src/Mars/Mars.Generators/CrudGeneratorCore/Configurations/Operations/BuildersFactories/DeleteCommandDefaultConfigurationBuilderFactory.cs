@@ -15,7 +15,7 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            OperationName = new NameConfigurationBuilder("Delete{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("Delete{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",

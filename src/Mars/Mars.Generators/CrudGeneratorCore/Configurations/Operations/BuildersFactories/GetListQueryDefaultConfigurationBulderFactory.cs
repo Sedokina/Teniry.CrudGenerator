@@ -15,7 +15,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Query,
-            OperationName = new NameConfigurationBuilder("GetList{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("GetList{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListQuery.txt",
