@@ -1,12 +1,13 @@
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -17,27 +18,24 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        ListQueryGeneratorConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(context, scheme)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _listItemDtoName = Configuration.ListItemDtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _filterName = Configuration.FilterNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _queryName = Scheme.Configuration.Operation.Name;
+        _listItemDtoName = Scheme.Configuration.DtoListItem.Name;
+        _dtoName = Scheme.Configuration.Dto.Name;
+        _filterName = Scheme.Configuration.Filter.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Configuration.QueryTemplatePath);
-        GenerateListItemDto(Configuration.DtoListItemTemplatePath);
-        GenerateDto(Configuration.DtoTemplatePath);
-        GenerateFilter(Configuration.FilterTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateListItemDto(Scheme.Configuration.DtoListItem.TemplatePath);
+        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateQuery(string templatePath)
@@ -49,7 +47,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
         {
             QueryName = _queryName,
             DtoName = _dtoName,
-            PutIntoNamespace = BusinessLogicNamespace,
+            PutIntoNamespace = Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation,
             Properties = properties,
             SortKeys = sortKeys
         };
@@ -134,9 +132,9 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<ListQueryGeneratorConf
 
         WriteFile(templatePath, model, _endpointClassName);
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
-            Configuration.EndpointRouteConfiguration.GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            Scheme.Configuration.Endpoint.Route,
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

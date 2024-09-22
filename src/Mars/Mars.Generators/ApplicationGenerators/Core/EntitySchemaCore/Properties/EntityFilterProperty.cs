@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 
-public class EntityFilterProperty
+internal class EntityFilterProperty
 {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }

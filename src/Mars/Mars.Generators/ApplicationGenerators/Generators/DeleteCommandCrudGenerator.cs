@@ -1,12 +1,12 @@
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
+internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -14,21 +14,18 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
 
     public DeleteCommandCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _commandName = Scheme.Configuration.Operation.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Configuration.CommandTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -74,12 +71,10 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
 
         WriteFile(templatePath, model, _endpointClassName);
 
-        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",
-            Configuration.EndpointRouteConfiguration
-                .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            Scheme.Configuration.Endpoint.Route,
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

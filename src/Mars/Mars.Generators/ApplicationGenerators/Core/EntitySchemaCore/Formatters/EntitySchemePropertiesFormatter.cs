@@ -5,7 +5,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 
-public static class EntitySchemePropertiesFormatter
+internal static class EntitySchemePropertiesFormatter
 {
     public static string FormatAsProperties(this List<EntityProperty> properties)
     {

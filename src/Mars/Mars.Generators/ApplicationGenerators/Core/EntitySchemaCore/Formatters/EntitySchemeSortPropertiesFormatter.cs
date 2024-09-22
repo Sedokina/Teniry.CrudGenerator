@@ -4,7 +4,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 
-public static class EntitySchemeSortPropertiesFormatter {
+internal static class EntitySchemeSortPropertiesFormatter {
     public static string FormatAsSortKeys(this List<EntityProperty> properties)
     {
         var sortKeys = properties.Select(x => $"\"{x.SortKey}\"");

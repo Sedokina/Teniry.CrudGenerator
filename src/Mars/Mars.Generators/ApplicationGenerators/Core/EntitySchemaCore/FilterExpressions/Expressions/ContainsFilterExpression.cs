@@ -3,7 +3,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 
-public class ContainsFilterExpression : FilterExpression
+internal class ContainsFilterExpression : FilterExpression
 {
     public ContainsFilterExpression() : base(FilterType.Contains)
     {

@@ -1,12 +1,12 @@
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGeneratorConfiguration>
+internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -15,23 +15,20 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        BaseCommandGeneratorConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
     {
-        _commandName = Configuration.CommandNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
+        _commandName = scheme.Configuration.Operation.Name;
+        _handlerName = scheme.Configuration.Handler.Name;
         _vmName = $"Update{EntityScheme.EntityName}Vm";
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Configuration.CommandTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateViewModel($"{Configuration.FullConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateViewModel($"{Scheme.Configuration.GlobalConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateCommand(string templatePath)
@@ -90,12 +87,10 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<BaseCommandGenerat
 
         WriteFile(templatePath, model, _endpointClassName);
 
-        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Put",
-            Configuration.EndpointRouteConfiguration
-                .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            Scheme.Configuration.Endpoint.Route,
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

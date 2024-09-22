@@ -1,5 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Mars.Generators.ApplicationGenerators.Configurations.Global;
+using Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntityCustomizationSchemeCore;
@@ -24,7 +28,8 @@ public class AppGenerator : ISourceGenerator
         var dbContextScheme = DbContextSchemeFactory.Construct(context);
 
         List<EndpointMap> endpointsMaps = new();
-        var configuration = new CrudGeneratorConfiguration();
+        var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+        var sharedConfigurationBuilder = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
 
         foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {
@@ -32,62 +37,81 @@ public class AppGenerator : ISourceGenerator
 
             var entityCustomizationScheme = EntityCastomizationSchemeFactory
                 .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context);
-            var entityScheme = EntitySchemeFactory.Construct(entitySymbol, entityCustomizationScheme, dbContextScheme);
+            var entityScheme = EntitySchemeFactory.Construct(
+                entitySymbol,
+                entityCustomizationScheme,
+                dbContextScheme);
 
+            var getByIdQueryConfigurationBuilder = GetByIdQueryDefaultConfigurationBuilderFactory
+                .Construct(globalConfigurationBuilder, sharedConfigurationBuilder);
+            var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+                entityScheme,
+                dbContextScheme,
+                getByIdQueryConfigurationBuilder.Build(entityScheme));
             var generateGetByIdQuery = new GetByIdQueryCrudGenerator(
                 context,
-                entitySymbol,
-                configuration.GetByIdQueryGenerator,
-                entityScheme,
-                dbContextScheme);
+                getByIdQueryScheme);
             generateGetByIdQuery.RunGenerator();
             if (generateGetByIdQuery.EndpointMap is not null)
             {
                 endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
             }
 
+            var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
+                entityScheme,
+                dbContextScheme,
+                GetListQueryDefaultConfigurationBulderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                    .Build(entityScheme));
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
-                entitySymbol,
-                configuration.GetListQueryGenerator,
-                entityScheme,
-                dbContextScheme);
+                getListQueryScheme);
             generateListQuery.RunGenerator();
             if (generateListQuery.EndpointMap is not null)
             {
                 endpointsMaps.Add(generateListQuery.EndpointMap);
             }
 
+            var createCommandScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+                entityScheme,
+                dbContextScheme,
+                CreateCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                    .Build(entityScheme));
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
-                entitySymbol,
-                configuration.CreateCommandCommandGenerator,
-                entityScheme,
-                dbContextScheme);
+                createCommandScheme,
+                getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder);
             generateCreateCommand.RunGenerator();
             if (generateCreateCommand.EndpointMap is not null)
             {
                 endpointsMaps.Add(generateCreateCommand.EndpointMap);
             }
 
+            var updateCommandScheme = new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                entityScheme,
+                dbContextScheme,
+                UpdateCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                    .Build(entityScheme));
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
-                entitySymbol,
-                configuration.UpdateCommandCommandGenerator,
-                entityScheme,
-                dbContextScheme);
+                updateCommandScheme);
             generateUpdateCommand.RunGenerator();
             if (generateUpdateCommand.EndpointMap is not null)
             {
                 endpointsMaps.Add(generateUpdateCommand.EndpointMap);
             }
 
+            var deleteCommandScheme = new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                entityScheme,
+                dbContextScheme,
+                DeleteCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                    .Build(entityScheme));
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
-                entitySymbol,
-                configuration.DeleteCommandCommandGenerator,
-                entityScheme,
-                dbContextScheme);
+                deleteCommandScheme);
             generateDeleteCommand.RunGenerator();
             if (generateDeleteCommand.EndpointMap is not null)
             {
@@ -95,7 +119,7 @@ public class AppGenerator : ISourceGenerator
             }
         }
 
-        var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, configuration);
+        var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, globalConfigurationBuilder);
         mapEndpointsGenerator.RunGenerator();
     }
 }
@@ -103,19 +127,19 @@ public class AppGenerator : ISourceGenerator
 internal class MapEndpointsGenerator : BaseGenerator
 {
     private readonly List<EndpointMap> _endpointsMaps;
-    private readonly CrudGeneratorConfiguration _configuration;
+    private readonly GlobalCqrsGeneratorConfigurationBuilder _globalConfiguration;
     private readonly string _endpointMapsClassName;
 
     public MapEndpointsGenerator(
         GeneratorExecutionContext context,
         List<EndpointMap> endpointsMaps,
-        CrudGeneratorConfiguration configuration)
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration)
         : base(context,
-            configuration.AutogeneratedFileText,
-            configuration.NullableEnable)
+            globalConfiguration.AutogeneratedFileText,
+            globalConfiguration.NullableEnable)
     {
         _endpointsMaps = endpointsMaps;
-        _configuration = configuration;
+        _globalConfiguration = globalConfiguration;
         _endpointMapsClassName = "GeneratedEndpointsMapExtension";
     }
 
@@ -134,8 +158,23 @@ internal class MapEndpointsGenerator : BaseGenerator
             Maps = string.Join("", maps)
         };
         WriteFile(
-            $"{_configuration.TemplatesBasePath}.GeneratedEndpointsMapExtension.txt",
+            $"{_globalConfiguration.TemplatesBasePath}.GeneratedEndpointsMapExtension.txt",
             model,
             _endpointMapsClassName);
+    }
+}
+
+internal class CrudGeneratorScheme<TConfiguration>
+    where TConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration
+{
+    public EntityScheme EntityScheme { get; set; }
+    public DbContextScheme DbContextScheme { get; set; }
+    public TConfiguration Configuration { get; set; }
+
+    public CrudGeneratorScheme(EntityScheme entityScheme, DbContextScheme dbContextScheme, TConfiguration configuration)
+    {
+        EntityScheme = entityScheme;
+        DbContextScheme = dbContextScheme;
+        Configuration = configuration;
     }
 }

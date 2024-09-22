@@ -1,12 +1,13 @@
+using Mars.Generators.ApplicationGenerators.Configurations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -15,23 +16,20 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorC
 
     public GetByIdQueryCrudGenerator(
         GeneratorExecutionContext context,
-        ISymbol symbol,
-        BaseQueryGeneratorConfiguration configuration,
-        EntityScheme entityScheme,
-        DbContextScheme dbContextScheme) : base(context, symbol, configuration, entityScheme, dbContextScheme)
+        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
     {
-        _queryName = Configuration.QueryNameConfiguration.GetName(EntityScheme.EntityName);
-        _dtoName = Configuration.DtoNameConfiguration.GetName(EntityScheme.EntityName);
-        _handlerName = Configuration.HandlerNameConfiguration.GetName(EntityScheme.EntityName);
-        _endpointClassName = Configuration.EndpointNameConfiguration.GetName(EntityScheme.EntityName);
+        _queryName = Scheme.Configuration.Operation.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _dtoName = Scheme.Configuration.Dto.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Configuration.QueryTemplatePath);
-        GenerateDto(Configuration.DtoTemplatePath);
-        GenerateHandler(Configuration.HandlerTemplatePath);
-        GenerateEndpoint(Configuration.EndpointTemplatePath);
+        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
     }
 
     private void GenerateQuery(string templatePath)
@@ -92,12 +90,10 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<BaseQueryGeneratorC
 
         WriteFile(templatePath, model, _endpointClassName);
 
-        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
-            Configuration.EndpointRouteConfiguration
-                .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Configuration.EndpointRouteConfiguration.FunctionName}");
+            Scheme.Configuration.Endpoint.Route,
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

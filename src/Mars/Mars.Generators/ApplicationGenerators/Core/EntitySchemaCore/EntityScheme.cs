@@ -10,6 +10,7 @@ internal class EntityScheme
     public EntityName EntityName { get; set; }
     public EntityTitle EntityTitle { get; set; }
     public string EntityNamespace { get; set; }
+    public string ContainingAssembly { get; set; }
     public EntityDefaultSort? DefaultSort { get; set; }
     public List<EntityProperty> Properties { get; set; }
     public List<EntityProperty> PrimaryKeys { get; }
@@ -21,6 +22,7 @@ internal class EntityScheme
         EntityName entityName,
         EntityTitle entityTitle,
         string entityNamespace,
+        string containingAssembly,
         EntityDefaultSort? defaultSort,
         List<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
@@ -31,6 +33,7 @@ internal class EntityScheme
         EntityName = entityName;
         EntityTitle = entityTitle;
         EntityNamespace = entityNamespace;
+        ContainingAssembly = containingAssembly;
         DefaultSort = defaultSort;
         Properties = properties;
         PrimaryKeys = primaryKeys;
@@ -39,7 +42,7 @@ internal class EntityScheme
     }
 }
 
-public class EntityName(string name, string pluralName)
+internal class EntityName(string name, string pluralName)
 {
     public string Name { get; set; } = name;
     public string PluralName { get; set; } = pluralName;
@@ -50,7 +53,7 @@ public class EntityName(string name, string pluralName)
     }
 }
 
-public class EntityTitle(string title, string pluralTitle)
+internal class EntityTitle(string title, string pluralTitle)
 {
     public string Title { get; set; } = title;
     public string PluralTitle { get; set; } = pluralTitle;

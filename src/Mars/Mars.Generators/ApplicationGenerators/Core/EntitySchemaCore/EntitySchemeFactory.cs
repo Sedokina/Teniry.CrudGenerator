@@ -11,7 +11,7 @@ using Pluralize.NET;
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
-public class EntitySchemeFactory
+internal class EntitySchemeFactory
 {
     internal static EntityScheme Construct(
         ISymbol symbol,
@@ -25,6 +25,7 @@ public class EntitySchemeFactory
             entityName,
             entityTitle,
             symbol.ContainingNamespace.ToString(),
+            symbol.ContainingAssembly.Name,
             entityCustomizationScheme.DefaultSort,
             properties,
             properties.Where(x => x.IsEntityId).ToList(),

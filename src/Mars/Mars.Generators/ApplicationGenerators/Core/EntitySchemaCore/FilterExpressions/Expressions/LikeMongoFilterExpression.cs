@@ -3,7 +3,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 
-public class LikeMongoFilterExpression : FilterExpression
+internal class LikeMongoFilterExpression : FilterExpression
 {
     public LikeMongoFilterExpression() : base(FilterType.Like)
     {
