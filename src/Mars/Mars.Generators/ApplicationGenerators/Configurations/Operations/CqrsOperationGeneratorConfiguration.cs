@@ -14,35 +14,34 @@ public class CqrsOperationGeneratorConfiguration
     public FileTemplateBasedOperationConfiguration Handler { get; set; }
     public MinimalApiEndpointConfiguration Endpoint { get; set; }
 
-    protected virtual BuildConfiguration(EntityName entityName)
+    protected void Init(CqrsOperationGeneratorConfigurationBuilt configurationBuilt, EntityName entityName)
     {
-        
+        configurationBuilt.GlobalConfiguration = GlobalConfiguration;
+        configurationBuilt.OperationsSharedConfiguration = OperationsSharedConfiguration;
+        configurationBuilt.OperationType = CqrsOperationType.Command;
+        configurationBuilt.FunctionName = FunctionName.GetName(entityName);
+        configurationBuilt.Operation = new()
+        {
+            TemplatePath = Operation.TemplatePath,
+            Name = Operation.NameConfiguration.GetName(entityName),
+        };
+        configurationBuilt.Handler = new()
+        {
+            TemplatePath = Handler.TemplatePath,
+            Name = Handler.NameConfiguration.GetName(entityName),
+        };
+        configurationBuilt.Endpoint = new()
+        {
+            TemplatePath = Endpoint.TemplatePath,
+            Name = Endpoint.NameConfiguration.GetName(entityName),
+        };
     }
-    
+
     public CqrsOperationGeneratorConfigurationBuilt Build(EntityName entityName)
     {
-        return new CqrsOperationGeneratorConfigurationBuilt
-        {
-            GlobalConfiguration = GlobalConfiguration,
-            OperationsSharedConfiguration = OperationsSharedConfiguration,
-            OperationType = CqrsOperationType.Command,
-            FunctionName = FunctionName.GetName(entityName),
-            Operation = new()
-            {
-                TemplatePath = Operation.TemplatePath,
-                Name = Operation.NameConfiguration.GetName(entityName),
-            },
-            Handler = new()
-            {
-                TemplatePath = Handler.TemplatePath,
-                Name = Handler.NameConfiguration.GetName(entityName),
-            },
-            Endpoint = new()
-            {
-                TemplatePath = Endpoint.TemplatePath,
-                Name = Endpoint.NameConfiguration.GetName(entityName),
-            }
-        };
+        var result = new CqrsOperationGeneratorConfigurationBuilt();
+        Init(result, entityName);
+        return result;
     }
 }
 

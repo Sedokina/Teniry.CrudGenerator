@@ -9,19 +9,8 @@ public class CqrsOperationWithReturnValueGeneratorConfiguration : CqrsOperationG
 
     public new CqrsOperationWithReturnValueGeneratorConfigurationBuilt Build(EntityName entityName)
     {
-        base.Build()
         var built = new CqrsOperationWithReturnValueGeneratorConfigurationBuilt();
-        built.Dto = new()
-        {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfiguration.GetName(entityName),
-        };
-        return built;
-    }
-
-    protected override T Build<T>(EntityName entityName)
-    {
-        var built = base.Build<CqrsOperationWithReturnValueGeneratorConfigurationBuilt>(entityName);
+        Init(built, entityName);
         built.Dto = new()
         {
             TemplatePath = Handler.TemplatePath,
