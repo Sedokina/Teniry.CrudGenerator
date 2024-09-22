@@ -90,12 +90,10 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithRe
 
         WriteFile(templatePath, model, _endpointClassName);
 
-        var constructorParametersForRoute = EntityScheme.PrimaryKeys.GetAsMethodCallParameters();
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Scheme.Configuration.Endpoint.RouteConfigurationBuilder
-                .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
+            Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

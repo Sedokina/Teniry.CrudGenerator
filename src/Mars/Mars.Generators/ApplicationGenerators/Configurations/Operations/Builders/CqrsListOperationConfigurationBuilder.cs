@@ -4,31 +4,31 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
+internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
 {
     public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; }
     public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; }
 
-    public new CqrsListOperationGeneratorConfiguration Build(EntityName entityName)
+    public new CqrsListOperationGeneratorConfiguration Build(EntityScheme entityScheme)
     {
         var built = new CqrsListOperationGeneratorConfiguration();
-        Init(built, entityName);
+        Init(built, entityScheme);
         built.Dto = new()
         {
             TemplatePath = Dto.TemplatePath,
-            Name = Dto.NameConfigurationBuilder.GetName(entityName),
+            Name = Dto.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         built.Filter = new()
         {
             TemplatePath = Filter.TemplatePath,
-            Name = Filter.NameConfigurationBuilder.GetName(entityName),
+            Name = Filter.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         built.DtoListItem = new()
         {
             TemplatePath = DtoListItem.TemplatePath,
-            Name = DtoListItem.NameConfigurationBuilder.GetName(entityName),
+            Name = DtoListItem.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         return built;

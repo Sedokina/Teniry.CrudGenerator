@@ -2,10 +2,11 @@ using Mars.Generators.ApplicationGenerators.Configurations.Global;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
+using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsOperationWithoutReturnValueConfigurationBuilder
+internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 {
     public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; }
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; }
@@ -15,35 +16,38 @@ public class CqrsOperationWithoutReturnValueConfigurationBuilder
     public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; }
     public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; }
 
-    protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityName entityName)
+    protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {
         configuration.GlobalConfiguration = GlobalConfiguration;
         configuration.OperationsSharedConfiguration = OperationsSharedConfiguration;
         configuration.OperationType = CqrsOperationType.Command;
-        configuration.FunctionName = FunctionName.GetName(entityName);
+        configuration.FunctionName = FunctionName.GetName(entityScheme.EntityName);
         configuration.Operation = new()
         {
             TemplatePath = Operation.TemplatePath,
-            Name = Operation.NameConfigurationBuilder.GetName(entityName),
+            Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
         configuration.Handler = new()
         {
             TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfigurationBuilder.GetName(entityName),
+            Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
+
+        var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallParameters();
         configuration.Endpoint = new()
         {
             TemplatePath = Endpoint.TemplatePath,
-            Name = Endpoint.NameConfigurationBuilder.GetName(entityName),
-            FunctionName = Endpoint.FunctionName.GetName(entityName),
-            RouteConfigurationBuilder = Endpoint.RouteConfigurationBuilder
+            Name = Endpoint.NameConfigurationBuilder.GetName(entityScheme.EntityName),
+            FunctionName = Endpoint.FunctionName.GetName(entityScheme.EntityName),
+            Route = Endpoint.RouteConfigurationBuilder
+                .GetRoute(entityScheme.EntityName.Name, constructorParametersForRoute)
         };
     }
 
-    public CqrsOperationWithoutReturnValueGeneratorConfiguration Build(EntityName entityName)
+    public CqrsOperationWithoutReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)
     {
         var result = new CqrsOperationWithoutReturnValueGeneratorConfiguration();
-        Init(result, entityName);
+        Init(result, entityScheme);
         return result;
     }
 }

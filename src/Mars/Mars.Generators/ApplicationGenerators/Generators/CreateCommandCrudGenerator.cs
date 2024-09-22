@@ -97,8 +97,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithR
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Post",
-            Scheme.Configuration.Endpoint.RouteConfigurationBuilder
-                .GetRoute(EntityScheme.EntityName.ToString()),
+            Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

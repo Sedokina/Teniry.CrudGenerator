@@ -134,7 +134,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGener
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             EndpointNamespace,
             "Get",
-            Scheme.Configuration.Endpoint.RouteConfigurationBuilder.GetRoute(EntityScheme.EntityName.ToString()),
+            Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

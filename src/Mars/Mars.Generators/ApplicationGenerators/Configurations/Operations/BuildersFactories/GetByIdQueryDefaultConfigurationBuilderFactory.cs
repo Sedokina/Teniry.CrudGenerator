@@ -4,7 +4,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.T
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
-public class GetByIdQueryDefaultConfigurationBuilderFactory
+internal class GetByIdQueryDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
