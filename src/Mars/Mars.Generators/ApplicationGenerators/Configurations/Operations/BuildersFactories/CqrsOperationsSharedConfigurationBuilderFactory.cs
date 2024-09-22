@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
-internal class SharedCqrsOperationDefaultConfigurationBuilderFactory
+internal class CqrsOperationsSharedConfigurationBuilderFactory
 {
     public static CqrsOperationsSharedConfigurationBuilder Construct()
     {

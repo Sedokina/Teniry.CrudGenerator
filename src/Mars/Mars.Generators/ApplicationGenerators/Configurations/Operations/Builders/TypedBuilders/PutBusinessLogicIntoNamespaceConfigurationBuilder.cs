@@ -5,9 +5,11 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
-///     - {{assembly_name}} <br />
-///     - {{feature_name}}<br />
-///     - {{function_name}}<br />
+///     - {{business_logic_assembly_name}} <br />
+///     - {{business_logic_feature_name}}<br />
+///     - {{operation_name}}<br />
+///     - {{entity_name}}<br />
+///     - {{entity_name_plural}}<br />
 /// </summary>
 public class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespacePath)
 {

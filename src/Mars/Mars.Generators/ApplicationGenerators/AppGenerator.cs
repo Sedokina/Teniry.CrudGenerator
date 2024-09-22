@@ -30,7 +30,7 @@ public class AppGenerator : ISourceGenerator
 
         List<EndpointMap> endpointsMaps = new();
         var globalConfiguration = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
-        var sharedConfiguration = SharedCqrsOperationDefaultConfigurationBuilderFactory.Construct();
+        var sharedConfiguration = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
 
         foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {

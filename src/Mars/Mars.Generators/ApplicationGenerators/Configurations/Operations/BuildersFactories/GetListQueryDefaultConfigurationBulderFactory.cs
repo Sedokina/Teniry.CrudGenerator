@@ -19,32 +19,32 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListQuery.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{plural_entity_name}}Query")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Query")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListDto.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{plural_entity_name}}Dto")
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name_plural}}Dto")
             },
             DtoListItem = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListItemDto.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{plural_entity_name}}ListItemDto")
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name_plural}}ListItemDto")
             },
             Filter = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListFilter.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{plural_entity_name}}Filter")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Filter")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListHandler.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{plural_entity_name}}Handler")
+                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{plural_entity_name}}Endpoint"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Endpoint"),
                 FunctionName = new("GetAsync"),
                 RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}")
             }

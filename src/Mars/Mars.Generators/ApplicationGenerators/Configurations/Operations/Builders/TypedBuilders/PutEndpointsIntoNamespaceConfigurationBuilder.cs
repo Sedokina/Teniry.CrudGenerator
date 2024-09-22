@@ -5,9 +5,9 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
-///     - {{assembly_name}} <br />
-///     - {{feature_name}}<br />
-///     - {{function_name}}<br />
+///     - {{operationName}}<br />
+///     - {{entityName}}<br />
+///     - {{entityNamePlural}}<br />
 /// </summary>
 public class PutEndpointsIntoNamespaceConfigurationBuilder(string namespacePath)
 {

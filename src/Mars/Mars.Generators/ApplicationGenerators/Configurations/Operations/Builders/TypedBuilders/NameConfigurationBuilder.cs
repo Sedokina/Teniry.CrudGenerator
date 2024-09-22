@@ -6,6 +6,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 /// <summary>
 ///     Available string in name:
 ///     - {{entity_name}}<br />
+///     - {{entity_name_plural}}<br />
 /// </summary>
 public class NameConfigurationBuilder(string name)
 {
@@ -15,7 +16,7 @@ public class NameConfigurationBuilder(string name)
         var model = new
         {
             EntityName = entityName.Name,
-            PluralEntityName = entityName.PluralName
+            EntityNamePlural = entityName.PluralName
         };
         return putIntoNamespaceTemplate.Render(model);
     }
