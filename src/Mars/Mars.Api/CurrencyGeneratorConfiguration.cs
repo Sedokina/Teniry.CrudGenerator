@@ -6,12 +6,23 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
 {
     protected CurrencyGeneratorConfiguration()
     {
-        Title = "Curr";
-        TitlePlural = "Currsive";
-        DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
+        // Title = "Curr";
+        // TitlePlural = "Currsive";
+        // DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
+        CreateOperation = new OperationWithReturnValueCustomization
+        {
+            Generate = true,
+            OperationType = "Createll",
+            OperationGroup = "CreateLCurrency",
+            OperationName = "CreatellCurencyComandl",
+            HandlerName = "CrCurHandlerDd",
+            DtoName = "CurnCyDtOo",
+            GenerateEndpoint = true,
+            EndpointName = "/cru/cre"
+        };
     }
 }
-
-public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
-{
-}
+//
+// public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
+// {
+// }

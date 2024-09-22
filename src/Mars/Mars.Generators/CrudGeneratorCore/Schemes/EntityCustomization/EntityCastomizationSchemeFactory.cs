@@ -14,6 +14,7 @@ internal class EntityCastomizationSchemeFactory
     [
         new LiteralExpressionSyntaxToValueParser(),
         new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionSyntaxToValueParser()),
+        new OperationWithReturnValueCustomizationToValueParser()
     ];
 
     internal static EntityCustomizationScheme Construct(

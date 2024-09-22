@@ -7,7 +7,6 @@ internal static class TypeNamesForAnalyzers
 {
     public const string EntityGeneratorConfiguration = "EntityGeneratorConfiguration";
     public const string EntityGeneratorDefaultSort = "EntityGeneratorDefaultSort";
-    
 }
 
 public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : class
