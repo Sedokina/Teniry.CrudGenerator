@@ -5,7 +5,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
-///     - {{business_logic_assembly_name}} <br />
+///     - {{entity_assembly_name}} <br />
 ///     - {{business_logic_feature_name}}<br />
 ///     - {{operation_name}}<br />
 ///     - {{entity_name}}<br />
@@ -14,7 +14,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 public class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
-        string businessLogicAssemblyName,
+        string entityAssemblyName,
         string businessLogicFeatureName,
         string operationName,
         EntityName entityName)
@@ -22,7 +22,7 @@ public class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespaceP
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
         return putIntoNamespaceTemplate.Render(new
         {
-            BusinessLogicAssemblyName = businessLogicAssemblyName,
+            EntityAssemblyName = entityAssemblyName,
             BusinessLogicFeatureName = businessLogicFeatureName,
             OperationName = operationName,
             EntityName = entityName.Name,

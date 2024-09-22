@@ -5,22 +5,22 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
-///     - {{operationName}}<br />
-///     - {{entityName}}<br />
-///     - {{entityNamePlural}}<br />
+///     - {{entity_assembly_name}}<br />
+///     - {{entity_name}}<br />
+///     - {{entity_name_plural}}<br />
 /// </summary>
 public class PutEndpointsIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
         EntityName entityName,
-        string endpointsAssemblyName)
+        string entityAssemblyName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
         return putIntoNamespaceTemplate.Render(new
         {
             EntityName = entityName.Name,
             EntityNamePlural = entityName.PluralName,
-            EndpointsAssemblyName = endpointsAssemblyName,
+            EntityAssemblyName = entityAssemblyName,
         });
     }
 }
