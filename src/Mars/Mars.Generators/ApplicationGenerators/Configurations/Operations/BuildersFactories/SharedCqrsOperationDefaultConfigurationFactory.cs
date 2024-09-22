@@ -1,4 +1,4 @@
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
+namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
 public class SharedCqrsOperationDefaultConfigurationFactory
 {

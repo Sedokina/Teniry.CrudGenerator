@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Global;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
-namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
+namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
 public class GetByIdQueryDefaultConfigurationFactory
 {
