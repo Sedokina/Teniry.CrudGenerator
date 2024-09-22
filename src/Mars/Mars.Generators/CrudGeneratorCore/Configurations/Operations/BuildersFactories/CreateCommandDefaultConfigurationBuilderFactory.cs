@@ -12,7 +12,6 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
-        // TODO: move function name from route configuration
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
