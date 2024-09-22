@@ -42,7 +42,7 @@ internal class EntityScheme
     }
 }
 
-public class EntityName(string name, string pluralName)
+internal class EntityName(string name, string pluralName)
 {
     public string Name { get; set; } = name;
     public string PluralName { get; set; } = pluralName;
@@ -53,7 +53,7 @@ public class EntityName(string name, string pluralName)
     }
 }
 
-public class EntityTitle(string title, string pluralTitle)
+internal class EntityTitle(string title, string pluralTitle)
 {
     public string Title { get; set; } = title;
     public string PluralTitle { get; set; } = pluralTitle;

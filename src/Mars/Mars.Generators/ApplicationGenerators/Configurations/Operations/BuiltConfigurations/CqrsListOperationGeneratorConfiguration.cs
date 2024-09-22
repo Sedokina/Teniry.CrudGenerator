@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfi
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 
-public class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
+internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
 {
     public FileTemplateBasedOperationConfiguration Filter { get; set; }
     public FileTemplateBasedOperationConfiguration DtoListItem { get; set; }

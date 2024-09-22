@@ -9,7 +9,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-public class PutEndpointsIntoNamespaceConfigurationBuilder(string namespacePath)
+internal class PutEndpointsIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
         EntityName entityName,

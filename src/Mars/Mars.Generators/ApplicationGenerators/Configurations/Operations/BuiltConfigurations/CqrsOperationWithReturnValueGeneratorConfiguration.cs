@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfi
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 
-public class CqrsOperationWithReturnValueGeneratorConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration
+internal class CqrsOperationWithReturnValueGeneratorConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     public FileTemplateBasedOperationConfiguration Dto { get; set; }
 }

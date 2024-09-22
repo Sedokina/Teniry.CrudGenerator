@@ -3,7 +3,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 
-public class DbContextScheme
+internal class DbContextScheme
 {
     private readonly Dictionary<FilterType, FilterExpression> _filterExpressions;
     public string DbContextNamespace { get; set; }

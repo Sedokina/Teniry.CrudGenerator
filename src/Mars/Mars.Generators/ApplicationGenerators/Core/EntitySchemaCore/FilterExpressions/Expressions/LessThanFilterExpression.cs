@@ -3,7 +3,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressi
 
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.FilterExpressions.Expressions;
 
-public class LessThanFilterExpression : FilterExpression
+internal class LessThanFilterExpression : FilterExpression
 {
     public LessThanFilterExpression() : base(FilterType.LessThan)
     {

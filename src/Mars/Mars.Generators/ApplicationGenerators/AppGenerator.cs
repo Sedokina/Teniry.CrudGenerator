@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
 using Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;

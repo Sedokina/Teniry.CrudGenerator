@@ -1,6 +1,6 @@
 namespace Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Properties;
 
-public class EntityProperty
+internal class EntityProperty
 {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }

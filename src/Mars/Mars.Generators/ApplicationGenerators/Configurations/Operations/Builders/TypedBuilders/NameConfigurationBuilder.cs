@@ -8,7 +8,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-public class NameConfigurationBuilder(string name)
+internal class NameConfigurationBuilder(string name)
 {
     public string GetName(EntityName entityName)
     {

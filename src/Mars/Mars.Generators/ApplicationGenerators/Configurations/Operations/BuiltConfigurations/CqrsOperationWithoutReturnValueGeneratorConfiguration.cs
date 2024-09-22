@@ -1,10 +1,9 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
-using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 
-public class CqrsOperationWithoutReturnValueGeneratorConfiguration
+internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; }
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; }

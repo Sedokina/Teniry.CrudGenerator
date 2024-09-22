@@ -134,7 +134,7 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     }
 }
 
-public class EndpointMap
+internal class EndpointMap
 {
     public string EntityName { get; set; }
     public string EndpointNamespace { get; set; }

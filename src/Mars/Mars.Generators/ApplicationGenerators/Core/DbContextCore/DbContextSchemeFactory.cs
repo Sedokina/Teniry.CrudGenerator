@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 
-public class DbContextSchemeFactory
+internal class DbContextSchemeFactory
 {
     public static DbContextScheme Construct(GeneratorExecutionContext context)
     {

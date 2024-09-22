@@ -2,7 +2,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.TypedBuilders;
 
-public class MinimalApiEndpointConfigurationBuilder
+internal class MinimalApiEndpointConfigurationBuilder
 {
     public string TemplatePath { get; set; } = null!;
     public NameConfigurationBuilder NameConfigurationBuilder { get; set; } = null!;

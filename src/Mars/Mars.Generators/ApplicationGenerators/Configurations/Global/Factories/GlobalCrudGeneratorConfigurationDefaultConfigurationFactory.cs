@@ -1,6 +1,6 @@
 namespace Mars.Generators.ApplicationGenerators.Configurations.Global.Factories;
 
-public class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
+internal class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
 {
     public static GlobalCqrsGeneratorConfigurationBuilder Construct()
     {
