@@ -5,11 +5,11 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltC
 
 internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
-    public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; }
-    public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; }
+    public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; } = null!;
+    public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
-    public string FunctionName { get; set; }
-    public FileTemplateBasedOperationConfiguration Operation { get; set; }
-    public FileTemplateBasedOperationConfiguration Handler { get; set; }
-    public MinimalApiEndpointConfiguration Endpoint { get; set; }
+    public string FunctionName { get; set; } = "";
+    public FileTemplateBasedOperationConfiguration Operation { get; set; } = null!;
+    public FileTemplateBasedOperationConfiguration Handler { get; set; } = null!;
+    public MinimalApiEndpointConfiguration Endpoint { get; set; } = null!;
 }

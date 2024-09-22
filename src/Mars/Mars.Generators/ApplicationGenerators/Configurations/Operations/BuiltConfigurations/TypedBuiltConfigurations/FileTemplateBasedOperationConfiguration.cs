@@ -2,6 +2,6 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltC
 
 internal class FileTemplateBasedOperationConfiguration
 {
-    public string TemplatePath { get; set; }
-    public string Name { get; set; }
+    public string TemplatePath { get; set; } = "";
+    public string Name { get; set; } = "";
 }

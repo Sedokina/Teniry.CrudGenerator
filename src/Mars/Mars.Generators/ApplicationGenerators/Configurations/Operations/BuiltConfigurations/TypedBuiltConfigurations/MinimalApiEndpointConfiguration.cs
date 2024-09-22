@@ -2,6 +2,6 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltC
 
 internal class MinimalApiEndpointConfiguration : FileTemplateBasedOperationConfiguration
 {
-    public string FunctionName { get; set; }
-    public string Route { get; set; }
+    public string FunctionName { get; set; } = "";
+    public string Route { get; set; } = "";
 }

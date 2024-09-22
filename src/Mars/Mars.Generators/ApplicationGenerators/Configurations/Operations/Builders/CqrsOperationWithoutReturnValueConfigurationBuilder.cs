@@ -8,13 +8,13 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 {
-    public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; }
-    public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; }
+    public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; } = null!;
+    public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
-    public NameConfigurationBuilder OperationName { get; set; }
-    public FileTemplateBasedOperationConfigurationBuilder Operation { get; set; }
-    public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; }
-    public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; }
+    public NameConfigurationBuilder OperationName { get; set; } = null!;
+    public FileTemplateBasedOperationConfigurationBuilder Operation { get; set; } = null!;
+    public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; } = null!;
+    public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; } = null!;
 
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {

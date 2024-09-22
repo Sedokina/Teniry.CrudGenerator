@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class CqrsOperationWithReturnValueConfigurationBuilder :
     CqrsOperationWithoutReturnValueConfigurationBuilder
 {
-    public FileTemplateBasedOperationConfigurationBuilder Dto { get; set; }
+    public FileTemplateBasedOperationConfigurationBuilder Dto { get; set; } = null!;
 
     public new CqrsOperationWithReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)
     {

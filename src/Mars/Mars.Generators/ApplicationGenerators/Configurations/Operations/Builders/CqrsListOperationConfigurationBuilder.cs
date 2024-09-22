@@ -6,8 +6,8 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
 {
-    public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; }
-    public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; }
+    public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; } = null!;
+    public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; } = null!;
 
     public new CqrsListOperationGeneratorConfiguration Build(EntityScheme entityScheme)
     {
