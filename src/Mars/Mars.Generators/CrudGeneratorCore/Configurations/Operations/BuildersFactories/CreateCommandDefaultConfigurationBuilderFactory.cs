@@ -10,7 +10,6 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
-        // TODO: create operation name and move Create into it, than use like {{ }}
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,

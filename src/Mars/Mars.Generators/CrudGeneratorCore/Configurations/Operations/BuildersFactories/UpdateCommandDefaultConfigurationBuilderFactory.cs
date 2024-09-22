@@ -14,25 +14,26 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
+            OperationName = "Update",
             OperationType = CqrsOperationType.Command,
-            OperationGroup = new NameConfigurationBuilder("Update{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = new("{{templates_base_path}}.Update.UpdateCommand.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Command")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Command.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Command")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = new("{{templates_base_path}}.Update.UpdateHandler.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Handler")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Handler.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = new("{{templates_base_path}}.Update.UpdateEndpoint.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Endpoint"),
-                FunctionName = new("UpdateAsync"),
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Endpoint.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Endpoint"),
+                FunctionName = new("{{operation_name}}Async"),
                 RouteConfigurationBuilder =
-                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/update")
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
         };
     }

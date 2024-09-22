@@ -14,12 +14,13 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
+            OperationName = "Get",
             OperationType = CqrsOperationType.Query,
-            OperationGroup = new NameConfigurationBuilder("Get{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdQuery.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Query")
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Query")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
@@ -29,13 +30,13 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdHandler.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Handler")
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdEndpoint.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Endpoint"),
-                FunctionName = new("GetAsync"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Endpoint"),
+                FunctionName = new("{{operation_name}}Async"),
                 RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}")
             }
         };
