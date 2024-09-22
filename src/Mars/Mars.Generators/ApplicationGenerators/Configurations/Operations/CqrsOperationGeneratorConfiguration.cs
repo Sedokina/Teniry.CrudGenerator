@@ -34,6 +34,7 @@ public class CqrsOperationGeneratorConfiguration
         {
             TemplatePath = Endpoint.TemplatePath,
             Name = Endpoint.NameConfiguration.GetName(entityName),
+            RouteConfiguration = Endpoint.RouteConfiguration
         };
     }
 
@@ -53,11 +54,16 @@ public class CqrsOperationGeneratorConfigurationBuilt
     public string FunctionName { get; set; }
     public FileTemplateBasedOperationConfigurationBuilt Operation { get; set; }
     public FileTemplateBasedOperationConfigurationBuilt Handler { get; set; }
-    public FileTemplateBasedOperationConfigurationBuilt Endpoint { get; set; }
+    public MinimalApiEndpointConfigurationBuilt Endpoint { get; set; }
 }
 
 public class FileTemplateBasedOperationConfigurationBuilt
 {
     public string TemplatePath { get; set; }
     public string Name { get; set; }
+}
+
+public class MinimalApiEndpointConfigurationBuilt : FileTemplateBasedOperationConfigurationBuilt
+{
+    public EndpointRouteConfiguration RouteConfiguration { get; set; } = null!;
 }

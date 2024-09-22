@@ -13,8 +13,8 @@ public class CqrsOperationWithReturnValueGeneratorConfiguration : CqrsOperationG
         Init(built, entityName);
         built.Dto = new()
         {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfiguration.GetName(entityName),
+            TemplatePath = Dto.TemplatePath,
+            Name = Dto.NameConfiguration.GetName(entityName),
         };
         return built;
     }

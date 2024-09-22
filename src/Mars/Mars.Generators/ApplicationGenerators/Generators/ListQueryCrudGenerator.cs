@@ -1,4 +1,3 @@
-using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
@@ -7,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGeneratorConfigurationBuilt>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -18,14 +17,14 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGener
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsListOperationGeneratorConfigurationBuilt> scheme) : base(context, scheme)
     {
-        _queryName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
-        _listItemDtoName = Scheme.Configuration.DtoListItem.GetName(EntityScheme.EntityName);
-        _dtoName = Scheme.Configuration.Dto.GetName(EntityScheme.EntityName);
-        _filterName = Scheme.Configuration.Filter.GetName(EntityScheme.EntityName);
-        _handlerName = Scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
-        _endpointClassName = Scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
+        _queryName = Scheme.Configuration.Operation.Name;
+        _listItemDtoName = Scheme.Configuration.DtoListItem.Name;
+        _dtoName = Scheme.Configuration.Dto.Name;
+        _filterName = Scheme.Configuration.Filter.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()

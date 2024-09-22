@@ -67,7 +67,7 @@ internal abstract class BaseGenerator
 }
 
 internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
-    where TConfiguration : CqrsOperationGeneratorConfiguration
+    where TConfiguration : CqrsOperationGeneratorConfigurationBuilt
 {
     protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     protected readonly EntityScheme EntityScheme;

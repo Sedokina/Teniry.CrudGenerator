@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfigurationBuilt>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -15,12 +15,12 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithRe
 
     public GetByIdQueryCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfigurationBuilt> scheme) : base(context, scheme)
     {
-        _queryName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = Scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
-        _dtoName = Scheme.Configuration.Dto.GetName(EntityScheme.EntityName);
-        _endpointClassName = Scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
+        _queryName = Scheme.Configuration.Operation.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _dtoName = Scheme.Configuration.Dto.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()

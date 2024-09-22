@@ -14,20 +14,20 @@ public class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnVa
         Init(built, entityName);
         built.Dto = new()
         {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfiguration.GetName(entityName),
+            TemplatePath = Dto.TemplatePath,
+            Name = Dto.NameConfiguration.GetName(entityName),
         };
 
         built.Filter = new()
         {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfiguration.GetName(entityName),
+            TemplatePath = Filter.TemplatePath,
+            Name = Filter.NameConfiguration.GetName(entityName),
         };
 
         built.DtoListItem = new()
         {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfiguration.GetName(entityName),
+            TemplatePath = DtoListItem.TemplatePath,
+            Name = DtoListItem.NameConfiguration.GetName(entityName),
         };
 
         return built;

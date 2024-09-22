@@ -1,4 +1,3 @@
-using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
@@ -7,7 +6,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfigurationBuilt>
 {
     private readonly EndpointRouteConfiguration _getByIdEndpointRouteConfiguration;
     private readonly string _commandName;
@@ -17,14 +16,14 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithR
 
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
+        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfigurationBuilt> scheme,
         EndpointRouteConfiguration getByIdEndpointRouteConfiguration) : base(context, scheme)
     {
         _getByIdEndpointRouteConfiguration = getByIdEndpointRouteConfiguration;
-        _commandName = scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
-        _dtoName = scheme.Configuration.Dto.GetName(EntityScheme.EntityName);
-        _endpointClassName = scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
+        _commandName = scheme.Configuration.Operation.Name;
+        _handlerName = scheme.Configuration.Handler.Name;
+        _dtoName = scheme.Configuration.Dto.Name;
+        _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()

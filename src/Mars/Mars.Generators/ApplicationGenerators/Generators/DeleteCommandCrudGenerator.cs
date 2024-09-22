@@ -1,14 +1,11 @@
-using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGeneratorConfiguration>
+internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGeneratorConfigurationBuilt>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -16,11 +13,11 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGener
 
     public DeleteCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationGeneratorConfigurationBuilt> scheme) : base(context, scheme)
     {
-        _commandName = Scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = Scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
-        _endpointClassName = Scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
+        _commandName = Scheme.Configuration.Operation.Name;
+        _handlerName = Scheme.Configuration.Handler.Name;
+        _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()

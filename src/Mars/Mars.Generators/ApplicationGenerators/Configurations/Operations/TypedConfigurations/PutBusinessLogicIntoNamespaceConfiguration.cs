@@ -15,14 +15,14 @@ public class PutBusinessLogicIntoNamespaceConfiguration(string namespacePath)
         EntityName entityName,
         string assemblyName,
         NameConfiguration featureName,
-        NameConfiguration functionNameConfiguration)
+        string functionName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
         return putIntoNamespaceTemplate.Render(new
         {
             AssemblyName = assemblyName,
             FeatureName = featureName.GetName(entityName),
-            FunctionName = functionNameConfiguration.GetName(entityName)
+            FunctionName = functionName
         });
     }
 }

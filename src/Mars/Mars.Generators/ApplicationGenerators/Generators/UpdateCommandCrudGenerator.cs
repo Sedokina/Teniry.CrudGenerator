@@ -1,14 +1,11 @@
-using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
 using Mars.Generators.ApplicationGenerators.Core;
-using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
-using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGeneratorConfiguration>
+internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGeneratorConfigurationBuilt>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -17,12 +14,12 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationGener
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationGeneratorConfigurationBuilt> scheme) : base(context, scheme)
     {
-        _commandName = scheme.Configuration.Operation.GetName(EntityScheme.EntityName);
-        _handlerName = scheme.Configuration.Handler.GetName(EntityScheme.EntityName);
+        _commandName = scheme.Configuration.Operation.Name;
+        _handlerName = scheme.Configuration.Handler.Name;
         _vmName = $"Update{EntityScheme.EntityName}Vm";
-        _endpointClassName = scheme.Configuration.Endpoint.GetName(EntityScheme.EntityName);
+        _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
