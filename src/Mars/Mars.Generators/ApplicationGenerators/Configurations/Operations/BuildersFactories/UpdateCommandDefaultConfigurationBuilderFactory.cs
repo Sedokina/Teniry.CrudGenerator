@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class UpdateCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsOperationWithoutReturnValueConfigurationBuilder

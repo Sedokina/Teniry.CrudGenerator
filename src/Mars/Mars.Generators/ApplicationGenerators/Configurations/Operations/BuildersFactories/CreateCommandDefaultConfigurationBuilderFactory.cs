@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class CreateCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax

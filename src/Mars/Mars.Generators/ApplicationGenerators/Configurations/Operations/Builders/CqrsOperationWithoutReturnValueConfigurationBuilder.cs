@@ -8,7 +8,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 {
-    public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; }
+    public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; }
     public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; }
     public CqrsOperationType OperationType { get; set; }
     public NameConfigurationBuilder OperationName { get; set; }
@@ -18,7 +18,7 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {
-        configuration.GlobalConfiguration = GlobalConfiguration;
+        configuration.GlobalConfiguration = GlobalConfiguration.Build();
         configuration.FunctionName = OperationName.GetName(entityScheme.EntityName);
         configuration.OperationsSharedConfiguration =
             OperationsSharedConfiguration.Build(entityScheme, configuration.FunctionName);

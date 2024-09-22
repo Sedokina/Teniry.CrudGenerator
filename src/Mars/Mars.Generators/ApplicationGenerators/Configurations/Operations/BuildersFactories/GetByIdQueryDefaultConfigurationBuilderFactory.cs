@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class GetByIdQueryDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsOperationWithReturnValueConfigurationBuilder

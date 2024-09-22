@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class DeleteCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsOperationWithoutReturnValueConfigurationBuilder

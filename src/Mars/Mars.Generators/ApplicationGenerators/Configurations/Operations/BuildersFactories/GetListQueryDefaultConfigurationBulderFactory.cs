@@ -7,7 +7,7 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 internal class GetListQueryDefaultConfigurationBulderFactory
 {
     public static CqrsListOperationConfigurationBuilder Construct(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsListOperationConfigurationBuilder
