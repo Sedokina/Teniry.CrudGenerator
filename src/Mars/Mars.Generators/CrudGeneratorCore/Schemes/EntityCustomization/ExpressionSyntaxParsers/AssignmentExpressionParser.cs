@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -31,7 +32,7 @@ public class AssignmentExpressionParser : IExpressionSyntaxToValueParser
         var propertyName = ParseLeftSide(context, assignmentExpression.Left);
         var value = ParseRightSide(context, assignmentExpression.Right);
 
-        return (propertyName, value);
+        return new Tuple<string, object?>(propertyName, value);
     }
 
     private static object? ParseRightSide(GeneratorExecutionContext context, ExpressionSyntax expression)

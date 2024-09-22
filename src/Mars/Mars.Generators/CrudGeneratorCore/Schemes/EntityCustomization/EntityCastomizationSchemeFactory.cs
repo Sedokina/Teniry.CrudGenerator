@@ -33,77 +33,21 @@ internal class EntityCastomizationSchemeFactory
         }
 
         var generatorSchemeType = generatorScheme.GetType();
+        var assignmentExpressionParer = new AssignmentExpressionParser();
         foreach (var statementSyntax in constructorStatements)
         {
-            if (!TryParseConstructorStatement(context, statementSyntax, out var propertyName, out var value))
+            if (!assignmentExpressionParer.CanParse(context, statementSyntax.Expression))
             {
                 continue;
             }
+
+            var (propertyName, value) = assignmentExpressionParer.Parse(context, statementSyntax.Expression) as Tuple<string, object?>;
 
             var property = generatorSchemeType.GetProperty(propertyName);
             property?.SetValue(generatorScheme, value);
         }
 
         return generatorScheme;
-    }
-
-    private static bool TryParseConstructorStatement(
-        GeneratorExecutionContext context,
-        ExpressionStatementSyntax statementSyntax,
-        out string propertyName,
-        out object? value)
-    {
-        propertyName = "";
-        value = null;
-        if (statementSyntax.Expression is not AssignmentExpressionSyntax assignmentExpressionSyntax)
-        {
-            return false;
-        }
-
-        if (!TryParseConstructorStatementLeftSide(context, assignmentExpressionSyntax.Left, ref propertyName))
-        {
-            return false;
-        }
-
-        if (!TryParseExpressionRightSide(context, assignmentExpressionSyntax.Right, ref value))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool TryParseConstructorStatementLeftSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionLeftSide,
-        ref string propertyName)
-    {
-        var model = context.Compilation.GetSemanticModel(expressionLeftSide.SyntaxTree);
-        var symbolInfo = model.GetSymbolInfo(expressionLeftSide);
-        if (symbolInfo.Symbol is not IPropertySymbol propertySymbol)
-        {
-            return false;
-        }
-
-        propertyName = propertySymbol.Name;
-        return true;
-    }
-
-    private static bool TryParseExpressionRightSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionRightSide,
-        ref object? value)
-    {
-        foreach (var expressionSyntaxParser in ExpressionSyntaxParsers)
-        {
-            if (expressionSyntaxParser.CanParse(context, expressionRightSide))
-            {
-                value = expressionSyntaxParser.Parse(context, expressionRightSide);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private static bool TryGetConstructorStatements(
