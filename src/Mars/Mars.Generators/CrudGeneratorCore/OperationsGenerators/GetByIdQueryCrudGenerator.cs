@@ -80,6 +80,7 @@ internal class GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperat
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             QueryName = _queryName,
             DtoName = _dtoName,
             RouteParams = routeParams,

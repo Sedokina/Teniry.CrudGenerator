@@ -80,7 +80,7 @@ public class CrudGenerator : ISourceGenerator
                     entityScheme,
                     dbContextScheme,
                     CreateCommandDefaultConfigurationBuilderFactory
-                        .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                        .Construct(globalConfigurationBuilder, sharedConfigurationBuilder, entityCustomizationScheme.CreateOperation)
                         .Build(entityScheme));
                 var generateCreateCommand = new CreateCommandCrudGenerator(
                     context,
@@ -131,7 +131,7 @@ public class CrudGenerator : ISourceGenerator
         }
         catch (Exception e)
         {
-            Logger.Print(e.StackTrace);
+            Logger.Print($"{e.Message}\n{e.StackTrace}");
             Logger.FlushLogs(context);
         }
     }

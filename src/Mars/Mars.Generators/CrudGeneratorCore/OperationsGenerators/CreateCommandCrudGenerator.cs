@@ -90,6 +90,7 @@ internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             CommandName = _commandName,
             GetEntityRoute = interpolatedStringRoute,
             DtoName = _dtoName

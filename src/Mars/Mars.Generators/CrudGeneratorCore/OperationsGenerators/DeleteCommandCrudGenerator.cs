@@ -63,6 +63,7 @@ internal class DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             RouteParams = routeParams,
             CommandName = _commandName,
             CommandConstructorParameters = constructorParameters

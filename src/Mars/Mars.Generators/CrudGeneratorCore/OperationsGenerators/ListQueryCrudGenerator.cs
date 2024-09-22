@@ -125,6 +125,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             QueryName = _queryName,
             DtoName = _dtoName
         };

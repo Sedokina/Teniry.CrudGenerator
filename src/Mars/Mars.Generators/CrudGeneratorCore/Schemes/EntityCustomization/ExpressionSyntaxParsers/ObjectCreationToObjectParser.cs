@@ -44,7 +44,7 @@ internal class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
     public object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
         var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
-        var result = new EntityCustomizationCreateOperationScheme();
+        var result = new EntityCreateOperationCustomizationScheme();
         if (objectCreationExpression.Initializer == null)
         {
             return result;

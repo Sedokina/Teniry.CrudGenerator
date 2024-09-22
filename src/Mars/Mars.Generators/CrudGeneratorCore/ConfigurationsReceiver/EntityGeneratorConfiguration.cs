@@ -38,6 +38,8 @@ public sealed class EntityGeneratorCreateOperationConfiguration
     public string? OperationName { get; set; }
     public string? DtoName { get; set; }
     public string? HandlerName { get; set; }
-    public string? EndpointName { get; set; }
     public bool? GenerateEndpoint { get; set; }
+    public string? EndpointClassName { get; set; }
+    public string? EndpointFunctionName { get; set; }
+    public string? RouteName { get; set; }
 }

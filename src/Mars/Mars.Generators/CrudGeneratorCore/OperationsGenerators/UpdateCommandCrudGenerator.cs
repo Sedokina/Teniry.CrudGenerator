@@ -78,6 +78,7 @@ internal class UpdateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             RouteParams = routeParams,
             VmName = _vmName,
             CommandName = _commandName,
