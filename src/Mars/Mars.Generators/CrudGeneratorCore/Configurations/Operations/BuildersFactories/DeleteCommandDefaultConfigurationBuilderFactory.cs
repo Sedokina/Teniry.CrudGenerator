@@ -15,24 +15,25 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            OperationName = new NameConfigurationBuilder("Delete{{entity_name}}"),
+            OperationName = "Delete",
+            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Command")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Command.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Command")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteHandler.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Handler")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Handler.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Endpoint"),
-                FunctionName = new("DeleteAsync"),
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Endpoint.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Endpoint"),
+                FunctionName = new("{{operation_name}}Async"),
                 RouteConfigurationBuilder =
-                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/delete")
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
         };
     }

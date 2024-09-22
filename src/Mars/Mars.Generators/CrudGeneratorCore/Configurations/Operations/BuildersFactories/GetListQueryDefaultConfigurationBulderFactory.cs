@@ -14,38 +14,39 @@ internal class GetListQueryDefaultConfigurationBulderFactory
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
+            OperationName = "Get",
             OperationType = CqrsOperationType.Query,
-            OperationName = new NameConfigurationBuilder("GetList{{entity_name}}"),
+            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name_plural}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListQuery.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Query")
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListQuery.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name_plural}}Query")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListDto.txt",
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListDto.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name_plural}}Dto")
             },
             DtoListItem = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListItemDto.txt",
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListItemDto.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name_plural}}ListItemDto")
             },
             Filter = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListFilter.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Filter")
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListFilter.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name_plural}}Filter")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListHandler.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Handler")
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListHandler.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name_plural}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name_plural}}Endpoint"),
-                FunctionName = new("GetAsync"),
+                TemplatePath = new("{{templates_base_path}}.GetList.GetListEndpoint.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name_plural}}Endpoint"),
+                FunctionName = new("{{operation_name}}Async"),
                 RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}")
             }
         };

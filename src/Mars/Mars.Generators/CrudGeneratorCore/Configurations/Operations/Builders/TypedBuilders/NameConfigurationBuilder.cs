@@ -10,14 +10,15 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.T
 /// </summary>
 internal class NameConfigurationBuilder(string name)
 {
-    public string GetName(EntityName entityName)
+    public string GetName(EntityName entityName, string operationName)
     {
-        var putIntoNamespaceTemplate = Template.Parse(name);
+        var template = Template.Parse(name);
         var model = new
         {
             EntityName = entityName.Name,
-            EntityNamePlural = entityName.PluralName
+            EntityNamePlural = entityName.PluralName,
+            OperationName = operationName
         };
-        return putIntoNamespaceTemplate.Render(model);
+        return template.Render(model);
     }
 }

@@ -9,6 +9,7 @@ namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly EndpointRouteConfigurationBuilder _getByIdEndpointRouteConfigurationBuilder;
+    private readonly string _getByIdOperationName;
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
@@ -17,9 +18,11 @@ internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
-        EndpointRouteConfigurationBuilder getByIdEndpointRouteConfigurationBuilder) : base(context, scheme)
+        EndpointRouteConfigurationBuilder getByIdEndpointRouteConfigurationBuilder,
+        string getByIdOperationName) : base(context, scheme)
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
+        _getByIdOperationName = getByIdOperationName;
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;
         _dtoName = scheme.Configuration.Dto.Name;
@@ -81,7 +84,7 @@ internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
         var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
-            .GetRoute(EntityScheme.EntityName.ToString(), parameters);
+            .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
         var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
 
         var model = new

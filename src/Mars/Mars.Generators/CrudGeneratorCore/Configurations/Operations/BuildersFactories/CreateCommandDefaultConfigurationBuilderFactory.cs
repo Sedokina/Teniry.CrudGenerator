@@ -10,36 +10,34 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
-        // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
-        // TODO: create operation name and move Create into it, than use like {{ }}
-        // TODO: move function name from route configuration
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            OperationName = new NameConfigurationBuilder("Create{{entity_name}}"),
+            OperationName = "Create",
+            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Command")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Command.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Command")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreatedDto.txt",
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.CreatedDto.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Created{{entity_name}}Dto")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateHandler.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Handler")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Handler.txt"),
+                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateEndpoint.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Endpoint"),
-                FunctionName = new("CreateAsync"),
-                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/create")
+                TemplatePath = new("{{templates_base_path}}.{{operation_name}}.{{operation_name}}Endpoint.txt"),
+                NameConfigurationBuilder = new("{{operation_name}}{{entity_name}}Endpoint"),
+                FunctionName = new("{{operation_name}}Async"),
+                RouteConfigurationBuilder = new("/{{entity_name}}/{{operation_name | string.downcase}}")
             }
         };
     }

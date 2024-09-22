@@ -11,14 +11,14 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.T
 /// </summary>
 internal class EndpointRouteConfigurationBuilder(string name)
 {
-    public string GetRoute(string entityName, List<string>? idParams = null)
+    public string GetRoute(string entityName, string operationName, List<string>? idParams = null)
     {
-        var putIntoNamespaceTemplate = Template.Parse(name);
+        var template = Template.Parse(name);
         entityName = entityName.ToLower();
 
-        if (idParams == null) return putIntoNamespaceTemplate.Render(new { entityName });
+        if (idParams == null) return template.Render(new { entityName });
 
         var idParamName = string.Join("/", idParams.Select(x => $"{{{x}}}"));
-        return putIntoNamespaceTemplate.Render(new { entityName, idParamName });
+        return template.Render(new { entityName, idParamName, operationName });
     }
 }

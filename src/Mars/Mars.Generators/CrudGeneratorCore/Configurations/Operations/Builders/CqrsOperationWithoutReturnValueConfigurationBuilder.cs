@@ -11,7 +11,8 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; } = null!;
     public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
-    public NameConfigurationBuilder OperationName { get; set; } = null!;
+    public string OperationName { get; set; } = "";
+    public NameConfigurationBuilder OperationGroup { get; set; } = null!;
     public FileTemplateBasedOperationConfigurationBuilder Operation { get; set; } = null!;
     public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; } = null!;
     public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; } = null!;
@@ -19,29 +20,34 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {
         configuration.GlobalConfiguration = GlobalConfiguration.Build();
-        configuration.FunctionName = OperationName.GetName(entityScheme.EntityName);
-        configuration.OperationsSharedConfiguration =
-            OperationsSharedConfiguration.Build(entityScheme, configuration.FunctionName);
         configuration.OperationType = CqrsOperationType.Command;
+        configuration.OperationName = OperationName;
+        configuration.OperationGroup = OperationGroup.GetName(entityScheme.EntityName, configuration.OperationName);
+        configuration.OperationsSharedConfiguration = OperationsSharedConfiguration
+            .Build(entityScheme, configuration.OperationName, configuration.OperationGroup);
+
         configuration.Operation = new()
         {
-            TemplatePath = Operation.TemplatePath,
-            Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName),
+            TemplatePath = Operation.TemplatePath
+                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
+            Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
         };
         configuration.Handler = new()
         {
-            TemplatePath = Handler.TemplatePath,
-            Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName),
+            TemplatePath = Handler.TemplatePath
+                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
+            Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
         };
 
         var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallParameters();
         configuration.Endpoint = new()
         {
-            TemplatePath = Endpoint.TemplatePath,
-            Name = Endpoint.NameConfigurationBuilder.GetName(entityScheme.EntityName),
-            FunctionName = Endpoint.FunctionName.GetName(entityScheme.EntityName),
+            TemplatePath = Endpoint.TemplatePath
+                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
+            Name = Endpoint.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
+            FunctionName = Endpoint.FunctionName.GetName(entityScheme.EntityName, configuration.OperationName),
             Route = Endpoint.RouteConfigurationBuilder
-                .GetRoute(entityScheme.EntityName.Name, constructorParametersForRoute)
+                .GetRoute(entityScheme.EntityName.Name, configuration.OperationName, constructorParametersForRoute)
         };
     }
 

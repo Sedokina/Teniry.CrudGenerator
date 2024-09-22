@@ -82,7 +82,8 @@ public class CrudGenerator : ISourceGenerator
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
                 createCommandScheme,
-                getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder);
+                getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder,
+                getByIdQueryConfigurationBuilder.OperationName);
             generateCreateCommand.RunGenerator();
             if (generateCreateCommand.EndpointMap is not null)
             {
