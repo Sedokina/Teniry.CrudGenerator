@@ -72,7 +72,7 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
         WriteFile(templatePath, model, _endpointClassName);
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");

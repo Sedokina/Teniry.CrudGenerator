@@ -8,14 +8,14 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsOperationWithoutReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            FunctionName = new NameConfigurationBuilder("Delete{{entity_name}}"),
+            OperationName = new NameConfigurationBuilder("Delete{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",

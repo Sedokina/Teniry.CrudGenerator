@@ -95,7 +95,7 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithR
 
         WriteFile(templatePath, model, _endpointClassName);
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Post",
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");

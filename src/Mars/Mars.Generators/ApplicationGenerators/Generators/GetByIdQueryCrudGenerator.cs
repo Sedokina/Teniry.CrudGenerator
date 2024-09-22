@@ -91,7 +91,7 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithRe
         WriteFile(templatePath, model, _endpointClassName);
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");

@@ -12,17 +12,19 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 public class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
-        EntityName entityName,
-        string assemblyName,
-        NameConfigurationBuilder featureName,
-        string functionName)
+        string businessLogicAssemblyName,
+        string businessLogicFeatureName,
+        string operationName,
+        EntityName entityName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
         return putIntoNamespaceTemplate.Render(new
         {
-            AssemblyName = assemblyName,
-            FeatureName = featureName.GetName(entityName),
-            FunctionName = functionName
+            BusinessLogicAssemblyName = businessLogicAssemblyName,
+            BusinessLogicFeatureName = businessLogicFeatureName,
+            OperationName = operationName,
+            EntityName = entityName.Name,
+            EntityNamePlural = entityName.PluralName,
         });
     }
 }

@@ -8,7 +8,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
@@ -18,7 +18,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            FunctionName = new NameConfigurationBuilder("Create{{entity_name}}"),
+            OperationName = new NameConfigurationBuilder("Create{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",

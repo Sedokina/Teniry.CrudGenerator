@@ -8,14 +8,14 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Query,
-            FunctionName = new NameConfigurationBuilder("Get{{entity_name}}"),
+            OperationName = new NameConfigurationBuilder("Get{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdQuery.txt",

@@ -88,7 +88,7 @@ internal class UpdateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
         WriteFile(templatePath, model, _endpointClassName);
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-            EndpointNamespace,
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Put",
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");

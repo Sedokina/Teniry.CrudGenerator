@@ -72,8 +72,6 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
 {
     protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     protected readonly EntityScheme EntityScheme;
-    protected readonly string BusinessLogicNamespace;
-    public string EndpointNamespace { get; set; }
     public EndpointMap? EndpointMap { get; set; }
 
     protected BaseCrudGenerator(
@@ -85,16 +83,6 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
     {
         Scheme = scheme;
         EntityScheme = scheme.EntityScheme;
-        BusinessLogicNamespace = scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceBasePath
-            .GetNamespacePath(
-                EntityScheme.EntityName,
-                Scheme.EntityScheme.ContainingAssembly,
-                scheme.Configuration.OperationsSharedConfiguration.FeatureNameConfigurationBuilder,
-                scheme.Configuration.FunctionName);
-        EndpointNamespace = scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceBasePath
-            .GetNamespacePath(
-                EntityScheme.EntityName,
-                Scheme.EntityScheme.ContainingAssembly);
     }
 
     protected override void WriteFile(string templatePath, object model, string className)
@@ -110,8 +98,8 @@ internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
             EntityName = EntityScheme.EntityName.ToString(),
             PluralEntityName = EntityScheme.EntityName.PluralName,
             EntityNamespace = EntityScheme.EntityNamespace,
-            BusinessLogicNamespace = BusinessLogicNamespace,
-            EndpointNamespace = EndpointNamespace,
+            BusinessLogicNamespace = Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation,
+            EndpointNamespace = Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             EntityTitle = EntityScheme.EntityTitle.ToString(),
             PluralEntityTitle = EntityScheme.EntityTitle.PluralTitle,
             DbContextName = Scheme.DbContextScheme.DbContextName,

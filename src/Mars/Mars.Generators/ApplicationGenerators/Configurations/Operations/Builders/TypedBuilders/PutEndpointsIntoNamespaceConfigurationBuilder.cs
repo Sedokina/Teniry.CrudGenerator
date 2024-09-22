@@ -13,13 +13,14 @@ public class PutEndpointsIntoNamespaceConfigurationBuilder(string namespacePath)
 {
     public string GetNamespacePath(
         EntityName entityName,
-        string assemblyName)
+        string endpointsAssemblyName)
     {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
         return putIntoNamespaceTemplate.Render(new
         {
-            AssemblyName = assemblyName,
-            EntityName = entityName
+            EntityName = entityName.Name,
+            EntityNamePlural = entityName.PluralName,
+            EndpointsAssemblyName = endpointsAssemblyName,
         });
     }
 }

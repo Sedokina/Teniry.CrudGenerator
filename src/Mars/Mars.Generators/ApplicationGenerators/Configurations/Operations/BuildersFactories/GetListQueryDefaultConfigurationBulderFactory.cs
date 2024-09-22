@@ -8,14 +8,14 @@ internal class GetListQueryDefaultConfigurationBulderFactory
 {
     public static CqrsListOperationConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfiguration operationsSharedConfiguration)
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
         return new CqrsListOperationConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Query,
-            FunctionName = new NameConfigurationBuilder("GetList{{entity_name}}"),
+            OperationName = new NameConfigurationBuilder("GetList{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListQuery.txt",
