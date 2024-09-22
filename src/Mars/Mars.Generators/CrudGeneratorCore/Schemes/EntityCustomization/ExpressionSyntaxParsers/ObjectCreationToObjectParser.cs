@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-public class OperationWithReturnValueCustomizationToValueParser : IExpressionSyntaxToValueParser
+public class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
 {
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
@@ -47,7 +47,7 @@ public class OperationWithReturnValueCustomizationToValueParser : IExpressionSyn
             .OfType<AssignmentExpressionSyntax>()
             .ToList();
 
-        var assignmentExpressionParer = new AssignmentExpressionParser();
+        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser();
         var resultType = result.GetType();
         foreach (var assignmentExpression in assignmentExpressions)
         {

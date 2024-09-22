@@ -6,13 +6,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-public class AssignmentExpressionParser : IExpressionSyntaxToValueParser
+public class PropertyAssignmentExpressionToPropertyNameAndValueParser : IExpressionSyntaxToValueParser
 {
     private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
     [
-        new LiteralExpressionSyntaxToValueParser(),
-        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionSyntaxToValueParser()),
-        new OperationWithReturnValueCustomizationToValueParser()
+        new LiteralExpressionToValueParser(),
+        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+        new ObjectCreationToObjectParser()
     ];
 
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)

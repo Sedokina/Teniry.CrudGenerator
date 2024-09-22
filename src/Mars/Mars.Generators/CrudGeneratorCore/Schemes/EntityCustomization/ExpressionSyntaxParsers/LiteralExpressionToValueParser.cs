@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-internal class LiteralExpressionSyntaxToValueParser : IExpressionSyntaxToValueParser
+internal class LiteralExpressionToValueParser : IExpressionSyntaxToValueParser
 {
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {

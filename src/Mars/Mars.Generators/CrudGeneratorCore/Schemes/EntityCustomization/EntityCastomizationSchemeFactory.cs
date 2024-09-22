@@ -12,9 +12,9 @@ internal class EntityCastomizationSchemeFactory
 {
     private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
     [
-        new LiteralExpressionSyntaxToValueParser(),
-        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionSyntaxToValueParser()),
-        new OperationWithReturnValueCustomizationToValueParser()
+        new LiteralExpressionToValueParser(),
+        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+        new ObjectCreationToObjectParser()
     ];
 
     internal static EntityCustomizationScheme Construct(
@@ -33,7 +33,7 @@ internal class EntityCastomizationSchemeFactory
         }
 
         var generatorSchemeType = generatorScheme.GetType();
-        var assignmentExpressionParer = new AssignmentExpressionParser();
+        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser();
         foreach (var statementSyntax in constructorStatements)
         {
             if (!assignmentExpressionParer.CanParse(context, statementSyntax.Expression))

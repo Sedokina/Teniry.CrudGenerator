@@ -7,12 +7,12 @@ namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.Expressi
 
 internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValueParser
 {
-    private readonly LiteralExpressionSyntaxToValueParser _literalExpressionSyntaxToValueParser;
+    private readonly LiteralExpressionToValueParser _literalExpressionToValueParser;
 
     public EntityGeneratorDefaultSortToValueParser(
-        LiteralExpressionSyntaxToValueParser literalExpressionSyntaxToValueParser)
+        LiteralExpressionToValueParser literalExpressionToValueParser)
     {
-        _literalExpressionSyntaxToValueParser = literalExpressionSyntaxToValueParser;
+        _literalExpressionToValueParser = literalExpressionToValueParser;
     }
 
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
@@ -56,7 +56,7 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
             return false;
         }
 
-        var direction = _literalExpressionSyntaxToValueParser.Parse(context, literalExpressionSyntax);
+        var direction = _literalExpressionToValueParser.Parse(context, literalExpressionSyntax);
         var fieldName = memberAccessExpressionSyntax.Name.ToString();
         return new EntityDefaultSort(direction!.ToString().Equals("asc") ? "asc" : "desc", fieldName);
     }
