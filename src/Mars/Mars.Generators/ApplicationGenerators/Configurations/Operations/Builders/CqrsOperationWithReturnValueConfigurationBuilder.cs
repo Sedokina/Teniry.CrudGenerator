@@ -5,8 +5,8 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
 public class
-    CqrsOperationWithReturnValueGeneratorConfigurationBuilder :
-    CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
+    CqrsOperationWithReturnValueConfigurationBuilder :
+    CqrsOperationWithoutReturnValueConfigurationBuilder
 {
     public FileTemplateBasedOperationConfigurationBuilder Dto { get; set; }
 

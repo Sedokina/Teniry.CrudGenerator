@@ -6,11 +6,11 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 public class GetListQueryDefaultConfigurationBulderFactory
 {
-    public static CqrsListOperationGeneratorConfigurationBuilder Construct(
+    public static CqrsListOperationConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
-        return new CqrsListOperationGeneratorConfigurationBuilder
+        return new CqrsListOperationConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,

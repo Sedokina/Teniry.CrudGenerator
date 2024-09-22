@@ -6,11 +6,11 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 
 public class DeleteCommandDefaultConfigurationBuilderFactory
 {
-    public static CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder Construct(
+    public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
-        return new CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
+        return new CqrsOperationWithoutReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,

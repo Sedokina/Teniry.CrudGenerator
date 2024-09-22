@@ -5,7 +5,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
+public class CqrsOperationWithoutReturnValueConfigurationBuilder
 {
     public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; }
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; }

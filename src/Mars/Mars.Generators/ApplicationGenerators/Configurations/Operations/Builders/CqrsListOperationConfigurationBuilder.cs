@@ -4,7 +4,7 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsListOperationGeneratorConfigurationBuilder : CqrsOperationWithReturnValueGeneratorConfigurationBuilder
+public class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
 {
     public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; }
     public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; }
