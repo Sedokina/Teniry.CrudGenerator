@@ -28,8 +28,8 @@ public class AppGenerator : ISourceGenerator
         var dbContextScheme = DbContextSchemeFactory.Construct(context);
 
         List<EndpointMap> endpointsMaps = new();
-        var globalConfiguration = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
-        var sharedConfiguration = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
+        var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+        var sharedConfigurationBuilder = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
 
         foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
         {
@@ -43,7 +43,7 @@ public class AppGenerator : ISourceGenerator
                 dbContextScheme);
 
             var getByIdQueryConfigurationBuilder = GetByIdQueryDefaultConfigurationBuilderFactory
-                .Construct(globalConfiguration, sharedConfiguration);
+                .Construct(globalConfigurationBuilder, sharedConfigurationBuilder);
             var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
@@ -60,7 +60,8 @@ public class AppGenerator : ISourceGenerator
             var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                GetListQueryDefaultConfigurationBulderFactory.Construct(globalConfiguration, sharedConfiguration)
+                GetListQueryDefaultConfigurationBulderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
                     .Build(entityScheme));
             var generateListQuery = new ListQueryCrudGenerator(
                 context,
@@ -74,7 +75,8 @@ public class AppGenerator : ISourceGenerator
             var createCommandScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                CreateCommandDefaultConfigurationBuilderFactory.Construct(globalConfiguration, sharedConfiguration)
+                CreateCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
                     .Build(entityScheme));
             var generateCreateCommand = new CreateCommandCrudGenerator(
                 context,
@@ -89,7 +91,8 @@ public class AppGenerator : ISourceGenerator
             var updateCommandScheme = new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                UpdateCommandDefaultConfigurationBuilderFactory.Construct(globalConfiguration, sharedConfiguration)
+                UpdateCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
                     .Build(entityScheme));
             var generateUpdateCommand = new UpdateCommandCrudGenerator(
                 context,
@@ -103,7 +106,8 @@ public class AppGenerator : ISourceGenerator
             var deleteCommandScheme = new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
                 entityScheme,
                 dbContextScheme,
-                DeleteCommandDefaultConfigurationBuilderFactory.Construct(globalConfiguration, sharedConfiguration)
+                DeleteCommandDefaultConfigurationBuilderFactory
+                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
                     .Build(entityScheme));
             var generateDeleteCommand = new DeleteCommandCrudGenerator(
                 context,
@@ -115,7 +119,7 @@ public class AppGenerator : ISourceGenerator
             }
         }
 
-        var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, globalConfiguration);
+        var mapEndpointsGenerator = new MapEndpointsGenerator(context, endpointsMaps, globalConfigurationBuilder);
         mapEndpointsGenerator.RunGenerator();
     }
 }
