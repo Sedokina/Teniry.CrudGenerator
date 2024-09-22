@@ -45,7 +45,8 @@ public class GetListQueryDefaultConfigurationBulderFactory
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetList.GetListEndpoint.txt",
                 NameConfigurationBuilder = new NameConfigurationBuilder("Get{{plural_entity_name}}Endpoint"),
-                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}", "GetAsync")
+                FunctionName = new("GetAsync"),
+                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}")
             }
         };
     }

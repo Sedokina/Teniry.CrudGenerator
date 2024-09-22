@@ -4,5 +4,6 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltC
 
 public class MinimalApiEndpointConfiguration : FileTemplateBasedOperationConfiguration
 {
+    public string FunctionName { get; set; }
     public EndpointRouteConfigurationBuilder RouteConfigurationBuilder { get; set; } = null!;
 }

@@ -99,6 +99,6 @@ internal class CreateCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWithR
             "Post",
             Scheme.Configuration.Endpoint.RouteConfigurationBuilder
                 .GetRoute(EntityScheme.EntityName.ToString()),
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfigurationBuilder.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

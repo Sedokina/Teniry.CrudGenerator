@@ -30,8 +30,9 @@ public class DeleteCommandDefaultConfigurationBuilderFactory
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt",
                 NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Endpoint"),
+                FunctionName = new("DeleteAsync"),
                 RouteConfigurationBuilder =
-                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/delete", "DeleteAsync")
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/delete")
             }
         };
     }

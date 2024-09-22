@@ -35,7 +35,8 @@ public class GetByIdQueryDefaultConfigurationBuilderFactory
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
                 NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Endpoint"),
-                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}", "GetAsync")
+                FunctionName = new("GetAsync"),
+                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}")
             }
         };
     }

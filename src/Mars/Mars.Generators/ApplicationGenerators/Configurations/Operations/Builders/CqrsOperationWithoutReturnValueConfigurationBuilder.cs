@@ -35,6 +35,7 @@ public class CqrsOperationWithoutReturnValueConfigurationBuilder
         {
             TemplatePath = Endpoint.TemplatePath,
             Name = Endpoint.NameConfigurationBuilder.GetName(entityName),
+            FunctionName = Endpoint.FunctionName.GetName(entityName),
             RouteConfigurationBuilder = Endpoint.RouteConfigurationBuilder
         };
     }

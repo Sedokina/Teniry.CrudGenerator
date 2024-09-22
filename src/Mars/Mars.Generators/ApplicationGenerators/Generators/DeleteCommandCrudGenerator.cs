@@ -77,6 +77,6 @@ internal class DeleteCommandCrudGenerator : BaseCrudGenerator<CqrsOperationWitho
             "Delete",
             Scheme.Configuration.Endpoint.RouteConfigurationBuilder
                 .GetRoute(EntityScheme.EntityName.ToString(), constructorParametersForRoute),
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.RouteConfigurationBuilder.FunctionName}");
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 }

@@ -38,7 +38,8 @@ public class CreateCommandDefaultConfigurationBuilderFactory
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateEndpoint.txt",
                 NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Endpoint"),
-                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/create", "CreateAsync")
+                FunctionName = new("CreateAsync"),
+                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/create")
             }
         };
     }

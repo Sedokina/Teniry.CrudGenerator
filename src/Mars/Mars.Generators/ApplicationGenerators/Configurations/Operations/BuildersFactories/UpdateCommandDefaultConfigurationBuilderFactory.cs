@@ -30,8 +30,9 @@ public class UpdateCommandDefaultConfigurationBuilderFactory
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt",
                 NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Endpoint"),
+                FunctionName = new("UpdateAsync"),
                 RouteConfigurationBuilder =
-                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/update")
             }
         };
     }

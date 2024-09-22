@@ -9,10 +9,8 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builde
 ///     - {{entity_name}}<br />
 ///     - {{id_param_name}}<br />
 /// </summary>
-public class EndpointRouteConfigurationBuilder(string name, string functionName)
+public class EndpointRouteConfigurationBuilder(string name)
 {
-    public string FunctionName { get; } = functionName;
-
     public string GetRoute(string entityName, List<string>? idParams = null)
     {
         var putIntoNamespaceTemplate = Template.Parse(name);
