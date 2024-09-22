@@ -1,3 +1,4 @@
+using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
 using Mars.Generators.CrudGeneratorCore.Schemes.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -29,7 +30,7 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
         }
 
         var name = constructorSymbol.ContainingSymbol.Name;
-        if (name != "EntityGeneratorDefaultSort")
+        if (name != TypeNamesForAnalyzers.EntityGeneratorDefaultSort)
         {
             return false;
         }
