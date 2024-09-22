@@ -10,13 +10,6 @@ namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 internal class EntityCastomizationSchemeFactory
 {
-    private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
-    [
-        new LiteralExpressionToValueParser(),
-        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
-        new ObjectCreationToObjectParser()
-    ];
-
     internal static EntityCustomizationScheme Construct(
         INamedTypeSymbol? generatorSymbol,
         GeneratorExecutionContext context)
@@ -32,8 +25,10 @@ internal class EntityCastomizationSchemeFactory
             return generatorScheme;
         }
 
+
+        var assignmentExpressionParer = ConstructAvailableParsers();
+
         var generatorSchemeType = generatorScheme.GetType();
-        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser();
         foreach (var statementSyntax in constructorStatements)
         {
             if (!assignmentExpressionParer.CanParse(context, statementSyntax.Expression))
@@ -41,13 +36,31 @@ internal class EntityCastomizationSchemeFactory
                 continue;
             }
 
-            var (propertyName, value) = assignmentExpressionParer.Parse(context, statementSyntax.Expression) as Tuple<string, object?>;
+            var (propertyName, value) = assignmentExpressionParer
+                .Parse(context, statementSyntax.Expression) as Tuple<string, object?>;
 
             var property = generatorSchemeType.GetProperty(propertyName);
             property?.SetValue(generatorScheme, value);
         }
 
         return generatorScheme;
+    }
+
+    private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers()
+    {
+        List<IExpressionSyntaxToValueParser> availableAssignmentExpressionsRightSideParsers =
+        [
+            new LiteralExpressionToValueParser(),
+            new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+        ];
+
+        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser(
+            availableAssignmentExpressionsRightSideParsers);
+
+        // this parser added in the end because it depends on assignment parser
+        // but assignment parsed depends on the list, where this parser should be included
+        availableAssignmentExpressionsRightSideParsers.Add(new ObjectCreationToObjectParser(assignmentExpressionParer));
+        return assignmentExpressionParer;
     }
 
     private static bool TryGetConstructorStatements(

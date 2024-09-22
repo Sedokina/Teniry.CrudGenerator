@@ -30,7 +30,7 @@ public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
     }
 }
 
-public class EntityGeneratorCreateOperationConfiguration
+public sealed class EntityGeneratorCreateOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? OperationType { get; set; }

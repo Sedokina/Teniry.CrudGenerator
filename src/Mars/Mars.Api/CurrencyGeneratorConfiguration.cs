@@ -6,9 +6,9 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
 {
     protected CurrencyGeneratorConfiguration()
     {
-        // Title = "Curr";
-        // TitlePlural = "Currsive";
-        // DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
+        Title = "Curr";
+        TitlePlural = "Currsive";
+        DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
         CreateOperation = new EntityGeneratorCreateOperationConfiguration
         {
             Generate = true,

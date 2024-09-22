@@ -6,8 +6,16 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-public class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
+internal class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
 {
+    private readonly PropertyAssignmentExpressionToPropertyNameAndValueParser _propertyAssignmentParser;
+
+    public ObjectCreationToObjectParser(
+        PropertyAssignmentExpressionToPropertyNameAndValueParser propertyAssignmentParser)
+    {
+        _propertyAssignmentParser = propertyAssignmentParser;
+    }
+
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
         if (expression is not ObjectCreationExpressionSyntax)
@@ -47,17 +55,16 @@ public class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
             .OfType<AssignmentExpressionSyntax>()
             .ToList();
 
-        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser();
         var resultType = result.GetType();
         foreach (var assignmentExpression in assignmentExpressions)
         {
-            if (!assignmentExpressionParer.CanParse(context, assignmentExpression))
+            if (!_propertyAssignmentParser.CanParse(context, assignmentExpression))
             {
                 continue;
             }
 
-            var (propertyName, value) =
-                assignmentExpressionParer.Parse(context, assignmentExpression) as Tuple<string, object?>;
+            var (propertyName, value) = _propertyAssignmentParser
+                .Parse(context, assignmentExpression) as Tuple<string, object?>;
 
             var property = resultType.GetProperty(propertyName);
             property?.SetValue(result, value);

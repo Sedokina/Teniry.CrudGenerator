@@ -6,14 +6,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-public class PropertyAssignmentExpressionToPropertyNameAndValueParser : IExpressionSyntaxToValueParser
+internal class PropertyAssignmentExpressionToPropertyNameAndValueParser : IExpressionSyntaxToValueParser
 {
-    private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
-    [
-        new LiteralExpressionToValueParser(),
-        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
-        new ObjectCreationToObjectParser()
-    ];
+    private readonly List<IExpressionSyntaxToValueParser> _availableRightSideParsers;
+
+    public PropertyAssignmentExpressionToPropertyNameAndValueParser(
+        List<IExpressionSyntaxToValueParser> availableRightSideParsers)
+    {
+        _availableRightSideParsers = availableRightSideParsers;
+    }
 
     public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
@@ -35,9 +36,9 @@ public class PropertyAssignmentExpressionToPropertyNameAndValueParser : IExpress
         return new Tuple<string, object?>(propertyName, value);
     }
 
-    private static object? ParseRightSide(GeneratorExecutionContext context, ExpressionSyntax expression)
+    private object? ParseRightSide(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
-        foreach (var expressionSyntaxParser in ExpressionSyntaxParsers)
+        foreach (var expressionSyntaxParser in _availableRightSideParsers)
         {
             if (!expressionSyntaxParser.CanParse(context, expression)) continue;
             return expressionSyntaxParser.Parse(context, expression);
@@ -46,23 +47,19 @@ public class PropertyAssignmentExpressionToPropertyNameAndValueParser : IExpress
         return null;
     }
 
-    private static bool CanParseLeftSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionLeftSide)
+    private bool CanParseLeftSide(GeneratorExecutionContext context, ExpressionSyntax expressionLeftSide)
     {
         var model = context.Compilation.GetSemanticModel(expressionLeftSide.SyntaxTree);
         var symbolInfo = model.GetSymbolInfo(expressionLeftSide);
         return symbolInfo.Symbol is IPropertySymbol;
     }
 
-    private static bool CanParseRightSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionRightSide)
+    private bool CanParseRightSide(GeneratorExecutionContext context, ExpressionSyntax expressionRightSide)
     {
-        return ExpressionSyntaxParsers.Any(x => x.CanParse(context, expressionRightSide));
+        return _availableRightSideParsers.Any(x => x.CanParse(context, expressionRightSide));
     }
 
-    private static string ParseLeftSide(GeneratorExecutionContext context, ExpressionSyntax expression)
+    private string ParseLeftSide(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
         var model = context.Compilation.GetSemanticModel(expression.SyntaxTree);
         var symbolInfo = model.GetSymbolInfo(expression);
