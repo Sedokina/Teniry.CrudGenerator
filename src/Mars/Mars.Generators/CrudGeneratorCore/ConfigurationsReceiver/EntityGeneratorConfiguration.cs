@@ -15,7 +15,7 @@ public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : clas
     public string? TitlePlural { get; set; }
     public EntityGeneratorDefaultSort<TEntity>? DefaultSort { get; set; }
 
-    public OperationWithReturnValueCustomization CreateOperation { get; set; }
+    public EntityGeneratorCreateOperationConfiguration CreateOperation { get; set; }
 }
 
 public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
@@ -30,7 +30,7 @@ public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
     }
 }
 
-public class OperationWithReturnValueCustomization
+public class EntityGeneratorCreateOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? OperationType { get; set; }

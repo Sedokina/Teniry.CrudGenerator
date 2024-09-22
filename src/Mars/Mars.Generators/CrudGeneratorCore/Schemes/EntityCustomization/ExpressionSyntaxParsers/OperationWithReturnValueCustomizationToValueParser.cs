@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
 using Microsoft.CodeAnalysis;
@@ -23,7 +24,7 @@ public class OperationWithReturnValueCustomizationToValueParser : IExpressionSyn
 
         var name = constructorSymbol.ContainingSymbol.Name;
 
-        if (name != nameof(OperationWithReturnValueCustomization))
+        if (name != nameof(EntityGeneratorCreateOperationConfiguration))
         {
             return false;
         }
@@ -34,18 +35,34 @@ public class OperationWithReturnValueCustomizationToValueParser : IExpressionSyn
 
     public object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
-        var objectCreationExpression = expression as ObjectCreationExpressionSyntax;
-        var expressions = objectCreationExpression.Initializer.Expressions
+        var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
+        var result = new EntityCustomizationCreateOperationScheme();
+        if (objectCreationExpression.Initializer == null)
+        {
+            return result;
+        }
+
+        var assignmentExpressions = objectCreationExpression.Initializer.Expressions
             .ToList()
             .OfType<AssignmentExpressionSyntax>()
             .ToList();
 
-        var parser = new LiteralExpressionSyntaxToValueParser();
-        foreach (var expressionSyntax in expressions)
+        var assignmentExpressionParer = new AssignmentExpressionParser();
+        var resultType = result.GetType();
+        foreach (var assignmentExpression in assignmentExpressions)
         {
-            
+            if (!assignmentExpressionParer.CanParse(context, assignmentExpression))
+            {
+                continue;
+            }
+
+            var (propertyName, value) =
+                assignmentExpressionParer.Parse(context, assignmentExpression) as Tuple<string, object?>;
+
+            var property = resultType.GetProperty(propertyName);
+            property?.SetValue(result, value);
         }
-        return null;
-        // throw new System.NotImplementedException();
+
+        return result;
     }
 }
