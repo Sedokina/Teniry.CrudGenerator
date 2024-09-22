@@ -4,7 +4,7 @@ using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders.T
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
-public class DeleteCommandDefaultConfigurationFactory
+public class UpdateCommandDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
@@ -15,23 +15,23 @@ public class DeleteCommandDefaultConfigurationFactory
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
-            FunctionName = new NameConfigurationBuilder("Delete{{entity_name}}"),
+            FunctionName = new NameConfigurationBuilder("Update{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Command")
+                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateCommand.txt",
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Command")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteHandler.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Handler")
+                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateHandler.txt",
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt",
-                NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Endpoint"),
+                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt",
+                NameConfigurationBuilder = new NameConfigurationBuilder("Update{{entity_name}}Endpoint"),
                 RouteConfigurationBuilder =
-                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/delete", "DeleteAsync")
+                    new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}/update", "UpdateAsync")
             }
         };
     }

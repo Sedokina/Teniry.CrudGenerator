@@ -1,6 +1,6 @@
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.BuildersFactories;
 
-public class SharedCqrsOperationDefaultConfigurationFactory
+public class SharedCqrsOperationDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationsSharedConfiguration Construct()
     {
