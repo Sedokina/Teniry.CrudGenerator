@@ -15,6 +15,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
+            Generate = customizationScheme.Generate ?? true,
             OperationType = CqrsOperationType.Command,
             OperationName = customizationScheme.OperationType ?? "Create",
             OperationGroup = new(customizationScheme.OperationGroup ?? "{{operation_name}}{{entity_name}}"),

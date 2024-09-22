@@ -5,6 +5,7 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfi
 
 internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
+    public bool Generate { get; set; } = true;
     public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; } = null!;
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }

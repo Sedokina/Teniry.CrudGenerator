@@ -76,21 +76,30 @@ public class CrudGenerator : ISourceGenerator
                     endpointsMaps.Add(generateListQuery.EndpointMap);
                 }
 
-                var createCommandScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
-                    entityScheme,
-                    dbContextScheme,
-                    CreateCommandDefaultConfigurationBuilderFactory
-                        .Construct(globalConfigurationBuilder, sharedConfigurationBuilder, entityCustomizationScheme.CreateOperation)
-                        .Build(entityScheme));
-                var generateCreateCommand = new CreateCommandCrudGenerator(
-                    context,
-                    createCommandScheme,
-                    getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder,
-                    getByIdQueryConfigurationBuilder.OperationName);
-                generateCreateCommand.RunGenerator();
-                if (generateCreateCommand.EndpointMap is not null)
+                var createCommandConfiguration = CreateCommandDefaultConfigurationBuilderFactory
+                    .Construct(
+                        globalConfigurationBuilder,
+                        sharedConfigurationBuilder,
+                        entityCustomizationScheme.CreateOperation)
+                    .Build(entityScheme);
+                if (createCommandConfiguration.Generate)
                 {
-                    endpointsMaps.Add(generateCreateCommand.EndpointMap);
+                    var createCommandScheme =
+                        new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+                            entityScheme,
+                            dbContextScheme,
+                            createCommandConfiguration
+                        );
+                    var generateCreateCommand = new CreateCommandCrudGenerator(
+                        context,
+                        createCommandScheme,
+                        getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder,
+                        getByIdQueryConfigurationBuilder.OperationName);
+                    generateCreateCommand.RunGenerator();
+                    if (generateCreateCommand.EndpointMap is not null)
+                    {
+                        endpointsMaps.Add(generateCreateCommand.EndpointMap);
+                    }
                 }
 
                 var updateCommandScheme =
