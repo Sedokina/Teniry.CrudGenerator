@@ -10,9 +10,12 @@ internal class CqrsOperationsSharedConfigurationBuilder
     public PutBusinessLogicIntoNamespaceConfigurationBuilder BusinessLogicNamespaceForOperation { get; set; } = null!;
     public PutEndpointsIntoNamespaceConfigurationBuilder EndpointsNamespaceForFeature { get; set; } = null!;
 
-    public CqrsOperationsSharedConfiguration Build(EntityScheme entityScheme, string operationGroup)
+    public CqrsOperationsSharedConfiguration Build(
+        EntityScheme entityScheme,
+        string operationName,
+        string operationGroup)
     {
-        var businessLogicFeatureName = BusinessLogicFeatureName.GetName(entityScheme.EntityName);
+        var businessLogicFeatureName = BusinessLogicFeatureName.GetName(entityScheme.EntityName, operationName);
         return new CqrsOperationsSharedConfiguration
         {
             BusinessLogicFeatureName = businessLogicFeatureName,
