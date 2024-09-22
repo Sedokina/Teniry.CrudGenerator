@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core.DbContextCore;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 using Microsoft.CodeAnalysis;
@@ -67,7 +68,7 @@ internal abstract class BaseGenerator
 }
 
 internal abstract class BaseCrudGenerator<TConfiguration> : BaseGenerator
-    where TConfiguration : CqrsOperationGeneratorConfigurationBuilt
+    where TConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     protected readonly EntityScheme EntityScheme;

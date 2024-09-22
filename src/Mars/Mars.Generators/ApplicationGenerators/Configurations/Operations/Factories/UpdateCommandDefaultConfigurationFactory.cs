@@ -1,31 +1,32 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
 public class UpdateCommandDefaultConfigurationFactory
 {
-    public static CqrsOperationGeneratorConfiguration Construct(
+    public static CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
-        return new CqrsOperationGeneratorConfiguration
+        return new CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
             FunctionName = new NameConfiguration("Update{{entity_name}}"),
-            Operation = new FileTemplateBasedOperationConfiguration
+            Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateCommand.txt",
                 NameConfiguration = new NameConfiguration("Update{{entity_name}}Command")
             },
-            Handler = new FileTemplateBasedOperationConfiguration
+            Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateHandler.txt",
                 NameConfiguration = new NameConfiguration("Update{{entity_name}}Handler")
             },
-            Endpoint = new MinimalApiEndpointConfiguration
+            Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Update.UpdateEndpoint.txt",
                 NameConfiguration = new NameConfiguration("Update{{entity_name}}Endpoint"),

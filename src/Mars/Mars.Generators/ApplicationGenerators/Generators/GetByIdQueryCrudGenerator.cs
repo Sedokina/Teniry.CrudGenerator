@@ -1,12 +1,13 @@
 using Mars.Generators.ApplicationGenerators.Configurations;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.BuiltConfigurations;
 using Mars.Generators.ApplicationGenerators.Core;
 using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore.Formatters;
 using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithReturnValueGeneratorConfigurationBuilt>
+internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -15,7 +16,7 @@ internal class GetByIdQueryCrudGenerator : BaseCrudGenerator<CqrsOperationWithRe
 
     public GetByIdQueryCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfigurationBuilt> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
     {
         _queryName = Scheme.Configuration.Operation.Name;
         _handlerName = Scheme.Configuration.Handler.Name;

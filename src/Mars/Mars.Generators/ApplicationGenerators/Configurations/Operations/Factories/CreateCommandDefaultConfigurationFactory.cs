@@ -1,39 +1,40 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
 public class CreateCommandDefaultConfigurationFactory
 {
-    public static CqrsOperationWithReturnValueGeneratorConfiguration Construct(
+    public static CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
         // TODO: move function name from route configuration
-        return new CqrsOperationWithReturnValueGeneratorConfiguration
+        return new CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
             FunctionName = new NameConfiguration("Create{{entity_name}}"),
-            Operation = new FileTemplateBasedOperationConfiguration
+            Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",
                 NameConfiguration = new NameConfiguration("Create{{entity_name}}Command")
             },
-            Dto = new FileTemplateBasedOperationConfiguration
+            Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreatedDto.txt",
                 NameConfiguration = new NameConfiguration("Created{{entity_name}}Dto")
             },
-            Handler = new FileTemplateBasedOperationConfiguration
+            Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateHandler.txt",
                 NameConfiguration = new NameConfiguration("Create{{entity_name}}Handler")
             },
-            Endpoint = new MinimalApiEndpointConfiguration
+            Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateEndpoint.txt",
                 NameConfiguration = new NameConfiguration("Create{{entity_name}}Endpoint"),

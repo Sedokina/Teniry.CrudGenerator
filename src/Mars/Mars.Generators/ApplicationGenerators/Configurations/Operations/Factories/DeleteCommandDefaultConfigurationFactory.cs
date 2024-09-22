@@ -1,31 +1,32 @@
 using Mars.Generators.ApplicationGenerators.Configurations.Global;
+using Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 using Mars.Generators.ApplicationGenerators.Configurations.Operations.TypedConfigurations;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factories;
 
 public class DeleteCommandDefaultConfigurationFactory
 {
-    public static CqrsOperationGeneratorConfiguration Construct(
+    public static CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
-        return new CqrsOperationGeneratorConfiguration
+        return new CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             OperationType = CqrsOperationType.Command,
             FunctionName = new NameConfiguration("Delete{{entity_name}}"),
-            Operation = new FileTemplateBasedOperationConfiguration
+            Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",
                 NameConfiguration = new NameConfiguration("Delete{{entity_name}}Command")
             },
-            Handler = new FileTemplateBasedOperationConfiguration
+            Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteHandler.txt",
                 NameConfiguration = new NameConfiguration("Delete{{entity_name}}Handler")
             },
-            Endpoint = new MinimalApiEndpointConfiguration
+            Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
                 TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt",
                 NameConfiguration = new NameConfiguration("Delete{{entity_name}}Endpoint"),
