@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.ApplicationGenerators.Generators;
 
-internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationWithoutReturnValueGeneratorConfiguration>
+internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -18,7 +18,7 @@ internal class ListQueryCrudGenerator : BaseCrudGenerator<CqrsListOperationWitho
 
     public ListQueryCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsListOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(context, scheme)
     {
         _queryName = Scheme.Configuration.Operation.Name;
         _listItemDtoName = Scheme.Configuration.DtoListItem.Name;

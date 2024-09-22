@@ -6,14 +6,14 @@ namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Factor
 
 public class CreateCommandDefaultConfigurationFactory
 {
-    public static CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder Construct(
+    public static CqrsOperationWithReturnValueGeneratorConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfiguration operationsSharedConfiguration)
     {
         // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
         // TODO: move function name from route configuration
-        return new CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder
+        return new CqrsOperationWithReturnValueGeneratorConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,

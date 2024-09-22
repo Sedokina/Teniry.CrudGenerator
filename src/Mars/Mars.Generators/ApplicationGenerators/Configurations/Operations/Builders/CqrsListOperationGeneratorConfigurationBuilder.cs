@@ -4,14 +4,14 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsListOperationWithoutReturnValueGeneratorConfigurationBuilder : CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder
+public class CqrsListOperationGeneratorConfigurationBuilder : CqrsOperationWithReturnValueGeneratorConfigurationBuilder
 {
     public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; }
     public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; }
 
-    public new CqrsListOperationWithoutReturnValueGeneratorConfiguration Build(EntityName entityName)
+    public new CqrsListOperationGeneratorConfiguration Build(EntityName entityName)
     {
-        var built = new CqrsListOperationWithoutReturnValueGeneratorConfiguration();
+        var built = new CqrsListOperationGeneratorConfiguration();
         Init(built, entityName);
         built.Dto = new()
         {

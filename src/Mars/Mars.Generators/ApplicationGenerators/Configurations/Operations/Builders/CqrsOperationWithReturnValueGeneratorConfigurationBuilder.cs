@@ -4,13 +4,15 @@ using Mars.Generators.ApplicationGenerators.Core.EntitySchemaCore;
 
 namespace Mars.Generators.ApplicationGenerators.Configurations.Operations.Builders;
 
-public class CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfigurationBuilder : CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
+public class
+    CqrsOperationWithReturnValueGeneratorConfigurationBuilder :
+    CqrsOperationWithoutReturnValueGeneratorConfigurationBuilder
 {
     public FileTemplateBasedOperationConfigurationBuilder Dto { get; set; }
 
-    public new CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration Build(EntityName entityName)
+    public new CqrsOperationWithReturnValueGeneratorConfiguration Build(EntityName entityName)
     {
-        var built = new CqrsOperationWithoutReturnValueWithReturnValueGeneratorConfiguration();
+        var built = new CqrsOperationWithReturnValueGeneratorConfiguration();
         Init(built, entityName);
         built.Dto = new()
         {
