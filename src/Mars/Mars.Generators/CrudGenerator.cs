@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis;
 namespace Mars.Generators.ApplicationGenerators;
 
 [Generator]
-public class AppGenerator : ISourceGenerator
+public class CrudGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
