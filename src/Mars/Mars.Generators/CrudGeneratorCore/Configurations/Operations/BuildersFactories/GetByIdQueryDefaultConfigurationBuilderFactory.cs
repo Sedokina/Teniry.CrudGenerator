@@ -18,22 +18,22 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             OperationGroup = new NameConfigurationBuilder("Get{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdQuery.txt",
+                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdQuery.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Query")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdDto.txt",
+                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdDto.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name}}Dto")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdHandler.txt",
+                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdHandler.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.GetById.GetByIdEndpoint.txt",
+                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdEndpoint.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Get{{entity_name}}Endpoint"),
                 FunctionName = new("GetAsync"),
                 RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}")

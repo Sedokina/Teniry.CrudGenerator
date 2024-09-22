@@ -10,7 +10,6 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
     {
-        // TODO: use TemplatesBasePath not directly, but from {{ }} syntax
         // TODO: create operation name and move Create into it, than use like {{ }}
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
@@ -20,22 +19,22 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             OperationGroup = new NameConfigurationBuilder("Create{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateCommand.txt",
+                TemplatePath = new("{{templates_base_path}}.Create.CreateCommand.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Command")
             },
             Dto = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreatedDto.txt",
+                TemplatePath = new("{{templates_base_path}}.Create.CreatedDto.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Created{{entity_name}}Dto")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateHandler.txt",
+                TemplatePath = new("{{templates_base_path}}.Create.CreateHandler.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Create.CreateEndpoint.txt",
+                TemplatePath = new("{{templates_base_path}}.Create.CreateEndpoint.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Create{{entity_name}}Endpoint"),
                 FunctionName = new("CreateAsync"),
                 RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/create")

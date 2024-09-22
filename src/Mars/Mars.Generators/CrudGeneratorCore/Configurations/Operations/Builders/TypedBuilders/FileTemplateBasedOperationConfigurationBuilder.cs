@@ -2,6 +2,6 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.T
 
 internal class FileTemplateBasedOperationConfigurationBuilder
 {
-    public string TemplatePath { get; set; } = null!;
+    public FileTemplatePathConfigurationBuilder TemplatePath { get; set; } = null!;
     public NameConfigurationBuilder NameConfigurationBuilder { get; set; } = null!;
 }

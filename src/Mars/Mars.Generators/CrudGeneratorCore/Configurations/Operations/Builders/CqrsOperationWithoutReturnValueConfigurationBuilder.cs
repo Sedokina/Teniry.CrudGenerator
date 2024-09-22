@@ -25,19 +25,19 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
         configuration.OperationType = CqrsOperationType.Command;
         configuration.Operation = new()
         {
-            TemplatePath = Operation.TemplatePath,
+            TemplatePath = Operation.TemplatePath.GetPath(configuration.GlobalConfiguration.TemplatesBasePath),
             Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
         configuration.Handler = new()
         {
-            TemplatePath = Handler.TemplatePath,
+            TemplatePath = Handler.TemplatePath.GetPath(configuration.GlobalConfiguration.TemplatesBasePath),
             Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallParameters();
         configuration.Endpoint = new()
         {
-            TemplatePath = Endpoint.TemplatePath,
+            TemplatePath = Endpoint.TemplatePath.GetPath(configuration.GlobalConfiguration.TemplatesBasePath),
             Name = Endpoint.NameConfigurationBuilder.GetName(entityScheme.EntityName),
             FunctionName = Endpoint.FunctionName.GetName(entityScheme.EntityName),
             Route = Endpoint.RouteConfigurationBuilder

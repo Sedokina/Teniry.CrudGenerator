@@ -15,7 +15,7 @@ internal class CqrsOperationWithReturnValueConfigurationBuilder :
         Init(built, entityScheme);
         built.Dto = new()
         {
-            TemplatePath = Dto.TemplatePath,
+            TemplatePath = Dto.TemplatePath.GetPath(built.GlobalConfiguration.TemplatesBasePath),
             Name = Dto.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
         return built;

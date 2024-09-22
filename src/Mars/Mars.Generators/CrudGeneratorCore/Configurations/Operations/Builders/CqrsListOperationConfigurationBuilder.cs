@@ -15,19 +15,19 @@ internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnVa
         Init(built, entityScheme);
         built.Dto = new()
         {
-            TemplatePath = Dto.TemplatePath,
+            TemplatePath = Dto.TemplatePath.GetPath(built.GlobalConfiguration.TemplatesBasePath),
             Name = Dto.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         built.Filter = new()
         {
-            TemplatePath = Filter.TemplatePath,
+            TemplatePath = Filter.TemplatePath.GetPath(built.GlobalConfiguration.TemplatesBasePath),
             Name = Filter.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 
         built.DtoListItem = new()
         {
-            TemplatePath = DtoListItem.TemplatePath,
+            TemplatePath = DtoListItem.TemplatePath.GetPath(built.GlobalConfiguration.TemplatesBasePath),
             Name = DtoListItem.NameConfigurationBuilder.GetName(entityScheme.EntityName),
         };
 

@@ -12,12 +12,12 @@ internal class NameConfigurationBuilder(string name)
 {
     public string GetName(EntityName entityName)
     {
-        var putIntoNamespaceTemplate = Template.Parse(name);
+        var template = Template.Parse(name);
         var model = new
         {
             EntityName = entityName.Name,
             EntityNamePlural = entityName.PluralName
         };
-        return putIntoNamespaceTemplate.Render(model);
+        return template.Render(model);
     }
 }

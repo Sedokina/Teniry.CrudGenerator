@@ -18,17 +18,17 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             OperationGroup = new NameConfigurationBuilder("Delete{{entity_name}}"),
             Operation = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteCommand.txt",
+                TemplatePath = new("{{templates_base_path}}.Delete.DeleteCommand.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Command")
             },
             Handler = new FileTemplateBasedOperationConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteHandler.txt",
+                TemplatePath = new("{{templates_base_path}}.Delete.DeleteHandler.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Handler")
             },
             Endpoint = new MinimalApiEndpointConfigurationBuilder
             {
-                TemplatePath = $"{globalConfiguration.TemplatesBasePath}.Delete.DeleteEndpoint.txt",
+                TemplatePath = new("{{templates_base_path}}.Delete.DeleteEndpoint.txt"),
                 NameConfigurationBuilder = new NameConfigurationBuilder("Delete{{entity_name}}Endpoint"),
                 FunctionName = new("DeleteAsync"),
                 RouteConfigurationBuilder =
