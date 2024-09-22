@@ -6,7 +6,8 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
-internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class
+    CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly EndpointRouteConfigurationBuilder _getByIdEndpointRouteConfigurationBuilder;
     private readonly string _getByIdOperationName;
@@ -34,7 +35,10 @@ internal class CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
-        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        if (Scheme.Configuration.Endpoint.Generate)
+        {
+            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        }
     }
 
     private void GenerateCommand(string templatePath)

@@ -7,7 +7,7 @@ internal class EntityCustomizationScheme
     public string? Title { get; set; }
     public string? TitlePlural { get; set; }
     public EntityDefaultSort? DefaultSort { get; set; }
-    public EntityCreateOperationCustomizationScheme CreateOperation { get; set; }
+    public EntityCreateOperationCustomizationScheme? CreateOperation { get; set; }
 }
 
 internal class EntityCreateOperationCustomizationScheme

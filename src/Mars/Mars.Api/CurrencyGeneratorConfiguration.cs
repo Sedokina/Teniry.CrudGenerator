@@ -18,7 +18,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             HandlerName = "CrCurHandlerDd",
             DtoName = "CurnCyDtOo",
             GenerateEndpoint = true,
-            EndpointClassName = "/cru/cre",
+            EndpointClassName = "CretEndp",
             EndpointFunctionName = "juj",
             RouteName = "/cru/cre"
         };

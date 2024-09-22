@@ -2,6 +2,7 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuiltConfi
 
 internal class MinimalApiEndpointConfiguration : FileTemplateBasedOperationConfiguration
 {
+    public bool Generate { get; set; } = true;
     public string FunctionName { get; set; } = "";
     public string Route { get; set; } = "";
 }
