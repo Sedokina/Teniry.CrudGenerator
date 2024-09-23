@@ -18,12 +18,12 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Query,
-            OperationName = customizationScheme?.OperationType ?? "Get",
+            OperationName = customizationScheme?.Operation ?? "Get",
             OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdQuery.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                NameConfigurationBuilder = new(customizationScheme?.QueryName ??
                                                "{{operation_name}}{{entity_name}}Query")
             },
             Dto = new()

@@ -17,9 +17,9 @@ internal class EntityCustomizationScheme
 internal class EntityCreateOperationCustomizationScheme
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? DtoName { get; set; }
     public string? HandlerName { get; set; }
     public string? EndpointClassName { get; set; }
@@ -31,9 +31,9 @@ internal class EntityCreateOperationCustomizationScheme
 internal class EntityDeleteOperationCustomizationScheme
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? HandlerName { get; set; }
     public string? EndpointClassName { get; set; }
     public string? EndpointFunctionName { get; set; }
@@ -44,9 +44,9 @@ internal class EntityDeleteOperationCustomizationScheme
 internal class EntityUpdateOperationCustomizationScheme
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? HandlerName { get; set; }
     public string? EndpointClassName { get; set; }
     public string? EndpointFunctionName { get; set; }
@@ -58,9 +58,9 @@ internal class EntityUpdateOperationCustomizationScheme
 internal class EntityGetByIdOperationCustomizationScheme
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? QueryName { get; set; }
     public string? DtoName { get; set; }
     public string? HandlerName { get; set; }
     public string? EndpointClassName { get; set; }
@@ -72,9 +72,9 @@ internal class EntityGetByIdOperationCustomizationScheme
 internal class EntityGetListOperationCustomizationScheme
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? QueryName { get; set; }
     public string? DtoName { get; set; }
     public string? ListItemDtoName { get; set; }
     public string? FilterName { get; set; }

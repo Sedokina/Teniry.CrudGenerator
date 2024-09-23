@@ -17,12 +17,12 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = customizationScheme?.OperationType ?? "Delete",
+            OperationName = customizationScheme?.Operation ?? "Delete",
             OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Delete.DeleteCommand.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                NameConfigurationBuilder = new(customizationScheme?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },
             Handler = new()

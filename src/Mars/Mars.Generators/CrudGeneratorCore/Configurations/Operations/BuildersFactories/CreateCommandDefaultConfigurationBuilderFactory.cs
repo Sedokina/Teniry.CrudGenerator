@@ -17,12 +17,12 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = customizationScheme?.OperationType ?? "Create",
+            OperationName = customizationScheme?.Operation ?? "Create",
             OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Create.CreateCommand.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                NameConfigurationBuilder = new(customizationScheme?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },
             Dto = new()

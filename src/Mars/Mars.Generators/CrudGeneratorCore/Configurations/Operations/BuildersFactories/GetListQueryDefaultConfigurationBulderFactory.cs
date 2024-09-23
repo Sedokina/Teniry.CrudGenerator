@@ -17,12 +17,12 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Query,
-            OperationName = customizationScheme?.OperationType ?? "Get",
+            OperationName = customizationScheme?.Operation ?? "Get",
             OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListQuery.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                NameConfigurationBuilder = new(customizationScheme?.QueryName ??
                                                "{{operation_name}}{{entity_name_plural}}Query")
             },
             Dto = new()

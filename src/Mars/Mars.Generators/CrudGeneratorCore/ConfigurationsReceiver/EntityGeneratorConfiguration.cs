@@ -36,9 +36,9 @@ public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
 public sealed class EntityGeneratorCreateOperationConfiguration
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? DtoName { get; set; }
     public string? HandlerName { get; set; }
     public bool? GenerateEndpoint { get; set; }
@@ -50,9 +50,9 @@ public sealed class EntityGeneratorCreateOperationConfiguration
 public sealed class EntityGeneratorDeleteOperationConfiguration
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? HandlerName { get; set; }
     public bool? GenerateEndpoint { get; set; }
     public string? EndpointClassName { get; set; }
@@ -63,9 +63,9 @@ public sealed class EntityGeneratorDeleteOperationConfiguration
 public sealed class EntityGeneratorUpdateOperationConfiguration
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? CommandName { get; set; }
     public string? HandlerName { get; set; }
     public string? ViewModelName { get; set; }
     public bool? GenerateEndpoint { get; set; }
@@ -77,9 +77,9 @@ public sealed class EntityGeneratorUpdateOperationConfiguration
 public sealed class EntityGeneratorGetByIdOperationConfiguration
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? QueryName { get; set; }
     public string? DtoName { get; set; }
     public string? HandlerName { get; set; }
     public bool? GenerateEndpoint { get; set; }
@@ -91,9 +91,9 @@ public sealed class EntityGeneratorGetByIdOperationConfiguration
 public sealed class EntityGeneratorGetListOperationConfiguration
 {
     public bool? Generate { get; set; }
-    public string? OperationType { get; set; }
+    public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
-    public string? OperationName { get; set; }
+    public string? QueryName { get; set; }
     public string? DtoName { get; set; }
     public string? ListItemDtoName { get; set; }
     public string? FilterName { get; set; }

@@ -17,12 +17,12 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = customizationScheme?.OperationType ?? "Update",
+            OperationName = customizationScheme?.Operation ?? "Update",
             OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateCommand.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                NameConfigurationBuilder = new(customizationScheme?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },
             Handler = new()

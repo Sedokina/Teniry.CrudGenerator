@@ -12,9 +12,9 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         CreateOperation = new EntityGeneratorCreateOperationConfiguration
         {
             Generate = true,
-            OperationType = "Createll",
+            Operation = "Createll",
             OperationGroup = "CreateLCurrency",
-            OperationName = "CreatellCurencyComandl",
+            CommandName = "CreatellCurencyComandl",
             HandlerName = "CrCurHandlerDd",
             DtoName = "CurnCyDtOo",
             GenerateEndpoint = true,
@@ -25,9 +25,9 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
         {
             Generate = true,
-            OperationType = "Del",
+            Operation = "Del",
             OperationGroup = "DeleLCurrency",
-            OperationName = "DeledCurencyComandl",
+            CommandName = "DeledCurencyComandl",
             HandlerName = "DelCurCo",
             GenerateEndpoint = true,
             EndpointClassName = "DdelEndpo",
@@ -37,9 +37,9 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
         {
             Generate = true,
-            OperationType = "Upd",
+            Operation = "Upd",
             OperationGroup = "UpddCurcy",
-            OperationName = "UpdaCurencyComandl",
+            CommandName = "UpdaCurencyComandl",
             HandlerName = "UdpCurCo",
             ViewModelName = "JjUp",
             GenerateEndpoint = true,
@@ -49,10 +49,10 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         };
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
         {
-            Generate = false,
-            OperationType = "GtBy",
+            Generate = true,
+            Operation = "GtBy",
             OperationGroup = "IdGetCurcy",
-            OperationName = "GetCurencyQr",
+            QueryName = "GetCurencyQr",
             HandlerName = "GetCurQuerHa",
             DtoName = "GetNotGetDto",
             GenerateEndpoint = true,
@@ -63,9 +63,9 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         GetListOperation = new EntityGeneratorGetListOperationConfiguration
         {
             Generate = true,
-            OperationType = "GtLi",
+            Operation = "GtLi",
             OperationGroup = "ListCuries",
-            OperationName = "GetCurieQr",
+            QueryName = "GetCurieQr",
             HandlerName = "GetCurLisQuerHa",
             DtoName = "AllCurLi",
             ListItemDtoName = "SpecCurDo",
