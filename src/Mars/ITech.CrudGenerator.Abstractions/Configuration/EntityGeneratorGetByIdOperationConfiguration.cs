@@ -1,14 +1,12 @@
-namespace ITech.CrudGenerator.Abstractions;
+namespace ITech.CrudGenerator.Abstractions.Configuration;
 
-public sealed class EntityGeneratorGetListOperationConfiguration
+public sealed class EntityGeneratorGetByIdOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
     public string? OperationGroup { get; set; }
     public string? QueryName { get; set; }
     public string? DtoName { get; set; }
-    public string? ListItemDtoName { get; set; }
-    public string? FilterName { get; set; }
     public string? HandlerName { get; set; }
     public bool? GenerateEndpoint { get; set; }
     public string? EndpointClassName { get; set; }

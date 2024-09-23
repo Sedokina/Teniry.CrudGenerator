@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.Abstractions;
+namespace ITech.CrudGenerator.Abstractions.Configuration;
 
 public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : class
 {

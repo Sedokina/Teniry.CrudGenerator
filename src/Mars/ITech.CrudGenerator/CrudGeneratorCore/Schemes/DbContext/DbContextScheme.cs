@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using ITech.CrudGenerator.Abstractions;
+using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;

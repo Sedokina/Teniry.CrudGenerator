@@ -1,3 +1,5 @@
+using ITech.CrudGenerator.Abstractions;
+using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;

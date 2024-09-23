@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace ITech.CrudGenerator.Abstractions;
+namespace ITech.CrudGenerator.Abstractions.Configuration;
 
 public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
 {

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ITech.CrudGenerator.Abstractions;
+using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 using Microsoft.CodeAnalysis;
