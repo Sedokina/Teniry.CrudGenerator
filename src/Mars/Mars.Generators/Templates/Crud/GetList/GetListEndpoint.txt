@@ -11,7 +11,7 @@ public static partial class {{endpoint_class_name}}
     /// </summary>
     /// <response code="200">Returns {{entity_title}} list</response>
     [ProducesResponseType(typeof({{dto_name}}), 200)]
-    public static async Task<IResult> GetAsync(
+    public static async Task<IResult> {{function_name}}(
         [AsParameters] {{query_name}} query,
         IQueryDispatcher queryDispatcher,
         CancellationToken cancellation)

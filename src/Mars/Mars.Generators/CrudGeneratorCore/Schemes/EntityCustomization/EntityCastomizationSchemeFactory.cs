@@ -10,12 +10,6 @@ namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 internal class EntityCastomizationSchemeFactory
 {
-    private static readonly List<IExpressionSyntaxToValueParser> ExpressionSyntaxParsers =
-    [
-        new LiteralExpressionSyntaxToValueParser(),
-        new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionSyntaxToValueParser()),
-    ];
-
     internal static EntityCustomizationScheme Construct(
         INamedTypeSymbol? generatorSymbol,
         GeneratorExecutionContext context)
@@ -31,13 +25,19 @@ internal class EntityCastomizationSchemeFactory
             return generatorScheme;
         }
 
+
+        var assignmentExpressionParer = ConstructAvailableParsers();
+
         var generatorSchemeType = generatorScheme.GetType();
         foreach (var statementSyntax in constructorStatements)
         {
-            if (!TryParseConstructorStatement(context, statementSyntax, out var propertyName, out var value))
+            if (!assignmentExpressionParer.CanParse(context, statementSyntax.Expression))
             {
                 continue;
             }
+
+            var (propertyName, value) = assignmentExpressionParer
+                .Parse(context, statementSyntax.Expression) as Tuple<string, object?>;
 
             var property = generatorSchemeType.GetProperty(propertyName);
             property?.SetValue(generatorScheme, value);
@@ -46,63 +46,40 @@ internal class EntityCastomizationSchemeFactory
         return generatorScheme;
     }
 
-    private static bool TryParseConstructorStatement(
-        GeneratorExecutionContext context,
-        ExpressionStatementSyntax statementSyntax,
-        out string propertyName,
-        out object? value)
+    private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers()
     {
-        propertyName = "";
-        value = null;
-        if (statementSyntax.Expression is not AssignmentExpressionSyntax assignmentExpressionSyntax)
-        {
-            return false;
-        }
+        List<IExpressionSyntaxToValueParser> availableAssignmentExpressionsRightSideParsers =
+        [
+            new LiteralExpressionToValueParser(),
+            new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+        ];
 
-        if (!TryParseConstructorStatementLeftSide(context, assignmentExpressionSyntax.Left, ref propertyName))
-        {
-            return false;
-        }
+        var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser(
+            availableAssignmentExpressionsRightSideParsers);
 
-        if (!TryParseExpressionRightSide(context, assignmentExpressionSyntax.Right, ref value))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool TryParseConstructorStatementLeftSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionLeftSide,
-        ref string propertyName)
-    {
-        var model = context.Compilation.GetSemanticModel(expressionLeftSide.SyntaxTree);
-        var symbolInfo = model.GetSymbolInfo(expressionLeftSide);
-        if (symbolInfo.Symbol is not IPropertySymbol propertySymbol)
-        {
-            return false;
-        }
-
-        propertyName = propertySymbol.Name;
-        return true;
-    }
-
-    private static bool TryParseExpressionRightSide(
-        GeneratorExecutionContext context,
-        ExpressionSyntax expressionRightSide,
-        ref object? value)
-    {
-        foreach (var expressionSyntaxParser in ExpressionSyntaxParsers)
-        {
-            if (expressionSyntaxParser.CanParse(context, expressionRightSide))
-            {
-                value = expressionSyntaxParser.Parse(context, expressionRightSide);
-                return true;
-            }
-        }
-
-        return false;
+        // These parsers are added in the end because they depend on assignment parser
+        // but assignment parsed depends on the list, where these parsers should be included
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorCreateOperationConfiguration,
+                EntityCreateOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorDeleteOperationConfiguration,
+                EntityDeleteOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorUpdateOperationConfiguration,
+                EntityUpdateOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorGetByIdOperationConfiguration,
+                EntityGetByIdOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorGetListOperationConfiguration,
+                EntityGetListOperationCustomizationScheme>(assignmentExpressionParer));
+        return assignmentExpressionParer;
     }
 
     private static bool TryGetConstructorStatements(
@@ -172,7 +149,6 @@ internal class EntityCastomizationSchemeFactory
         {
             return false;
         }
-
 
         constructorDeclarationSyntax = generatorConstructorDeclaration;
         return true;

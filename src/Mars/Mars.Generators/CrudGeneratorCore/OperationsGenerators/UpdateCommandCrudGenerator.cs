@@ -5,7 +5,8 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
-internal class UpdateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
+internal class UpdateCommandCrudGenerator
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -14,11 +15,12 @@ internal class UpdateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> scheme)
+        : base(context, scheme)
     {
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;
-        _vmName = $"Update{EntityScheme.EntityName}Vm";
+        _vmName = scheme.Configuration.ViewModel.Name;
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
@@ -26,8 +28,11 @@ internal class UpdateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
-        GenerateViewModel($"{Scheme.Configuration.GlobalConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
-        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        GenerateViewModel(Scheme.Configuration.ViewModel.TemplatePath);
+        if (Scheme.Configuration.Endpoint.Generate)
+        {
+            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        }
     }
 
     private void GenerateCommand(string templatePath)
@@ -78,6 +83,7 @@ internal class UpdateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             RouteParams = routeParams,
             VmName = _vmName,
             CommandName = _commandName,

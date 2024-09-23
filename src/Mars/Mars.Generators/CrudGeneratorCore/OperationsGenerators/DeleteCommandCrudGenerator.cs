@@ -5,7 +5,8 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
-internal class DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
+internal class
+    DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -24,7 +25,10 @@ internal class DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
-        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        if (Scheme.Configuration.Endpoint.Generate)
+        {
+            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        }
     }
 
     private void GenerateCommand(string templatePath)
@@ -63,6 +67,7 @@ internal class DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOpera
         var model = new
         {
             EndpointClassName = _endpointClassName,
+            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             RouteParams = routeParams,
             CommandName = _commandName,
             CommandConstructorParameters = constructorParameters

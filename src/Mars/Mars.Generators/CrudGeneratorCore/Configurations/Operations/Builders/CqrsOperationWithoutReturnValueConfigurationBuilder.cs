@@ -8,6 +8,7 @@ namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
 
 internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 {
+    public bool Generate { get; set; } = true;
     public GlobalCqrsGeneratorConfigurationBuilder GlobalConfiguration { get; set; } = null!;
     public CqrsOperationsSharedConfigurationBuilder OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
@@ -20,6 +21,7 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
     {
         configuration.GlobalConfiguration = GlobalConfiguration.Build();
+        configuration.Generate = Generate;
         configuration.OperationType = CqrsOperationType.Command;
         configuration.OperationName = OperationName;
         configuration.OperationGroup = OperationGroup.GetName(entityScheme.EntityName, configuration.OperationName);
@@ -39,16 +41,8 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
             Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
         };
 
-        var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallParameters();
-        configuration.Endpoint = new()
-        {
-            TemplatePath = Endpoint.TemplatePath
-                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
-            Name = Endpoint.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
-            FunctionName = Endpoint.FunctionName.GetName(entityScheme.EntityName, configuration.OperationName),
-            Route = Endpoint.RouteConfigurationBuilder
-                .GetRoute(entityScheme.EntityName.Name, configuration.OperationName, constructorParametersForRoute)
-        };
+        configuration.Endpoint = Endpoint
+            .Build(entityScheme, configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName);
     }
 
     public CqrsOperationWithoutReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)

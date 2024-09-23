@@ -13,11 +13,11 @@ internal class EntityGeneratorConfigurationSyntaxReceiver : ISyntaxReceiver
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
         if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax &&
-            IsInheritedFrom(classDeclarationSyntax, nameof(EntityGeneratorConfiguration)))
+            IsInheritedFrom(classDeclarationSyntax, TypeNamesForAnalyzers.EntityGeneratorConfiguration))
         {
             var baseTypeSyntax = classDeclarationSyntax!.BaseList!.Types
                 .First(x => x.Type is GenericNameSyntax baseClass &&
-                            baseClass.Identifier.ToString().Equals(nameof(EntityGeneratorConfiguration)));
+                            baseClass.Identifier.ToString().Equals(TypeNamesForAnalyzers.EntityGeneratorConfiguration));
             var entityClass = (baseTypeSyntax.Type as GenericNameSyntax)!.TypeArgumentList.Arguments.First();
             ClassesForCrudGeneration.Add(new(classDeclarationSyntax, (IdentifierNameSyntax)entityClass));
         }

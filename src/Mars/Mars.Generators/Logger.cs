@@ -12,7 +12,7 @@ internal static class Logger
 
     public static void Print(string msg)
     {
-        Logs.Add("//\t" + msg);
+        Logs.Add("/*\n" + msg + "\n*/");
     }
 
     public static void FlushLogs(GeneratorExecutionContext context)
