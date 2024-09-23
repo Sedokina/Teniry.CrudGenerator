@@ -6,7 +6,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 
-internal class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
+internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToValueParser
+    where TFrom : class
+    where TTo : class, new()
 {
     private readonly PropertyAssignmentExpressionToPropertyNameAndValueParser _propertyAssignmentParser;
 
@@ -32,7 +34,7 @@ internal class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
 
         var name = constructorSymbol.ContainingSymbol.Name;
 
-        if (name != nameof(EntityGeneratorCreateOperationConfiguration))
+        if (name != typeof(TFrom).Name)
         {
             return false;
         }
@@ -41,10 +43,10 @@ internal class ObjectCreationToObjectParser : IExpressionSyntaxToValueParser
         return true;
     }
 
-    public object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public object Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
     {
         var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
-        var result = new EntityCreateOperationCustomizationScheme();
+        var result = new TTo();
         if (objectCreationExpression.Initializer == null)
         {
             return result;

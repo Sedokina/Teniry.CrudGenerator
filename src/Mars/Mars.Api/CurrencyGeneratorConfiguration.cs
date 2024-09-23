@@ -32,7 +32,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             GenerateEndpoint = true,
             EndpointClassName = "DdelEndpo",
             EndpointFunctionName = "dkd",
-            RouteName = "/cur/de"
+            RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
         };
     }
 }

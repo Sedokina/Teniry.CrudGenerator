@@ -57,9 +57,16 @@ internal class EntityCastomizationSchemeFactory
         var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser(
             availableAssignmentExpressionsRightSideParsers);
 
-        // this parser added in the end because it depends on assignment parser
-        // but assignment parsed depends on the list, where this parser should be included
-        availableAssignmentExpressionsRightSideParsers.Add(new ObjectCreationToObjectParser(assignmentExpressionParer));
+        // These parsers are added in the end because they depend on assignment parser
+        // but assignment parsed depends on the list, where these parsers should be included
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorCreateOperationConfiguration,
+                EntityCreateOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorDeleteOperationConfiguration,
+                EntityDeleteOperationCustomizationScheme>(assignmentExpressionParer));
         return assignmentExpressionParer;
     }
 
@@ -130,7 +137,6 @@ internal class EntityCastomizationSchemeFactory
         {
             return false;
         }
-
 
         constructorDeclarationSyntax = generatorConstructorDeclaration;
         return true;
