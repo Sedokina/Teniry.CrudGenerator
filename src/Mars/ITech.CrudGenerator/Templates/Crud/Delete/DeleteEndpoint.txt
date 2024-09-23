@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ITech.Cqrs.Cqrs.Commands;
+using ITech.Cqrs.Endpoints;
 using {{business_logic_namespace}};
 
 namespace {{endpoint_namespace}};
