@@ -21,7 +21,7 @@ public class Currency
 // [GenerateCrud]
 public class Country
 {
-    public ObjectId _id { get; set; }
+    public ObjectId Id { get; set; }
     public string Name { get; set; }
     public ICollection<Currency> Currencies { get; set; }
 }

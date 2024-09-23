@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
@@ -80,7 +81,7 @@ internal class
     private void GenerateEndpoint(string templatePath)
     {
         var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallArguments();
         var model = new
         {
             EndpointClassName = _endpointClassName,

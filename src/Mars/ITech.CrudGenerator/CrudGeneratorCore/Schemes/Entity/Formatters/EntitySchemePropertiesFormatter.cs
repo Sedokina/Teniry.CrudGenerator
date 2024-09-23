@@ -57,4 +57,10 @@ internal static class EntitySchemePropertiesFormatter
         var result = GetAsMethodCallParameters(properties, objectPrefix);
         return string.Join(", ", result);
     }
+    
+    public static string FormatAsMethodCallArguments(this List<EntityProperty> properties)
+    {
+        var result = properties.Select(x => x.PropertyNameAsMethodParameterName);
+        return string.Join(", ", result);
+    }
 }

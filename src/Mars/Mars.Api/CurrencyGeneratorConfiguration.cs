@@ -78,7 +78,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         };
     }
 }
-//
-// public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
-// {
-// }
+
+public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
+{
+}

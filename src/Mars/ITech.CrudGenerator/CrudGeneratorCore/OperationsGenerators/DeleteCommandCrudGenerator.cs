@@ -62,7 +62,7 @@ internal class
     private void GenerateEndpoint(string templatePath)
     {
         var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters();
+        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallArguments();
 
         var model = new
         {
