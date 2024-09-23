@@ -46,6 +46,19 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "mmupd",
             RouteName = "/cur/udo"
         };
+        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
+        {
+            Generate = true,
+            OperationType = "GtBy",
+            OperationGroup = "IdGetCurcy",
+            OperationName = "GetCurencyQr",
+            HandlerName = "GetCurQuerHa",
+            DtoName = "GetNotGetDto",
+            GenerateEndpoint = true,
+            EndpointClassName = "GtteCru",
+            EndpointFunctionName = "ggetb",
+            RouteName = "/cry/ggbyid"
+        };
     }
 }
 //

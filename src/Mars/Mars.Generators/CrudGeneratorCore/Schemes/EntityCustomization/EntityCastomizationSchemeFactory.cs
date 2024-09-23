@@ -71,6 +71,10 @@ internal class EntityCastomizationSchemeFactory
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorUpdateOperationConfiguration,
                 EntityUpdateOperationCustomizationScheme>(assignmentExpressionParer));
+        availableAssignmentExpressionsRightSideParsers
+            .Add(new ObjectCreationToObjectParser<
+                EntityGeneratorGetByIdOperationConfiguration,
+                EntityGetByIdOperationCustomizationScheme>(assignmentExpressionParer));
         return assignmentExpressionParer;
     }
 

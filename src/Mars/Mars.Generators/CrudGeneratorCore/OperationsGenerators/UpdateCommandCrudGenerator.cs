@@ -19,6 +19,7 @@ internal class UpdateCommandCrudGenerator
     {
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;
+        // TODO: move to configuration
         _vmName = $"Update{EntityScheme.EntityName}Vm";
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }

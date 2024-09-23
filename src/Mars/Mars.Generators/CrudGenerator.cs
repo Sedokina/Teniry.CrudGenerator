@@ -47,7 +47,10 @@ public class CrudGenerator : ISourceGenerator
                     dbContextScheme);
 
                 var getByIdQueryConfigurationBuilder = GetByIdQueryDefaultConfigurationBuilderFactory
-                    .Construct(globalConfigurationBuilder, sharedConfigurationBuilder);
+                    .Construct(
+                        globalConfigurationBuilder,
+                        sharedConfigurationBuilder,
+                        entityCustomizationScheme.GetByIdOperation);
                 var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                     entityScheme,
                     dbContextScheme,

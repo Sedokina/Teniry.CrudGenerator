@@ -1,6 +1,7 @@
 using Mars.Generators.CrudGeneratorCore.Configurations.Global;
 using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
 using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+using Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
@@ -8,36 +9,42 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
 {
     public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration)
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        EntityGetByIdOperationCustomizationScheme? customizationScheme)
     {
         return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
-            OperationName = "Get",
+            Generate = customizationScheme?.Generate ?? true,
             OperationType = CqrsOperationType.Query,
-            OperationGroup = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}"),
-            Operation = new FileTemplateBasedOperationConfigurationBuilder
+            OperationName = customizationScheme?.OperationType ?? "Get",
+            OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdQuery.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Query")
+                NameConfigurationBuilder = new(customizationScheme?.OperationName ??
+                                               "{{operation_name}}{{entity_name}}Query")
             },
-            Dto = new FileTemplateBasedOperationConfigurationBuilder
+            Dto = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdDto.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{entity_name}}Dto")
+                NameConfigurationBuilder = new(customizationScheme?.DtoName ?? "{{entity_name}}Dto")
             },
-            Handler = new FileTemplateBasedOperationConfigurationBuilder
+            Handler = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdHandler.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Handler")
+                NameConfigurationBuilder = new(customizationScheme?.HandlerName ??
+                                               "{{operation_name}}{{entity_name}}Handler")
             },
-            Endpoint = new MinimalApiEndpointConfigurationBuilder
+            Endpoint = new()
             {
+                Generate = customizationScheme?.GenerateEndpoint ?? true,
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdEndpoint.txt"),
-                NameConfigurationBuilder = new NameConfigurationBuilder("{{operation_name}}{{entity_name}}Endpoint"),
-                FunctionName = new("{{operation_name}}Async"),
-                RouteConfigurationBuilder = new EndpointRouteConfigurationBuilder("/{{entity_name}}/{{id_param_name}}")
+                NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
+                                               "{{operation_name}}{{entity_name}}Endpoint"),
+                FunctionName = new(customizationScheme?.EndpointFunctionName ?? "{{operation_name}}Async"),
+                RouteConfigurationBuilder = new(customizationScheme?.RouteName ?? "/{{entity_name}}/{{id_param_name}}")
             }
         };
     }
