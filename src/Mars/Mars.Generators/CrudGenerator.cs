@@ -131,7 +131,7 @@ public class CrudGenerator : ISourceGenerator
                 if (updateOperationConfiguration.Generate)
                 {
                     var updateCommandScheme =
-                        new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                        new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(
                             entityScheme,
                             dbContextScheme,
                             updateOperationConfiguration);

@@ -41,6 +41,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             OperationGroup = "UpddCurcy",
             OperationName = "UpdaCurencyComandl",
             HandlerName = "UdpCurCo",
+            ViewModelName = "JjUp",
             GenerateEndpoint = true,
             EndpointClassName = "UddmkEndpo",
             EndpointFunctionName = "mmupd",

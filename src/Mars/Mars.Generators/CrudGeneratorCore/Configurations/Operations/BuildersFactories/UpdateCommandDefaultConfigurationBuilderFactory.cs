@@ -1,18 +1,17 @@
 using Mars.Generators.CrudGeneratorCore.Configurations.Global;
 using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders;
-using Mars.Generators.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using Mars.Generators.CrudGeneratorCore.Schemes.EntityCustomization;
 
 namespace Mars.Generators.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class UpdateCommandDefaultConfigurationBuilderFactory
 {
-    public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
+    public static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         EntityUpdateOperationCustomizationScheme? customizationScheme)
     {
-        return new CqrsOperationWithoutReturnValueConfigurationBuilder
+        return new CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
@@ -31,6 +30,12 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateHandler.txt"),
                 NameConfigurationBuilder = new(customizationScheme?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
+            },
+            ViewModel = new()
+            {
+                TemplatePath = new("{{templates_base_path}}.Update.UpdateVm.txt"),
+                NameConfigurationBuilder = new(customizationScheme?.ViewModelName ??
+                                               "{{operation_name}}{{entity_name}}Vm")
             },
             Endpoint = new()
             {

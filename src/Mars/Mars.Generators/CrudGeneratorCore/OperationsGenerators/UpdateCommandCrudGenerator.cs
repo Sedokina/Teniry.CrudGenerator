@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
 internal class UpdateCommandCrudGenerator
-    : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>
 {
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -15,12 +15,12 @@ internal class UpdateCommandCrudGenerator
 
     public UpdateCommandCrudGenerator(
         GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> scheme)
+        : base(context, scheme)
     {
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;
-        // TODO: move to configuration
-        _vmName = $"Update{EntityScheme.EntityName}Vm";
+        _vmName = scheme.Configuration.ViewModel.Name;
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
@@ -28,7 +28,7 @@ internal class UpdateCommandCrudGenerator
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
-        GenerateViewModel($"{Scheme.Configuration.GlobalConfiguration.TemplatesBasePath}.Update.UpdateVm.txt");
+        GenerateViewModel(Scheme.Configuration.ViewModel.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);

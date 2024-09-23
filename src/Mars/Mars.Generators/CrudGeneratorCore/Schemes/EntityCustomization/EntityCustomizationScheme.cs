@@ -52,6 +52,7 @@ internal class EntityUpdateOperationCustomizationScheme
     public string? EndpointFunctionName { get; set; }
     public string? RouteName { get; set; }
     public bool? GenerateEndpoint { get; set; }
+    public string? ViewModelName { get; set; }
 }
 
 internal class EntityGetByIdOperationCustomizationScheme
