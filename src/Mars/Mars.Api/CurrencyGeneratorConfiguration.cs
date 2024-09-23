@@ -29,7 +29,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             OperationGroup = "DeleLCurrency",
             OperationName = "DeledCurencyComandl",
             HandlerName = "DelCurCo",
-            GenerateEndpoint = true,
+            GenerateEndpoint = false,
             EndpointClassName = "DdelEndpo",
             EndpointFunctionName = "dkd",
             RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"

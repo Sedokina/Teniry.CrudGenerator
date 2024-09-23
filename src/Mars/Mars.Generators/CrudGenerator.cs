@@ -118,23 +118,27 @@ public class CrudGenerator : ISourceGenerator
                     endpointsMaps.Add(generateUpdateCommand.EndpointMap);
                 }
 
-                var deleteCommandScheme =
-                    new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
-                        entityScheme,
-                        dbContextScheme,
-                        DeleteCommandDefaultConfigurationBuilderFactory
-                            .Construct(
-                                globalConfigurationBuilder, 
-                                sharedConfigurationBuilder,
-                                entityCustomizationScheme.DeleteOperation)
-                            .Build(entityScheme));
-                var generateDeleteCommand = new DeleteCommandCrudGenerator(
-                    context,
-                    deleteCommandScheme);
-                generateDeleteCommand.RunGenerator();
-                if (generateDeleteCommand.EndpointMap is not null)
+                var deleteCommandConfiguration = DeleteCommandDefaultConfigurationBuilderFactory
+                    .Construct(
+                        globalConfigurationBuilder,
+                        sharedConfigurationBuilder,
+                        entityCustomizationScheme.DeleteOperation)
+                    .Build(entityScheme);
+                if (deleteCommandConfiguration.Generate)
                 {
-                    endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+                    var deleteCommandScheme =
+                        new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                            entityScheme,
+                            dbContextScheme,
+                            deleteCommandConfiguration);
+                    var generateDeleteCommand = new DeleteCommandCrudGenerator(
+                        context,
+                        deleteCommandScheme);
+                    generateDeleteCommand.RunGenerator();
+                    if (generateDeleteCommand.EndpointMap is not null)
+                    {
+                        endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+                    }
                 }
             }
 

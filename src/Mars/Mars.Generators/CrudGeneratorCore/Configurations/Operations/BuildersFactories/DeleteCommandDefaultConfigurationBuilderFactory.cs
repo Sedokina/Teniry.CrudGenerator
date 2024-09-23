@@ -33,6 +33,7 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             },
             Endpoint = new()
             {
+                Generate = customizationScheme?.GenerateEndpoint ?? true,
                 TemplatePath = new("{{templates_base_path}}.Delete.DeleteEndpoint.txt"),
                 NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name}}Endpoint"),
