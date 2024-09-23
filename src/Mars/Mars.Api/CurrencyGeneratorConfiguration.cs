@@ -1,4 +1,5 @@
-using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
+using ITech.CrudGenerator.Abstractions;
+using ITech.CrudGenerator.Abstractions.Configuration;
 
 namespace Mars.Api;
 
