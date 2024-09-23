@@ -59,6 +59,20 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "ggetb",
             RouteName = "/cry/ggbyid"
         };
+        GetListOperation = new EntityGeneratorGetListOperationConfiguration
+        {
+            Generate = false,
+            OperationType = "GtLi",
+            OperationGroup = "ListCuries",
+            OperationName = "GetCurieQr",
+            HandlerName = "GetCurLisQuerHa",
+            DtoName = "AllCurLi",
+            DtoListItem = "SpecCurDo",
+            GenerateEndpoint = true,
+            EndpointClassName = "CurLisGe",
+            EndpointFunctionName = "lisgget",
+            RouteName = "/cry/all/go"
+        };
     }
 }
 //

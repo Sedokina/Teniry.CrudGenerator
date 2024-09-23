@@ -70,12 +70,16 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
+                var getListOperation = GetListQueryDefaultConfigurationBulderFactory
+                    .Construct(
+                        globalConfigurationBuilder,
+                        sharedConfigurationBuilder,
+                        entityCustomizationScheme.GetListOperation)
+                    .Build(entityScheme);
                 var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
                     entityScheme,
                     dbContextScheme,
-                    GetListQueryDefaultConfigurationBulderFactory
-                        .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
-                        .Build(entityScheme));
+                    getListOperation);
                 var generateListQuery = new ListQueryCrudGenerator(
                     context,
                     getListQueryScheme);
@@ -102,8 +106,12 @@ public class CrudGenerator : ISourceGenerator
                     var generateCreateCommand = new CreateCommandCrudGenerator(
                         context,
                         createCommandScheme,
-                        getByIdQueryConfiguration.Endpoint.Generate ? getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder : null,
-                        getByIdQueryConfiguration.Endpoint.Generate ? getByIdQueryConfigurationBuilder.OperationName : null);
+                        getByIdQueryConfiguration.Endpoint.Generate
+                            ? getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder
+                            : null,
+                        getByIdQueryConfiguration.Endpoint.Generate
+                            ? getByIdQueryConfigurationBuilder.OperationName
+                            : null);
                     generateCreateCommand.RunGenerator();
                     if (generateCreateCommand.EndpointMap is not null)
                     {
