@@ -56,8 +56,7 @@ app.MapGet("/weatherforecast", async (string name, MarsDb db) =>
     return TypedResults.Ok(result);
 });
 
-
 // This is required to get access to generated endpoints
-app.MapGeneratedEndpoints();
+// app.MapGeneratedEndpoints();
 
 app.Run();

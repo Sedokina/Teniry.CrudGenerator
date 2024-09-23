@@ -8,24 +8,24 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <DocumentationFile>bin\Debug\net8.0\Mars.Api.xml</DocumentationFile>
-      <NoWarn>1701;1702;1591</NoWarn>
+        <DocumentationFile>bin\Debug\net8.0\Mars.Api.xml</DocumentationFile>
+        <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Mapster" Version="7.4.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.5"/>
-        <PackageReference Include="Pluralize.NET" Version="1.0.2" />
+        <PackageReference Include="Pluralize.NET" Version="1.0.2"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
 
     <ItemGroup Label="Used in Generators">
-        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0" />
-        <PackageReference Include="ITech.Cqrs" Version="0.1.5" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\ITech.CrudGenerator\ITech.CrudGenerator.csproj" OutputItemType="Analyzer" />
+        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0"/>
+        <PackageReference Include="ITech.Cqrs" Version="0.1.5"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\ITech.CrudGenerator\ITech.CrudGenerator.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" PrivateAssets="all"/>
+    </ItemGroup>
 </Project>

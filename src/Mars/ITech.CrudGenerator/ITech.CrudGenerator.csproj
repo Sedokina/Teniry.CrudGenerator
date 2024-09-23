@@ -14,7 +14,7 @@
             see: https://github.com/scriban/scriban#source-embedding
         -->
         <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
-        
+
         <!-- SOURCE GENERATOR IMPORTANT SETTINGS -->
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
@@ -40,6 +40,13 @@
         <PackageReference Include="Scriban" Version="3.9.0" IncludeAssets="Build" PrivateAssets="all"/>
     </ItemGroup>
 
+<!--    <ItemGroup>-->
+<!--        <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer"  PrivateAssets="all"/>-->
+<!--    </ItemGroup>-->
+
+    <ItemGroup>
+        <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer"  GeneratePathProperty="true" PrivateAssets="all"/>
+    </ItemGroup>
     <PropertyGroup>
         <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
     </PropertyGroup>
@@ -50,6 +57,9 @@
             <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
             <!-- Pack both our DLL and the Dependency DLL into a Generated Nuget Package -->
             <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+            <None Include="$(OutputPath)\ITech.CrudGenerator.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+            <None Include="$(OutputPath)\ITech.CrudGenerator.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+            <None Include="$(OutputPath)\ITech.CrudGenerator.Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
             <None Include="$(PKGpluralize_net)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         </ItemGroup>
     </Target>
