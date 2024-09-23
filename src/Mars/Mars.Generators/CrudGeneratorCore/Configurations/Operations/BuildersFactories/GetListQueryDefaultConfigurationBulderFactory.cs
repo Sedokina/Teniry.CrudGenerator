@@ -34,7 +34,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             DtoListItem = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListItemDto.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.DtoListItemName ??
+                NameConfigurationBuilder = new(customizationScheme?.ListItemDtoName ??
                                                "{{entity_name_plural}}ListItemDto")
             },
             Filter = new()

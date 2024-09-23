@@ -94,7 +94,7 @@ public sealed class EntityGeneratorGetListOperationConfiguration
     public string? OperationGroup { get; set; }
     public string? OperationName { get; set; }
     public string? DtoName { get; set; }
-    public string? DtoListItem { get; set; }
+    public string? ListItemDtoName { get; set; }
     public string? FilterName { get; set; }
     public string? HandlerName { get; set; }
     public bool? GenerateEndpoint { get; set; }

@@ -75,7 +75,7 @@ internal class EntityGetListOperationCustomizationScheme
     public string? OperationGroup { get; set; }
     public string? OperationName { get; set; }
     public string? DtoName { get; set; }
-    public string? DtoListItemName { get; set; }
+    public string? ListItemDtoName { get; set; }
     public string? FilterName { get; set; }
     public string? HandlerName { get; set; }
     public string? EndpointClassName { get; set; }
