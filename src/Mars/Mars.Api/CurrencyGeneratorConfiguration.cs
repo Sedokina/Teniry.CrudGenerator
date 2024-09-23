@@ -22,6 +22,18 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "juj",
             RouteName = "/cru/cre"
         };
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
+        {
+            Generate = true,
+            OperationType = "Del",
+            OperationGroup = "DeleLCurrency",
+            OperationName = "DeledCurencyComandl",
+            HandlerName = "DelCurCo",
+            GenerateEndpoint = true,
+            EndpointClassName = "DdelEndpo",
+            EndpointFunctionName = "dkd",
+            RouteName = "/cur/de"
+        };
     }
 }
 //

@@ -123,7 +123,10 @@ public class CrudGenerator : ISourceGenerator
                         entityScheme,
                         dbContextScheme,
                         DeleteCommandDefaultConfigurationBuilderFactory
-                            .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                            .Construct(
+                                globalConfigurationBuilder, 
+                                sharedConfigurationBuilder,
+                                entityCustomizationScheme.DeleteOperation)
                             .Build(entityScheme));
                 var generateDeleteCommand = new DeleteCommandCrudGenerator(
                     context,
