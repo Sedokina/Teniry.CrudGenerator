@@ -102,23 +102,27 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var updateCommandScheme =
-                    new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
-                        entityScheme,
-                        dbContextScheme,
-                        UpdateCommandDefaultConfigurationBuilderFactory
-                            .Construct(
-                                globalConfigurationBuilder,
-                                sharedConfigurationBuilder,
-                                entityCustomizationScheme.UpdateOperation)
-                            .Build(entityScheme));
-                var generateUpdateCommand = new UpdateCommandCrudGenerator(
-                    context,
-                    updateCommandScheme);
-                generateUpdateCommand.RunGenerator();
-                if (generateUpdateCommand.EndpointMap is not null)
+                var updateOperationConfiguration = UpdateCommandDefaultConfigurationBuilderFactory
+                    .Construct(
+                        globalConfigurationBuilder,
+                        sharedConfigurationBuilder,
+                        entityCustomizationScheme.UpdateOperation)
+                    .Build(entityScheme);
+                if (updateOperationConfiguration.Generate)
                 {
-                    endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+                    var updateCommandScheme =
+                        new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                            entityScheme,
+                            dbContextScheme,
+                            updateOperationConfiguration);
+                    var generateUpdateCommand = new UpdateCommandCrudGenerator(
+                        context,
+                        updateCommandScheme);
+                    generateUpdateCommand.RunGenerator();
+                    if (generateUpdateCommand.EndpointMap is not null)
+                    {
+                        endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+                    }
                 }
 
                 var deleteCommandConfiguration = DeleteCommandDefaultConfigurationBuilderFactory
