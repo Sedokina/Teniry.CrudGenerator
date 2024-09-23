@@ -107,7 +107,10 @@ public class CrudGenerator : ISourceGenerator
                         entityScheme,
                         dbContextScheme,
                         UpdateCommandDefaultConfigurationBuilderFactory
-                            .Construct(globalConfigurationBuilder, sharedConfigurationBuilder)
+                            .Construct(
+                                globalConfigurationBuilder,
+                                sharedConfigurationBuilder,
+                                entityCustomizationScheme.UpdateOperation)
                             .Build(entityScheme));
                 var generateUpdateCommand = new UpdateCommandCrudGenerator(
                     context,

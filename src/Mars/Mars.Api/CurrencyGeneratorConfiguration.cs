@@ -29,10 +29,22 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             OperationGroup = "DeleLCurrency",
             OperationName = "DeledCurencyComandl",
             HandlerName = "DelCurCo",
-            GenerateEndpoint = false,
+            GenerateEndpoint = true,
             EndpointClassName = "DdelEndpo",
             EndpointFunctionName = "dkd",
             RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
+        };
+        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
+        {
+            Generate = true,
+            OperationType = "Upd",
+            OperationGroup = "UpddCurcy",
+            OperationName = "UpdaCurencyComandl",
+            HandlerName = "UdpCurCo",
+            GenerateEndpoint = true,
+            EndpointClassName = "UddmkEndpo",
+            EndpointFunctionName = "mmupd",
+            RouteName = "/cur/udo"
         };
     }
 }

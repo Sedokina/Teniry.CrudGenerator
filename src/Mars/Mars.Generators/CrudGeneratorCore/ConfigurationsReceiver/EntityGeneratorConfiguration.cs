@@ -16,6 +16,7 @@ public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : clas
     public EntityGeneratorDefaultSort<TEntity>? DefaultSort { get; set; }
     public EntityGeneratorCreateOperationConfiguration? CreateOperation { get; set; }
     public EntityGeneratorDeleteOperationConfiguration? DeleteOperation { get; set; }
+    public EntityGeneratorUpdateOperationConfiguration? UpdateOperation { get; set; }
 }
 
 public class EntityGeneratorDefaultSort<TEntity> where TEntity : class
@@ -45,6 +46,19 @@ public sealed class EntityGeneratorCreateOperationConfiguration
 }
 
 public sealed class EntityGeneratorDeleteOperationConfiguration
+{
+    public bool? Generate { get; set; }
+    public string? OperationType { get; set; }
+    public string? OperationGroup { get; set; }
+    public string? OperationName { get; set; }
+    public string? HandlerName { get; set; }
+    public bool? GenerateEndpoint { get; set; }
+    public string? EndpointClassName { get; set; }
+    public string? EndpointFunctionName { get; set; }
+    public string? RouteName { get; set; }
+}
+
+public sealed class EntityGeneratorUpdateOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? OperationType { get; set; }
