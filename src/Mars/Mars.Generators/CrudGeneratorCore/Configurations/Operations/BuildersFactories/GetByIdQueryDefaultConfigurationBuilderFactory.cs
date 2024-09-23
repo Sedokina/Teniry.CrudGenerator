@@ -39,7 +39,8 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             },
             Endpoint = new()
             {
-                Generate = customizationScheme?.GenerateEndpoint ?? true,
+                // If general generate is false, than endpoint generate is also false
+                Generate = customizationScheme?.Generate != false && (customizationScheme?.GenerateEndpoint ?? true),
                 TemplatePath = new("{{templates_base_path}}.GetById.GetByIdEndpoint.txt"),
                 NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name}}Endpoint"),

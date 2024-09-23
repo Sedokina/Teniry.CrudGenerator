@@ -48,7 +48,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         };
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
         {
-            Generate = true,
+            Generate = false,
             OperationType = "GtBy",
             OperationGroup = "IdGetCurcy",
             OperationName = "GetCurencyQr",

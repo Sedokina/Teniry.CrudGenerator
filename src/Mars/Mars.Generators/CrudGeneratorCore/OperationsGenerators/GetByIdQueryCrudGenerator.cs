@@ -5,7 +5,8 @@ using Microsoft.CodeAnalysis;
 
 namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 
-internal class GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class
+    GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -27,7 +28,10 @@ internal class GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperat
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
-        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        if (Scheme.Configuration.Endpoint.Generate)
+        {
+            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        }
     }
 
     private void GenerateQuery(string templatePath)

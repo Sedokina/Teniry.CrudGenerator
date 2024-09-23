@@ -9,8 +9,8 @@ namespace Mars.Generators.CrudGeneratorCore.OperationsGenerators;
 internal class
     CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
-    private readonly EndpointRouteConfigurationBuilder _getByIdEndpointRouteConfigurationBuilder;
-    private readonly string _getByIdOperationName;
+    private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
+    private readonly string? _getByIdOperationName;
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
@@ -19,8 +19,8 @@ internal class
     public CreateCommandCrudGenerator(
         GeneratorExecutionContext context,
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
-        EndpointRouteConfigurationBuilder getByIdEndpointRouteConfigurationBuilder,
-        string getByIdOperationName) : base(context, scheme)
+        EndpointRouteConfigurationBuilder? getByIdEndpointRouteConfigurationBuilder,
+        string? getByIdOperationName) : base(context, scheme)
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _getByIdOperationName = getByIdOperationName;
@@ -87,16 +87,20 @@ internal class
     private void GenerateEndpoint(string templatePath)
     {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
-            .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
-        var interpolatedStringRoute = $"$\"{getEntityRoute}\"";
+        var getByIdRoute = "\"\"";
+        if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null)
+        {
+            var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
+                .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
+            getByIdRoute = $"$\"{getEntityRoute}\"";
+        }
 
         var model = new
         {
             EndpointClassName = _endpointClassName,
             FunctionName = Scheme.Configuration.Endpoint.FunctionName,
             CommandName = _commandName,
-            GetEntityRoute = interpolatedStringRoute,
+            GetEntityRoute = getByIdRoute,
             DtoName = _dtoName
         };
 
