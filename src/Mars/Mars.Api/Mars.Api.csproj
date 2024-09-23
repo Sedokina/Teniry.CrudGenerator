@@ -25,7 +25,7 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Mars.Generators\Mars.Generators.csproj" OutputItemType="Analyzer"/>
+      <ProjectReference Include="..\ITech.CrudGenerator\ITech.CrudGenerator.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
 </Project>

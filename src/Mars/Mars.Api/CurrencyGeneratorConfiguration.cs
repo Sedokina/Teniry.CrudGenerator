@@ -1,4 +1,4 @@
-using Mars.Generators.CrudGeneratorCore.ConfigurationsReceiver;
+using ITech.CrudGenerator.CrudGeneratorCore.ConfigurationsReceiver;
 
 namespace Mars.Api;
 
