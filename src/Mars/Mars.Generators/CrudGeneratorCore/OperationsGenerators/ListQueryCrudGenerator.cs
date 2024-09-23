@@ -34,7 +34,10 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
-        GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        if (Scheme.Configuration.Endpoint.Generate)
+        {
+            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+        }
     }
 
     private void GenerateQuery(string templatePath)

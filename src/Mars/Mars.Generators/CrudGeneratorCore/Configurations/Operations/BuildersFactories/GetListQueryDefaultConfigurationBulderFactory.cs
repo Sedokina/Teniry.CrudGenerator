@@ -51,6 +51,8 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             },
             Endpoint = new()
             {
+                // If general generate is false, than endpoint generate is also false
+                Generate = customizationScheme?.Generate != false && (customizationScheme?.GenerateEndpoint ?? true),
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListEndpoint.txt"),
                 NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name_plural}}Endpoint"),

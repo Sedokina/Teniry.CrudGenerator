@@ -61,7 +61,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         };
         GetListOperation = new EntityGeneratorGetListOperationConfiguration
         {
-            Generate = false,
+            Generate = true,
             OperationType = "GtLi",
             OperationGroup = "ListCuries",
             OperationName = "GetCurieQr",

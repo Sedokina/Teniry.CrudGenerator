@@ -70,23 +70,26 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var getListOperation = GetListQueryDefaultConfigurationBulderFactory
+                var getListConfiguration = GetListQueryDefaultConfigurationBulderFactory
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
                         entityCustomizationScheme.GetListOperation)
                     .Build(entityScheme);
-                var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
-                    entityScheme,
-                    dbContextScheme,
-                    getListOperation);
-                var generateListQuery = new ListQueryCrudGenerator(
-                    context,
-                    getListQueryScheme);
-                generateListQuery.RunGenerator();
-                if (generateListQuery.EndpointMap is not null)
+                if (getListConfiguration.Generate)
                 {
-                    endpointsMaps.Add(generateListQuery.EndpointMap);
+                    var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
+                        entityScheme,
+                        dbContextScheme,
+                        getListConfiguration);
+                    var generateListQuery = new ListQueryCrudGenerator(
+                        context,
+                        getListQueryScheme);
+                    generateListQuery.RunGenerator();
+                    if (generateListQuery.EndpointMap is not null)
+                    {
+                        endpointsMaps.Add(generateListQuery.EndpointMap);
+                    }
                 }
 
                 var createCommandConfiguration = CreateCommandDefaultConfigurationBuilderFactory
