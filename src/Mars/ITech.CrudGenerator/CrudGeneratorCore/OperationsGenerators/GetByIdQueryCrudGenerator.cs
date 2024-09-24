@@ -180,7 +180,12 @@ internal class
                 SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
                     SyntaxFactory.Argument(SyntaxFactory.IdentifierName("result"))
                 ]))));
-
+        var doc = @$"
+/// <summary>
+///     Get {Scheme.EntityScheme.EntityTitle} by id
+/// </summary>
+/// <response code=""200"">Returns full {Scheme.EntityScheme.EntityTitle} data</response>
+";
         // Create a method
         var methodDeclaration = SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName("Task<IResult>"),
@@ -199,12 +204,34 @@ internal class
                 SyntaxFactory.Token(SyntaxKind.StaticKeyword),
                 SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
             ])
+            .WithAttributeLists(
+                SyntaxFactory.SingletonList(
+                    SyntaxFactory.AttributeList(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.Attribute(
+                                    SyntaxFactory.IdentifierName("ProducesResponseType"))
+                                .WithArgumentList(
+                                    SyntaxFactory.AttributeArgumentList(
+                                        SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
+                                            new SyntaxNodeOrToken[]
+                                            {
+                                                SyntaxFactory.AttributeArgument(
+                                                    SyntaxFactory.TypeOfExpression(
+                                                        SyntaxFactory.IdentifierName(_dtoName))),
+                                                SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                                SyntaxFactory.AttributeArgument(
+                                                    SyntaxFactory.LiteralExpression(
+                                                        SyntaxKind.NumericLiteralExpression,
+                                                        SyntaxFactory.Literal(200)))
+                                            }))))).WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(doc))
+                ))
             .WithBody(SyntaxFactory.Block(new List<StatementSyntax>()
             {
                 localDeclaration,
                 localDeclarationResultVariable,
                 returnStatement,
             }));
+        // SyntaxFactory.ParseLeadingTrivia(doc);
 
         // Add the field, the property and method to the class.
         classDeclaration = classDeclaration.AddMembers(methodDeclaration);
