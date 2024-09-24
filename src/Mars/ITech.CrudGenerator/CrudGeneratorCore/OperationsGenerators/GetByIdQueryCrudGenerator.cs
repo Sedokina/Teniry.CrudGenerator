@@ -107,20 +107,81 @@ internal class
             SyntaxFactory.Token(SyntaxKind.PartialKeyword)
         ]);
 
-        // Create a stament with the body of a method.
-        var syntax = SyntaxFactory.ParseStatement("return TypedResults.Ok();");
-        // var assignment = SyntaxFactory.AssignmentExpression(SyntaxKind.VariableDeclaration, SyntaxFactory.Parse)
-
-        // SyntaxFactory.LocalDeclarationStatement();
-        // SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, SyntaxFactory.IdentifierName("query"),
-        //     SyntaxFactory.ObjectCreationExpression(SyntaxFactory.IdentifierName("_queryName")));
-        // Create a method
+        // parameters for method to accept
         var routeParameters = EntityScheme.PrimaryKeys
             .Select(x => SyntaxFactory
                 .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
                 .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
             .ToArray();
 
+        // Create query object
+        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
+            SyntaxFactory.Token(SyntaxKind.NewKeyword),
+            SyntaxFactory.ParseTypeName(_queryName),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                routeParameters.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x.Identifier.Text)))
+                    .ToArray()
+            )),
+            null
+        );
+
+        // Initialize query variable with query object value
+        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("query"), null,
+            SyntaxFactory.EqualsValueClause(initializationExpression));
+        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+
+        var localDeclaration = SyntaxFactory.LocalDeclarationStatement(variableDeclaration);
+
+        // call query dispatcher
+        var a = SyntaxFactory.AwaitExpression(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("queryDispatcher"),
+                    SyntaxFactory.GenericName(SyntaxFactory.Identifier("DispatchAsync"))
+                        .WithTypeArgumentList(
+                            SyntaxFactory.TypeArgumentList(
+                                SyntaxFactory.SeparatedList<TypeSyntax>(
+                                    new SyntaxNodeOrToken[]
+                                    {
+                                        SyntaxFactory.IdentifierName(_queryName),
+                                        SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                        SyntaxFactory.IdentifierName(_dtoName)
+                                    }
+                                )
+                            )
+                        )
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("query")),
+                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("cancellation")),
+                ]))
+            )
+        );
+
+        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("result"),
+            null,
+            SyntaxFactory.EqualsValueClause(a));
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(
+                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+
+        var localDeclarationResultVariable = SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable);
+
+
+        // Return result
+        var returnStatement = SyntaxFactory.ReturnStatement(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("TypedResults"),
+                    SyntaxFactory.IdentifierName("Ok")),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("result"))
+                ]))));
+
+        // Create a method
         var methodDeclaration = SyntaxFactory.MethodDeclaration(
                 SyntaxFactory.ParseTypeName("Task<IResult>"),
                 Scheme.Configuration.Endpoint.FunctionName)
@@ -138,7 +199,12 @@ internal class
                 SyntaxFactory.Token(SyntaxKind.StaticKeyword),
                 SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
             ])
-            .WithBody(SyntaxFactory.Block(syntax));
+            .WithBody(SyntaxFactory.Block(new List<StatementSyntax>()
+            {
+                localDeclaration,
+                localDeclarationResultVariable,
+                returnStatement,
+            }));
 
         // Add the field, the property and method to the class.
         classDeclaration = classDeclaration.AddMembers(methodDeclaration);
