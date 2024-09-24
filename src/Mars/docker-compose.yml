@@ -12,5 +12,15 @@ services:
       - data:/data/db
     logging:
       driver: none
+#  postgres:
+#    container_name: 'mars-postgres'
+#    image: postgres:16.4-alpine
+#    ports:
+#      - 5432:5432
+#    volumes:
+#      - ~/apps/postgres:/var/lib/postgresql/data
+#    environment:
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_USER=postgres
 volumes:
   data:
