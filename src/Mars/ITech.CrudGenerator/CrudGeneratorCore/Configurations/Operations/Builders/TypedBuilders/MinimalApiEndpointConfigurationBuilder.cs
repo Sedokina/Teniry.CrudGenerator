@@ -17,7 +17,7 @@ internal class MinimalApiEndpointConfigurationBuilder
         string templatesBasePath,
         string operationName)
     {
-        var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallParameters();
+        var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallArguments();
         return new()
         {
             Generate = Generate,

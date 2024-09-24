@@ -52,12 +52,18 @@ internal static class EntitySchemePropertiesFormatter
             .ToList();
     }
 
+    public static List<string> GetAsMethodCallArguments(this List<EntityProperty> properties)
+    {
+        var result = properties.Select(x => x.PropertyNameAsMethodParameterName).ToList();
+        return result;
+    }
+
     public static string FormatAsMethodCallParameters(this List<EntityProperty> properties, string objectPrefix = "")
     {
         var result = GetAsMethodCallParameters(properties, objectPrefix);
         return string.Join(", ", result);
     }
-    
+
     public static string FormatAsMethodCallArguments(this List<EntityProperty> properties)
     {
         var result = properties.Select(x => x.PropertyNameAsMethodParameterName);
