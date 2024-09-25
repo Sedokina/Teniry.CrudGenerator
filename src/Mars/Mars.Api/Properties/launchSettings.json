@@ -13,6 +13,10 @@
       "commandName": "DebugRoslynComponent",
       "targetProject": "../Mars.Api/Mars.Api.csproj"
     },
+    "TGenerators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "../ITech.CrudGenerator.Tests/ITech.CrudGenerator.Tests.csproj"
+    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
