@@ -84,174 +84,209 @@ internal class
 
         WriteFile(templatePath, model, _handlerName);
     }
+//
+//     private void GenerateEndpoint(string templatePath)
+//     {
+//         var endpointNamespace = Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature;
+//         var businessLogicNamespace =
+//             Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation;
+//         var compilationUnit = SyntaxFactory.CompilationUnit();
+//         compilationUnit = compilationUnit.AddUsings([
+//             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Microsoft.AspNetCore.Mvc")),
+//             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("ITech.Cqrs.Cqrs.Queries")),
+//             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(businessLogicNamespace))
+//         ]);
+//
+//         var @namespace = SyntaxFactory
+//             .FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(endpointNamespace));
+//
+//         //  Create a class: (class Order)
+//         var classDeclaration = SyntaxFactory.ClassDeclaration(_endpointClassName);
+//
+//         // Add the public modifier: (public class Order)
+//         classDeclaration = classDeclaration.AddModifiers([
+//             SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+//             SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+//             SyntaxFactory.Token(SyntaxKind.PartialKeyword)
+//         ]);
+//
+//         // parameters for method to accept
+//         var routeParameters = EntityScheme.PrimaryKeys
+//             .Select(x => SyntaxFactory
+//                 .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
+//                 .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
+//             .ToArray();
+//
+//         // Create query object
+//         ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
+//             SyntaxFactory.Token(SyntaxKind.NewKeyword),
+//             SyntaxFactory.ParseTypeName(_queryName),
+//             SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+//                 routeParameters.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x.Identifier.Text)))
+//                     .ToArray()
+//             )),
+//             null
+//         );
+//
+//         // Initialize query variable with query object value
+//         var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("query"), null,
+//             SyntaxFactory.EqualsValueClause(initializationExpression));
+//         var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+//             .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+//
+//         var localDeclaration = SyntaxFactory.LocalDeclarationStatement(variableDeclaration);
+//
+//         // call query dispatcher
+//         var a = SyntaxFactory.AwaitExpression(
+//             SyntaxFactory.InvocationExpression(
+//                 SyntaxFactory.MemberAccessExpression(
+//                     SyntaxKind.SimpleMemberAccessExpression,
+//                     SyntaxFactory.IdentifierName("queryDispatcher"),
+//                     SyntaxFactory.GenericName(SyntaxFactory.Identifier("DispatchAsync"))
+//                         .WithTypeArgumentList(
+//                             SyntaxFactory.TypeArgumentList(
+//                                 SyntaxFactory.SeparatedList<TypeSyntax>(
+//                                     new SyntaxNodeOrToken[]
+//                                     {
+//                                         SyntaxFactory.IdentifierName(_queryName),
+//                                         SyntaxFactory.Token(SyntaxKind.CommaToken),
+//                                         SyntaxFactory.IdentifierName(_dtoName)
+//                                     }
+//                                 )
+//                             )
+//                         )
+//                 ),
+//                 SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+//                     SyntaxFactory.Argument(SyntaxFactory.IdentifierName("query")),
+//                     SyntaxFactory.Argument(SyntaxFactory.IdentifierName("cancellation")),
+//                 ]))
+//             )
+//         );
+//
+//         var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("result"),
+//             null,
+//             SyntaxFactory.EqualsValueClause(a));
+//         var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+//             .WithVariables(
+//                 SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+//
+//         var localDeclarationResultVariable = SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable);
+//
+//
+//         // Return result
+//         var returnStatement = SyntaxFactory.ReturnStatement(
+//             SyntaxFactory.InvocationExpression(
+//                 SyntaxFactory.MemberAccessExpression(
+//                     SyntaxKind.SimpleMemberAccessExpression,
+//                     SyntaxFactory.IdentifierName("TypedResults"),
+//                     SyntaxFactory.IdentifierName("Ok")),
+//                 SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+//                     SyntaxFactory.Argument(SyntaxFactory.IdentifierName("result"))
+//                 ]))));
+//
+//
+//         var doc = @$"
+// /// <summary>
+// ///     Get {Scheme.EntityScheme.EntityTitle} by id
+// /// </summary>
+// /// <response code=""200"">Returns full {Scheme.EntityScheme.EntityTitle} data</response>
+// ";
+//         // Create a method
+//         var methodDeclaration = SyntaxFactory.MethodDeclaration(
+//                 SyntaxFactory.ParseTypeName("Task<IResult>"),
+//                 Scheme.Configuration.Endpoint.FunctionName)
+//             .AddParameterListParameters(routeParameters)
+//             .AddParameterListParameters([
+//                 SyntaxFactory
+//                     .Parameter(SyntaxFactory.Identifier("queryDispatcher"))
+//                     .WithType(SyntaxFactory.ParseTypeName("IQueryDispatcher")),
+//                 SyntaxFactory
+//                     .Parameter(SyntaxFactory.Identifier("cancellation"))
+//                     .WithType(SyntaxFactory.ParseTypeName(nameof(CancellationToken)))
+//             ])
+//             .AddModifiers([
+//                 SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+//                 SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+//                 SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
+//             ])
+//             .WithAttributeLists(
+//                 SyntaxFactory.SingletonList(
+//                     SyntaxFactory.AttributeList(
+//                         SyntaxFactory.SingletonSeparatedList(
+//                             SyntaxFactory.Attribute(
+//                                     SyntaxFactory.IdentifierName("ProducesResponseType"))
+//                                 .WithArgumentList(
+//                                     SyntaxFactory.AttributeArgumentList(
+//                                         SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
+//                                             new SyntaxNodeOrToken[]
+//                                             {
+//                                                 SyntaxFactory.AttributeArgument(
+//                                                     SyntaxFactory.TypeOfExpression(
+//                                                         SyntaxFactory.IdentifierName(_dtoName))),
+//                                                 SyntaxFactory.Token(SyntaxKind.CommaToken),
+//                                                 SyntaxFactory.AttributeArgument(
+//                                                     SyntaxFactory.LiteralExpression(
+//                                                         SyntaxKind.NumericLiteralExpression,
+//                                                         SyntaxFactory.Literal(200)))
+//                                             }))))).WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(doc))
+//                 ))
+//             .WithBody(SyntaxFactory.Block(new List<StatementSyntax>()
+//             {
+//                 localDeclaration,
+//                 localDeclarationResultVariable,
+//                 returnStatement,
+//             }));
+//         // SyntaxFactory.ParseLeadingTrivia(doc);
+//
+//         // Add the field, the property and method to the class.
+//         classDeclaration = classDeclaration.AddMembers(methodDeclaration);
+//
+//         // Add the class to the namespace.
+//         @namespace = @namespace.AddMembers(classDeclaration);
+//
+//         compilationUnit = compilationUnit.AddMembers(@namespace);
+//
+//         // Normalize and get code as string.
+//         var code = compilationUnit
+//             .NormalizeWhitespace()
+//             .ToFullString();
+//
+//         Context.AddSource($"{_endpointClassName}.g.cs", code);
+//     }
 
-    private void GenerateEndpoint(string templatePath)
+    public void GenerateEndpoint(string a)
     {
-        var endpointNamespace = Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature;
-        var businessLogicNamespace =
-            Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation;
-        var compilationUnit = SyntaxFactory.CompilationUnit();
-        compilationUnit = compilationUnit.AddUsings([
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Microsoft.AspNetCore.Mvc")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("ITech.Cqrs.Cqrs.Queries")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(businessLogicNamespace))
-        ]);
-
-        var @namespace = SyntaxFactory
-            .FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(endpointNamespace));
-
-        //  Create a class: (class Order)
-        var classDeclaration = SyntaxFactory.ClassDeclaration(_endpointClassName);
-
-        // Add the public modifier: (public class Order)
-        classDeclaration = classDeclaration.AddModifiers([
-            SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-            SyntaxFactory.Token(SyntaxKind.StaticKeyword),
-            SyntaxFactory.Token(SyntaxKind.PartialKeyword)
-        ]);
-
-        // parameters for method to accept
-        var routeParameters = EntityScheme.PrimaryKeys
-            .Select(x => SyntaxFactory
-                .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
-                .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
-            .ToArray();
-
-        // Create query object
-        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
-            SyntaxFactory.Token(SyntaxKind.NewKeyword),
-            SyntaxFactory.ParseTypeName(_queryName),
-            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                routeParameters.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x.Identifier.Text)))
-                    .ToArray()
-            )),
-            null
-        );
-
-        // Initialize query variable with query object value
-        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("query"), null,
-            SyntaxFactory.EqualsValueClause(initializationExpression));
-        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
-
-        var localDeclaration = SyntaxFactory.LocalDeclarationStatement(variableDeclaration);
-
-        // call query dispatcher
-        var a = SyntaxFactory.AwaitExpression(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName("queryDispatcher"),
-                    SyntaxFactory.GenericName(SyntaxFactory.Identifier("DispatchAsync"))
-                        .WithTypeArgumentList(
-                            SyntaxFactory.TypeArgumentList(
-                                SyntaxFactory.SeparatedList<TypeSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        SyntaxFactory.IdentifierName(_queryName),
-                                        SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                        SyntaxFactory.IdentifierName(_dtoName)
-                                    }
-                                )
-                            )
-                        )
-                ),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("query")),
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("cancellation")),
-                ]))
-            )
-        );
-
-        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("result"),
-            null,
-            SyntaxFactory.EqualsValueClause(a));
-        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(
-                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        var localDeclarationResultVariable = SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable);
-
-
-        // Return result
-        var returnStatement = SyntaxFactory.ReturnStatement(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName("TypedResults"),
-                    SyntaxFactory.IdentifierName("Ok")),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("result"))
-                ]))));
-
-
-        var doc = @$"
+        var xmlDoc = @$"
 /// <summary>
 ///     Get {Scheme.EntityScheme.EntityTitle} by id
 /// </summary>
 /// <response code=""200"">Returns full {Scheme.EntityScheme.EntityTitle} data</response>
 ";
-        // Create a method
-        var methodDeclaration = SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.ParseTypeName("Task<IResult>"),
-                Scheme.Configuration.Endpoint.FunctionName)
-            .AddParameterListParameters(routeParameters)
-            .AddParameterListParameters([
-                SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier("queryDispatcher"))
-                    .WithType(SyntaxFactory.ParseTypeName("IQueryDispatcher")),
-                SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier("cancellation"))
-                    .WithType(SyntaxFactory.ParseTypeName(nameof(CancellationToken)))
+        var endpointMethod = new MethodBuilder("Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters(EntityScheme.PrimaryKeys)
+            .WithParameters([
+                new MethodParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
+                new MethodParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
-            .AddModifiers([
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.StaticKeyword),
-                SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
+            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithComment(xmlDoc)
+            .BodyWithLocalVariableFromClass("query", _queryName, EntityScheme.PrimaryKeys)
+            .BodyWithObjectGenericMethodCallForResult("queryDispatcher", "DispatchAsync", ["query", "cancellation"],
+                [_queryName, _dtoName], "result")
+            .BodyWithReturnTypedResultOk("result")
+            .Build();
+
+        var endpointClass = new EndpointBuilder(_endpointClassName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Queries",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
             ])
-            .WithAttributeLists(
-                SyntaxFactory.SingletonList(
-                    SyntaxFactory.AttributeList(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.Attribute(
-                                    SyntaxFactory.IdentifierName("ProducesResponseType"))
-                                .WithArgumentList(
-                                    SyntaxFactory.AttributeArgumentList(
-                                        SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
-                                            new SyntaxNodeOrToken[]
-                                            {
-                                                SyntaxFactory.AttributeArgument(
-                                                    SyntaxFactory.TypeOfExpression(
-                                                        SyntaxFactory.IdentifierName(_dtoName))),
-                                                SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                                SyntaxFactory.AttributeArgument(
-                                                    SyntaxFactory.LiteralExpression(
-                                                        SyntaxKind.NumericLiteralExpression,
-                                                        SyntaxFactory.Literal(200)))
-                                            }))))).WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(doc))
-                ))
-            .WithBody(SyntaxFactory.Block(new List<StatementSyntax>()
-            {
-                localDeclaration,
-                localDeclarationResultVariable,
-                returnStatement,
-            }));
-        // SyntaxFactory.ParseLeadingTrivia(doc);
+            .WithMethod(endpointMethod)
+            .BuildAsString();
 
-        // Add the field, the property and method to the class.
-        classDeclaration = classDeclaration.AddMembers(methodDeclaration);
-
-        // Add the class to the namespace.
-        @namespace = @namespace.AddMembers(classDeclaration);
-
-        compilationUnit = compilationUnit.AddMembers(@namespace);
-
-        // Normalize and get code as string.
-        var code = compilationUnit
-            .NormalizeWhitespace()
-            .ToFullString();
-
-        Context.AddSource($"{_endpointClassName}.g.cs", code);
+        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass);
     }
 
     // private void GenerateEndpoint(string templatePath)
@@ -280,46 +315,12 @@ internal class
 
 internal class EndpointBuilder
 {
-    private readonly EndpointBuilderData _builderData;
     private FileScopedNamespaceDeclarationSyntax? _namespace;
-    private readonly List<UsingDirectiveSyntax> _usings = [];
-    private ParameterSyntax[] _routeParameters = [];
-    private ClassDeclarationSyntax? _classDeclaration;
-    private LocalDeclarationStatementSyntax? _queryVariableDeclaration;
-    private LocalDeclarationStatementSyntax? _operationCallResult;
-    private ReturnStatementSyntax? _returnStatement;
-    private SyntaxTriviaList? _comment;
-    private SyntaxList<AttributeListSyntax>? _methodAttributes;
+    private readonly List<string> _usings = [];
+    private ClassDeclarationSyntax _classDeclaration;
+    private readonly List<MemberDeclarationSyntax> _methods = new();
 
-    public EndpointBuilder(EndpointBuilderData builderData)
-    {
-        _builderData = builderData;
-    }
-
-    public void WithNamespace(string @namespace)
-    {
-        _namespace = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
-    }
-
-    public void WithUsings(IEnumerable<string> usings)
-    {
-        _usings.AddRange([
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("Microsoft.AspNetCore.Mvc")),
-            SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("ITech.Cqrs.Cqrs.Queries"))
-        ]);
-        _usings.AddRange(usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))));
-    }
-
-    public void WithEndpointParameters(List<EntityProperty> properties)
-    {
-        _routeParameters = properties
-            .Select(x => SyntaxFactory
-                .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
-                .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
-            .ToArray();
-    }
-
-    public void WithEndpointClass(string className)
+    public EndpointBuilder(string className)
     {
         _classDeclaration = SyntaxFactory.ClassDeclaration(className)
             .AddModifiers([
@@ -329,94 +330,100 @@ internal class EndpointBuilder
             ]);
     }
 
-    // TODO: should be called only after WithEndpointParameters method
-    public void WithOperation(string queryName, string dtoName)
+    public EndpointBuilder WithNamespace(string @namespace)
     {
-        // create query class
-        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
-            SyntaxFactory.Token(SyntaxKind.NewKeyword),
-            SyntaxFactory.ParseTypeName(queryName),
-            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                _routeParameters.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x.Identifier.Text)))
-                    .ToArray()
-            )),
-            null
-        );
-
-        // Initialize query variable with query object value
-        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("query"), null,
-            SyntaxFactory.EqualsValueClause(initializationExpression));
-        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
-
-        _queryVariableDeclaration = SyntaxFactory.LocalDeclarationStatement(variableDeclaration);
-
-        // call query dispatcher
-        var dispatcherCall = SyntaxFactory.AwaitExpression(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName("queryDispatcher"),
-                    SyntaxFactory.GenericName(SyntaxFactory.Identifier("DispatchAsync"))
-                        .WithTypeArgumentList(
-                            SyntaxFactory.TypeArgumentList(
-                                SyntaxFactory.SeparatedList<TypeSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        SyntaxFactory.IdentifierName(queryName),
-                                        SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                        SyntaxFactory.IdentifierName(dtoName)
-                                    }
-                                )
-                            )
-                        )
-                ),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("query")),
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("cancellation")),
-                ]))
-            )
-        );
-
-        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier("result"),
-            null,
-            SyntaxFactory.EqualsValueClause(dispatcherCall));
-        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(
-                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _operationCallResult = SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable);
+        _namespace = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
+        return this;
     }
 
-    public void WithReturn()
+    public EndpointBuilder WithUsings(IEnumerable<string> usings)
     {
-        // Return result
-        _returnStatement = SyntaxFactory.ReturnStatement(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName("TypedResults"),
-                    SyntaxFactory.IdentifierName("Ok")),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName("result"))
-                ]))));
+        _usings.AddRange(usings);
+        return this;
     }
 
-    public void WithComment(string entityTitle)
+    public CompilationUnitSyntax Build()
     {
-        var commentString = @$"
-/// <summary>
-///     Get {entityTitle} by id
-/// </summary>
-/// <response code=""200"">Returns full {entityTitle} data</response>
-";
+        var compilationUnit = SyntaxFactory.CompilationUnit();
+        var usings = _usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray();
+        compilationUnit = compilationUnit.AddUsings(usings);
+        _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
+        _namespace = _namespace?.AddMembers(_classDeclaration);
 
-        _comment = SyntaxFactory.ParseLeadingTrivia(commentString);
+        if (_namespace != null)
+        {
+            compilationUnit = compilationUnit.AddMembers(_namespace);
+        }
+
+        return compilationUnit;
     }
 
-    public void MethodWithAttributes(string dtoName)
+    public string BuildAsString()
     {
-        _methodAttributes = SyntaxFactory.SingletonList(
+        // Normalize and get code as string.
+        var result = Build()
+            .NormalizeWhitespace()
+            .ToFullString();
+
+        return result;
+    }
+
+    public EndpointBuilder WithMethod(MethodDeclarationSyntax endpointMethod)
+    {
+        _methods.Add(endpointMethod);
+        return this;
+    }
+}
+
+internal class MethodBuilder
+{
+    private MethodDeclarationSyntax _methodDeclaration;
+    private BlockSyntax _body;
+
+    public MethodBuilder(string returnType, string name)
+    {
+        var returnTypeSyntax = SyntaxFactory.ParseTypeName(returnType);
+        _methodDeclaration = SyntaxFactory.MethodDeclaration(returnTypeSyntax, name)
+            .AddModifiers([
+                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
+                SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+                SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
+            ]);
+        _body = SyntaxFactory.Block();
+    }
+
+    public MethodBuilder WithParameters(List<EntityProperty> properties)
+    {
+        _methodDeclaration = _methodDeclaration.AddParameterListParameters(properties
+            .Select(x => SyntaxFactory
+                .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
+                .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
+            .ToArray());
+        return this;
+    }
+
+    public MethodBuilder WithParameters(List<IMethodParameterOfMethodBuilder> properties)
+    {
+        _methodDeclaration = _methodDeclaration.AddParameterListParameters(properties
+            .Select(x =>
+            {
+                var a = x.GetAsMethodParameter();
+                return SyntaxFactory
+                    .Parameter(SyntaxFactory.Identifier(a.Name))
+                    .WithType(SyntaxFactory.ParseTypeName(a.Type));
+            }).ToArray());
+        return this;
+    }
+
+    public MethodBuilder WithComment(string comment)
+    {
+        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(comment));
+        return this;
+    }
+
+    public MethodBuilder WithProducesResponseTypeAttribute(string typeName, int statusCode = 200)
+    {
+        _methodDeclaration = _methodDeclaration.WithAttributeLists(SyntaxFactory.SingletonList(
             SyntaxFactory.AttributeList(
                 SyntaxFactory.SingletonSeparatedList(
                     SyntaxFactory.Attribute(
@@ -428,48 +435,121 @@ internal class EndpointBuilder
                                     {
                                         SyntaxFactory.AttributeArgument(
                                             SyntaxFactory.TypeOfExpression(
-                                                SyntaxFactory.IdentifierName(dtoName))),
+                                                SyntaxFactory.IdentifierName(typeName))),
                                         SyntaxFactory.Token(SyntaxKind.CommaToken),
                                         SyntaxFactory.AttributeArgument(
                                             SyntaxFactory.LiteralExpression(
                                                 SyntaxKind.NumericLiteralExpression,
-                                                SyntaxFactory.Literal(200)))
-                                    }))))).WithLeadingTrivia(_comment)
+                                                SyntaxFactory.Literal(statusCode)))
+                                    })))))
+        ));
+        return this;
+    }
+
+    public MethodBuilder BodyWithLocalVariableFromClass(
+        string variableName,
+        string className,
+        List<EntityProperty> arguments)
+    {
+        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
+            SyntaxFactory.Token(SyntaxKind.NewKeyword),
+            SyntaxFactory.ParseTypeName(className),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                arguments.Select(x => SyntaxFactory.Argument(
+                        SyntaxFactory.IdentifierName(x.PropertyNameAsMethodParameterName)))
+                    .ToArray()
+            )),
+            null
         );
+
+        // Initialize query variable with query object value
+        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName), null,
+            SyntaxFactory.EqualsValueClause(initializationExpression));
+        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclaration));
+        return this;
     }
 
-    // TODO: should be called only after WithEndpointParameters method
-    public void WithMethod(string className, string methodName, string _dtoName)
+    public MethodBuilder BodyWithObjectGenericMethodCallForResult(
+        string objectName,
+        string methodName,
+        List<string> argumentNames,
+        List<string> genericTypeNames,
+        string variableName)
     {
-        // Create a method
-        var methodDeclaration = SyntaxFactory.MethodDeclaration(
-                SyntaxFactory.ParseTypeName("Task<IResult>"),
-                methodName)
-            .AddParameterListParameters(_routeParameters)
-            .AddParameterListParameters([
-                SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier("queryDispatcher"))
-                    .WithType(SyntaxFactory.ParseTypeName("IQueryDispatcher")),
-                SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier("cancellation"))
-                    .WithType(SyntaxFactory.ParseTypeName(nameof(CancellationToken)))
-            ])
-            .AddModifiers([
-                SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-                SyntaxFactory.Token(SyntaxKind.StaticKeyword),
-                SyntaxFactory.Token(SyntaxKind.AsyncKeyword),
-            ])
-            .WithAttributeLists(_methodAttributes.Value)
-            .WithBody(SyntaxFactory.Block(new List<StatementSyntax>()
-            {
-                _operationCallResult,
-                _returnStatement,
-            }));
+        var dispatcherCall = SyntaxFactory.AwaitExpression(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectName),
+                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodName))
+                        .WithTypeArgumentList(
+                            SyntaxFactory.TypeArgumentList(
+                                SyntaxFactory.SeparatedList<TypeSyntax>(
+                                    genericTypeNames.Select(SyntaxFactory.IdentifierName)
+                                )
+                            )
+                        )
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    argumentNames.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            )
+        );
+
+        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
+            null,
+            SyntaxFactory.EqualsValueClause(dispatcherCall));
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(
+                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        return this;
     }
 
-    public void Build()
+    public MethodBuilder BodyWithReturnTypedResultOk(string variableName)
     {
-        var compilationUnit = SyntaxFactory.CompilationUnit();
+        var returnStatement = SyntaxFactory.ReturnStatement(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("TypedResults"),
+                    SyntaxFactory.IdentifierName("Ok")),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName(variableName))
+                ]))));
+        _body = _body.AddStatements(returnStatement);
+        return this;
+    }
+
+    public MethodDeclarationSyntax Build()
+    {
+        return _methodDeclaration.WithBody(_body);
+    }
+}
+
+public interface IMethodParameterOfMethodBuilder
+{
+    (string Type, string Name) GetAsMethodParameter();
+}
+
+internal class MethodParameterOfMethodBuilder : IMethodParameterOfMethodBuilder
+{
+    public string Type { get; set; }
+    public string Name { get; set; }
+
+    public MethodParameterOfMethodBuilder(string type, string name)
+    {
+        Type = type;
+        Name = name;
+    }
+
+    public (string Type, string Name) GetAsMethodParameter()
+    {
+        return (Type, Name);
     }
 }
 
