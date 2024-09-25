@@ -10,19 +10,19 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         Title = "Curr";
         TitlePlural = "Currsive";
         DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration
-        {
-            Generate = true,
-            Operation = "Createll",
-            OperationGroup = "CreateLCurrency",
-            CommandName = "CreatellCurencyComandl",
-            HandlerName = "CrCurHandlerDd",
-            DtoName = "CurnCyDtOo",
-            GenerateEndpoint = true,
-            EndpointClassName = "CretEndp",
-            EndpointFunctionName = "juj",
-            RouteName = "/cru/cre"
-        };
+        // CreateOperation = new EntityGeneratorCreateOperationConfiguration
+        // {
+        //     Generate = true,
+        //     Operation = "Createll",
+        //     OperationGroup = "CreateLCurrency",
+        //     CommandName = "CreatellCurencyComandl",
+        //     HandlerName = "CrCurHandlerDd",
+        //     DtoName = "CurnCyDtOo",
+        //     GenerateEndpoint = true,
+        //     EndpointClassName = "CretEndp",
+        //     EndpointFunctionName = "juj",
+        //     RouteName = "/cru/cre"
+        // };
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
         {
             Generate = true,

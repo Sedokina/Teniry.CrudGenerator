@@ -14,7 +14,7 @@ public class Currency
     public DateTime Dt1 { get; set; }
     public DateTimeOffset Dt3 { get; set; }
     public ObjectId? CountryId { get; set; }
-    public Country Country { get; set; }
+    public Country? Country { get; set; }
     public bool IsCheck { get; set; }
 }
 

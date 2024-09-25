@@ -49,10 +49,13 @@ public static class TypeExtensions
             case SpecialType.System_Decimal:
                 return true;
             default:
-                if (type.NullableAnnotation == NullableAnnotation.Annotated)
-                    return IsSimple(((INamedTypeSymbol)type).TypeArguments[0]);
+                if (type.NullableAnnotation == NullableAnnotation.Annotated &&
+                    type is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
+                {
+                    return IsSimple(namedTypeSymbol.TypeArguments[0]);
+                }
 
-                if (type.IsValueType && type.IsSealed && type.IsUnmanagedType) return true;
+                if (type is { IsValueType: true, IsSealed: true, IsUnmanagedType: true }) return true;
 
                 return false;
         }
