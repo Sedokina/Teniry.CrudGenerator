@@ -14,7 +14,7 @@ internal class LikeFilterExpression : FilterExpression
         sb.AppendLine($"if({filterPropertyName} is not null)");
         sb.AppendLine("{");
         sb.AppendLine(
-            $"query = query.Where(x => EF.Functions.Like(x.{entityPropertyToFilter}, $\"%{{{filterPropertyName}}}%\"));");
+            $"query = query.Where(x => EF.Functions.ILike(x.{entityPropertyToFilter}, $\"%{{{filterPropertyName}}}%\"));");
         sb.AppendLine("}");
 
         return sb;
