@@ -24,7 +24,7 @@
         <IsPackable>true</IsPackable>
         <PackageId>ITech.CrudGenerator</PackageId>
         <Title>CRUD generator based on ITech.Cqrs template</Title>
-        <Version>0.1.1</Version>
+        <Version>0.1.2</Version>
         <Description>
             Generate CRUD CQRS operations and Minimal API enpoints for CRUD operations based on Entity
             using Entity Framework for DB access
