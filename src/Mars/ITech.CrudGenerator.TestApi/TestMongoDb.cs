@@ -1,18 +1,21 @@
-using ITech.CrudGenerator.Abstractions;
 using ITech.CrudGenerator.Abstractions.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
+using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ITech.CrudGenerator.TestApi;
 
 [UseDbContext(DbContextDbProvider.Mongo)]
-public class MarsDb : DbContext
+public class TestMongoDb : DbContext
 {
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<Country> Countries { get; set; }
 
-    public MarsDb(DbContextOptions<MarsDb> options, IServiceProvider services) : base(options)
+    public TestMongoDb()
+    {
+    }
+
+    public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options)
     {
     }
 

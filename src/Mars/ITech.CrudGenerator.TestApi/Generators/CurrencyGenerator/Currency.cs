@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 
-namespace ITech.CrudGenerator.TestApi;
+namespace ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 
 public class Currency
 {

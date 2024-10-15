@@ -14,7 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                            "Connection string with name 'DefaultConnection' for MongoDb not found"
                        );
 
-builder.Services.AddDbContext<MarsDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
+builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
 
 
 // This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
@@ -48,14 +48,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.MapGet("/weatherforecast", async (string name, MarsDb db) =>
-{
-    var result = await db.Set<Country>()
-        .Where(x => x.Name.ToLower().Contains(name.ToLower()))
-        .ToListAsync();
-    return TypedResults.Ok(result);
-});
 
 // This is required to get access to generated endpoints
 app.MapGeneratedEndpoints();

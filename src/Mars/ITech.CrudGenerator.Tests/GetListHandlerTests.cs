@@ -1,4 +1,6 @@
-using ITech.CrudGenerator.Tests.Application.CompanyFeature.GetCompanies;
+using ITech.CrudGenerator.TestApi;
+using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompanies;
+using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
 

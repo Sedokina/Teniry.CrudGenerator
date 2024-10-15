@@ -1,7 +1,6 @@
-using ITech.CrudGenerator.Abstractions.Configuration;
-using ITech.CrudGenerator.Abstractions.DbContext;
-using ITech.CrudGenerator.Tests.Application.CompanyFeature.CreateCompany;
-using Microsoft.EntityFrameworkCore;
+using ITech.CrudGenerator.TestApi;
+using ITech.CrudGenerator.TestApi.Application.CompanyFeature.CreateCompany;
+using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests;
@@ -60,19 +59,4 @@ public class CreateHandlerTests
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }
-}
-
-public class Company
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; } = null!;
-}
-
-internal class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Company>
-{
-}
-
-[UseDbContext(DbContextDbProvider.Mongo)]
-public class TestMongoDb : DbContext
-{
 }

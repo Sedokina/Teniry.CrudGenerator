@@ -1,5 +1,7 @@
 using ITech.Cqrs.Domain.Exceptions;
-using ITech.CrudGenerator.Tests.Application.CompanyFeature.UpdateCompany;
+using ITech.CrudGenerator.TestApi;
+using ITech.CrudGenerator.TestApi.Application.CompanyFeature.UpdateCompany;
+using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests;

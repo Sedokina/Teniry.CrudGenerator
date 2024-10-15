@@ -1,7 +1,6 @@
-using ITech.CrudGenerator.Abstractions;
 using ITech.CrudGenerator.Abstractions.Configuration;
 
-namespace ITech.CrudGenerator.TestApi;
+namespace ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 
 public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency>
 {
