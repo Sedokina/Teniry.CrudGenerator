@@ -10,9 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" GeneratePathProperty="true" PrivateAssets="all"/>
         <ProjectReference Include="..\ITech.CrudGenerator.TestApi\ITech.CrudGenerator.TestApi.csproj" />
-        <ProjectReference Include="..\ITech.CrudGenerator\ITech.CrudGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -22,13 +20,6 @@
         <PackageReference Include="Moq.EntityFrameworkCore" Version="8.0.1.2" />
         <PackageReference Include="xunit" Version="2.5.3"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3"/>
-    </ItemGroup>
-
-    <!--  Required for generators  -->
-    <ItemGroup>
-        <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.1.0"/>
-        <PackageReference Include="ITech.Cqrs" Version="0.1.7"/>
-        <PackageReference Include="Mapster" Version="7.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
