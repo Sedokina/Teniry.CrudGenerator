@@ -34,6 +34,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="ITech.CrudGenerator.Tests" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <!--  Required for IResult and AsParametersAttribute from Microsoft.AspNetCore.Http in generated code to work in tests  -->
         <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>

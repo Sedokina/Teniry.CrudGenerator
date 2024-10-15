@@ -4,6 +4,9 @@ using ITech.Cqrs.Cqrs;
 using ITech.Cqrs.Cqrs.ApplicationEvents;
 using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +17,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                            "Connection string with name 'DefaultConnection' for MongoDb not found"
                        );
 
-builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
+// For Guid to work with mongo db
+#pragma warning disable CS0618 // Type or member is obsolete
+BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
+#pragma warning restore CS0618 // Type or member is obsolete
 
+builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
 
 // This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
 builder.Services.ConfigureHttpJsonOptions(options =>
