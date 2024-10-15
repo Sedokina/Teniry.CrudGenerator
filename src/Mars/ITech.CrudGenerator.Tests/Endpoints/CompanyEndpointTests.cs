@@ -2,7 +2,6 @@ using System.Net.Http.Json;
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CompanyFeature.CreateCompany;
 using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
-using Microsoft.EntityFrameworkCore;
 
 namespace ITech.CrudGenerator.Tests.Endpoints;
 
@@ -37,7 +36,6 @@ public class CompanyEndpointTests
 
         // Assert saved to db
         var company = await _db.FindAsync<Company>([actual.Id], new CancellationToken());
-        var a = await _db.Set<Company>().ToListAsync();
         company.Should().NotBeNull();
         company!.Name.Should().Be("My new company");
     }
