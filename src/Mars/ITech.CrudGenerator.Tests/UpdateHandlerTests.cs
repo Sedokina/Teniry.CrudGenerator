@@ -1,23 +1,27 @@
-using ITech.CrudGenerator.Tests.Application.CompanyFeature.DeleteCompany;
+using ITech.Cqrs.Domain.Exceptions;
+using ITech.CrudGenerator.Tests.Application.CompanyFeature.UpdateCompany;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests;
 
-public class DeleteHandlerTests
+public class UpdateHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly DeleteCompanyHandler _sut;
-    private readonly DeleteCompanyCommand _command;
+    private readonly UpdateCompanyHandler _sut;
+    private readonly UpdateCompanyCommand _command;
 
-    public DeleteHandlerTests()
+    public UpdateHandlerTests()
     {
         _db = new();
         _sut = new(_db.Object);
-        _command = new DeleteCompanyCommand(Guid.NewGuid());
+        _command = new UpdateCompanyCommand(Guid.NewGuid())
+        {
+            Name = "New company name"
+        };
     }
 
     [Fact]
-    public async Task Should_DoNothingWhenEntityDoesNotExist()
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
     {
         // Arrange
         _db.Setup(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
@@ -27,23 +31,23 @@ public class DeleteHandlerTests
         var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        await act.Should().NotThrowAsync();
-        _db.Verify(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
-        _db.VerifyNoOtherCalls();
+        await act.Should().ThrowAsync<EfEntityNotFoundException>()
+            .Where(x => x.TypeName.Equals(nameof(Company)));
     }
 
     [Fact]
-    public async Task Should_RemoveFromDbSetAndSave()
+    public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
+        var company = new Company { Id = _command.Id, Name = "Old company name" };
         _db.Setup(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Company { Id = _command.Id, Name = "Test company" });
+            .ReturnsAsync(company);
 
         // Act
         await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        _db.Verify(x => x.Remove(It.IsAny<Company>()));
+        company.Name.Should().Be("New company name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
         _db.VerifyNoOtherCalls();
