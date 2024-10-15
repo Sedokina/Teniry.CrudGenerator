@@ -4,7 +4,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
 
-namespace Mars.Api;
+namespace ITech.CrudGenerator.TestApi;
 
 [UseDbContext(DbContextDbProvider.Mongo)]
 public class MarsDb : DbContext

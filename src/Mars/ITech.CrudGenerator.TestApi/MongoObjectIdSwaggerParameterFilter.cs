@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Bson;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Mars.Api;
+namespace ITech.CrudGenerator.TestApi;
 
 // This is required for swagger shows ObjectId as string in endpoints
 public class MongoObjectIdSwaggerParameterFilter : ISchemaFilter

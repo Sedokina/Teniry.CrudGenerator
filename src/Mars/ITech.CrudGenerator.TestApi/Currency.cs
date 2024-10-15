@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 
-namespace Mars.Api;
+namespace ITech.CrudGenerator.TestApi;
 
 public class Currency
 {

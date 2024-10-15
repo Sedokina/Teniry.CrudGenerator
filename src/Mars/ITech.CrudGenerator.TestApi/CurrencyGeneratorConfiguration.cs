@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.Abstractions;
 using ITech.CrudGenerator.Abstractions.Configuration;
 
-namespace Mars.Api;
+namespace ITech.CrudGenerator.TestApi;
 
 public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency>
 {

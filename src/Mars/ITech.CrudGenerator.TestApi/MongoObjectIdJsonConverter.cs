@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
 
-namespace Mars.Api;
+namespace ITech.CrudGenerator.TestApi;
 
 /// <summary>
 /// Serialize ObjectId as string and deserialize string as ObjectId
