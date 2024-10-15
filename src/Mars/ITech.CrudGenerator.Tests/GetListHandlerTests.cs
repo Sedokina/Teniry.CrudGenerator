@@ -1,0 +1,44 @@
+using ITech.CrudGenerator.Tests.Application.CompanyFeature.GetCompanies;
+using Moq;
+using Moq.EntityFrameworkCore;
+
+namespace ITech.CrudGenerator.Tests;
+
+public class GetListHandlerTests
+{
+    private readonly Mock<TestMongoDb> _db;
+    private readonly GetCompaniesHandler _sut;
+    private readonly GetCompaniesQuery _query;
+
+    public GetListHandlerTests()
+    {
+        _db = new();
+        _sut = new(_db.Object);
+        _query = new GetCompaniesQuery
+        {
+            Page = 1,
+            PageSize = 10
+        };
+    }
+
+
+    [Fact]
+    public async Task Should_ChangeEntityDataAndSave()
+    {
+        // Arrange
+        _db.Setup(x => x.Set<Company>()).ReturnsDbSet([new Company { Id = Guid.NewGuid(), Name = "My company" }]);
+
+        // Act
+        var companies = await _sut.HandleAsync(_query, new CancellationToken());
+
+        // Assert
+        companies.Page.Should().NotBeNull();
+        companies.Page.CurrentPageIndex.Should().Be(1);
+        companies.Page.PageSize.Should().Be(10);
+        companies.Items.Should().SatisfyRespectively(dto =>
+        {
+            dto.Id.Should().NotBeEmpty();
+            dto.Name.Should().NotBeEmpty();
+        });
+    }
+}
