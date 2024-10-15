@@ -4,7 +4,7 @@ using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompany;
 using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class GetHandlerTests
 {

@@ -3,7 +3,7 @@ using ITech.CrudGenerator.TestApi.Application.CompanyFeature.CreateCompany;
 using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class CreateHandlerTests
 {

@@ -4,7 +4,7 @@ using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class GetListHandlerTests
 {
