@@ -58,6 +58,7 @@ public class CreateHandlerTests
         // Assert
         _db.Verify(x => x.AddAsync(It.IsAny<Company>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
+        _db.VerifyNoOtherCalls();
     }
 }
 
