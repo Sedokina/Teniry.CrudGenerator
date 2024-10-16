@@ -9,13 +9,13 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 public class GetHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly GetCompanyHandler _sut;
     private readonly GetCompanyQuery _query;
+    private readonly GetCompanyHandler _sut;
 
     public GetHandlerTests()
     {
-        _db = new();
-        _sut = new(_db.Object);
+        _db = new Mock<TestMongoDb>();
+        _sut = new GetCompanyHandler(_db.Object);
         _query = new GetCompanyQuery(Guid.NewGuid());
     }
 

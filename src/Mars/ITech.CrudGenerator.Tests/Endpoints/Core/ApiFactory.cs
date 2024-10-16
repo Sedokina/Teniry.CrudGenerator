@@ -8,18 +8,18 @@ internal class ApiFactory : WebApplicationFactory<Program>
 {
     private readonly IConfiguration _configuration;
 
-    public string BaseApiPath => "http://localhost/";
-
     public ApiFactory(IConfiguration configuration)
     {
         _configuration = configuration;
     }
 
+    public string BaseApiPath => "http://localhost/";
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         var inMemoryConfiguration = new Dictionary<string, string>
         {
-            { "ConnectionStrings:DefaultConnection", _configuration.GetConnectionString("DefaultConnection")! },
+            { "ConnectionStrings:DefaultConnection", _configuration.GetConnectionString("DefaultConnection")! }
         };
 
         // see https://github.com/dotnet/aspnetcore/issues/37680#issuecomment-1235651426

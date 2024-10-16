@@ -8,14 +8,14 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class UpdateHandlerTests
 {
+    private readonly UpdateCompanyCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly UpdateCompanyHandler _sut;
-    private readonly UpdateCompanyCommand _command;
 
     public UpdateHandlerTests()
     {
-        _db = new();
-        _sut = new(_db.Object);
+        _db = new Mock<TestMongoDb>();
+        _sut = new UpdateCompanyHandler(_db.Object);
         _command = new UpdateCompanyCommand(Guid.NewGuid())
         {
             Name = "New company name"

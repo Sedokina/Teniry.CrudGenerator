@@ -7,14 +7,14 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class CreateHandlerTests
 {
+    private readonly CreateCompanyCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly CreateCompanyHandler _sut;
-    private readonly CreateCompanyCommand _command;
 
     public CreateHandlerTests()
     {
-        _db = new();
-        _sut = new(_db.Object);
+        _db = new Mock<TestMongoDb>();
+        _sut = new CreateCompanyHandler(_db.Object);
         _command = new CreateCompanyCommand
         {
             Name = "My test company"
@@ -47,7 +47,7 @@ public class CreateHandlerTests
                 It.IsAny<CancellationToken>())
         );
     }
-    
+
     [Fact]
     public async Task Should_AddToDbSetAndSave()
     {

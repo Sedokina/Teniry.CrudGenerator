@@ -22,10 +22,11 @@ public class TestApiFixture
             .Build();
 
         InitDb();
-        _apiFactory = new(_configuration);
+        _apiFactory = new ApiFactory(_configuration);
     }
-    
-    private void InitDb() {
+
+    private void InitDb()
+    {
         var db = GetDb();
         db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
@@ -34,7 +35,7 @@ public class TestApiFixture
     public HttpClient GetHttpClient()
     {
         var httpClient = _apiFactory.CreateClient();
-        httpClient.BaseAddress = new(_apiFactory.BaseApiPath);
+        httpClient.BaseAddress = new Uri(_apiFactory.BaseApiPath);
 
         return httpClient;
     }
@@ -53,6 +54,6 @@ public class TestApiFixture
         serviceProvider.Setup(it => it.GetService(typeof(EventsChannel)))
             .Returns(new EventsChannel());
 
-        return new(optionsBuilder.Options, serviceProvider.Object);
+        return new TestMongoDb(optionsBuilder.Options, serviceProvider.Object);
     }
 }

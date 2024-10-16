@@ -7,14 +7,14 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class DeleteHandlerTests
 {
+    private readonly DeleteCompanyCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly DeleteCompanyHandler _sut;
-    private readonly DeleteCompanyCommand _command;
 
     public DeleteHandlerTests()
     {
-        _db = new();
-        _sut = new(_db.Object);
+        _db = new Mock<TestMongoDb>();
+        _sut = new DeleteCompanyHandler(_db.Object);
         _command = new DeleteCompanyCommand(Guid.NewGuid());
     }
 
