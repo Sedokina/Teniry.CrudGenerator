@@ -19,7 +19,14 @@ internal class ApiFactory : WebApplicationFactory<Program>
     {
         var inMemoryConfiguration = new Dictionary<string, string>
         {
-            { "ConnectionStrings:DefaultConnection", _configuration.GetConnectionString("DefaultConnection")! }
+            {
+                "ConnectionStrings:DefaultConnection",
+                _configuration.GetConnectionString("DefaultConnection")!
+            },
+            {
+                "ConnectionStrings:DefaultConnectionDbName",
+                _configuration.GetConnectionString("DefaultConnectionDbName")!
+            }
         };
 
         // see https://github.com/dotnet/aspnetcore/issues/37680#issuecomment-1235651426

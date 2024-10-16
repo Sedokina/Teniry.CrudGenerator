@@ -14,13 +14,17 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                        ?? throw new InvalidOperationException(
                            "Connection string with name 'DefaultConnection' for MongoDb not found"
                        );
+var connectionStringDbName = builder.Configuration.GetConnectionString("DefaultConnectionDbName")
+                       ?? throw new InvalidOperationException(
+                           "Connection string with name 'DefaultConnectionDbName' for MongoDb not found"
+                       );
 
 // For Guid to work with mongo db
 #pragma warning disable CS0618 // Type or member is obsolete
 BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "TestApiDb"));
+builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, connectionStringDbName));
 
 // This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
 builder.Services.ConfigureHttpJsonOptions(options =>

@@ -47,7 +47,9 @@ public class TestApiFixture
     public TestMongoDb GetDb()
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>().UseMongoDB(connectionString!, "TestsDb")
+        var connectionStringDbName = _configuration.GetConnectionString("DefaultConnectionDbName");
+        var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>()
+            .UseMongoDB(connectionString!, connectionStringDbName!)
             .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));
 
         var serviceProvider = new Mock<IServiceProvider>();
