@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.Endpoints;
+namespace ITech.CrudGenerator.Tests.Endpoints.Core;
 
 public class TestApiFixture
 {

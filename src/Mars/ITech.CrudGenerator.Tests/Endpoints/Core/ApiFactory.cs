@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace ITech.CrudGenerator.Tests.Endpoints;
+namespace ITech.CrudGenerator.Tests.Endpoints.Core;
 
 internal class ApiFactory : WebApplicationFactory<Program>
 {

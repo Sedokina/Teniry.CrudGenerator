@@ -1,7 +1,7 @@
 using FluentAssertions.Execution;
 using FluentAssertions.Primitives;
 
-namespace ITech.CrudGenerator.Tests.Endpoints;
+namespace ITech.CrudGenerator.Tests.Endpoints.Core;
 
 public static class FluentAssertionsExtensions
 {

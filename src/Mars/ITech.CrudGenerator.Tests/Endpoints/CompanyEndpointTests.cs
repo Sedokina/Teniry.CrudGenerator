@@ -6,6 +6,7 @@ using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompanies;
 using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompany;
 using ITech.CrudGenerator.TestApi.Application.CompanyFeature.UpdateCompany;
 using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
+using ITech.CrudGenerator.Tests.Endpoints.Core;
 
 namespace ITech.CrudGenerator.Tests.Endpoints;
 
