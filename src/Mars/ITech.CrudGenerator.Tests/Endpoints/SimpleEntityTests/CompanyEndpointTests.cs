@@ -8,7 +8,7 @@ using ITech.CrudGenerator.TestApi.Application.CompanyFeature.UpdateCompany;
 using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using ITech.CrudGenerator.Tests.Endpoints.Core;
 
-namespace ITech.CrudGenerator.Tests.Endpoints;
+namespace ITech.CrudGenerator.Tests.Endpoints.SimpleEntityTests;
 
 [Collection("E2eTests")]
 public class CompanyEndpointTests(TestApiFixture fixture)
@@ -21,7 +21,7 @@ public class CompanyEndpointTests(TestApiFixture fixture)
     public async Task Should_GetCompany(string endpoint)
     {
         // Arrange
-        var createdCompany = await CreateCompany("Company to get");
+        var createdCompany = await CreateCompanyAsync("Company to get");
 
         // Act
         var response = await _httpClient.GetAsync(string.Format(endpoint, createdCompany.Id));
@@ -41,7 +41,7 @@ public class CompanyEndpointTests(TestApiFixture fixture)
     public async Task Should_GetCompaniesList(string endpoint)
     {
         // Arrange
-        await CreateCompany("Company to get one of list");
+        await CreateCompanyAsync("Company to get one of list");
 
         // Act
         var response = await _httpClient.GetAsync(endpoint);
@@ -89,7 +89,7 @@ public class CompanyEndpointTests(TestApiFixture fixture)
     public async Task Should_UpdateCompany(string endpoint)
     {
         // Arrange
-        var createdCompany = await CreateCompany("Company to update");
+        var createdCompany = await CreateCompanyAsync("Company to update");
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
@@ -111,7 +111,7 @@ public class CompanyEndpointTests(TestApiFixture fixture)
     public async Task Should_DeleteCompany(string endpoint)
     {
         // Arrange
-        var createdCompany = await CreateCompany("Company to delete");
+        var createdCompany = await CreateCompanyAsync("Company to delete");
 
         // Act
         var response = await _httpClient.DeleteAsync(string.Format(endpoint, createdCompany.Id));
@@ -125,7 +125,7 @@ public class CompanyEndpointTests(TestApiFixture fixture)
         company.Should().BeNull();
     }
 
-    private async Task<Company> CreateCompany(string companyName)
+    private async Task<Company> CreateCompanyAsync(string companyName)
     {
         var company = new Company { Id = Guid.NewGuid(), Name = companyName };
         await _db.AddAsync(company);
