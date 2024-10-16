@@ -21,7 +21,14 @@ public class TestApiFixture
             .AddUserSecrets(typeof(ApiFactory).Assembly, true)
             .Build();
 
+        InitDb();
         _apiFactory = new(_configuration);
+    }
+    
+    private void InitDb() {
+        var db = GetDb();
+        db.Database.EnsureDeleted();
+        db.Database.EnsureCreated();
     }
 
     public HttpClient GetHttpClient()
@@ -31,7 +38,6 @@ public class TestApiFixture
 
         return httpClient;
     }
-
 
     // Db контекст должен создаваться для каждого теста новый
     // потому что, ef core кэширует полученные данные если не был вызван AsNoTracking
