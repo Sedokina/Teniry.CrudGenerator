@@ -5,7 +5,7 @@ using MongoDB.Bson;
 namespace ITech.CrudGenerator.TestApi;
 
 /// <summary>
-/// Serialize ObjectId as string and deserialize string as ObjectId
+///     Serialize ObjectId as string and deserialize string as ObjectId
 /// </summary>
 public class MongoObjectIdJsonConverter : JsonConverter<ObjectId>
 {

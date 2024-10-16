@@ -9,9 +9,6 @@ namespace ITech.CrudGenerator.TestApi;
 [UseDbContext(DbContextDbProvider.Mongo)]
 public class TestMongoDb : DbContext
 {
-    public DbSet<Currency> Currencies { get; set; }
-    public DbSet<Country> Countries { get; set; }
-
     public TestMongoDb()
     {
     }
@@ -19,6 +16,9 @@ public class TestMongoDb : DbContext
     public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options)
     {
     }
+
+    public DbSet<Currency> Currencies { get; set; }
+    public DbSet<Country> Countries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

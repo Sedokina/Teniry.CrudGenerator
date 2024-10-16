@@ -5,8 +5,6 @@ using ITech.Cqrs.Cqrs.ApplicationEvents;
 using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 
 var builder = WebApplication.CreateBuilder(args);
 
