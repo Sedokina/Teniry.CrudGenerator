@@ -20,7 +20,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "MarsDb"));
+builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, "TestApiDb"));
 
 // This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
 builder.Services.ConfigureHttpJsonOptions(options =>

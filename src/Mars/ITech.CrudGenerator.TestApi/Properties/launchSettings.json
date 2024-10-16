@@ -11,7 +11,7 @@
   "profiles": {
     "Generators": {
       "commandName": "DebugRoslynComponent",
-      "targetProject": "../Mars.Api/Mars.Api.csproj"
+      "targetProject": "../ITech.CrudGenerator.TestApi/ITech.CrudGenerator.TestApi.csproj"
     },
     "TGenerators": {
       "commandName": "DebugRoslynComponent",
