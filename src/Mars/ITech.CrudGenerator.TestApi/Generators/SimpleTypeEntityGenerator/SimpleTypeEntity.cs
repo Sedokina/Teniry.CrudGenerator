@@ -1,6 +1,9 @@
-namespace ITech.CrudGenerator.TestApi.Generators.UserGenerator;
+namespace ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 
-public class User
+/// <summary>
+///     This entity contains all supported simple types
+/// </summary>
+public class SimpleTypeEntity
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
@@ -22,5 +25,9 @@ public class User
     public float FloatRating { get; set; }
     public double DoubleRating { get; set; }
     public decimal DecimalRating { get; set; }
-    public Guid NotId { get; set; }
+    
+    /// <summary>
+    ///     This field is to test that not any guid works as primary key
+    /// </summary>
+    public Guid NotIdGuid { get; set; }
 }
