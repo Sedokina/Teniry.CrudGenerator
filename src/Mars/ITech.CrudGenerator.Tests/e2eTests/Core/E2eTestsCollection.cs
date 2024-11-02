@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.Tests.Endpoints.Core;
+namespace ITech.CrudGenerator.Tests.e2eTests.Core;
 
 [CollectionDefinition("E2eTests")]
 public class E2eTestsCollection : ICollectionFixture<TestApiFixture>

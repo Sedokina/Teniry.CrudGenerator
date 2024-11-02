@@ -2,9 +2,9 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Json;
 using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntities;
-using ITech.CrudGenerator.Tests.Endpoints.Core;
+using ITech.CrudGenerator.Tests.e2eTests.Core;
 
-namespace ITech.CrudGenerator.Tests.Endpoints.SimpleEntitiesTests;
+namespace ITech.CrudGenerator.Tests.e2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
 public class SimpleEntityListEndpointTests(TestApiFixture fixture)

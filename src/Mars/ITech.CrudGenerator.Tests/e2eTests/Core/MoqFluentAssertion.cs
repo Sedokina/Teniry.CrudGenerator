@@ -1,7 +1,7 @@
 using FluentAssertions.Execution;
 using Xunit.Abstractions;
 
-namespace ITech.CrudGenerator.Tests.Endpoints.Core;
+namespace ITech.CrudGenerator.Tests.e2eTests.Core;
 
 public class MoqFluentAssertion<T> {
     private readonly Action<T>          _fluentAssertionsChecker;

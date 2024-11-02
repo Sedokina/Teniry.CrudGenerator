@@ -6,9 +6,9 @@ using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntit
 using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntity;
 using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.UpdateSimpleEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
-using ITech.CrudGenerator.Tests.Endpoints.Core;
+using ITech.CrudGenerator.Tests.e2eTests.Core;
 
-namespace ITech.CrudGenerator.Tests.Endpoints.SimpleEntitiesTests;
+namespace ITech.CrudGenerator.Tests.e2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
 public class SimpleEntityEndpointTests(TestApiFixture fixture)

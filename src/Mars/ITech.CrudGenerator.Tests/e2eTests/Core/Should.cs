@@ -1,7 +1,7 @@
 using Moq;
 using Xunit.Abstractions;
 
-namespace ITech.CrudGenerator.Tests.Endpoints.Core;
+namespace ITech.CrudGenerator.Tests.e2eTests.Core;
 
 public static class Should {
     public static T Assert<T>(MoqFluentAssertion<T> moqFluentAssertion) {

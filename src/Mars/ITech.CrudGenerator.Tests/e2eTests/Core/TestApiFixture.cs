@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.Endpoints.Core;
+namespace ITech.CrudGenerator.Tests.e2eTests.Core;
 
 public class TestApiFixture : IAsyncLifetime
 {
