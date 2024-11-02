@@ -14,8 +14,8 @@ public class DeleteSimpleEntityHandlerTests
     public DeleteSimpleEntityHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new DeleteSimpleEntityHandler(_db.Object);
-        _command = new DeleteSimpleEntityCommand(Guid.NewGuid());
+        _sut = new(_db.Object);
+        _command = new(Guid.NewGuid());
     }
 
     [Fact]
