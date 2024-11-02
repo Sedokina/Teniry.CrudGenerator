@@ -4,7 +4,7 @@ using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntit
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.HandlersTests;
+namespace ITech.CrudGenerator.Tests.HandlersTests.SimpleEntityHandlersTests;
 
 public class GetHandlerTests
 {

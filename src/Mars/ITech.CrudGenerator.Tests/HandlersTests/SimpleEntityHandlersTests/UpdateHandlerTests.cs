@@ -1,25 +1,29 @@
+using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.DeleteSimpleEntity;
+using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.UpdateSimpleEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.HandlersTests;
+namespace ITech.CrudGenerator.Tests.HandlersTests.SimpleEntityHandlersTests;
 
-public class DeleteHandlerTests
+public class UpdateHandlerTests
 {
-    private readonly DeleteSimpleEntityCommand _command;
+    private readonly UpdateSimpleEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly DeleteSimpleEntityHandler _sut;
+    private readonly UpdateSimpleEntityHandler _sut;
 
-    public DeleteHandlerTests()
+    public UpdateHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new DeleteSimpleEntityHandler(_db.Object);
-        _command = new DeleteSimpleEntityCommand(Guid.NewGuid());
+        _sut = new(_db.Object);
+        _command = new(Guid.NewGuid())
+        {
+            Name = "New entity name"
+        };
     }
 
     [Fact]
-    public async Task Should_DoNothingWhenEntityDoesNotExist()
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
     {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
@@ -29,23 +33,23 @@ public class DeleteHandlerTests
         var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        await act.Should().NotThrowAsync();
-        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
-        _db.VerifyNoOtherCalls();
+        await act.Should().ThrowAsync<EfEntityNotFoundException>()
+            .Where(x => x.TypeName.Equals(nameof(SimpleEntity)));
     }
 
     [Fact]
-    public async Task Should_RemoveFromDbSetAndSave()
+    public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
+        var entity = new SimpleEntity { Id = _command.Id, Name = "Old entity name" };
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new SimpleEntity { Id = _command.Id, Name = "Test entity" });
+            .ReturnsAsync(entity);
 
         // Act
         await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        _db.Verify(x => x.Remove(It.IsAny<SimpleEntity>()));
+        entity.Name.Should().Be("New entity name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
         _db.VerifyNoOtherCalls();
