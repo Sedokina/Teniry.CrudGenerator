@@ -17,7 +17,7 @@ public static class DbDataInitializer
         await db.AddRangeAsync([
             new SimpleTypeEntity
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("44bacea2-1e32-452a-b1f3-28e46924e899"),
                 Name = "First Entity Name",
                 Code = 'a',
                 IsActive = false,
@@ -38,7 +38,7 @@ public static class DbDataInitializer
             },
             new SimpleTypeEntity
             {
-                Id = Guid.NewGuid(),
+                Id = new Guid("36b23b6e-ef84-481f-892a-2fc3ad9c6921"),
                 Name = "Second Entity Name",
                 Code = 'b',
                 IsActive = true,

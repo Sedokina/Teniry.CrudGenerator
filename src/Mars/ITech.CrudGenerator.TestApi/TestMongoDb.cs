@@ -36,5 +36,7 @@ public class TestMongoDb : DbContext
         modelBuilder.Entity<SimpleTypeEntity>().ToCollection("users");
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.LastSignInDate)
             .HasBsonRepresentation(BsonType.DateTime);
+        modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
+            .HasElementName("_id");
     }
 }
