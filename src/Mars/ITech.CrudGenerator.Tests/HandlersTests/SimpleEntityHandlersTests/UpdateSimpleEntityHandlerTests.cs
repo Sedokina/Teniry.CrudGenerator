@@ -6,13 +6,13 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.SimpleEntityHandlersTests;
 
-public class UpdateHandlerTests
+public class UpdateSimpleEntityHandlerTests
 {
     private readonly UpdateSimpleEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly UpdateSimpleEntityHandler _sut;
 
-    public UpdateHandlerTests()
+    public UpdateSimpleEntityHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
