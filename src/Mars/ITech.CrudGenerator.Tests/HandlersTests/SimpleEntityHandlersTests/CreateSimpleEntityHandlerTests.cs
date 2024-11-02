@@ -14,8 +14,8 @@ public class CreateSimpleEntityHandlerTests
     public CreateSimpleEntityHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new CreateSimpleEntityHandler(_db.Object);
-        _command = new CreateSimpleEntityCommand
+        _sut = new(_db.Object);
+        _command = new()
         {
             Name = "My test entity"
         };
