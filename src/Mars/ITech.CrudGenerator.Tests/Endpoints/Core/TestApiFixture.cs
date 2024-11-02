@@ -56,6 +56,19 @@ public class TestApiFixture
         serviceProvider.Setup(it => it.GetService(typeof(EventsChannel)))
             .Returns(new EventsChannel());
 
-        return new TestMongoDb(optionsBuilder.Options, serviceProvider.Object);
+        var db = new TestMongoDb(optionsBuilder.Options, serviceProvider.Object);
+        // TODO: decide on Transactional behaviour
+        // https://devblogs.microsoft.com/dotnet/mongodb-ef-core-provider-whats-new/#autotransactions-and-optimistic-concurrency
+        // Transactions added to ef provider, but mongo should be configured additionally,
+        // System.NotSupportedException
+        // The MongoDB EF Core Provider now uses transactions to ensure all updates in a SaveChanges
+        // operation are applied together or not at all. Your current MongoDB server configuration
+        // does not support transactions and you should consider switching to a replica set
+        // or load balanced configuration. If you are sure you do not need save consistency
+        // or optimistic concurrency you can disable transactions by setting
+        // 'Database.AutoTransactionBehavior = AutoTransactionBehavior.Never' on your DbContext.
+        // To fix need to configure mongo
+        db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
+        return db;
     }
 }
