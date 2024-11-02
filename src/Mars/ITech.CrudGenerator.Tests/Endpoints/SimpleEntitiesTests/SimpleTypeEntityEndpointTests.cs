@@ -8,7 +8,7 @@ using ITech.CrudGenerator.TestApi.Application.SimpleTypeEntityFeature.UpdateSimp
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using ITech.CrudGenerator.Tests.Endpoints.Core;
 
-namespace ITech.CrudGenerator.Tests.Endpoints;
+namespace ITech.CrudGenerator.Tests.Endpoints.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
 public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)

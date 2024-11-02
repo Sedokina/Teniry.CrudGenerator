@@ -48,6 +48,7 @@ public class GetSimpleTypeEntitiesListHandlerTests
             DecimalRatingFrom = 667.97716829m,
             DecimalRatingTo = 1067.97716829m,
             NotIdGuid = [new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
+            Sort = ["name", "code"],
             Page = 1,
             PageSize = 10
         };
