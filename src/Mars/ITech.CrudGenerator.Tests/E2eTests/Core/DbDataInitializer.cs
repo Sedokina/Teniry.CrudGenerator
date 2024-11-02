@@ -4,7 +4,7 @@ using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerato
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
 
-namespace ITech.CrudGenerator.Tests.e2eTests.Core;
+namespace ITech.CrudGenerator.Tests.E2eTests.Core;
 
 public static class DbDataInitializer
 {

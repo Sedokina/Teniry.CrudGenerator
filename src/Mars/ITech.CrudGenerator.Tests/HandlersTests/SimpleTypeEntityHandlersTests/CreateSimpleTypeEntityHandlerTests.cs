@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.SimpleTypeEntityFeature.CreateSimpleTypeEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
-using ITech.CrudGenerator.Tests.e2eTests.Core;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.SimpleTypeEntityHandlersTests;
