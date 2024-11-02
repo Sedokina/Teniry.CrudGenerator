@@ -15,8 +15,8 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             HandlerName = "CustomizedNameCreateManageEntityHandler",
             DtoName = "CustomizedNameCreatedManageEntityDto",
             // GenerateEndpoint = true,
-            // EndpointClassName = "CretEndp",
-            // EndpointFunctionName = "juj",
+            EndpointClassName = "CustomizedNameCreateManageEntityEndpoint",
+            EndpointFunctionName = "RunCreateAsync",
             // RouteName = "/cru/cre"
         };
 
@@ -28,8 +28,8 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             CommandName = "CustomizedNameDeleteManageEntityCommand",
             HandlerName = "CustomizedNameDeleteManageEntityHandler",
             // GenerateEndpoint = true,
-            // EndpointClassName = "DdelEndpo",
-            // EndpointFunctionName = "dkd",
+            EndpointClassName = "CustomizedNameDeleteManageEntityEndpoint",
+            EndpointFunctionName = "RunDeleteAsync",
             // RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
         };
 
