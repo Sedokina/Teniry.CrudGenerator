@@ -40,8 +40,8 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             // OperationGroup = "UpddCurcy",
             CommandName = "CustomizedNameUpdateManageEntityCommand",
             HandlerName = "CustomizedNameUpdateManageEntityHandler",
-            // ViewModelName = "JjUp", <<--- остановилась тут
             // GenerateEndpoint = true,
+            ViewModelName = "CustomizedNameUpdateManageEntityViewModel",
             EndpointClassName = "CustomizedNameUpdateManageEntityEndpoint",
             EndpointFunctionName = "RunUpdateAsync",
             // RouteName = "/cur/udo"

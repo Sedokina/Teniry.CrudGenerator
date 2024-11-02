@@ -16,7 +16,7 @@ public class UpdateCustomizedEntityEndpointTests
     
     [Theory]
     [InlineData("CustomizedNameUpdateManageEntityEndpoint")]
-    [InlineData("UpdateCustomizedManageEntityVm")]
+    [InlineData("CustomizedNameUpdateManageEntityViewModel")]
     public async Task Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -34,7 +34,7 @@ public class UpdateCustomizedEntityEndpointTests
         // Act
         var actual = await CustomizedNameUpdateManageEntityEndpoint
             .RunUpdateAsync(Guid.NewGuid(),
-                new UpdateCustomizedManageEntityVm(),
+                new CustomizedNameUpdateManageEntityViewModel(),
                 _commandDispatcher.Object,
                 new CancellationToken());
 
