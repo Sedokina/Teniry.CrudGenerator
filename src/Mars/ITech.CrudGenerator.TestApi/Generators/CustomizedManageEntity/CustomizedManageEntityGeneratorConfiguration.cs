@@ -42,8 +42,8 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             HandlerName = "CustomizedNameUpdateManageEntityHandler",
             // ViewModelName = "JjUp", <<--- остановилась тут
             // GenerateEndpoint = true,
-            // EndpointClassName = "UddmkEndpo",
-            // EndpointFunctionName = "mmupd",
+            EndpointClassName = "CustomizedNameUpdateManageEntityEndpoint",
+            EndpointFunctionName = "RunUpdateAsync",
             // RouteName = "/cur/udo"
         };
 

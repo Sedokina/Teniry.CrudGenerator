@@ -14,6 +14,19 @@ public class CreateCustomizedEntityEndpointTests
     {
         _commandDispatcher = new();
     }
+    
+    [Theory]
+    [InlineData("CustomizedNameCreateManageEntityEndpoint")]
+    public async Task Should_CustomizeClassNames(string typeName)
+    {
+        // Act
+        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.Name.Equals(typeName));
+        
+        // Assert
+        foundTypes.Should().NotBeEmpty();
+    }
 
     [Fact]
     public async Task Should_ReturnCorrectValue()

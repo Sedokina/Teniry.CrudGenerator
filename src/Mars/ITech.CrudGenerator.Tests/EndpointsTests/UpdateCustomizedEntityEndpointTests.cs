@@ -5,17 +5,18 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.EndpointsTests;
 
-public class DeleteCustomizedEntityEndpointTests
+public class UpdateCustomizedEntityEndpointTests
 {
     private readonly Mock<ICommandDispatcher> _commandDispatcher;
 
-    public DeleteCustomizedEntityEndpointTests()
+    public UpdateCustomizedEntityEndpointTests()
     {
         _commandDispatcher = new();
     }
-
+    
     [Theory]
-    [InlineData("CustomizedNameDeleteManageEntityEndpoint")]
+    [InlineData("CustomizedNameUpdateManageEntityEndpoint")]
+    [InlineData("UpdateCustomizedManageEntityVm")]
     public async Task Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -31,8 +32,9 @@ public class DeleteCustomizedEntityEndpointTests
     public async Task Should_ReturnCorrectValue()
     {
         // Act
-        var actual = await CustomizedNameDeleteManageEntityEndpoint
-            .RunDeleteAsync(Guid.NewGuid(), 
+        var actual = await CustomizedNameUpdateManageEntityEndpoint
+            .RunUpdateAsync(Guid.NewGuid(),
+                new UpdateCustomizedManageEntityVm(),
                 _commandDispatcher.Object,
                 new CancellationToken());
 
