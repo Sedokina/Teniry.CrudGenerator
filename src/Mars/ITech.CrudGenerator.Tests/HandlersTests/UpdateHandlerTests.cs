@@ -1,24 +1,24 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CompanyFeature.UpdateCompany;
-using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
+using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.UpdateSimpleEntity;
+using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class UpdateHandlerTests
 {
-    private readonly UpdateCompanyCommand _command;
+    private readonly UpdateSimpleEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly UpdateCompanyHandler _sut;
+    private readonly UpdateSimpleEntityHandler _sut;
 
     public UpdateHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new UpdateCompanyHandler(_db.Object);
-        _command = new UpdateCompanyCommand(Guid.NewGuid())
+        _sut = new(_db.Object);
+        _command = new(Guid.NewGuid())
         {
-            Name = "New company name"
+            Name = "New entity name"
         };
     }
 
@@ -26,32 +26,32 @@ public class UpdateHandlerTests
     public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
     {
         // Arrange
-        _db.Setup(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Company?)null);
+        _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((SimpleEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
-            .Where(x => x.TypeName.Equals(nameof(Company)));
+            .Where(x => x.TypeName.Equals(nameof(SimpleEntity)));
     }
 
     [Fact]
     public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
-        var company = new Company { Id = _command.Id, Name = "Old company name" };
-        _db.Setup(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(company);
+        var entity = new SimpleEntity { Id = _command.Id, Name = "Old entity name" };
+        _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(entity);
 
         // Act
         await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        company.Name.Should().Be("New company name");
+        entity.Name.Should().Be("New entity name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
-        _db.Verify(x => x.FindAsync<Company>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
+        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
         _db.VerifyNoOtherCalls();
     }
 }

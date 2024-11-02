@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompanies;
-using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
+using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntities;
+using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
 
@@ -9,14 +9,14 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 public class GetListHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly GetCompaniesQuery _query;
-    private readonly GetCompaniesHandler _sut;
+    private readonly GetSimpleEntitiesQuery _query;
+    private readonly GetSimpleEntitiesHandler _sut;
 
     public GetListHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new GetCompaniesHandler(_db.Object);
-        _query = new GetCompaniesQuery
+        _sut = new(_db.Object);
+        _query = new()
         {
             Page = 1,
             PageSize = 10
@@ -28,16 +28,17 @@ public class GetListHandlerTests
     public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
-        _db.Setup(x => x.Set<Company>()).ReturnsDbSet([new Company { Id = Guid.NewGuid(), Name = "My company" }]);
+        _db.Setup(x => x.Set<SimpleEntity>())
+            .ReturnsDbSet([new SimpleEntity { Id = Guid.NewGuid(), Name = "My entity" }]);
 
         // Act
-        var companies = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new CancellationToken());
 
         // Assert
-        companies.Page.Should().NotBeNull();
-        companies.Page.CurrentPageIndex.Should().Be(1);
-        companies.Page.PageSize.Should().Be(10);
-        companies.Items.Should().SatisfyRespectively(dto =>
+        entities.Page.Should().NotBeNull();
+        entities.Page.CurrentPageIndex.Should().Be(1);
+        entities.Page.PageSize.Should().Be(10);
+        entities.Items.Should().SatisfyRespectively(dto =>
         {
             dto.Id.Should().NotBeEmpty();
             dto.Name.Should().NotBeEmpty();

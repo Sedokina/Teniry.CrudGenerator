@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.Abstractions.DbContext;
-using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
+using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.EntityFrameworkCore.Extensions;
@@ -31,7 +31,7 @@ public class TestMongoDb : DbContext
             .WithMany(x => x.Currencies)
             .HasForeignKey(x => x.CountryId);
 
-        modelBuilder.Entity<Company>().ToCollection("companies");
+        modelBuilder.Entity<SimpleEntity>().ToCollection("companies");
         modelBuilder.Entity<SimpleTypeEntity>().ToCollection("users");
     }
 }

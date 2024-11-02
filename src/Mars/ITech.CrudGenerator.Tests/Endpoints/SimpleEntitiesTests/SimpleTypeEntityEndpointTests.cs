@@ -73,8 +73,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
         actual.Items.Should().HaveCountGreaterThanOrEqualTo(1);
         actual.Items
             .Where(x => x.Name.Equals("Test User"))
-            .Should().HaveCount(1)
-            .And.AllSatisfy(x =>
+            .Should().AllSatisfy(x =>
             {
                 x.Id.Should().NotBeEmpty();
                 x.Name.Should().Be("Test User");

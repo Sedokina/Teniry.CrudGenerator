@@ -1,7 +1,7 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CompanyFeature.GetCompany;
-using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
+using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.GetSimpleEntity;
+using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests;
@@ -9,14 +9,14 @@ namespace ITech.CrudGenerator.Tests.HandlersTests;
 public class GetHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly GetCompanyQuery _query;
-    private readonly GetCompanyHandler _sut;
+    private readonly GetSimpleEntityQuery _query;
+    private readonly GetSimpleEntityHandler _sut;
 
     public GetHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new GetCompanyHandler(_db.Object);
-        _query = new GetCompanyQuery(Guid.NewGuid());
+        _sut = new(_db.Object);
+        _query = new(Guid.NewGuid());
     }
 
 
@@ -24,31 +24,31 @@ public class GetHandlerTests
     public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
     {
         // Arrange
-        _db.Setup(x => x.FindAsync<Company>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Company?)null);
+        _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((SimpleEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
-            .Where(x => x.TypeName.Equals(nameof(Company)));
+            .Where(x => x.TypeName.Equals(nameof(SimpleEntity)));
     }
 
     [Fact]
     public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
-        _db.Setup(x => x.FindAsync<Company>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Company { Id = _query.Id, Name = "My test company" });
+        _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SimpleEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
-        var company = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new CancellationToken());
 
         // Assert
-        company.Id.Should().Be(_query.Id);
-        company.Name.Should().Be("My test company");
-        _db.Verify(x => x.FindAsync<Company>(new object[] { _query.Id }, It.IsAny<CancellationToken>()), Times.Once);
+        entity.Id.Should().Be(_query.Id);
+        entity.Name.Should().Be("My test entity");
+        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()), Times.Once);
         _db.VerifyNoOtherCalls();
     }
 }

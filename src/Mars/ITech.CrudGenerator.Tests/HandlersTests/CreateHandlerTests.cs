@@ -1,23 +1,23 @@
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CompanyFeature.CreateCompany;
-using ITech.CrudGenerator.TestApi.Generators.CompanyGenerator;
+using ITech.CrudGenerator.TestApi.Application.SimpleEntityFeature.CreateSimpleEntity;
+using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests;
 
 public class CreateHandlerTests
 {
-    private readonly CreateCompanyCommand _command;
+    private readonly CreateSimpleEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly CreateCompanyHandler _sut;
+    private readonly CreateSimpleEntityHandler _sut;
 
     public CreateHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
-        _sut = new CreateCompanyHandler(_db.Object);
-        _command = new CreateCompanyCommand
+        _sut = new CreateSimpleEntityHandler(_db.Object);
+        _command = new CreateSimpleEntityCommand
         {
-            Name = "My test company"
+            Name = "My test entity"
         };
     }
 
@@ -25,14 +25,14 @@ public class CreateHandlerTests
     public async Task Should_ReturnCorrectValue()
     {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<Company>(), It.IsAny<CancellationToken>()))
-            .Callback((Company company, CancellationToken _) => company.Id = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<SimpleEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((SimpleEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdCompanyDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        createdCompanyDto.Id.Should().NotBeEmpty();
+        createdEntityDto.Id.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class CreateHandlerTests
 
         // Assert
         _db.Verify(
-            x => x.AddAsync(It.Is<Company>(c => c.Name.Equals("My test company")),
+            x => x.AddAsync(It.Is<SimpleEntity>(c => c.Name.Equals("My test entity")),
                 It.IsAny<CancellationToken>())
         );
     }
@@ -55,7 +55,7 @@ public class CreateHandlerTests
         await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        _db.Verify(x => x.AddAsync(It.IsAny<Company>(), It.IsAny<CancellationToken>()));
+        _db.Verify(x => x.AddAsync(It.IsAny<SimpleEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }
