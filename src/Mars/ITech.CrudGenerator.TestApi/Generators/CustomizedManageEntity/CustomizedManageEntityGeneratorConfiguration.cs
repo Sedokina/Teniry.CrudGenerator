@@ -19,6 +19,19 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             // EndpointFunctionName = "juj",
             // RouteName = "/cru/cre"
         };
+
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
+        {
+            // Generate = true,
+            // Operation = "Del",
+            // OperationGroup = "DeleLCurrency",
+            CommandName = "CustomizedNameDeleteManageEntityCommand",
+            HandlerName = "CustomizedNameDeleteManageEntityHandler",
+            // GenerateEndpoint = true,
+            // EndpointClassName = "DdelEndpo",
+            // EndpointFunctionName = "dkd",
+            // RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
+        };
         
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration()
         {
