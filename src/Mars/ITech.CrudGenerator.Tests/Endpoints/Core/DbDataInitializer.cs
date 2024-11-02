@@ -1,12 +1,13 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITech.CrudGenerator.Tests.Endpoints.Core;
 
-public class DbDataInitializer()
+public static class DbDataInitializer
 {
-    public async Task InitializeAsync(TestMongoDb db)
+    public static async Task InitializeAsync(TestMongoDb db)
     {
         await db.AddRangeAsync([
             new SimpleEntity { Id = Guid.NewGuid(), Name = "First Entity Name" },
@@ -20,8 +21,8 @@ public class DbDataInitializer()
                 Name = "First Entity Name",
                 Code = 'a',
                 IsActive = false,
-                RegistrationDate = DateTime.Today,
-                LastSignInDate = DateTimeOffset.Now,
+                RegistrationDate = DateTime.Today.AddDays(-1),
+                LastSignInDate = DateTimeOffset.UtcNow.AddDays(-1),
                 ByteRating = 1,
                 ShortRating = -83,
                 IntRating = -19876718,
@@ -42,7 +43,7 @@ public class DbDataInitializer()
                 Code = 'b',
                 IsActive = true,
                 RegistrationDate = DateTime.Today.AddDays(1),
-                LastSignInDate = DateTimeOffset.Now.AddDays(1),
+                LastSignInDate = DateTimeOffset.UtcNow.AddDays(1),
                 ByteRating = 2,
                 ShortRating = -85,
                 IntRating = -20876718,
@@ -57,6 +58,10 @@ public class DbDataInitializer()
                 NotIdGuid = new Guid("f6c5e2d1-b438-4faf-8521-b775d783f6f3"),
             }
         ]);
+        
+        // TODO: decide on Transactional behaviour
+        db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
+
         await db.SaveChangesAsync();
         db.ChangeTracker.Clear();
     }

@@ -3,6 +3,7 @@ using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ITech.CrudGenerator.TestApi;
@@ -33,5 +34,7 @@ public class TestMongoDb : DbContext
 
         modelBuilder.Entity<SimpleEntity>().ToCollection("companies");
         modelBuilder.Entity<SimpleTypeEntity>().ToCollection("users");
+        modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.LastSignInDate)
+            .HasBsonRepresentation(BsonType.DateTime);
     }
 }

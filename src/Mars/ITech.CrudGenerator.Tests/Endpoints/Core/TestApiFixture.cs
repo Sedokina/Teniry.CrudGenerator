@@ -3,6 +3,7 @@ using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.Endpoints.Core;
@@ -29,6 +30,8 @@ public class TestApiFixture : IAsyncLifetime
         var db = GetDb();
         await db.Database.EnsureDeletedAsync();
         await db.Database.EnsureCreatedAsync();
+
+        await DbDataInitializer.InitializeAsync(db);
     }
 
     public HttpClient GetHttpClient()
@@ -47,6 +50,12 @@ public class TestApiFixture : IAsyncLifetime
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         var connectionStringDbName = _configuration.GetConnectionString("DefaultConnectionDbName");
+        
+#pragma warning disable CS0618 // Type or member is obsolete
+        BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V2;
+        BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
+#pragma warning restore CS0618 // Type or member is obsolete
+        
         var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>()
             .UseMongoDB(connectionString!, connectionStringDbName!)
             .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));

@@ -22,7 +22,7 @@ public class CreateSimpleTypeEntityHandlerTests
             Code = 'a',
             IsActive = true,
             RegistrationDate = DateTime.Today,
-            LastSignInDate = DateTimeOffset.Now,
+            LastSignInDate = DateTimeOffset.UtcNow,
             ByteRating = 1,
             ShortRating = -83,
             IntRating = -19876718,

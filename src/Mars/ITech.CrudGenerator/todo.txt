@@ -37,3 +37,7 @@ https://github.com/dotnet/efcore/issues/10198,
 https://github.com/dotnet/efcore/issues/10265
 соответственно корретно протестировать сортировку GUID полей автоматически нельзя,
 можно только задавая конкретную последовательность GUID'ов (пока не будет делатся)
+
+В MongoDB DateTimeOffset сохраняются как-то странно, 
+поэтому к полям с этим типам нужно применять конфигурацию
+.HasBsonRepresentation(BsonType.DateTime) или .HasBsonRepresentation(BsonType.String);
