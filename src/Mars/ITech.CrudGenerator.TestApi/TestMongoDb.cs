@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
+using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
@@ -32,11 +33,12 @@ public class TestMongoDb : DbContext
             .WithMany(x => x.Currencies)
             .HasForeignKey(x => x.CountryId);
 
-        modelBuilder.Entity<SimpleEntity>().ToCollection("companies");
-        modelBuilder.Entity<SimpleTypeEntity>().ToCollection("users");
+        modelBuilder.Entity<SimpleEntity>().ToCollection("simpleEntities");
+        modelBuilder.Entity<SimpleTypeEntity>().ToCollection("simpleTypeEntities");
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.LastSignInDate)
             .HasBsonRepresentation(BsonType.DateTime);
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
             .HasElementName("_id");
+        modelBuilder.Entity<SimpleTypeDefaultSortEntity>().ToCollection("simpleTypeDefaultSortEntities");
     }
 }
