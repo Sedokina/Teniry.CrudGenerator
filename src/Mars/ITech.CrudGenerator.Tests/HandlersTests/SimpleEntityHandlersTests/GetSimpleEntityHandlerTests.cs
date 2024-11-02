@@ -36,7 +36,7 @@ public class GetSimpleEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
+    public async Task Should_GetEntityWithCorrectData()
     {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
@@ -48,7 +48,8 @@ public class GetSimpleEntityHandlerTests
         // Assert
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
-        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()), Times.Once);
+        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
+            Times.Once);
         _db.VerifyNoOtherCalls();
     }
 }
