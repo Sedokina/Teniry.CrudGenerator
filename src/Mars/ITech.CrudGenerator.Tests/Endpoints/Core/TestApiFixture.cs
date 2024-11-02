@@ -7,7 +7,7 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.Endpoints.Core;
 
-public class TestApiFixture
+public class TestApiFixture : IAsyncLifetime
 {
     private readonly ApiFactory _apiFactory;
     private readonly IConfigurationRoot _configuration;
@@ -21,15 +21,14 @@ public class TestApiFixture
             .AddUserSecrets(typeof(ApiFactory).Assembly, true)
             .Build();
 
-        InitDb();
         _apiFactory = new ApiFactory(_configuration);
     }
 
-    private void InitDb()
+    public async Task InitializeAsync()
     {
         var db = GetDb();
-        db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
+        await db.Database.EnsureDeletedAsync();
+        await db.Database.EnsureCreatedAsync();
     }
 
     public HttpClient GetHttpClient()
@@ -70,5 +69,10 @@ public class TestApiFixture
         // To fix need to configure mongo
         db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
         return db;
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _apiFactory.DisposeAsync();
     }
 }
