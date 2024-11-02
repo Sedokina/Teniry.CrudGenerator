@@ -23,7 +23,6 @@ public class GetSimpleEntitiesListHandlerTests
         };
     }
 
-
     [Fact]
     public async Task Should_ChangeEntityDataAndSave()
     {
