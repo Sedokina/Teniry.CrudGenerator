@@ -18,6 +18,36 @@ public class GetSimpleTypeEntitiesListHandlerTests
         _sut = new(_db.Object);
         _query = new()
         {
+            Name = "Test Entity",
+            Code = 'a',
+            IsActive = true,
+            RegistrationDateFrom = DateTime.Today.AddDays(-1),
+            RegistrationDateTo = DateTime.Today.AddDays(1),
+            LastSignInDateFrom = DateTime.Today.AddDays(-1),
+            LastSignInDateTo = DateTime.Today.AddDays(1),
+            ByteRatingFrom = 0,
+            ByteRatingTo = 2,
+            ShortRatingFrom = -85,
+            ShortRatingTo = -80,
+            IntRatingFrom = -29876718,
+            IntRatingTo = -16876718,
+            LongRatingFrom = -1971652637891,
+            LongRatingTo = -771652637891,
+            SByteRatingFrom = -7,
+            SByteRatingTo = -2,
+            UShortRatingFrom = 80,
+            UShortRatingTo = 90,
+            UIntRatingFrom = 1200000,
+            UIntRatingTo = 29876718,
+            ULongRatingFrom = 871652637891,
+            ULongRatingTo = 1071652637891,
+            FloatRatingFrom = 16.13f,
+            FloatRatingTo = 20.13f,
+            DoubleRatingFrom = 61873.862378,
+            DoubleRatingTo = 101873.862378,
+            DecimalRatingFrom = 667.97716829m,
+            DecimalRatingTo = 1067.97716829m,
+            NotIdGuid = [new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
             Page = 1,
             PageSize = 10
         };
@@ -80,5 +110,17 @@ public class GetSimpleTypeEntitiesListHandlerTests
             dto.DecimalRating.Should().BeGreaterThan(0);
             dto.NotIdGuid.Should().NotBeEmpty();
         });
+    }
+
+    [Fact]
+    public void Should_HaveCorrectSortKeys()
+    {
+        // Assert
+        _query.GetSortKeys()
+            .Should().ContainInConsecutiveOrder([
+                "id", "name", "code", "isActive", "registrationDate", "lastSignInDate", "byteRating", "shortRating",
+                "intRating", "longRating", "sByteRating", "uShortRating", "uIntRating", "uLongRating", "floatRating",
+                "doubleRating", "decimalRating", "notIdGuid"
+            ]);
     }
 }

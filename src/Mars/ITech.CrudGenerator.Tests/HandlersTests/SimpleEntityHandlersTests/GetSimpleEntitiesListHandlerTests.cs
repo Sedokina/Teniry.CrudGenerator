@@ -18,6 +18,8 @@ public class GetSimpleEntitiesListHandlerTests
         _sut = new(_db.Object);
         _query = new()
         {
+            Name = "Test Entity",
+            Sort = ["id", "name"],
             Page = 1,
             PageSize = 10
         };
@@ -28,7 +30,7 @@ public class GetSimpleEntitiesListHandlerTests
     {
         // Arrange
         _db.Setup(x => x.Set<SimpleEntity>())
-            .ReturnsDbSet([new SimpleEntity { Id = Guid.NewGuid(), Name = "My entity" }]);
+            .ReturnsDbSet([new SimpleEntity { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
         var entities = await _sut.HandleAsync(_query, new CancellationToken());
@@ -42,5 +44,13 @@ public class GetSimpleEntitiesListHandlerTests
             dto.Id.Should().NotBeEmpty();
             dto.Name.Should().NotBeEmpty();
         });
+    }
+
+    [Fact]
+    public void Should_HaveCorrectSortKeys()
+    {
+        // Assert
+        _query.GetSortKeys()
+            .Should().ContainInConsecutiveOrder(["id", "name"]);
     }
 }
