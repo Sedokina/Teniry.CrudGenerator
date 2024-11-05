@@ -78,8 +78,8 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
     }
     
     [Theory]
-    [InlineData("customizedmanageentity?page=1&pageSize=10")]
-    [InlineData("customizedmanageentity/691cd56c-46ee-4151-ae10-029a25e32d1b")]
+    [InlineData("customManagedEntity?page=1&pageSize=10")]
+    [InlineData("customManagedEntity/691cd56c-46ee-4151-ae10-029a25e32d1b")]
     public async Task Should_NotGenerateGetEndpoints(string endpoint)
     {
         // Act

@@ -1,16 +1,17 @@
 using ITech.Cqrs.Cqrs.Commands;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomManagedEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.EndpointsTests;
+namespace ITech.CrudGenerator.Tests.EndpointsTests.CustomManagedEntityEndpointTests;
 
-public class DeleteCustomManagedEntityEndpointTests
+public class CreateCustomManagedEntityEndpointTests
 {
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameDeleteManagedEntityEndpoint")]
+    [InlineData("CustomizedNameCreateManagedEntityEndpoint")]
     public void Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -21,17 +22,18 @@ public class DeleteCustomManagedEntityEndpointTests
         // Assert
         foundTypes.Should().NotBeEmpty();
     }
-    
+
     [Fact]
     public async Task Should_ReturnCorrectValue()
     {
         // Act
-        var actual = await CustomizedNameDeleteManagedEntityEndpoint
-            .RunDeleteAsync(Guid.NewGuid(), 
+        var actual = await CustomizedNameCreateManagedEntityEndpoint
+            .RunCreateAsync(
+                new CustomizedNameCreateManagedEntityCommand(),
                 _commandDispatcher.Object,
                 new CancellationToken());
 
         // Assert
-        actual.Should().BeOfType<NoContent>();
+        actual.Should().BeOfType<Created<CustomizedNameCreatedManagedEntityDto>>();
     }
 }

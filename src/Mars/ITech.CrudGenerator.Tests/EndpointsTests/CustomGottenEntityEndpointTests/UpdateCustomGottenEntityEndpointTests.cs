@@ -1,9 +1,9 @@
-namespace ITech.CrudGenerator.Tests.EndpointsTests;
+namespace ITech.CrudGenerator.Tests.EndpointsTests.CustomGottenEntityEndpointTests;
 
-public class GetCustomManagedEntityEndpointTests
+public class UpdateCustomGottenEntityEndpointTests
 {
     [Theory]
-    [InlineData("GetCustomizedManageEntityEndpoint")]
+    [InlineData("UpdateCustomGottenEntityEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName)
     {
         // Act

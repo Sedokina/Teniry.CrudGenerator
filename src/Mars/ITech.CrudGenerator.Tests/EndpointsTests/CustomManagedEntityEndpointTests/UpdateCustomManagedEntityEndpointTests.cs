@@ -3,7 +3,7 @@ using ITech.CrudGenerator.TestApi.Endpoints.CustomManagedEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
-namespace ITech.CrudGenerator.Tests.EndpointsTests;
+namespace ITech.CrudGenerator.Tests.EndpointsTests.CustomManagedEntityEndpointTests;
 
 public class UpdateCustomManagedEntityEndpointTests
 {
