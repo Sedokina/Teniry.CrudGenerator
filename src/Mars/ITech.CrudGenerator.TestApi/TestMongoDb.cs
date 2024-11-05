@@ -1,5 +1,6 @@
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
+using ITech.CrudGenerator.TestApi.Generators.CustomizedManageEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
@@ -40,5 +41,6 @@ public class TestMongoDb : DbContext
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
             .HasElementName("_id");
         modelBuilder.Entity<SimpleTypeDefaultSortEntity>().ToCollection("simpleTypeDefaultSortEntities");
+        modelBuilder.Entity<CustomizedManageEntity>().ToCollection("customizedManageEntities");
     }
 }

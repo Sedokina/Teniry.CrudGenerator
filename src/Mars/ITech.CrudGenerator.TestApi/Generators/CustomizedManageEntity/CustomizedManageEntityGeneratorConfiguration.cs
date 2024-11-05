@@ -17,7 +17,7 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             // GenerateEndpoint = true,
             EndpointClassName = "CustomizedNameCreateManageEntityEndpoint",
             EndpointFunctionName = "RunCreateAsync",
-            // RouteName = "/cru/cre"
+            RouteName = "/customizedManageEntityCreate"
         };
 
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
@@ -30,7 +30,7 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             // GenerateEndpoint = true,
             EndpointClassName = "CustomizedNameDeleteManageEntityEndpoint",
             EndpointFunctionName = "RunDeleteAsync",
-            // RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
+            RouteName = "/customizedManageEntityDelete/{{entity_name}}/{{id_param_name}}"
         };
 
         UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
@@ -44,7 +44,7 @@ public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfi
             ViewModelName = "CustomizedNameUpdateManageEntityViewModel",
             EndpointClassName = "CustomizedNameUpdateManageEntityEndpoint",
             EndpointFunctionName = "RunUpdateAsync",
-            // RouteName = "/cur/udo"
+            RouteName = "/customizedManageEntityUpdate/{{id_param_name}}"
         };
 
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration()
