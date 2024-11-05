@@ -3,7 +3,6 @@ using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
-using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
@@ -41,7 +40,6 @@ public class TestMongoDb : DbContext
             .HasBsonRepresentation(BsonType.DateTime);
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
             .HasElementName("_id");
-        modelBuilder.Entity<SimpleTypeDefaultSortEntity>().ToCollection("simpleTypeDefaultSortEntities");
         modelBuilder.Entity<CustomManagedEntity>().ToCollection("customManagedEntities");
         modelBuilder.Entity<CustomGottenEntity>().ToCollection("customGottenEntities");
     }

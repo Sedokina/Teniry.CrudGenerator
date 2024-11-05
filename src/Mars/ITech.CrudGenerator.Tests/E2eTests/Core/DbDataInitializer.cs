@@ -1,7 +1,6 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
-using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
 
@@ -59,11 +58,6 @@ public static class DbDataInitializer
                 DecimalRating = 967.97716829m,
                 NotIdGuid = new Guid("f6c5e2d1-b438-4faf-8521-b775d783f6f3"),
             }
-        ]);
-
-        await db.AddRangeAsync([
-            new SimpleTypeDefaultSortEntity { Id = Guid.NewGuid(), Name = "First Entity Name" },
-            new SimpleTypeDefaultSortEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
         ]);
 
         await db.AddRangeAsync([

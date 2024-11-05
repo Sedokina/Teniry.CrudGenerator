@@ -20,7 +20,7 @@ public class GetCustomGottenEntitiesListEndpointTests
             .Where(x => x.Name.Equals(typeName));
         
         // Assert
-        foundTypes.Should().BeEmpty();
+        foundTypes.Should().NotBeEmpty();
     }
     
     [Fact]
