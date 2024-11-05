@@ -1,6 +1,6 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.UpdateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using Moq;
 
@@ -55,5 +55,22 @@ public class UpdateCustomizedManageEntityHandlerTests
             x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
             Times.Once);
         _db.VerifyNoOtherCalls();
+    }
+    
+    [Theory]
+    [InlineData("CustomizedNameUpdateManagedEntityCommand")]
+    [InlineData("CustomizedNameUpdateManagedEntityHandler")]
+    public void Should_BeInCustomNamespace(string typeName)
+    {
+        // Act
+        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.Name.Equals(typeName));
+
+        // Assert
+        foundTypes.Should().AllSatisfy(x =>
+        {
+            x.Namespace.Should().EndWith("ManagedEntityUpdateOperationCustomNs");
+        });
     }
 }

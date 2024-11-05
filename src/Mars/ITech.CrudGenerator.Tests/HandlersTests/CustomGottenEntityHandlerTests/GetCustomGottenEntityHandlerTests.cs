@@ -1,6 +1,6 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
 using Moq;
 
@@ -52,5 +52,23 @@ public class GetCustomGottenEntityHandlerTests
         _db.Verify(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
             Times.Once);
         _db.VerifyNoOtherCalls();
+    }
+    
+    [Theory]
+    [InlineData("CustomizedNameGetCustomEntityQuery")]
+    [InlineData("CustomizedNameGetCustomEntityHandler")]
+    [InlineData("CustomizedNameGetCustomEntityDto")]
+    public void Should_BeInCustomNamespace(string typeName)
+    {
+        // Act
+        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.Name.Equals(typeName));
+
+        // Assert
+        foundTypes.Should().AllSatisfy(x =>
+        {
+            x.Namespace.Should().EndWith("CustomGottenEntityGetOperationCustomNs");
+        });
     }
 }

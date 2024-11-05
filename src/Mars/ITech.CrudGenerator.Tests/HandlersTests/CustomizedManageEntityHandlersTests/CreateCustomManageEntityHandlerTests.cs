@@ -1,5 +1,5 @@
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using Moq;
 
@@ -72,5 +72,23 @@ public class CreateCustomManageEntityHandlerTests
         _db.Verify(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
+    }
+
+    [Theory]
+    [InlineData("CustomizedNameCreateManagedEntityCommand")]
+    [InlineData("CustomizedNameCreateManagedEntityHandler")]
+    [InlineData("CustomizedNameCreatedManagedEntityDto")]
+    public void Should_BeInCustomNamespace(string typeName)
+    {
+        // Act
+        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(x => x.GetTypes())
+            .Where(x => x.Name.Equals(typeName));
+
+        // Assert
+        foundTypes.Should().AllSatisfy(x =>
+        {
+            x.Namespace.Should().EndWith("ManagedEntityCreateOperationCustomNs");
+        });
     }
 }

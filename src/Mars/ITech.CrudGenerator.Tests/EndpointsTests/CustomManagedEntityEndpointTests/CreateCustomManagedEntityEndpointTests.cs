@@ -1,5 +1,5 @@
 using ITech.Cqrs.Cqrs.Commands;
-using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomManagedEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;

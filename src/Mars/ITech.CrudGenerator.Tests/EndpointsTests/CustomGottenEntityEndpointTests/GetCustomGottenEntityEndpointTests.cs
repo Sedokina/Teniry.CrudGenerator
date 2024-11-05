@@ -1,5 +1,5 @@
 using ITech.Cqrs.Cqrs.Queries;
-using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomGottenEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;

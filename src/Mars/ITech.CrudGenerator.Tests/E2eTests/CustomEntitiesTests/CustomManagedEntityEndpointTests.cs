@@ -1,8 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
-using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.UpdateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 

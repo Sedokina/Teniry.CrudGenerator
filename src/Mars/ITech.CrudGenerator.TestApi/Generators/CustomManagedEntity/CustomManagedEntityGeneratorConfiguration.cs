@@ -6,11 +6,10 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
 {
     public CustomManagedEntityGeneratorConfiguration()
     {
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration()
+        CreateOperation = new EntityGeneratorCreateOperationConfiguration
         {
-            // Generate = false,
             // Operation = "Createll",
-            // OperationGroup = "CreateLCurrency",
+            OperationGroup = "ManagedEntityCreateOperationCustomNs",
             CommandName = "CustomizedNameCreateManagedEntityCommand",
             HandlerName = "CustomizedNameCreateManagedEntityHandler",
             DtoName = "CustomizedNameCreatedManagedEntityDto",
@@ -22,9 +21,8 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
 
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
         {
-            // Generate = true,
             // Operation = "Del",
-            // OperationGroup = "DeleLCurrency",
+            OperationGroup = "ManagedEntityDeleteOperationCustomNs",
             CommandName = "CustomizedNameDeleteManagedEntityCommand",
             HandlerName = "CustomizedNameDeleteManagedEntityHandler",
             // GenerateEndpoint = true,
@@ -35,9 +33,8 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
 
         UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
         {
-            // Generate = true,
             // Operation = "Upd",
-            // OperationGroup = "UpddCurcy",
+            OperationGroup = "ManagedEntityUpdateOperationCustomNs",
             CommandName = "CustomizedNameUpdateManagedEntityCommand",
             HandlerName = "CustomizedNameUpdateManagedEntityHandler",
             // GenerateEndpoint = true,

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntities;
-using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
+using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 
 namespace ITech.CrudGenerator.Tests.E2eTests.CustomEntitiesTests;
