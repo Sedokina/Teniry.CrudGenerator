@@ -77,6 +77,19 @@ public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
         entity.Should().BeNull();
     }
     
+    [Theory]
+    [InlineData("customizedmanageentity?page=1&pageSize=10")]
+    [InlineData("customizedmanageentity/691cd56c-46ee-4151-ae10-029a25e32d1b")]
+    public async Task Should_NotGenerateGetEndpoints(string endpoint)
+    {
+        // Act
+        var response = await _httpClient.GetAsync(endpoint);
+
+        // Assert correct response
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    
     private async Task<CustomizedManageEntity> CreateSimpleEntityAsync(string name)
     {
         var entity = new CustomizedManageEntity { Id = Guid.NewGuid(), Name = name };
