@@ -1,11 +1,11 @@
 using ITech.Cqrs.Cqrs.Commands;
-using ITech.CrudGenerator.TestApi.Endpoints.CustomizedManageEntityEndpoints;
+using ITech.CrudGenerator.TestApi.Endpoints.CustomManagedEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.EndpointsTests;
 
-public class DeleteCustomizedManageEntityEndpointTests
+public class DeleteCustomManagedEntityEndpointTests
 {
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 

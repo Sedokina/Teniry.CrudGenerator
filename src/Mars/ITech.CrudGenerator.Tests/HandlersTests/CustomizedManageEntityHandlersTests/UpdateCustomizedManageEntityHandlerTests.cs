@@ -1,7 +1,7 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomizedManageEntityFeature.UpdateCustomizedManageEntity;
-using ITech.CrudGenerator.TestApi.Generators.CustomizedManageEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.UpdateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
@@ -26,23 +26,23 @@ public class UpdateCustomizedManageEntityHandlerTests
     public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
     {
         // Arrange
-        _db.Setup(x => x.FindAsync<CustomizedManageEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CustomizedManageEntity?)null);
+        _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CustomManagedEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
-            .Where(x => x.TypeName.Equals(nameof(CustomizedManageEntity)));
+            .Where(x => x.TypeName.Equals(nameof(CustomManagedEntity)));
     }
 
     [Fact]
     public async Task Should_ChangeEntityDataAndSave()
     {
         // Arrange
-        var entity = new CustomizedManageEntity { Id = _command.Id, Name = "Old entity name" };
-        _db.Setup(x => x.FindAsync<CustomizedManageEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+        var entity = new CustomManagedEntity { Id = _command.Id, Name = "Old entity name" };
+        _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
         // Act
@@ -52,7 +52,7 @@ public class UpdateCustomizedManageEntityHandlerTests
         entity.Name.Should().Be("New entity name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
-            x => x.FindAsync<CustomizedManageEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
             Times.Once);
         _db.VerifyNoOtherCalls();
     }

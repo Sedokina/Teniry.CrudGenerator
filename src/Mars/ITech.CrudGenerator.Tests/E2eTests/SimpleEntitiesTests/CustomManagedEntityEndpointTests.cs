@@ -1,15 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomizedManageEntityFeature.CreateCustomizedManageEntity;
-using ITech.CrudGenerator.TestApi.Application.CustomizedManageEntityFeature.UpdateCustomizedManageEntity;
-using ITech.CrudGenerator.TestApi.Generators.CustomizedManageEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.UpdateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 
 namespace ITech.CrudGenerator.Tests.E2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
-public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
+public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
 {
     private readonly TestMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
@@ -31,7 +31,7 @@ public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
         actual!.Id.Should().NotBeEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomizedManageEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([actual.Id], new CancellationToken());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -53,13 +53,13 @@ public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomizedManageEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([createdEntity.Id], new CancellationToken());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
 
     [Theory]
-    [InlineData("customizedManageEntityDelete/customizedManageEntity/{0}")]
+    [InlineData("customizedManageEntityDelete/customManagedEntity/{0}")]
     public async Task Should_DeleteCustomizedEntity(string endpoint)
     {
         // Arrange
@@ -73,7 +73,7 @@ public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<CustomizedManageEntity>([createdSimpleEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([createdSimpleEntity.Id], new CancellationToken());
         entity.Should().BeNull();
     }
     
@@ -89,10 +89,9 @@ public class CustomizedManageEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    
-    private async Task<CustomizedManageEntity> CreateSimpleEntityAsync(string name)
+    private async Task<CustomManagedEntity> CreateSimpleEntityAsync(string name)
     {
-        var entity = new CustomizedManageEntity { Id = Guid.NewGuid(), Name = name };
+        var entity = new CustomManagedEntity { Id = Guid.NewGuid(), Name = name };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();

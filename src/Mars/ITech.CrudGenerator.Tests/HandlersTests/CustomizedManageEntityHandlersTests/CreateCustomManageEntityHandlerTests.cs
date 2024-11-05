@@ -1,17 +1,17 @@
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Application.CustomizedManageEntityFeature.CreateCustomizedManageEntity;
-using ITech.CrudGenerator.TestApi.Generators.CustomizedManageEntity;
+using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.CreateCustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
 
-public class CreateCustomizedManageEntityHandlerTests
+public class CreateCustomManageEntityHandlerTests
 {
     private readonly CustomizedNameCreateManageEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomizedNameCreateManageEntityHandler _sut;
 
-    public CreateCustomizedManageEntityHandlerTests()
+    public CreateCustomManageEntityHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
@@ -26,8 +26,8 @@ public class CreateCustomizedManageEntityHandlerTests
     public async Task Should_ReturnCorrectValue()
     {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<CustomizedManageEntity>(), It.IsAny<CancellationToken>()))
-            .Callback((CustomizedManageEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
@@ -40,8 +40,8 @@ public class CreateCustomizedManageEntityHandlerTests
     public async Task Should_HasCorrectReturnModelTypeName()
     {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<CustomizedManageEntity>(), It.IsAny<CancellationToken>()))
-            .Callback((CustomizedManageEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
@@ -57,7 +57,7 @@ public class CreateCustomizedManageEntityHandlerTests
 
         // Assert
         _db.Verify(
-            x => x.AddAsync(It.Is<CustomizedManageEntity>(c => c.Name.Equals("My test entity")),
+            x => x.AddAsync(It.Is<CustomManagedEntity>(c => c.Name.Equals("My test entity")),
                 It.IsAny<CancellationToken>())
         );
     }
@@ -69,7 +69,7 @@ public class CreateCustomizedManageEntityHandlerTests
         await _sut.HandleAsync(_command, new CancellationToken());
 
         // Assert
-        _db.Verify(x => x.AddAsync(It.IsAny<CustomizedManageEntity>(), It.IsAny<CancellationToken>()));
+        _db.Verify(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }

@@ -1,10 +1,10 @@
 using ITech.CrudGenerator.Abstractions.Configuration;
 
-namespace ITech.CrudGenerator.TestApi.Generators.CustomizedManageEntity;
+namespace ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 
-public class CustomizedManageEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomizedManageEntity>
+public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomManagedEntity>
 {
-    public CustomizedManageEntityGeneratorConfiguration()
+    public CustomManagedEntityGeneratorConfiguration()
     {
         CreateOperation = new EntityGeneratorCreateOperationConfiguration()
         {

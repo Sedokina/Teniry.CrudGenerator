@@ -1,6 +1,6 @@
 namespace ITech.CrudGenerator.Tests.EndpointsTests;
 
-public class GetCustomizedManageEntityEndpointTests
+public class GetCustomManagedEntityEndpointTests
 {
     [Theory]
     [InlineData("GetCustomizedManageEntityEndpoint")]

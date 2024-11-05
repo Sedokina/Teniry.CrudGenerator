@@ -1,10 +1,10 @@
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
 
-public class GetCustomizedManageEntityHandlerTests
+public class GetCustomManagedEntitiesListHandlerTests
 {
     [Theory]
-    [InlineData("GetCustomizedManageEntityQuery")]
-    [InlineData("GetCustomizedManageEntityHandler")]
+    [InlineData("GetCustomizedManageEntitiesQuery")]
+    [InlineData("GetCustomizedManageEntitiesHandler")]
     public void Should_NotGenerateGetHandler(string typeName)
     {
         // Act
