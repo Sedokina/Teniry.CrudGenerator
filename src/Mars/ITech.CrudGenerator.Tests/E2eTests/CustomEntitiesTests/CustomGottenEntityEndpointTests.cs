@@ -55,6 +55,23 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
     }
     
     [Theory]
+    [InlineData("getAllCustomGottenEntitiesList?page=1&pageSize=10")]
+    public async Task Should_SortListWithDefaultSort(string endpoint)
+    {
+        // Act
+        var response = await _httpClient.GetAsync(endpoint);
+        response.Should().FailIfNotSuccessful();
+
+        // Assert correct response
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntitiesListDto>();
+
+        actual!.Items.Should().HaveCountGreaterThan(0)
+            .And.BeInDescendingOrder(x => x.Name);
+    }
+    
+    [Theory]
     [InlineData("POST", "customGottenEntity/create")]
     [InlineData("DELETE", "customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/delete")]
     [InlineData("PUT", "customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/update")]

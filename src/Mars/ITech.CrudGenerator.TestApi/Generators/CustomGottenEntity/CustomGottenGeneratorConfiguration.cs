@@ -6,12 +6,14 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
 {
     public CustomGottenGeneratorConfiguration()
     {
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration()
+        DefaultSort = new EntityGeneratorDefaultSort<CustomGottenEntity>("desc", x => x.Name);
+
+        CreateOperation = new EntityGeneratorCreateOperationConfiguration
         {
             Generate = false
         };
 
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
         {
             Generate = false
         };
@@ -32,7 +34,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
             EndpointClassName = "CustomizedNameGetCustomEntityEndpoint",
             EndpointFunctionName = "RunGetAsync",
             RouteName = "/getCustomGottenEntityById/{{id_param_name}}",
-            
         };
         GetListOperation = new EntityGeneratorGetListOperationConfiguration
         {
