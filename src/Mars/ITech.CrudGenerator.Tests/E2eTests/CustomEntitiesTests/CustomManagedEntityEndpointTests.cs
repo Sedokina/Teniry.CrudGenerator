@@ -6,7 +6,7 @@ using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.UpdateC
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 
-namespace ITech.CrudGenerator.Tests.E2eTests.SimpleEntitiesTests;
+namespace ITech.CrudGenerator.Tests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
 public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
@@ -16,7 +16,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("customizedManagedEntityCreate")]
-    public async Task Should_CreateCustomizedEntity(string endpoint)
+    public async Task Should_CreateEntity(string endpoint)
     {
         // Act
         var response = await _httpClient
@@ -38,10 +38,10 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("customizedManagedEntityUpdate/{0}")]
-    public async Task Should_UpdateCustomizedEntity(string endpoint)
+    public async Task Should_UpdateEntity(string endpoint)
     {
         // Arrange
-        var createdEntity = await CreateSimpleEntityAsync("Entity to update");
+        var createdEntity = await CreateEntityAsync("Entity to update");
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
@@ -60,10 +60,10 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("customizedManagedEntityDelete/customManagedEntity/{0}")]
-    public async Task Should_DeleteCustomizedEntity(string endpoint)
+    public async Task Should_DeleteEntity(string endpoint)
     {
         // Arrange
-        var createdSimpleEntity = await CreateSimpleEntityAsync("Entity to delete");
+        var createdSimpleEntity = await CreateEntityAsync("Entity to delete");
 
         // Act
         var response = await _httpClient.DeleteAsync(string.Format(endpoint, createdSimpleEntity.Id));
@@ -89,7 +89,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    private async Task<CustomManagedEntity> CreateSimpleEntityAsync(string name)
+    private async Task<CustomManagedEntity> CreateEntityAsync(string name)
     {
         var entity = new CustomManagedEntity { Id = Guid.NewGuid(), Name = name };
         await _db.AddAsync(entity);

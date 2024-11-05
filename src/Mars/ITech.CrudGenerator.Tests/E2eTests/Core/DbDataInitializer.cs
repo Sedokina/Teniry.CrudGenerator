@@ -1,4 +1,5 @@
 using ITech.CrudGenerator.TestApi;
+using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeDefaultSortEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
@@ -59,12 +60,21 @@ public static class DbDataInitializer
                 NotIdGuid = new Guid("f6c5e2d1-b438-4faf-8521-b775d783f6f3"),
             }
         ]);
-        
+
         await db.AddRangeAsync([
             new SimpleTypeDefaultSortEntity { Id = Guid.NewGuid(), Name = "First Entity Name" },
             new SimpleTypeDefaultSortEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
         ]);
-        
+
+        await db.AddRangeAsync([
+            new CustomGottenEntity
+            {
+                Id = new Guid("27ed3a08-c92e-4c8d-b515-f793eb65cacd"), 
+                Name = "First Entity Name"
+            },
+            new CustomGottenEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
+        ]);
+
         // TODO: decide on Transactional behaviour
         db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
 
