@@ -5,18 +5,13 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.EndpointsTests;
 
-public class DeleteCustomizedEntityEndpointTests
+public class DeleteCustomizedManageEntityEndpointTests
 {
-    private readonly Mock<ICommandDispatcher> _commandDispatcher;
-
-    public DeleteCustomizedEntityEndpointTests()
-    {
-        _commandDispatcher = new();
-    }
+    private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
     [InlineData("CustomizedNameDeleteManageEntityEndpoint")]
-    public async Task Should_CustomizeClassNames(string typeName)
+    public void Should_CustomizeClassNames(string typeName)
     {
         // Act
         var foundTypes = AppDomain.CurrentDomain.GetAssemblies()

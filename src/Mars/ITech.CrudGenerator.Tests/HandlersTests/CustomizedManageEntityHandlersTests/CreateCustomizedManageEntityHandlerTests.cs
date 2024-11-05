@@ -5,13 +5,13 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
 
-public class CreateCustomizedEntityHandlerTests
+public class CreateCustomizedManageEntityHandlerTests
 {
     private readonly CustomizedNameCreateManageEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomizedNameCreateManageEntityHandler _sut;
 
-    public CreateCustomizedEntityHandlerTests()
+    public CreateCustomizedManageEntityHandlerTests()
     {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);

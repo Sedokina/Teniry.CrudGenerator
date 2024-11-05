@@ -6,18 +6,13 @@ using Moq;
 
 namespace ITech.CrudGenerator.Tests.EndpointsTests;
 
-public class CreateCustomizedEntityEndpointTests
+public class CreateCustomizedManageEntityEndpointTests
 {
-    private readonly Mock<ICommandDispatcher> _commandDispatcher;
+    private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
-    public CreateCustomizedEntityEndpointTests()
-    {
-        _commandDispatcher = new();
-    }
-    
     [Theory]
     [InlineData("CustomizedNameCreateManageEntityEndpoint")]
-    public async Task Should_CustomizeClassNames(string typeName)
+    public void Should_CustomizeClassNames(string typeName)
     {
         // Act
         var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
