@@ -9,8 +9,8 @@ namespace ITech.CrudGenerator.Tests.HandlersTests.CustomGottenEntityHandlerTests
 public class GetCustomGottenEntitiesListHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly GetCustomGottenEntitiesQuery _query;
-    private readonly GetCustomGottenEntitiesHandler _sut;
+    private readonly CustomizedNameGetCustomEntitiesListQuery _query;
+    private readonly CustomizedNameGetCustomEntitiesListHandler _sut;
 
     public GetCustomGottenEntitiesListHandlerTests()
     {
@@ -36,6 +36,7 @@ public class GetCustomGottenEntitiesListHandlerTests
         var entities = await _sut.HandleAsync(_query, new CancellationToken());
 
         // Assert
+        entities.Should().BeOfType<CustomizedNameGetCustomEntitiesListDto>();
         entities.Page.Should().NotBeNull();
         entities.Page.CurrentPageIndex.Should().Be(1);
         entities.Page.PageSize.Should().Be(10);

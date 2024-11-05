@@ -9,8 +9,8 @@ namespace ITech.CrudGenerator.Tests.HandlersTests.CustomGottenEntityHandlerTests
 public class GetCustomGottenEntityHandlerTests
 {
     private readonly Mock<TestMongoDb> _db;
-    private readonly GetCustomGottenEntityQuery _query;
-    private readonly GetCustomGottenEntityHandler _sut;
+    private readonly CustomizedNameGetCustomEntityQuery _query;
+    private readonly CustomizedNameGetCustomEntityHandler _sut;
 
     public GetCustomGottenEntityHandlerTests()
     {
@@ -46,6 +46,7 @@ public class GetCustomGottenEntityHandlerTests
         var entity = await _sut.HandleAsync(_query, new CancellationToken());
 
         // Assert
+        entity.Should().BeOfType<CustomizedNameGetCustomEntityDto>();
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
         _db.Verify(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),

@@ -1,5 +1,5 @@
 using ITech.Cqrs.Cqrs.Queries;
-using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntities;
+using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.GetCustomGottenEntity;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomGottenEntityEndpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
@@ -11,7 +11,7 @@ public class GetCustomGottenEntityEndpointTests
     private readonly Mock<IQueryDispatcher> _queryDispatcher = new();
 
     [Theory]
-    [InlineData("GetCustomGottenEntityEndpoint")]
+    [InlineData("CustomizedNameGetCustomEntityEndpoint")]
     public void Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -27,12 +27,12 @@ public class GetCustomGottenEntityEndpointTests
     public async Task Should_ReturnCorrectResult()
     {
         // Act
-        var actual = await GetCustomGottenEntitiesEndpoint
-            .GetAsync(new GetCustomGottenEntitiesQuery(),
+        var actual = await CustomizedNameGetCustomEntityEndpoint
+            .RunGetAsync(Guid.NewGuid(),
                 _queryDispatcher.Object,
                 new CancellationToken());
 
         // Assert
-        actual.Should().BeOfType<Ok<CustomGottenEntitiesDto>>();
+        actual.Should().BeOfType<Ok<CustomizedNameGetCustomEntityDto>>();
     }
 }

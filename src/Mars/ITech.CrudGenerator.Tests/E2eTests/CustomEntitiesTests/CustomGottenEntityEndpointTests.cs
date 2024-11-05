@@ -12,7 +12,7 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
     
     [Theory]
-    [InlineData("customGottenEntity/{0}")]
+    [InlineData("getCustomGottenEntityById/{0}")]
     public async Task Should_GetEntity(string endpoint)
     {
         // Arrange
@@ -25,14 +25,14 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomGottenEntityDto>();
+        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntityDto>();
         actual.Should().NotBeNull();
         actual!.Id.Should().Be(entityId);
         actual.Name.Should().NotBeEmpty();
     }
 
     [Theory]
-    [InlineData("customGottenEntity?page=1&pageSize=10")]
+    [InlineData("getAllCustomGottenEntitiesList?page=1&pageSize=10")]
     public async Task Should_GetEntitiesList(string endpoint)
     {
         // Act
@@ -42,7 +42,7 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomGottenEntitiesDto>();
+        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntitiesListDto>();
         actual.Should().NotBeNull();
         actual!.Page.PageSize.Should().BeGreaterThan(0);
         actual.Page.CurrentPageIndex.Should().BeGreaterThan(0);
