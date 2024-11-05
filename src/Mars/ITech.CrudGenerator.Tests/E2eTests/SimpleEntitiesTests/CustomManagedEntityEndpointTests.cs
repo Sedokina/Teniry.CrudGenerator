@@ -15,18 +15,18 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
-    [InlineData("customizedManageEntityCreate")]
+    [InlineData("customizedManagedEntityCreate")]
     public async Task Should_CreateCustomizedEntity(string endpoint)
     {
         // Act
         var response = await _httpClient
-            .PostAsJsonAsync(endpoint, new CustomizedNameCreateManageEntityCommand { Name = "My new entity" });
+            .PostAsJsonAsync(endpoint, new CustomizedNameCreateManagedEntityCommand { Name = "My new entity" });
         response.Should().FailIfNotSuccessful();
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameCreatedManageEntityDto>();
+        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameCreatedManagedEntityDto>();
         actual.Should().NotBeNull();
         actual!.Id.Should().NotBeEmpty();
 
@@ -37,7 +37,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
     }
 
     [Theory]
-    [InlineData("customizedManageEntityUpdate/{0}")]
+    [InlineData("customizedManagedEntityUpdate/{0}")]
     public async Task Should_UpdateCustomizedEntity(string endpoint)
     {
         // Arrange
@@ -46,7 +46,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new CustomizedNameUpdateManageEntityCommand(createdEntity.Id) { Name = "Updated entity name" });
+            new CustomizedNameUpdateManagedEntityCommand(createdEntity.Id) { Name = "Updated entity name" });
         response.Should().FailIfNotSuccessful();
 
         // Assert correct response
@@ -59,7 +59,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
     }
 
     [Theory]
-    [InlineData("customizedManageEntityDelete/customManagedEntity/{0}")]
+    [InlineData("customizedManagedEntityDelete/customManagedEntity/{0}")]
     public async Task Should_DeleteCustomizedEntity(string endpoint)
     {
         // Arrange

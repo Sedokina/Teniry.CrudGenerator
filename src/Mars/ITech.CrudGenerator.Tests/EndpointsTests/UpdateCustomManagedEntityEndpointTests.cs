@@ -10,8 +10,8 @@ public class UpdateCustomManagedEntityEndpointTests
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameUpdateManageEntityEndpoint")]
-    [InlineData("CustomizedNameUpdateManageEntityViewModel")]
+    [InlineData("CustomizedNameUpdateManagedEntityEndpoint")]
+    [InlineData("CustomizedNameUpdateManagedEntityViewModel")]
     public void Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -27,9 +27,9 @@ public class UpdateCustomManagedEntityEndpointTests
     public async Task Should_ReturnCorrectValue()
     {
         // Act
-        var actual = await CustomizedNameUpdateManageEntityEndpoint
+        var actual = await CustomizedNameUpdateManagedEntityEndpoint
             .RunUpdateAsync(Guid.NewGuid(),
-                new CustomizedNameUpdateManageEntityViewModel(),
+                new CustomizedNameUpdateManagedEntityViewModel(),
                 _commandDispatcher.Object,
                 new CancellationToken());
 

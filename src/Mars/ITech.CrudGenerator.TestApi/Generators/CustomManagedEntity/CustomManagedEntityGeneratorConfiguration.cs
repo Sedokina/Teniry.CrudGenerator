@@ -11,13 +11,13 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             // Generate = false,
             // Operation = "Createll",
             // OperationGroup = "CreateLCurrency",
-            CommandName = "CustomizedNameCreateManageEntityCommand",
-            HandlerName = "CustomizedNameCreateManageEntityHandler",
-            DtoName = "CustomizedNameCreatedManageEntityDto",
+            CommandName = "CustomizedNameCreateManagedEntityCommand",
+            HandlerName = "CustomizedNameCreateManagedEntityHandler",
+            DtoName = "CustomizedNameCreatedManagedEntityDto",
             // GenerateEndpoint = true,
-            EndpointClassName = "CustomizedNameCreateManageEntityEndpoint",
+            EndpointClassName = "CustomizedNameCreateManagedEntityEndpoint",
             EndpointFunctionName = "RunCreateAsync",
-            RouteName = "/customizedManageEntityCreate"
+            RouteName = "/customizedManagedEntityCreate"
         };
 
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
@@ -25,12 +25,12 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             // Generate = true,
             // Operation = "Del",
             // OperationGroup = "DeleLCurrency",
-            CommandName = "CustomizedNameDeleteManageEntityCommand",
-            HandlerName = "CustomizedNameDeleteManageEntityHandler",
+            CommandName = "CustomizedNameDeleteManagedEntityCommand",
+            HandlerName = "CustomizedNameDeleteManagedEntityHandler",
             // GenerateEndpoint = true,
-            EndpointClassName = "CustomizedNameDeleteManageEntityEndpoint",
+            EndpointClassName = "CustomizedNameDeleteManagedEntityEndpoint",
             EndpointFunctionName = "RunDeleteAsync",
-            RouteName = "/customizedManageEntityDelete/{{entity_name}}/{{id_param_name}}"
+            RouteName = "/customizedManagedEntityDelete/{{entity_name}}/{{id_param_name}}"
         };
 
         UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
@@ -38,13 +38,13 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             // Generate = true,
             // Operation = "Upd",
             // OperationGroup = "UpddCurcy",
-            CommandName = "CustomizedNameUpdateManageEntityCommand",
-            HandlerName = "CustomizedNameUpdateManageEntityHandler",
+            CommandName = "CustomizedNameUpdateManagedEntityCommand",
+            HandlerName = "CustomizedNameUpdateManagedEntityHandler",
             // GenerateEndpoint = true,
-            ViewModelName = "CustomizedNameUpdateManageEntityViewModel",
-            EndpointClassName = "CustomizedNameUpdateManageEntityEndpoint",
+            ViewModelName = "CustomizedNameUpdateManagedEntityViewModel",
+            EndpointClassName = "CustomizedNameUpdateManagedEntityEndpoint",
             EndpointFunctionName = "RunUpdateAsync",
-            RouteName = "/customizedManageEntityUpdate/{{id_param_name}}"
+            RouteName = "/customizedManagedEntityUpdate/{{id_param_name}}"
         };
 
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration()

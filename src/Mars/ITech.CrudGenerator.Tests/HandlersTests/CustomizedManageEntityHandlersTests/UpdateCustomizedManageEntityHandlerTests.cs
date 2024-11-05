@@ -8,9 +8,9 @@ namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlers
 
 public class UpdateCustomizedManageEntityHandlerTests
 {
-    private readonly CustomizedNameUpdateManageEntityCommand _command;
+    private readonly CustomizedNameUpdateManagedEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly CustomizedNameUpdateManageEntityHandler _sut;
+    private readonly CustomizedNameUpdateManagedEntityHandler _sut;
 
     public UpdateCustomizedManageEntityHandlerTests()
     {

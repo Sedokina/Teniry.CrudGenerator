@@ -7,9 +7,9 @@ namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlers
 
 public class DeleteCustomManagedEntityHandlerTests
 {
-    private readonly CustomizedNameDeleteManageEntityCommand _command;
+    private readonly CustomizedNameDeleteManagedEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly CustomizedNameDeleteManageEntityHandler _sut;
+    private readonly CustomizedNameDeleteManagedEntityHandler _sut;
 
     public DeleteCustomManagedEntityHandlerTests()
     {

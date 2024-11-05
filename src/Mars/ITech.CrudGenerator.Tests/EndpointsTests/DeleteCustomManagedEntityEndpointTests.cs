@@ -10,7 +10,7 @@ public class DeleteCustomManagedEntityEndpointTests
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameDeleteManageEntityEndpoint")]
+    [InlineData("CustomizedNameDeleteManagedEntityEndpoint")]
     public void Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -26,7 +26,7 @@ public class DeleteCustomManagedEntityEndpointTests
     public async Task Should_ReturnCorrectValue()
     {
         // Act
-        var actual = await CustomizedNameDeleteManageEntityEndpoint
+        var actual = await CustomizedNameDeleteManagedEntityEndpoint
             .RunDeleteAsync(Guid.NewGuid(), 
                 _commandDispatcher.Object,
                 new CancellationToken());

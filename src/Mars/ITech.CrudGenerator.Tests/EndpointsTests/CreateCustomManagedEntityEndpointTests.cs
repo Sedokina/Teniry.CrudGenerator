@@ -11,7 +11,7 @@ public class CreateCustomManagedEntityEndpointTests
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameCreateManageEntityEndpoint")]
+    [InlineData("CustomizedNameCreateManagedEntityEndpoint")]
     public void Should_CustomizeClassNames(string typeName)
     {
         // Act
@@ -27,13 +27,13 @@ public class CreateCustomManagedEntityEndpointTests
     public async Task Should_ReturnCorrectValue()
     {
         // Act
-        var actual = await CustomizedNameCreateManageEntityEndpoint
+        var actual = await CustomizedNameCreateManagedEntityEndpoint
             .RunCreateAsync(
-                new CustomizedNameCreateManageEntityCommand(),
+                new CustomizedNameCreateManagedEntityCommand(),
                 _commandDispatcher.Object,
                 new CancellationToken());
 
         // Assert
-        actual.Should().BeOfType<Created<CustomizedNameCreatedManageEntityDto>>();
+        actual.Should().BeOfType<Created<CustomizedNameCreatedManagedEntityDto>>();
     }
 }

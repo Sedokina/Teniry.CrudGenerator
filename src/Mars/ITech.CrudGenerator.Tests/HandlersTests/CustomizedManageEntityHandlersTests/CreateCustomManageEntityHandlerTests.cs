@@ -7,9 +7,9 @@ namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlers
 
 public class CreateCustomManageEntityHandlerTests
 {
-    private readonly CustomizedNameCreateManageEntityCommand _command;
+    private readonly CustomizedNameCreateManagedEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
-    private readonly CustomizedNameCreateManageEntityHandler _sut;
+    private readonly CustomizedNameCreateManagedEntityHandler _sut;
 
     public CreateCustomManageEntityHandlerTests()
     {
@@ -46,7 +46,7 @@ public class CreateCustomManageEntityHandlerTests
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
 
-        createdEntityDto.GetType().Name.Should().Be("CustomizedNameCreatedManageEntityDto");
+        createdEntityDto.GetType().Name.Should().Be("CustomizedNameCreatedManagedEntityDto");
     }
 
     [Fact]
