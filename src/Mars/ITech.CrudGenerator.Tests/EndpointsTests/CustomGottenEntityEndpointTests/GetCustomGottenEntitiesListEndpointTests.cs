@@ -1,6 +1,7 @@
 using ITech.Cqrs.Cqrs.Queries;
 using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomGottenEntityEndpoints;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
@@ -14,13 +15,8 @@ public class GetCustomGottenEntitiesListEndpointTests
     [InlineData("CustomizedNameGetCustomEntitiesListEndpoint")]
     public void Should_CustomizeClassNames(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-        
         // Assert
-        foundTypes.Should().NotBeEmpty();
+        typeof(Program).Assembly.Should().ContainType(typeName);
     }
     
     [Fact]

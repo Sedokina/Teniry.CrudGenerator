@@ -1,3 +1,5 @@
+using ITech.CrudGenerator.Tests.E2eTests.Core;
+
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
 
 public class GetCustomManagedEntitiesListHandlerTests
@@ -7,12 +9,7 @@ public class GetCustomManagedEntitiesListHandlerTests
     [InlineData("GetCustomManagedEntitiesHandler")]
     public void Should_NotGenerateGetHandler(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-
-        // Assert
-        foundTypes.Should().BeEmpty();
+       // Assert
+       typeof(Program).Assembly.Should().NotContainType(typeName);
     }
 }

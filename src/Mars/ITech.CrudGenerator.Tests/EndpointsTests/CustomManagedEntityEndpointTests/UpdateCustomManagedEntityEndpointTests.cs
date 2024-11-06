@@ -1,5 +1,6 @@
 using ITech.Cqrs.Cqrs.Commands;
 using ITech.CrudGenerator.TestApi.Endpoints.CustomManagedEntityEndpoints;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
@@ -14,13 +15,8 @@ public class UpdateCustomManagedEntityEndpointTests
     [InlineData("CustomizedNameUpdateManagedEntityViewModel")]
     public void Should_CustomizeClassNames(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-        
         // Assert
-        foundTypes.Should().NotBeEmpty();
+        typeof(Program).Assembly.Should().ContainType(typeName);
     }
     
     [Fact]

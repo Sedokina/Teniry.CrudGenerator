@@ -38,7 +38,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
         GetListOperation = new EntityGeneratorGetListOperationConfiguration
         {
             // Operation = "Upd",
-            // OperationGroup = "UpddCurcy",
             OperationGroup = "CustomGottenEntityGetListOperationCustomNs",
             QueryName = "CustomizedNameGetCustomEntitiesListQuery",
             HandlerName = "CustomizedNameGetCustomEntitiesListHandler",

@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityDeleteOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
@@ -60,15 +61,7 @@ public class DeleteCustomManagedEntityHandlerTests
     [InlineData("CustomizedNameDeleteManagedEntityHandler")]
     public void Should_BeInCustomNamespace(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-
         // Assert
-        foundTypes.Should().AllSatisfy(x =>
-        {
-            x.Namespace.Should().EndWith("ManagedEntityDeleteOperationCustomNs");
-        });
+        typeof(Program).Assembly.Should().BeInNamespaceThatEndsWith(typeName, "ManagedEntityDeleteOperationCustomNs");
     }
 }

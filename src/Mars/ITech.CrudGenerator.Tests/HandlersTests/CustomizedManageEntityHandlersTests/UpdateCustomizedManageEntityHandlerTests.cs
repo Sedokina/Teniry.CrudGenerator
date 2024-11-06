@@ -2,6 +2,7 @@ using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 
 namespace ITech.CrudGenerator.Tests.HandlersTests.CustomizedManageEntityHandlersTests;
@@ -62,15 +63,8 @@ public class UpdateCustomizedManageEntityHandlerTests
     [InlineData("CustomizedNameUpdateManagedEntityHandler")]
     public void Should_BeInCustomNamespace(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-
         // Assert
-        foundTypes.Should().AllSatisfy(x =>
-        {
-            x.Namespace.Should().EndWith("ManagedEntityUpdateOperationCustomNs");
-        });
+        typeof(Program).Assembly.Should().BeInNamespaceThatEndsWith(typeName, "ManagedEntityUpdateOperationCustomNs");
+        
     }
 }

@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 using Moq.EntityFrameworkCore;
 
@@ -61,15 +62,8 @@ public class GetCustomGottenEntitiesListHandlerTests
     [InlineData("CustomizedNameGetCustomEntitiesListDto")]
     public void Should_BeInCustomNamespace(string typeName)
     {
-        // Act
-        var foundTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(x => x.GetTypes())
-            .Where(x => x.Name.Equals(typeName));
-
         // Assert
-        foundTypes.Should().AllSatisfy(x =>
-        {
-            x.Namespace.Should().EndWith("CustomGottenEntityGetListOperationCustomNs");
-        });
+        typeof(Program).Assembly.Should()
+            .BeInNamespaceThatEndsWith(typeName, "CustomGottenEntityGetListOperationCustomNs");
     }
 }
