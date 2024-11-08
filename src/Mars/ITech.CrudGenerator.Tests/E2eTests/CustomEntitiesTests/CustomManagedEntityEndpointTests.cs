@@ -83,7 +83,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
     public async Task Should_NotGenerateGetEndpoints(string endpoint)
     {
         // Act
-        var response = await _httpClient.GetAsync(endpoint);
+        var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Options, endpoint));
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

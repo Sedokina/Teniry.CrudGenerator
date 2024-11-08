@@ -10,14 +10,14 @@ namespace ITech.CrudGenerator.Tests.E2eTests.CustomEntitiesTests;
 public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
 {
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
-    
+
     [Theory]
     [InlineData("getCustomGottenEntityById/{0}")]
     public async Task Should_GetEntity(string endpoint)
     {
         // Arrange
         var entityId = new Guid("27ed3a08-c92e-4c8d-b515-f793eb65cacd");
-        
+
         // Act
         var response = await _httpClient.GetAsync(string.Format(endpoint, entityId));
         response.Should().FailIfNotSuccessful();
@@ -53,7 +53,7 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
             x.Name.Should().NotBeNullOrEmpty();
         });
     }
-    
+
     [Theory]
     [InlineData("getAllCustomGottenEntitiesList?page=1&pageSize=10")]
     public async Task Should_SortListWithDefaultSort(string endpoint)
@@ -70,15 +70,15 @@ public class CustomGottenEntityEndpointTests(TestApiFixture fixture)
         actual!.Items.Should().HaveCountGreaterThan(0)
             .And.BeInDescendingOrder(x => x.Name);
     }
-    
+
     [Theory]
-    [InlineData("POST", "customGottenEntity/create")]
-    [InlineData("DELETE", "customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/delete")]
-    [InlineData("PUT", "customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/update")]
-    public async Task Should_NotGenerateManageEndpoints(string httpMethod, string endpoint)
+    [InlineData("customGottenEntity/create")]
+    [InlineData("customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/delete")]
+    [InlineData("customGottenEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/update")]
+    public async Task Should_NotGenerateManageEndpoints(string endpoint)
     {
         // Act
-        var response = await _httpClient.SendAsync(new HttpRequestMessage(new HttpMethod(httpMethod), endpoint));
+        var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Options, endpoint));
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
