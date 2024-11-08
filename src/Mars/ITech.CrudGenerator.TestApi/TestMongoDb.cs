@@ -2,6 +2,7 @@ using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
+using ITech.CrudGenerator.TestApi.Generators.CustomOperationNameEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
@@ -42,5 +43,6 @@ public class TestMongoDb : DbContext
             .HasElementName("_id");
         modelBuilder.Entity<CustomManagedEntity>().ToCollection("customManagedEntities");
         modelBuilder.Entity<CustomGottenEntity>().ToCollection("customGottenEntities");
+        modelBuilder.Entity<CustomOperationNameEntity>().ToCollection("customOperationNameEntities");
     }
 }

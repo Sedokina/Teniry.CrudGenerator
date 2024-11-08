@@ -25,7 +25,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
 
         GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
         {
-            // Operation = "Upd",
             OperationGroup = "CustomGottenEntityGetOperationCustomNs",
             QueryName = "CustomizedNameGetCustomEntityQuery",
             HandlerName = "CustomizedNameGetCustomEntityHandler",
@@ -37,7 +36,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
         };
         GetListOperation = new EntityGeneratorGetListOperationConfiguration
         {
-            // Operation = "Upd",
             OperationGroup = "CustomGottenEntityGetListOperationCustomNs",
             QueryName = "CustomizedNameGetCustomEntitiesListQuery",
             HandlerName = "CustomizedNameGetCustomEntitiesListHandler",

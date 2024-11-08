@@ -8,7 +8,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
     {
         CreateOperation = new EntityGeneratorCreateOperationConfiguration
         {
-            // Operation = "Createll",
             OperationGroup = "ManagedEntityCreateOperationCustomNs",
             CommandName = "CustomizedNameCreateManagedEntityCommand",
             HandlerName = "CustomizedNameCreateManagedEntityHandler",
@@ -21,7 +20,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
 
         DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
         {
-            // Operation = "Del",
             OperationGroup = "ManagedEntityDeleteOperationCustomNs",
             CommandName = "CustomizedNameDeleteManagedEntityCommand",
             HandlerName = "CustomizedNameDeleteManagedEntityHandler",
@@ -33,7 +31,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
 
         UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
         {
-            // Operation = "Upd",
             OperationGroup = "ManagedEntityUpdateOperationCustomNs",
             CommandName = "CustomizedNameUpdateManagedEntityCommand",
             HandlerName = "CustomizedNameUpdateManagedEntityHandler",
