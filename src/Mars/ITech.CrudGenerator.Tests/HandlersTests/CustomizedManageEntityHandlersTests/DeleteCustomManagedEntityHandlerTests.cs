@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityDeleteOperationCustomNs;
-using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 

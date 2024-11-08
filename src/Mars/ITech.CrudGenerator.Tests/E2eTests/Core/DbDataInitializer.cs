@@ -1,5 +1,5 @@
 using ITech.CrudGenerator.TestApi;
-using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;

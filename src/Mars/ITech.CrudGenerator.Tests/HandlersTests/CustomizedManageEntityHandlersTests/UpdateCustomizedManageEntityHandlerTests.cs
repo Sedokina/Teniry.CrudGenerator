@@ -1,7 +1,7 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
-using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 

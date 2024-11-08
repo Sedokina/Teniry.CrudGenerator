@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
-using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
-using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
+using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;

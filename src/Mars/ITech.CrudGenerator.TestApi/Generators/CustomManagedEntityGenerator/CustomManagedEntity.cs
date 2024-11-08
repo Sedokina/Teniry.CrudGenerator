@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.TestApi.Generators.CustomManagedEntity;
+namespace ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 
 public class CustomManagedEntity
 {

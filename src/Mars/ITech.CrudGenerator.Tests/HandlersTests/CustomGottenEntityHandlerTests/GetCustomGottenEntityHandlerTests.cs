@@ -1,7 +1,7 @@
 using ITech.Cqrs.Domain.Exceptions;
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
-using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 

@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.Abstractions.Configuration;
 
-namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 
 public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity>
 {

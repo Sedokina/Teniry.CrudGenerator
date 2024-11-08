@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
-using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 using Moq;
 using Moq.EntityFrameworkCore;

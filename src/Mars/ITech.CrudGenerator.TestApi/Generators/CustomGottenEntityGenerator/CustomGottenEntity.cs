@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntity;
+namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 
 public class CustomGottenEntity
 {
