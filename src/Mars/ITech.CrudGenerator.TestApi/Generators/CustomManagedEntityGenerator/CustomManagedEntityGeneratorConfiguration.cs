@@ -12,7 +12,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             CommandName = "CustomizedNameCreateManagedEntityCommand",
             HandlerName = "CustomizedNameCreateManagedEntityHandler",
             DtoName = "CustomizedNameCreatedManagedEntityDto",
-            // GenerateEndpoint = true,
             EndpointClassName = "CustomizedNameCreateManagedEntityEndpoint",
             EndpointFunctionName = "RunCreateAsync",
             RouteName = "/customizedManagedEntityCreate"
@@ -23,7 +22,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             OperationGroup = "ManagedEntityDeleteOperationCustomNs",
             CommandName = "CustomizedNameDeleteManagedEntityCommand",
             HandlerName = "CustomizedNameDeleteManagedEntityHandler",
-            // GenerateEndpoint = true,
             EndpointClassName = "CustomizedNameDeleteManagedEntityEndpoint",
             EndpointFunctionName = "RunDeleteAsync",
             RouteName = "/customizedManagedEntityDelete/{{entity_name}}/{{id_param_name}}"
@@ -34,7 +32,6 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             OperationGroup = "ManagedEntityUpdateOperationCustomNs",
             CommandName = "CustomizedNameUpdateManagedEntityCommand",
             HandlerName = "CustomizedNameUpdateManagedEntityHandler",
-            // GenerateEndpoint = true,
             ViewModelName = "CustomizedNameUpdateManagedEntityViewModel",
             EndpointClassName = "CustomizedNameUpdateManagedEntityEndpoint",
             EndpointFunctionName = "RunUpdateAsync",

@@ -29,7 +29,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
             QueryName = "CustomizedNameGetCustomEntityQuery",
             HandlerName = "CustomizedNameGetCustomEntityHandler",
             DtoName = "CustomizedNameGetCustomEntityDto",
-            // GenerateEndpoint = true
             EndpointClassName = "CustomizedNameGetCustomEntityEndpoint",
             EndpointFunctionName = "RunGetAsync",
             RouteName = "/getCustomGottenEntityById/{{id_param_name}}",
@@ -40,7 +39,6 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
             QueryName = "CustomizedNameGetCustomEntitiesListQuery",
             HandlerName = "CustomizedNameGetCustomEntitiesListHandler",
             DtoName = "CustomizedNameGetCustomEntitiesListDto",
-            // GenerateEndpoint = true
             EndpointClassName = "CustomizedNameGetCustomEntitiesListEndpoint",
             EndpointFunctionName = "RunGetListAsync",
             RouteName = "/getAllCustomGottenEntitiesList",
