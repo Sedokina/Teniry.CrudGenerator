@@ -3,9 +3,12 @@ using ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.CustomOperationNameEntityGenerator;
+using ITech.CrudGenerator.TestApi.Generators.IntIdEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleEntityGenerator;
 using ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
 
@@ -44,5 +47,20 @@ public class TestMongoDb : DbContext
         modelBuilder.Entity<CustomManagedEntity>().ToCollection("customManagedEntities");
         modelBuilder.Entity<CustomGottenEntity>().ToCollection("customGottenEntities");
         modelBuilder.Entity<CustomOperationNameEntity>().ToCollection("customOperationNameEntities");
+        modelBuilder.Entity<IntIdEntity>().ToCollection("intIdEntities");
+        modelBuilder.Entity<IntIdEntity>().Property(x => x.Id)
+            .HasValueGenerator<MongoEfIntIdSequenceGenerator<IntIdEntity>>();
+    }
+}
+
+public class MongoEfIntIdSequenceGenerator<T> : ValueGenerator<int> where T : class
+{
+    public override bool GeneratesTemporaryValues => false;
+
+    public override int Next(EntityEntry entry)
+    {
+        var currInd = entry.Context.Set<T>().Count();
+
+        return currInd + 1;
     }
 }
