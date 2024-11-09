@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
@@ -7,10 +6,8 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfi
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -257,52 +254,43 @@ internal class
 
     public void GenerateEndpoint(string a)
     {
-        var methodBuilderData = new MethodBuilderData
-        {
-            XmlDoc = @$"
+        var endpointClass = new ClassBuilder(_endpointClassName)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Queries",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
+
+        var methodXmlDoc = @$"
 /// <summary>
 ///     Get {Scheme.EntityScheme.EntityTitle} by id
 /// </summary>
 /// <response code=""200"">Returns full {Scheme.EntityScheme.EntityTitle} data</response>
-",
-            Modifiers =
-            [
+";
+        var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
                 SyntaxKind.AsyncKeyword
-            ],
-            ReturnType = "Task<IResult>",
-            Name = Scheme.Configuration.Endpoint.FunctionName,
-            Parameters = EntityScheme.PrimaryKeys
+            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters(EntityScheme.PrimaryKeys
                 .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
                 .Append(new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
-                .ToList(),
-        };
+                .ToList())
+            .WithXmlDoc(methodXmlDoc)
+            .WithProducesResponseTypeAttribute(_dtoName);
 
-        var methodBuilder = MethodBuilder.FromData(methodBuilderData)
-            .WithProducesResponseTypeAttribute(_dtoName)
-            .BodyWithLocalVariableFromClass("query", _queryName, EntityScheme.PrimaryKeys)
-            .BodyWithObjectGenericMethodCallForResult("queryDispatcher", "DispatchAsync", ["query", "cancellation"],
-                [_queryName, _dtoName], "result")
-            .BodyWithReturnTypedResultOk("result");
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
+            .InitVariableFromGenericMethodCall("result", "queryDispatcher", "DispatchAsync", [_queryName, _dtoName],
+                ["query", "cancellation"])
+            .ReturnTypedResultOk("result");
 
-        var classBuilderData = new ClassBuilderData
-        {
-            EntityTitle = Scheme.EntityScheme.EntityTitle,
-            Usings =
-            [
-                "Microsoft.AspNetCore.Mvc",
-                "ITech.Cqrs.Cqrs.Queries",
-                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
-            ],
-            Namespace = Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
-            ClassName = _endpointClassName,
-            Method = methodBuilder
-        };
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        endpointClass.WithMethod(methodBuilder.Build());
 
-        var code = ClassBuilder.FromData(classBuilderData).BuildAsString();
-        Context.AddSource($"{_endpointClassName}.g.cs", code);
+        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass.BuildAsString());
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
@@ -333,194 +321,4 @@ internal class
     //         Scheme.Configuration.Endpoint.Route,
     //         $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     // }
-}
-
-internal class MethodBuilderData
-{
-    public string XmlDoc { get; set; }
-    public string Name { get; set; }
-    public string ReturnType { get; set; }
-    public SyntaxKind[] Modifiers { get; set; }
-    public List<ParameterOfMethodBuilder> Parameters { get; set; }
-}
-
-internal class MethodBuilder
-{
-    private MethodDeclarationSyntax _methodDeclaration;
-    private BlockSyntax _body;
-
-    public static MethodBuilder FromData(MethodBuilderData data)
-    {
-        return new MethodBuilder(data.Modifiers, data.ReturnType, data.Name)
-            .WithParameters(data.Parameters)
-            .WithComment(data.XmlDoc);
-    }
-
-    public MethodBuilder(SyntaxKind[] modifiers, string returnType, string name)
-    {
-        var returnTypeSyntax = SyntaxFactory.ParseTypeName(returnType);
-        _methodDeclaration = SyntaxFactory.MethodDeclaration(returnTypeSyntax, name)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
-        _body = SyntaxFactory.Block();
-    }
-
-    // public MethodBuilder WithParameters(List<EntityProperty> properties)
-    // {
-    //     _methodDeclaration = _methodDeclaration.AddParameterListParameters(properties
-    //         .Select(x => SyntaxFactory
-    //             .Parameter(SyntaxFactory.Identifier(x.PropertyNameAsMethodParameterName))
-    //             .WithType(SyntaxFactory.ParseTypeName(x.TypeName)))
-    //         .ToArray());
-    //     return this;
-    // }
-
-    public MethodBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
-    {
-        _methodDeclaration = _methodDeclaration.AddParameterListParameters(properties
-            .Select(x =>
-            {
-                var a = x.GetAsMethodParameter();
-                return SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier(a.Name))
-                    .WithType(SyntaxFactory.ParseTypeName(a.Type));
-            }).ToArray());
-        return this;
-    }
-
-    public MethodBuilder WithComment(string comment)
-    {
-        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(comment));
-        return this;
-    }
-
-    public MethodBuilder WithProducesResponseTypeAttribute(string typeName, int statusCode = 200)
-    {
-        _methodDeclaration = _methodDeclaration.WithAttributeLists(SyntaxFactory.SingletonList(
-            SyntaxFactory.AttributeList(
-                SyntaxFactory.SingletonSeparatedList(
-                    SyntaxFactory.Attribute(
-                            SyntaxFactory.IdentifierName("ProducesResponseType"))
-                        .WithArgumentList(
-                            SyntaxFactory.AttributeArgumentList(
-                                SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        SyntaxFactory.AttributeArgument(
-                                            SyntaxFactory.TypeOfExpression(
-                                                SyntaxFactory.IdentifierName(typeName))),
-                                        SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                        SyntaxFactory.AttributeArgument(
-                                            SyntaxFactory.LiteralExpression(
-                                                SyntaxKind.NumericLiteralExpression,
-                                                SyntaxFactory.Literal(statusCode)))
-                                    })))))
-        ));
-        return this;
-    }
-
-    public MethodBuilder BodyWithLocalVariableFromClass(
-        string variableName,
-        string className,
-        List<EntityProperty> arguments)
-    {
-        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
-            SyntaxFactory.Token(SyntaxKind.NewKeyword),
-            SyntaxFactory.ParseTypeName(className),
-            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                arguments.Select(x => SyntaxFactory.Argument(
-                        SyntaxFactory.IdentifierName(x.PropertyNameAsMethodParameterName)))
-                    .ToArray()
-            )),
-            null
-        );
-
-        // Initialize query variable with query object value
-        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName), null,
-            SyntaxFactory.EqualsValueClause(initializationExpression));
-        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
-
-        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclaration));
-        return this;
-    }
-
-    public MethodBuilder BodyWithObjectGenericMethodCallForResult(
-        string objectName,
-        string methodName,
-        List<string> argumentNames,
-        List<string> genericTypeNames,
-        string variableName)
-    {
-        var dispatcherCall = SyntaxFactory.AwaitExpression(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName(objectName),
-                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodName))
-                        .WithTypeArgumentList(
-                            SyntaxFactory.TypeArgumentList(
-                                SyntaxFactory.SeparatedList<TypeSyntax>(
-                                    genericTypeNames.Select(SyntaxFactory.IdentifierName)
-                                )
-                            )
-                        )
-                ),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                    argumentNames.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
-                ))
-            )
-        );
-
-        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
-            null,
-            SyntaxFactory.EqualsValueClause(dispatcherCall));
-        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(
-                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
-        return this;
-    }
-
-    public MethodBuilder BodyWithReturnTypedResultOk(string variableName)
-    {
-        var returnStatement = SyntaxFactory.ReturnStatement(
-            SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName("TypedResults"),
-                    SyntaxFactory.IdentifierName("Ok")),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
-                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName(variableName))
-                ]))));
-        _body = _body.AddStatements(returnStatement);
-        return this;
-    }
-
-    public MethodDeclarationSyntax Build()
-    {
-        return _methodDeclaration.WithBody(_body);
-    }
-}
-
-public interface IMethodParameterOfMethodBuilder
-{
-    (string Type, string Name) GetAsMethodParameter();
-}
-
-internal class ParameterOfMethodBuilder : IMethodParameterOfMethodBuilder
-{
-    public string Type { get; set; }
-    public string Name { get; set; }
-
-    public ParameterOfMethodBuilder(string type, string name)
-    {
-        Type = type;
-        Name = name;
-    }
-
-    public (string Type, string Name) GetAsMethodParameter()
-    {
-        return (Type, Name);
-    }
 }

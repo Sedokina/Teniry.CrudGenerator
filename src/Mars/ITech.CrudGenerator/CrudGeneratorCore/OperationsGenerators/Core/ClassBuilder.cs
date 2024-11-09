@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -67,21 +66,4 @@ internal class ClassBuilder
         _methods.Add(endpointMethod);
         return this;
     }
-
-    public static ClassBuilder FromData(ClassBuilderData data)
-    {
-        return new ClassBuilder(data.ClassName)
-            .WithNamespace(data.Namespace)
-            .WithUsings(data.Usings)
-            .WithMethod(data.Method.Build());
-    }
-}
-
-internal class ClassBuilderData
-{
-    public EntityTitle EntityTitle { get; set; }
-    public List<string> Usings { get; set; } = [];
-    public string Namespace { get; set; }
-    public string ClassName { get; set; }
-    public MethodBuilder Method { get; set; }
 }
