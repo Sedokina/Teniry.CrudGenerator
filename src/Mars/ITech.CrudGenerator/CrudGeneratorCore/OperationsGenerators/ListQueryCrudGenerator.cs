@@ -162,7 +162,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         methodBuilder.WithBody(methodBodyBuilder.Build());
         endpointClass.WithMethod(methodBuilder.Build());
 
-        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass.BuildAsString());
+        WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
