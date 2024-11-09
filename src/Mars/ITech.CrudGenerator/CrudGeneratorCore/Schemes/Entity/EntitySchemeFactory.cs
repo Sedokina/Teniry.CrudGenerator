@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -158,14 +159,15 @@ internal class EntitySchemeFactory
 
     private static bool IsPrimaryKey(string className, string propertyName)
     {
-        var lower = propertyName.ToLower();
-        return lower.Equals("id") || lower.Equals($"{className}id") || lower.Equals("_id");
+        return propertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase) ||
+               propertyName.Equals($"{className}Id", StringComparison.InvariantCultureIgnoreCase) ||
+               propertyName.Equals("_id");
     }
 
     private static bool IsForeignKey(string propertyName)
     {
-        var lower = propertyName.ToLower();
-        return lower.EndsWith("id") || lower.EndsWith("_id");
+        return propertyName.EndsWith("id", StringComparison.InvariantCultureIgnoreCase) ||
+               propertyName.EndsWith("_id", StringComparison.CurrentCultureIgnoreCase);
     }
 
     /// <summary>
