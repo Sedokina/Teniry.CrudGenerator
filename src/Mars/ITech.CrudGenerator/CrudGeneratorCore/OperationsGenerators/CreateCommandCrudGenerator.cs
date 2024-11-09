@@ -95,12 +95,6 @@ internal class
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodXmlDoc = @$"
-/// <summary>
-///     Create {Scheme.EntityScheme.EntityTitle}
-/// </summary>
-/// <response code=""201"">New {Scheme.EntityScheme.EntityTitle} created</response>
-";
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
@@ -112,7 +106,10 @@ internal class
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
             .WithProducesResponseTypeAttribute(201)
-            .WithXmlDoc(methodXmlDoc);
+            .WithXmlDoc(
+                $"Create {Scheme.EntityScheme.EntityTitle}",
+                201,
+                $"New {Scheme.EntityScheme.EntityTitle} created");
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromGenericAsyncMethodCall("result", "commandDispatcher", "DispatchAsync",

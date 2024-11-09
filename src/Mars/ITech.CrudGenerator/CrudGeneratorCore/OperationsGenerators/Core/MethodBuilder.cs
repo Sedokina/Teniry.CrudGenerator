@@ -30,10 +30,17 @@ internal class MethodBuilder
             }).ToArray());
         return this;
     }
-
-    public MethodBuilder WithXmlDoc(string comment)
+    
+    
+    public MethodBuilder WithXmlDoc(string summary, int responseStatusCode, string response)
     {
-        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(comment));
+        var xmlDoc = @$"
+/// <summary>
+///     {summary}
+/// </summary>
+/// <response code=""{responseStatusCode}"">{response}</response>
+";
+        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
         return this;
     }
 

@@ -134,12 +134,6 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodXmlDoc = @$"
-/// <summary>
-///     Get {Scheme.EntityScheme.EntityTitle.PluralTitle}
-/// </summary>
-/// <response code=""200"">Returns {Scheme.EntityScheme.EntityTitle} list</response>
-";
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
@@ -151,7 +145,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
             .WithProducesResponseTypeAttribute(_dtoName)
-            .WithXmlDoc(methodXmlDoc);
+            .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
+                200,
+                $"Returns {Scheme.EntityScheme.EntityTitle} list");
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",

@@ -89,12 +89,6 @@ internal class
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodXmlDoc = @$"
-/// <summary>
-///     Get {Scheme.EntityScheme.EntityTitle} by id
-/// </summary>
-/// <response code=""200"">Returns full {Scheme.EntityScheme.EntityTitle} data</response>
-";
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
@@ -106,7 +100,9 @@ internal class
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
             .WithProducesResponseTypeAttribute(_dtoName)
-            .WithXmlDoc(methodXmlDoc);
+            .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle} by id",
+                200,
+                $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)

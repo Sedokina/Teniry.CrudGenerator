@@ -89,12 +89,6 @@ internal class UpdateCommandCrudGenerator
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodXmlDoc = @$"
-/// <summary>
-///     Update {Scheme.EntityScheme.EntityTitle}
-/// </summary>
-/// <response code=""204"">{Scheme.EntityScheme.EntityTitle} updated</response>
-";
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
@@ -107,7 +101,9 @@ internal class UpdateCommandCrudGenerator
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
             .WithProducesResponseTypeAttribute(204)
-            .WithXmlDoc(methodXmlDoc);
+            .WithXmlDoc($"Update {Scheme.EntityScheme.EntityTitle}",
+                204,
+                $"{Scheme.EntityScheme.EntityTitle} updated");
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)

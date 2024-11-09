@@ -71,12 +71,6 @@ internal class
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodXmlDoc = @$"
-/// <summary>
-///     Delete {Scheme.EntityScheme.EntityTitle}
-/// </summary>
-/// <response code=""204"">{Scheme.EntityScheme.EntityTitle} deleted</response>
-";
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.StaticKeyword,
@@ -88,7 +82,9 @@ internal class
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
             .WithProducesResponseTypeAttribute(204)
-            .WithXmlDoc(methodXmlDoc);
+            .WithXmlDoc($"Delete {Scheme.EntityScheme.EntityTitle}",
+                204,
+                $"{Scheme.EntityScheme.EntityTitle} deleted");
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
