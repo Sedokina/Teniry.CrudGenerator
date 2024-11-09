@@ -42,6 +42,7 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
         {
             Generate = false
         };
+        
         GetListOperation = new EntityGeneratorGetListOperationConfiguration()
         {
             Generate = false
