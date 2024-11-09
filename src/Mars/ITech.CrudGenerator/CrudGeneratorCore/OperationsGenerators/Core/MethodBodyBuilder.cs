@@ -43,7 +43,7 @@ internal class MethodBodyBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var dispatcherCall = SyntaxFactory.AwaitExpression(
+        var methodCall = SyntaxFactory.AwaitExpression(
             SyntaxFactory.InvocationExpression(
                 SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
@@ -66,7 +66,7 @@ internal class MethodBodyBuilder
 
         var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
             null,
-            SyntaxFactory.EqualsValueClause(dispatcherCall));
+            SyntaxFactory.EqualsValueClause(methodCall));
         var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
             .WithVariables(
                 SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
@@ -75,14 +75,13 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder CallMethod(
-        string variableName,
+    public MethodBodyBuilder CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var dispatcherCall = SyntaxFactory.AwaitExpression(
+        var methodCall = SyntaxFactory.AwaitExpression(
             SyntaxFactory.InvocationExpression(
                 SyntaxFactory.MemberAccessExpression(
                     SyntaxKind.SimpleMemberAccessExpression,
@@ -103,14 +102,7 @@ internal class MethodBodyBuilder
             )
         );
 
-        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
-            null,
-            SyntaxFactory.EqualsValueClause(dispatcherCall));
-        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
-            .WithVariables(
-                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
         return this;
     }
 
@@ -125,6 +117,18 @@ internal class MethodBodyBuilder
                 SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
                     SyntaxFactory.Argument(SyntaxFactory.IdentifierName(variableName))
                 ]))));
+        _body = _body.AddStatements(returnStatement);
+        return this;
+    }
+    
+    public MethodBodyBuilder ReturnTypedResultNoContent()
+    {
+        var returnStatement = SyntaxFactory.ReturnStatement(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("TypedResults"),
+                    SyntaxFactory.IdentifierName("NoContent"))));
         _body = _body.AddStatements(returnStatement);
         return this;
     }

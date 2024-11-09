@@ -44,6 +44,32 @@ internal class MethodBuilder
 
     public MethodBuilder WithProducesResponseTypeAttribute(string typeName, int statusCode = 200)
     {
+        ProducesResponseTypeAttribute(typeName, statusCode);
+        return this;
+    }
+
+    public MethodBuilder WithProducesResponseTypeAttribute(int statusCode = 200)
+    {
+        ProducesResponseTypeAttribute(null, statusCode);
+        return this;
+    }
+
+    private MethodBuilder ProducesResponseTypeAttribute(string? typeName, int statusCode)
+    {
+        var arguments = new List<SyntaxNodeOrToken>();
+        if (!string.IsNullOrEmpty(typeName))
+        {
+            arguments.AddRange(
+            [
+                SyntaxFactory.AttributeArgument(SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(typeName))),
+                SyntaxFactory.Token(SyntaxKind.CommaToken)
+            ]);
+        }
+
+        arguments.Add(SyntaxFactory.AttributeArgument(
+            SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(statusCode))));
+
+
         _methodDeclaration = _methodDeclaration.WithAttributeLists(SyntaxFactory.SingletonList(
             SyntaxFactory.AttributeList(
                 SyntaxFactory.SingletonSeparatedList(
@@ -51,18 +77,7 @@ internal class MethodBuilder
                             SyntaxFactory.IdentifierName("ProducesResponseType"))
                         .WithArgumentList(
                             SyntaxFactory.AttributeArgumentList(
-                                SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
-                                    new SyntaxNodeOrToken[]
-                                    {
-                                        SyntaxFactory.AttributeArgument(
-                                            SyntaxFactory.TypeOfExpression(
-                                                SyntaxFactory.IdentifierName(typeName))),
-                                        SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                        SyntaxFactory.AttributeArgument(
-                                            SyntaxFactory.LiteralExpression(
-                                                SyntaxKind.NumericLiteralExpression,
-                                                SyntaxFactory.Literal(statusCode)))
-                                    })))))
+                                SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(arguments)))))
         ));
         return this;
     }

@@ -87,14 +87,13 @@ internal class
                 .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithXmlDoc(methodXmlDoc);
-        // .WithProducesResponseTypeAttribute(_dtoName);
+            .WithXmlDoc(methodXmlDoc)
+            .WithProducesResponseTypeAttribute(204);
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
-            .InitVariableFromGenericAsyncMethodCall("result", "commandDispatcher", "DispatchAsync", [_commandName],
-                ["command", "cancellation"])
-            .ReturnTypedResultOk("result");
+            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .ReturnTypedResultNoContent();
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
         endpointClass.WithMethod(methodBuilder.Build());
@@ -107,27 +106,4 @@ internal class
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
-
-    // private void GenerateEndpoint(string templatePath)
-    // {
-    //     var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-    //     var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallArguments();
-    //
-    //     var model = new
-    //     {
-    //         EndpointClassName = _endpointClassName,
-    //         FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-    //         RouteParams = routeParams,
-    //         CommandName = _commandName,
-    //         CommandConstructorParameters = constructorParameters
-    //     };
-    //
-    //     WriteFile(templatePath, model, _endpointClassName);
-    //
-    //     EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-    //         Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
-    //         "Delete",
-    //         Scheme.Configuration.Endpoint.Route,
-    //         $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
-    // }
 }
