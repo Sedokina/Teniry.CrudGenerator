@@ -29,7 +29,7 @@ internal class
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -61,7 +61,7 @@ internal class
         WriteFile(templatePath, model, _handlerName);
     }
 
-    private void GenerateEndpoint(string e)
+    private void GenerateEndpoint()
     {
         var endpointClass = new ClassBuilder(_endpointClassName)
             .WithUsings([
@@ -87,8 +87,8 @@ internal class
                 .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithXmlDoc(methodXmlDoc)
-            .WithProducesResponseTypeAttribute(204);
+            .WithProducesResponseTypeAttribute(204)
+            .WithXmlDoc(methodXmlDoc);
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)

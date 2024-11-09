@@ -14,7 +14,8 @@ internal class MethodBuilder
     {
         var returnTypeSyntax = SyntaxFactory.ParseTypeName(returnType);
         _methodDeclaration = SyntaxFactory.MethodDeclaration(returnTypeSyntax, name)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
+            .AddModifiers(modifiers.Select(SyntaxFactory.Token)
+                .ToArray());
     }
 
     public MethodBuilder WithParameters(List<ParameterOfMethodBuilder> properties)

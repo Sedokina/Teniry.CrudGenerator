@@ -120,7 +120,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(returnStatement);
         return this;
     }
-    
+
     public MethodBodyBuilder ReturnTypedResultNoContent()
     {
         var returnStatement = SyntaxFactory.ReturnStatement(
@@ -129,6 +129,34 @@ internal class MethodBodyBuilder
                     SyntaxKind.SimpleMemberAccessExpression,
                     SyntaxFactory.IdentifierName("TypedResults"),
                     SyntaxFactory.IdentifierName("NoContent"))));
+        _body = _body.AddStatements(returnStatement);
+        return this;
+    }
+
+    public MethodBodyBuilder ReturnTypedResultCreated(string getRoute, string variableName)
+    {
+        var returnStatement = SyntaxFactory.ReturnStatement(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName("TypedResults"),
+                    SyntaxFactory.IdentifierName("Created")),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList([
+                    SyntaxFactory.Argument(
+                        SyntaxFactory.InterpolatedStringExpression(
+                                SyntaxFactory.Token(SyntaxKind.InterpolatedStringStartToken))
+                            .WithContents(
+                                SyntaxFactory.SingletonList<InterpolatedStringContentSyntax>(
+                                    SyntaxFactory.InterpolatedStringText()
+                                        .WithTextToken(
+                                            SyntaxFactory.Token(
+                                                SyntaxFactory.TriviaList(),
+                                                SyntaxKind.InterpolatedStringTextToken,
+                                                getRoute,
+                                                getRoute,
+                                                SyntaxFactory.TriviaList()))))),
+                    SyntaxFactory.Argument(SyntaxFactory.IdentifierName(variableName))
+                ]))));
         _body = _body.AddStatements(returnStatement);
         return this;
     }

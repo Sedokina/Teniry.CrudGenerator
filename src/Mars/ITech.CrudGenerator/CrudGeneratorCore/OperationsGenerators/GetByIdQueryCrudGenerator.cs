@@ -105,8 +105,8 @@ internal class
                 .Append(new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithXmlDoc(methodXmlDoc)
-            .WithProducesResponseTypeAttribute(_dtoName);
+            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithXmlDoc(methodXmlDoc);
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
