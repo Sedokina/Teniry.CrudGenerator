@@ -3,6 +3,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfi
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -37,7 +38,7 @@ internal class
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -84,31 +85,60 @@ internal class
         WriteFile(templatePath, model, _handlerName);
     }
 
-    private void GenerateEndpoint(string templatePath)
+    private void GenerateEndpoint()
     {
-        var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        var getByIdRoute = "\"\"";
-        if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null)
-        {
-            var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
-                .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
-            getByIdRoute = $"$\"{getEntityRoute}\"";
-        }
+        var endpointClass = new ClassBuilder(_endpointClassName)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Commands",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var model = new
-        {
-            EndpointClassName = _endpointClassName,
-            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-            CommandName = _commandName,
-            GetEntityRoute = getByIdRoute,
-            DtoName = _dtoName
-        };
+        var methodBuilder = new MethodBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters([
+                new ParameterOfMethodBuilder(_commandName, "command"),
+                new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
+                new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+            ])
+            .WithProducesResponseTypeAttribute(201)
+            .WithXmlDoc(
+                $"Create {Scheme.EntityScheme.EntityTitle}",
+                201,
+                $"New {Scheme.EntityScheme.EntityTitle} created");
 
-        WriteFile(templatePath, model, _endpointClassName);
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromGenericAsyncMethodCall("result", "commandDispatcher", "DispatchAsync",
+                [_commandName, _dtoName],
+                ["command", "cancellation"])
+            .ReturnTypedResultCreated(GetByIdRoute(), "result");
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        endpointClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_endpointClassName, endpointClass.BuildAsString());
+
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Post",
             Scheme.Configuration.Endpoint.Route,
             $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+    }
+
+    private string GetByIdRoute()
+    {
+        var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
+        if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null)
+        {
+            var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
+                .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
+            return getEntityRoute;
+        }
+
+        return "";
     }
 }

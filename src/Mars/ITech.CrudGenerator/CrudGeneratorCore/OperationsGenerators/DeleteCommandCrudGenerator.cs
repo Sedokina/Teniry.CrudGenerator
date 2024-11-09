@@ -1,7 +1,9 @@
+using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -27,7 +29,7 @@ internal class
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -59,21 +61,40 @@ internal class
         WriteFile(templatePath, model, _handlerName);
     }
 
-    private void GenerateEndpoint(string templatePath)
+    private void GenerateEndpoint()
     {
-        var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallArguments();
+        var endpointClass = new ClassBuilder(_endpointClassName)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Commands",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var model = new
-        {
-            EndpointClassName = _endpointClassName,
-            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-            RouteParams = routeParams,
-            CommandName = _commandName,
-            CommandConstructorParameters = constructorParameters
-        };
+        var methodBuilder = new MethodBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters(EntityScheme.PrimaryKeys
+                .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
+                .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
+                .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                .ToList())
+            .WithProducesResponseTypeAttribute(204)
+            .WithXmlDoc($"Delete {Scheme.EntityScheme.EntityTitle}",
+                204,
+                $"{Scheme.EntityScheme.EntityTitle} deleted");
 
-        WriteFile(templatePath, model, _endpointClassName);
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
+            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .ReturnTypedResultNoContent();
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        endpointClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
