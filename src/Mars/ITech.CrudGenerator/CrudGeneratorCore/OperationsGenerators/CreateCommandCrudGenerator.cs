@@ -39,7 +39,7 @@ internal class
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -86,7 +86,7 @@ internal class
         WriteFile(templatePath, model, _handlerName);
     }
 
-    private void GenerateEndpoint(string wadwda)
+    private void GenerateEndpoint()
     {
         var endpointClass = new ClassBuilder(_endpointClassName)
             .WithUsings([
@@ -145,32 +145,4 @@ internal class
 
         return "";
     }
-
-    // private void GenerateEndpoint(string templatePath)
-    // {
-    //     var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-    //     var getByIdRoute = "\"\"";
-    //     if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null)
-    //     {
-    //         var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
-    //             .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
-    //         getByIdRoute = $"$\"{getEntityRoute}\"";
-    //     }
-    //
-    //     var model = new
-    //     {
-    //         EndpointClassName = _endpointClassName,
-    //         FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-    //         CommandName = _commandName,
-    //         GetEntityRoute = getByIdRoute,
-    //         DtoName = _dtoName
-    //     };
-    //
-    //     WriteFile(templatePath, model, _endpointClassName);
-    //     EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
-    //         Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
-    //         "Post",
-    //         Scheme.Configuration.Endpoint.Route,
-    //         $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
-    // }
 }
