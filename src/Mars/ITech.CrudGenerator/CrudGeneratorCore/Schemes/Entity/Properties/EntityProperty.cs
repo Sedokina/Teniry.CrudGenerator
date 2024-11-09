@@ -4,6 +4,8 @@ internal class EntityProperty
 {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }
+    
+    // TODO: remove?
     public string PropertyNameAsMethodParameterName { get; set; }
     public bool IsEntityId { get; set; }
     public bool CanBeSorted { get; set; }
