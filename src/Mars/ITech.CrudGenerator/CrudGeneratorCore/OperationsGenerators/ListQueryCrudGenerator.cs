@@ -3,6 +3,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -36,7 +37,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -123,17 +124,46 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(templatePath, model, _handlerName);
     }
 
-    private void GenerateEndpoint(string templatePath)
+    private void GenerateEndpoint()
     {
-        var model = new
-        {
-            EndpointClassName = _endpointClassName,
-            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-            QueryName = _queryName,
-            DtoName = _dtoName
-        };
+        var endpointClass = new ClassBuilder(_endpointClassName)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Queries",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        WriteFile(templatePath, model, _endpointClassName);
+        var methodXmlDoc = @$"
+/// <summary>
+///     Get {Scheme.EntityScheme.EntityTitle.PluralTitle}
+/// </summary>
+/// <response code=""200"">Returns {Scheme.EntityScheme.EntityTitle} list</response>
+";
+        var methodBuilder = new MethodBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters([
+                new ParameterOfMethodBuilder($"[AsParameters]{_queryName}", "query"),
+                new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
+                new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+            ])
+            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithXmlDoc(methodXmlDoc);
+
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
+                [_queryName, _dtoName],
+                ["query", "cancellation"])
+            .ReturnTypedResultOk("result");
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        endpointClass.WithMethod(methodBuilder.Build());
+
+        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass.BuildAsString());
+
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
