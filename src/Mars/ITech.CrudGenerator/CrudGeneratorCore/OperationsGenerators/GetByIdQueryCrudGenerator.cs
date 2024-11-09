@@ -5,6 +5,7 @@ using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis;
@@ -273,20 +274,30 @@ internal class
             .BodyWithLocalVariableFromClass("query", _queryName, EntityScheme.PrimaryKeys)
             .BodyWithObjectGenericMethodCallForResult("queryDispatcher", "DispatchAsync", ["query", "cancellation"],
                 [_queryName, _dtoName], "result")
-            .BodyWithReturnTypedResultOk("result")
-            .Build();
+            .BodyWithReturnTypedResultOk("result");
 
-        var endpointClass = new EndpointBuilder(_endpointClassName)
-            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature)
-            .WithUsings([
+        var classBuilderData = new ClassBuilderData
+        {
+            EntityTitle = Scheme.EntityScheme.EntityTitle,
+            Usings =
+            [
                 "Microsoft.AspNetCore.Mvc",
                 "ITech.Cqrs.Cqrs.Queries",
                 Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
-            ])
-            .WithMethod(endpointMethod)
-            .BuildAsString();
+            ],
+            Namespace = Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
+            ClassName = _endpointClassName,
+            Method = endpointMethod
+        };
 
-        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass);
+        var code = ClassBuilder.FromData(classBuilderData).BuildAsString();
+        Context.AddSource($"{_endpointClassName}.g.cs", code);
+
+        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+            Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
+            "Get",
+            Scheme.Configuration.Endpoint.Route,
+            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
     }
 
     // private void GenerateEndpoint(string templatePath)
@@ -313,14 +324,14 @@ internal class
     // }
 }
 
-internal class EndpointBuilder
+internal class ClassBuilder
 {
     private FileScopedNamespaceDeclarationSyntax? _namespace;
     private readonly List<string> _usings = [];
     private ClassDeclarationSyntax _classDeclaration;
     private readonly List<MemberDeclarationSyntax> _methods = new();
 
-    public EndpointBuilder(string className)
+    public ClassBuilder(string className)
     {
         _classDeclaration = SyntaxFactory.ClassDeclaration(className)
             .AddModifiers([
@@ -330,13 +341,13 @@ internal class EndpointBuilder
             ]);
     }
 
-    public EndpointBuilder WithNamespace(string @namespace)
+    public ClassBuilder WithNamespace(string @namespace)
     {
         _namespace = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
         return this;
     }
 
-    public EndpointBuilder WithUsings(IEnumerable<string> usings)
+    public ClassBuilder WithUsings(IEnumerable<string> usings)
     {
         _usings.AddRange(usings);
         return this;
@@ -368,11 +379,28 @@ internal class EndpointBuilder
         return result;
     }
 
-    public EndpointBuilder WithMethod(MethodDeclarationSyntax endpointMethod)
+    public ClassBuilder WithMethod(MethodDeclarationSyntax endpointMethod)
     {
         _methods.Add(endpointMethod);
         return this;
     }
+
+    public static ClassBuilder FromData(ClassBuilderData data)
+    {
+        return new ClassBuilder(data.ClassName)
+            .WithNamespace(data.Namespace)
+            .WithUsings(data.Usings)
+            .WithMethod(data.Method.Build());
+    }
+}
+
+internal class ClassBuilderData
+{
+    public EntityTitle EntityTitle { get; set; }
+    public List<string> Usings { get; set; } = [];
+    public string Namespace { get; set; }
+    public string ClassName { get; set; }
+    public MethodBuilder Method { get; set; }
 }
 
 internal class MethodBuilder
@@ -551,17 +579,4 @@ internal class MethodParameterOfMethodBuilder : IMethodParameterOfMethodBuilder
     {
         return (Type, Name);
     }
-}
-
-public class EndpointBuilderData
-{
-    public string EntityTitle { get; set; }
-    public string Usings { get; set; }
-    public string Namespace { get; set; }
-    public string ClassName { get; set; }
-    public string MethodName { get; set; }
-    public CqrsOperationType OperationType { get; set; }
-    public string CqrsOperationTypeName { get; set; }
-    public string? CqrsOperationReturnValueTypeName { get; set; }
-    public int ReturnStatusCode { get; set; }
 }
