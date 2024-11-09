@@ -110,7 +110,7 @@ internal class
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
-            .InitVariableFromGenericMethodCall("result", "queryDispatcher", "DispatchAsync", [_queryName, _dtoName],
+            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync", [_queryName, _dtoName],
                 ["query", "cancellation"])
             .ReturnTypedResultOk("result");
 

@@ -36,7 +36,46 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder InitVariableFromGenericMethodCall(
+    public MethodBodyBuilder InitVariableFromGenericAsyncMethodCall(
+        string variableName,
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        var dispatcherCall = SyntaxFactory.AwaitExpression(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectWithMethod),
+                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
+                        .WithTypeArgumentList(
+                            SyntaxFactory.TypeArgumentList(
+                                SyntaxFactory.SeparatedList<TypeSyntax>(
+                                    methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
+                                )
+                            )
+                        )
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            )
+        );
+
+        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
+            null,
+            SyntaxFactory.EqualsValueClause(dispatcherCall));
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(
+                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        return this;
+    }
+
+    public MethodBodyBuilder CallMethod(
         string variableName,
         string objectWithMethod,
         string methodNameToCall,
