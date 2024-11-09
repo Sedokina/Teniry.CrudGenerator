@@ -105,6 +105,27 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
         return this;
     }
+    
+    public MethodBodyBuilder CallMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        var methodCall = SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectWithMethod),
+                    SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(methodNameToCall))
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            );
+
+        _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
+        return this;
+    }
 
     public MethodBodyBuilder ReturnTypedResultOk(string variableName)
     {

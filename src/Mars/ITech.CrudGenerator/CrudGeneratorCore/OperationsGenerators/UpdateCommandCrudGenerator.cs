@@ -1,7 +1,9 @@
+using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -31,7 +33,7 @@ internal class UpdateCommandCrudGenerator
         GenerateViewModel(Scheme.Configuration.ViewModel.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
-            GenerateEndpoint(Scheme.Configuration.Endpoint.TemplatePath);
+            GenerateEndpoint();
         }
     }
 
@@ -76,21 +78,47 @@ internal class UpdateCommandCrudGenerator
         WriteFile(templatePath, model, _vmName);
     }
 
-    private void GenerateEndpoint(string templatePath)
+    private void GenerateEndpoint()
     {
-        var routeParams = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallArguments();
-        var model = new
-        {
-            EndpointClassName = _endpointClassName,
-            FunctionName = Scheme.Configuration.Endpoint.FunctionName,
-            RouteParams = routeParams,
-            VmName = _vmName,
-            CommandName = _commandName,
-            CommandConstructorParameters = constructorParameters
-        };
+        var endpointClass = new ClassBuilder(_endpointClassName)
+            .WithUsings([
+                "Microsoft.AspNetCore.Mvc",
+                "ITech.Cqrs.Cqrs.Commands",
+                "Mapster",
+                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        WriteFile(templatePath, model, _endpointClassName);
+        var methodXmlDoc = @$"
+/// <summary>
+///     Update {Scheme.EntityScheme.EntityTitle}
+/// </summary>
+/// <response code=""204"">{Scheme.EntityScheme.EntityTitle} updated</response>
+";
+        var methodBuilder = new MethodBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
+            .WithParameters(EntityScheme.PrimaryKeys
+                .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
+                .Append(new ParameterOfMethodBuilder(_vmName, "vm"))
+                .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
+                .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                .ToList())
+            .WithProducesResponseTypeAttribute(204)
+            .WithXmlDoc(methodXmlDoc);
+
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
+            .CallMethod("vm", "Adapt", ["command"])
+            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .ReturnTypedResultNoContent();
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        endpointClass.WithMethod(methodBuilder.Build());
+
+        Context.AddSource($"{_endpointClassName}.g.cs", endpointClass.BuildAsString());
 
         EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
