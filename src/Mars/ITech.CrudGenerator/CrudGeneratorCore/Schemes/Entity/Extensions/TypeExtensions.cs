@@ -43,10 +43,10 @@ public static class TypeExtensions
             case SpecialType.System_UInt64:
             case SpecialType.System_Single:
             case SpecialType.System_Double:
+            case SpecialType.System_Decimal:
             case SpecialType.System_Char:
             case SpecialType.System_String:
             case SpecialType.System_DateTime:
-            case SpecialType.System_Decimal:
                 return true;
             default:
                 if (type.NullableAnnotation == NullableAnnotation.Annotated &&
