@@ -27,6 +27,8 @@ public class EntitySchemeFactoryTests
     {
         // Arrange
         var symbol = GenerateEntity("MyEntityName");
+
+        // Act
         var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
 
         // Assert
@@ -37,10 +39,13 @@ public class EntitySchemeFactoryTests
     [InlineData("Currency", "Currencies")]
     [InlineData("Job", "Jobs")]
     [InlineData("Box", "Boxes")]
+    [InlineData("DepartmentGroup", "DepartmentGroups")]
     public void Should_GeneratePluralName_From_EntityName(string singular, string plural)
     {
         // Arrange
         var symbol = GenerateEntity(singular);
+
+        // Act
         var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
 
         // Assert
@@ -53,14 +58,47 @@ public class EntitySchemeFactoryTests
     [InlineData("Staff", "StaffList")]
     [InlineData("Employees", "EmployeesList")]
     [InlineData("Currencies", "CurrenciesList")]
+    [InlineData("DepartmentGroups", "DepartmentGroupsList")]
     public void Should_addSuffixToEntityPluralName_When_PluralAndSingularFormIsSame(string singular, string plural)
     {
         // Arrange
         var symbol = GenerateEntity(singular);
+
+        // Act
         var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
 
         // Assert
         sut.EntityName.PluralName.Should().Be(plural);
+    }
+
+    [Fact]
+    public void Should_GenerateTitle_From_EntityName()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.EntityTitle.Title.Should().Be("My entity name");
+    }
+
+    [Theory]
+    [InlineData("Currency", "Currencies")]
+    [InlineData("DepartmentGroup", "Department groups")]
+    [InlineData("Currencies", "Currencies list")]
+    [InlineData("BooksGroups", "Books groups list")]
+    public void Should_GeneratePluralTitle_From_EntityPluralName(string entityName, string pluralTitle)
+    {
+        // Arrange
+        var symbol = GenerateEntity(entityName);
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.EntityTitle.PluralTitle.Should().Be(pluralTitle);
     }
 
     public ISymbol GenerateEntity(string entityName)

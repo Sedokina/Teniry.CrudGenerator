@@ -26,9 +26,9 @@ internal class EntitySchemeFactory
         EntityCustomizationScheme entityCustomizationScheme,
         DbContextScheme dbContextScheme)
     {
-        var properties = GetEntityProperties(symbol, dbContextScheme);
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
         var entityTitle = CreateEntityTitle(entityCustomizationScheme, entityName);
+        var properties = GetEntityProperties(symbol, dbContextScheme);
         return new EntityScheme(symbol,
             entityName,
             entityTitle,
