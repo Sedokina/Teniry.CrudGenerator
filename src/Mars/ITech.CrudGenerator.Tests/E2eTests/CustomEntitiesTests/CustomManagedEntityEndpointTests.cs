@@ -30,6 +30,9 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
         actual.Should().NotBeNull();
         actual!.Id.Should().NotBeEmpty();
 
+        // Assert get route returned
+        response.Headers.Location.Should().BeNull("because get endpoint is not generated for this entity");
+
         // Assert saved to db
         var entity = await _db.FindAsync<CustomManagedEntity>([actual.Id], new CancellationToken());
         entity.Should().NotBeNull();
@@ -76,7 +79,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture)
         var entity = await _db.FindAsync<CustomManagedEntity>([createdSimpleEntity.Id], new CancellationToken());
         entity.Should().BeNull();
     }
-    
+
     [Theory]
     [InlineData("customManagedEntity?page=1&pageSize=10")]
     [InlineData("customManagedEntity/691cd56c-46ee-4151-ae10-029a25e32d1b")]

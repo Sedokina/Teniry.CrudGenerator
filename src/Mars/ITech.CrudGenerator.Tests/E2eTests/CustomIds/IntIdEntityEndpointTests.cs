@@ -8,7 +8,7 @@ using ITech.CrudGenerator.TestApi.Application.IntIdEntityFeature.UpdateIntIdEnti
 using ITech.CrudGenerator.TestApi.Generators.IntIdEntityGenerator;
 using ITech.CrudGenerator.Tests.E2eTests.Core;
 
-namespace ITech.CrudGenerator.Tests.E2eTests.SimpleEntitiesTests;
+namespace ITech.CrudGenerator.Tests.E2eTests.CustomIds;
 
 [Collection("E2eTests")]
 public class IntIdEntityEndpointTests(TestApiFixture fixture)
@@ -35,7 +35,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
         actual!.Id.Should().Be(createdEntity.Id);
         actual.Name.Should().Be("Entity to get");
     }
-    
+
     [Theory]
     [InlineData("intIdEntity?page=1&pageSize=10")]
     public async Task Should_GetEntitiesList(string endpoint)
@@ -61,7 +61,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
             x.Name.Should().NotBeNullOrEmpty();
         });
     }
-    
+
     [Theory]
     [InlineData("intIdEntity/create")]
     public async Task Should_CreateEntity(string endpoint)
@@ -78,12 +78,16 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
         actual.Should().NotBeNull();
         actual!.Id.Should().BeGreaterThan(0);
 
+        // Assert get route returned
+        response.Headers.Location.Should().NotBeNull()
+            .And.Subject.ToString().Should().NotBeNullOrEmpty();
+
         // Assert saved to db
         var entity = await _db.FindAsync<IntIdEntity>([actual.Id], new CancellationToken());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
-    
+
     [Theory]
     [InlineData("intIdEntity/{0}/update")]
     public async Task Should_UpdateEntity(string endpoint)

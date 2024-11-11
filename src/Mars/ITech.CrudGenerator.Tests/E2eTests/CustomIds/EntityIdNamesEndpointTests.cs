@@ -77,6 +77,10 @@ public class EntityIdNamesEndpointTests(TestApiFixture fixture)
         var actual = await response.Content.ReadFromJsonAsync<CreatedEntityIdNameDto>();
         actual.Should().NotBeNull();
         actual!.EntityIdNameId.Should().NotBeEmpty();
+        
+        // Assert get route returned
+        response.Headers.Location.Should().NotBeNull()
+            .And.Subject.ToString().Should().NotBeNullOrEmpty();
 
         // Assert saved to db
         var entity = await _db.FindAsync<EntityIdName>([actual.EntityIdNameId], new CancellationToken());

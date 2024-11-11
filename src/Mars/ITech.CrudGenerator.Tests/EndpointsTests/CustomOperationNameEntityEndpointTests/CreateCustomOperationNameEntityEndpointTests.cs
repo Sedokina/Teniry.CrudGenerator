@@ -36,6 +36,7 @@ public class CreateCustomOperationNameEntityEndpointTests
                 new CancellationToken());
 
         // Assert
-        actual.Should().BeOfType<Created<CreatedCustomOperationNameEntityDto>>();
+        actual.Should().BeOfType<Created<CreatedCustomOperationNameEntityDto>>()
+            .Subject.Location.Should().NotBeEmpty();
     }
 }

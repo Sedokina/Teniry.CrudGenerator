@@ -78,6 +78,10 @@ public class SimpleEntityEndpointTests(TestApiFixture fixture)
         actual.Should().NotBeNull();
         actual!.Id.Should().NotBeEmpty();
 
+        // Assert get route returned
+        response.Headers.Location.Should().NotBeNull()
+            .And.Subject.ToString().Should().NotBeNullOrEmpty();
+
         // Assert saved to db
         var entity = await _db.FindAsync<SimpleEntity>([actual.Id], new CancellationToken());
         entity.Should().NotBeNull();

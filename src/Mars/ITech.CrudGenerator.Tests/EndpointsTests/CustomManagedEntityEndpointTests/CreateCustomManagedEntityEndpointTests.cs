@@ -30,6 +30,7 @@ public class CreateCustomManagedEntityEndpointTests
                 new CancellationToken());
 
         // Assert
-        actual.Should().BeOfType<Created<CustomizedNameCreatedManagedEntityDto>>();
+        actual.Should().BeOfType<Created<CustomizedNameCreatedManagedEntityDto>>()
+            .Subject.Location.Should().BeNullOrEmpty("because get endpoint is not generated for this entity");
     }
 }
