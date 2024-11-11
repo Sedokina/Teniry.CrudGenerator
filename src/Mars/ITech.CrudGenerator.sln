@@ -6,7 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITech.CrudGenerator", "ITec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITech.CrudGenerator.Abstractions", "ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj", "{65B13097-C2A0-4977-82F5-7CBF5A6B8E9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITech.CrudGenerator.Tests", "ITech.CrudGenerator.Tests\ITech.CrudGenerator.Tests.csproj", "{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITech.CrudGenerator.TestApiTests", "ITech.CrudGenerator.TestApiTests\ITech.CrudGenerator.TestApiTests.csproj", "{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITech.CrudGenerator.Tests", "ITech.CrudGenerator.Tests\ITech.CrudGenerator.Tests.csproj", "{C6392F3E-2D36-49A4-90EA-8DD59A65981B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +32,9 @@ Global
 		{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6392F3E-2D36-49A4-90EA-8DD59A65981B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6392F3E-2D36-49A4-90EA-8DD59A65981B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6392F3E-2D36-49A4-90EA-8DD59A65981B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6392F3E-2D36-49A4-90EA-8DD59A65981B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

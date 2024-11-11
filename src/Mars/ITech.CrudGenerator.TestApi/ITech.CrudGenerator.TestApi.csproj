@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="ITech.CrudGenerator.Tests"/>
+        <InternalsVisibleTo Include="ITech.CrudGenerator.TestApiTests"/>
     </ItemGroup>
 
     <ItemGroup>
