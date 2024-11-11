@@ -41,7 +41,7 @@ public class CrudGenerator : ISourceGenerator
 
                 var entityCustomizationScheme = EntityCastomizationSchemeFactory
                     .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context);
-                var entityScheme = EntitySchemeFactory.Construct(
+                var entityScheme = new EntitySchemeFactory().Construct(
                     entitySymbol,
                     entityCustomizationScheme,
                     dbContextScheme);

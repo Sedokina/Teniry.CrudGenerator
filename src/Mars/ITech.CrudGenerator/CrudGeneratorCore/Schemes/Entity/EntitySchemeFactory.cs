@@ -14,7 +14,14 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 internal class EntitySchemeFactory
 {
-    internal static EntityScheme Construct(
+    private readonly Pluralizer _pluralizer;
+
+    public EntitySchemeFactory()
+    {
+        _pluralizer = new();
+    }
+
+    internal EntityScheme Construct(
         ISymbol symbol,
         EntityCustomizationScheme entityCustomizationScheme,
         DbContextScheme dbContextScheme)
@@ -34,7 +41,7 @@ internal class EntitySchemeFactory
             properties.Where(x => x.CanBeSorted).ToList());
     }
 
-    private static EntityTitle CreateEntityTitle(
+    private EntityTitle CreateEntityTitle(
         EntityCustomizationScheme entityCustomizationScheme,
         EntityName entityName)
     {
@@ -45,10 +52,9 @@ internal class EntitySchemeFactory
         return title;
     }
 
-    private static string GetPluralEntityName(string entityName)
+    private string GetPluralEntityName(string entityName)
     {
-        var pluralizer = new Pluralizer();
-        var pluralEntityName = pluralizer.Pluralize(entityName);
+        var pluralEntityName = _pluralizer.Pluralize(entityName);
         if (entityName.Equals(pluralEntityName))
         {
             return $"{entityName}List";
@@ -57,10 +63,9 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private static string GetPluralEntityTitle(string entityTitle)
+    private string GetPluralEntityTitle(string entityTitle)
     {
-        var pluralizer = new Pluralizer();
-        var pluralEntityName = pluralizer.Pluralize(entityTitle);
+        var pluralEntityName = _pluralizer.Pluralize(entityTitle);
         if (entityTitle.Equals(pluralEntityName))
         {
             return $"{entityTitle} list";
@@ -69,7 +74,7 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private static List<EntityProperty> GetEntityProperties(ISymbol symbol, DbContextScheme dbContextScheme)
+    private List<EntityProperty> GetEntityProperties(ISymbol symbol, DbContextScheme dbContextScheme)
     {
         var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<EntityProperty>();
@@ -107,7 +112,7 @@ internal class EntitySchemeFactory
         return result;
     }
 
-    private static EntityFilterProperty[] ConstructFilterProperties(
+    private EntityFilterProperty[] ConstructFilterProperties(
         bool isForeignOrPrimaryKey,
         string propertyTypeName,
         string propertyName,
@@ -116,11 +121,12 @@ internal class EntitySchemeFactory
     {
         if (isForeignOrPrimaryKey)
         {
+            var pluralPropertyName = _pluralizer.Pluralize(propertyName);
             return
             [
                 new EntityFilterProperty(
                     $"{propertyTypeName}[]?",
-                    propertyName,
+                    pluralPropertyName,
                     dbContextScheme.GetFilterExpression(FilterType.Contains))
             ];
         }

@@ -18,6 +18,7 @@ public class GetSimpleTypeEntitiesListHandlerTests
         _sut = new(_db.Object);
         _query = new()
         {
+            Ids = [new("2e83ef18-4f90-4b7d-a513-93e413bad39e")],
             Name = "Test Entity",
             Code = 'a',
             IsActive = true,
@@ -47,7 +48,7 @@ public class GetSimpleTypeEntitiesListHandlerTests
             DoubleRatingTo = 101873.862378,
             DecimalRatingFrom = 667.97716829m,
             DecimalRatingTo = 1067.97716829m,
-            NotIdGuid = [new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
+            NotIdGuids = [new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
             Sort = ["name", "code"],
             Page = 1,
             PageSize = 10
@@ -62,7 +63,7 @@ public class GetSimpleTypeEntitiesListHandlerTests
             .ReturnsDbSet([
                 new SimpleTypeEntity
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("2e83ef18-4f90-4b7d-a513-93e413bad39e"),
                     Name = "Test Entity",
                     Code = 'a',
                     IsActive = true,
@@ -123,5 +124,13 @@ public class GetSimpleTypeEntitiesListHandlerTests
                 "intRating", "longRating", "sByteRating", "uShortRating", "uIntRating", "uLongRating", "floatRating",
                 "doubleRating", "decimalRating", "notIdGuid"
             ]);
+    }
+
+    [Theory]
+    [InlineData(typeof(Guid[]), "Ids")]
+    [InlineData(typeof(Guid[]), "NotIdGuids")]
+    public void Filter_Should_HavePluralNames_For_ArrayProperties(Type type, string property)
+    {
+        typeof(GetSimpleTypeEntitiesFilter).Should().HaveProperty(type, property);
     }
 }
