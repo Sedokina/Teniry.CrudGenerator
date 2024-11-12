@@ -101,7 +101,76 @@ public class EntitySchemeFactoryTests
         sut.EntityTitle.PluralTitle.Should().Be(pluralTitle);
     }
 
-    public ISymbol GenerateEntity(string entityName)
+    [Fact]
+    public void Should_ExtractEntityNamespaceAndAssembly()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.EntityNamespace.Should().Be("ITech.CrudGenerator.Tests");
+        sut.ContainingAssembly.Should().Be(Assembly.GetExecutingAssembly().FullName);
+    }
+
+    [Fact]
+    public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInEntityCustomization()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.DefaultSort.Should().BeNull();
+    }
+
+    [Fact]
+    public void Should_UseDefaultSort_From_EntityCustomizationScheme()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName");
+        _entityCustomizationScheme.DefaultSort = new EntityDefaultSort("asc", "MyProp");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.DefaultSort.Should().NotBeNull();
+        sut.DefaultSort!.PropertyName.Should().Be("MyProp");
+        sut.DefaultSort.Direction.Should().Be("asc");
+    }
+
+    [Fact]
+    public void Should_IgnoreReferenceProperties()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName", "public EntitySchemeFactoryTests ReferenceProp { get; set; }");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.Properties.Should().NotContain(x => x.PropertyName == "ReferenceProp");
+    }
+
+    [Fact]
+    public void Should_GetSimpleProperty()
+    {
+        // Arrange
+        var symbol = GenerateEntity("MyEntityName", "public int SimpleProp { get; set; }");
+
+        // Act
+        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+
+        // Assert
+        sut.Properties.Should().NotContain(x => x.PropertyName == "SimpleProp");
+    }
+
+    public ISymbol GenerateEntity(string entityName, string body = "")
     {
         var entityClass = $@"
 using System;
@@ -109,6 +178,7 @@ namespace ITech.CrudGenerator.Tests;
 
 public class {entityName}
 {{
+{body}
 }}
 ";
 
