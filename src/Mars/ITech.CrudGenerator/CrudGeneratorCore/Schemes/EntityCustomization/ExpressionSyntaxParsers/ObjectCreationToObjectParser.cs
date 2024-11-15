@@ -18,14 +18,14 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
         _propertyAssignmentParser = propertyAssignmentParser;
     }
 
-    public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public bool CanParse(Compilation compilation, ExpressionSyntax expression)
     {
         if (expression is not ObjectCreationExpressionSyntax)
         {
             return false;
         }
 
-        var model = context.Compilation.GetSemanticModel(expression.SyntaxTree);
+        var model = compilation.GetSemanticModel(expression.SyntaxTree);
         var symbolInfo = model.GetSymbolInfo(expression);
         if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol)
         {
@@ -43,7 +43,7 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
         return true;
     }
 
-    public object Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public object Parse(Compilation compilation, ExpressionSyntax expression)
     {
         var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
         var result = new TTo();
@@ -60,13 +60,13 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
         var resultType = result.GetType();
         foreach (var assignmentExpression in assignmentExpressions)
         {
-            if (!_propertyAssignmentParser.CanParse(context, assignmentExpression))
+            if (!_propertyAssignmentParser.CanParse(compilation, assignmentExpression))
             {
                 continue;
             }
 
             var (propertyName, value) = _propertyAssignmentParser
-                .Parse(context, assignmentExpression) as Tuple<string, object?>;
+                .Parse(compilation, assignmentExpression) as Tuple<string, object?>;
 
             var property = resultType.GetProperty(propertyName);
             property?.SetValue(result, value);

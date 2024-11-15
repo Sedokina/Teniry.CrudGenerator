@@ -5,7 +5,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.Expr
 
 internal interface IExpressionSyntaxToValueParser
 {
-    bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression);
+    bool CanParse(Compilation compilation, ExpressionSyntax expression);
 
-    object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression);
+    object? Parse(Compilation compilation, ExpressionSyntax expression);
 }

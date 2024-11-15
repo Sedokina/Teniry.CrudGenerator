@@ -15,14 +15,14 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
         _literalExpressionToValueParser = literalExpressionToValueParser;
     }
 
-    public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public bool CanParse(Compilation compilation, ExpressionSyntax expression)
     {
         if (expression is not ObjectCreationExpressionSyntax)
         {
             return false;
         }
 
-        var model = context.Compilation.GetSemanticModel(expression.SyntaxTree);
+        var model = compilation.GetSemanticModel(expression.SyntaxTree);
         var symbolInfo = model.GetSymbolInfo(expression);
         if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol)
         {
@@ -39,7 +39,7 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
         return true;
     }
 
-    public object Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public object Parse(Compilation compilation, ExpressionSyntax expression)
     {
         var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
         if (objectCreationExpression.ArgumentList is null ||
@@ -56,7 +56,7 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
             return false;
         }
 
-        var direction = _literalExpressionToValueParser.Parse(context, literalExpressionSyntax);
+        var direction = _literalExpressionToValueParser.Parse(compilation, literalExpressionSyntax);
         var fieldName = memberAccessExpressionSyntax.Name.ToString();
         return new EntityDefaultSort(direction!.ToString().Equals("asc") ? "asc" : "desc", fieldName);
     }

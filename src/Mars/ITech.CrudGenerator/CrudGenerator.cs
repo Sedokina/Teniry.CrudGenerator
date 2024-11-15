@@ -35,12 +35,13 @@ public class CrudGenerator : ISourceGenerator
             var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
             var sharedConfigurationBuilder = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
 
+            var entityCustomizationSchemeFactory = new EntityCustomizationSchemeFactory();
             foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
             {
                 var (entityGeneratorConfigurationSymbol, entitySymbol) = classSyntax.AsSymbol(context);
 
-                var entityCustomizationScheme = EntityCastomizationSchemeFactory
-                    .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context);
+                var entityCustomizationScheme = entityCustomizationSchemeFactory
+                    .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context.Compilation);
                 var entityScheme = new EntitySchemeFactory().Construct(
                     entitySymbol,
                     entityCustomizationScheme,

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ITech.CrudGenerator.Abstractions;
 using ITech.CrudGenerator.Abstractions.Configuration;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
 using Microsoft.CodeAnalysis;
@@ -9,11 +8,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 
-internal class EntityCastomizationSchemeFactory
+internal class EntityCustomizationSchemeFactory
 {
-    internal static EntityCustomizationScheme Construct(
+    internal EntityCustomizationScheme Construct(
         INamedTypeSymbol? generatorSymbol,
-        GeneratorExecutionContext context)
+        Compilation compilation)
     {
         var generatorScheme = new EntityCustomizationScheme();
         if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration))
@@ -32,13 +31,13 @@ internal class EntityCastomizationSchemeFactory
         var generatorSchemeType = generatorScheme.GetType();
         foreach (var statementSyntax in constructorStatements)
         {
-            if (!assignmentExpressionParer.CanParse(context, statementSyntax.Expression))
+            if (!assignmentExpressionParer.CanParse(compilation, statementSyntax.Expression))
             {
                 continue;
             }
 
             var (propertyName, value) = assignmentExpressionParer
-                .Parse(context, statementSyntax.Expression) as Tuple<string, object?>;
+                .Parse(compilation, statementSyntax.Expression) as Tuple<string, object?>;
 
             var property = generatorSchemeType.GetProperty(propertyName);
             property?.SetValue(generatorScheme, value);
