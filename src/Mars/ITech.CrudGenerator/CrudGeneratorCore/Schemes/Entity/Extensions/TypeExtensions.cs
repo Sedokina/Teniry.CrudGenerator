@@ -65,7 +65,8 @@ public static class TypeExtensions
     {
         if (type.SpecialType == SpecialType.System_Boolean ||
             type.SpecialType == SpecialType.System_Char ||
-            type.SpecialType == SpecialType.System_String)
+            type.SpecialType == SpecialType.System_String ||
+            type.MetadataName == "Guid")
         {
             return false;
         }
