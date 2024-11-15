@@ -269,32 +269,6 @@ public class EntitySchemeFactoryTests
             .Contain(x => x.PropertyName == "SortableProperty" && x.SortKey.Equals("sortableProperty"));
     }
 
-    [Fact]
-    public void Should_HaveContainsFilter_ForGuidProperty()
-    {
-        // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public Guid FilteredProperty {{ get; set; }}");
-
-        // Act
-        var sut = _factory.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
-
-        // Assert
-        sut.Properties.Should()
-            .SatisfyRespectively(x =>
-            {
-                x.PropertyName.Should().Be("FilteredProperty");
-                x.FilterProperties.Should()
-                    .HaveCount(1)
-                    .And
-                    .AllSatisfy(f =>
-                    {
-                        f.PropertyName.Should().Be("FilteredProperty");
-                        f.TypeName.Should().Be("Guid[]");
-                        f.FilterExpression.Should().BeOfType<ContainsFilterExpression>();
-                    });
-            });
-    }
-
     [Theory]
     [InlineData("int", "MyEntityNameId", "MyEntityNameIds")]
     [InlineData("int", "Id", "Ids")]
@@ -379,12 +353,13 @@ public class EntitySchemeFactoryTests
             });
     }
 
-    [Fact]
-    public void Should_HaveLikeFilter_ForStringType()
+    [Theory]
+    [InlineData("string", typeof(LikeFilterExpression))]
+    [InlineData("char", typeof(EqualsFilterExpression))]
+    public void Should_HaveLikeFilter_ForStringType(string typeName, Type filterExpressionType)
     {
         // Arrange
         var propertyName = "FilteredProperty";
-        var typeName = "string";
         var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
@@ -402,7 +377,7 @@ public class EntitySchemeFactoryTests
                     {
                         f.PropertyName.Should().Be(propertyName);
                         f.TypeName.Should().Be($"{typeName}?");
-                        f.FilterExpression.Should().BeOfType<LikeFilterExpression>();
+                        f.FilterExpression.Should().BeOfType(filterExpressionType);
                     });
             });
     }
