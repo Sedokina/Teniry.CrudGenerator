@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using ITech.CrudGenerator.Abstractions.Configuration;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 using Microsoft.CodeAnalysis;
@@ -47,15 +48,28 @@ namespace ITech.CrudGenerator.Tests {{
 ";
 
         var syntaxTree = CSharpSyntaxTree.ParseText(entityClass);
-        var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
         var abstractions = MetadataReference.CreateFromFile(typeof(EntityGeneratorConfiguration<>).Assembly.Location);
+
+        var references = GetMetadataReferencesFromDllNames([
+            "System.Private.CoreLib.dll",
+            "netstandard.dll",
+            "System.Runtime.dll"
+        ]);
         var compilation = CSharpCompilation.Create(
             Assembly.GetExecutingAssembly().FullName,
             [syntaxTree],
-            references: new[] { mscorlib, abstractions },
+            references: [..references, abstractions],
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        var erro = compilation.GetDiagnostics();
-        var symbol = compilation.GetSymbolsWithName(className).First();
+        var err = compilation.GetDiagnostics();
+        var symbol = compilation.GetSymbolsWithName($"{className}Generator").First();
         return ((INamedTypeSymbol)symbol, compilation);
+    }
+
+    private PortableExecutableReference[] GetMetadataReferencesFromDllNames(string[] dllNames)
+    {
+        var runtimeDirectory = RuntimeEnvironment.GetRuntimeDirectory();
+        return dllNames
+            .Select(x => MetadataReference.CreateFromFile(Path.Combine(runtimeDirectory, x)))
+            .ToArray();
     }
 }
