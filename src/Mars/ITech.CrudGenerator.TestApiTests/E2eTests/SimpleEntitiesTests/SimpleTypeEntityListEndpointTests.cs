@@ -76,7 +76,7 @@ public class SimpleTypeEntityListEndpointTests(TestApiFixture fixture)
     public static TheoryData<string, Expression<Func<SimpleTypeEntitiesListItemDto, bool>>> FilterData => new()
     {
         {
-            "simpleTypeEntity?page=1&pageSize=10&id=44bacea2-1e32-452a-b1f3-28e46924e899",
+            "simpleTypeEntity?page=1&pageSize=10&ids=44bacea2-1e32-452a-b1f3-28e46924e899",
             x => x.Id == new Guid("44bacea2-1e32-452a-b1f3-28e46924e899")
         },
         { "simpleTypeEntity?page=1&pageSize=10&name=First", x => x.Name.Contains("First") },
@@ -121,7 +121,7 @@ public class SimpleTypeEntityListEndpointTests(TestApiFixture fixture)
         { "simpleTypeEntity?page=1&pageSize=10&decimalRatingFrom=869.97716829", x => x.DecimalRating >= 869.97716829m },
         { "simpleTypeEntity?page=1&pageSize=10&decimalRatingTo=967.97716829", x => x.DecimalRating < 967.97716829m },
         {
-            "simpleTypeEntity?page=1&pageSize=10&notIdGuid=f6c5e2d1-b438-4faf-8521-b775d783f6f3",
+            "simpleTypeEntity?page=1&pageSize=10&notIdGuids=f6c5e2d1-b438-4faf-8521-b775d783f6f3",
             x => x.NotIdGuid == new Guid("f6c5e2d1-b438-4faf-8521-b775d783f6f3")
         }
     };
