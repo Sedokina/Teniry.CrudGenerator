@@ -1,10 +1,9 @@
 using System.Reflection;
-using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -20,14 +19,7 @@ public class EntitySchemeFactoryTests
     {
         _sut = new();
         _internalEntityGeneratorConfiguration = new();
-        _dbContextScheme = new("", "", DbContextDbProvider.Mongo, new Dictionary<FilterType, FilterExpression>()
-        {
-            { FilterType.Contains, new ContainsFilterExpression() },
-            { FilterType.Equals, new EqualsFilterExpression() },
-            { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
-            { FilterType.LessThan, new LessThanFilterExpression() },
-            { FilterType.Like, new LikeFilterExpression() },
-        });
+        _dbContextScheme = new DbContextSchemeStub();
     }
 
     [Fact]
