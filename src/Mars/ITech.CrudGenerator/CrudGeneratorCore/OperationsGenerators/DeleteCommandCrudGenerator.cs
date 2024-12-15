@@ -2,7 +2,6 @@ using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -15,8 +14,7 @@ internal class
     private readonly string _endpointClassName;
 
     public DeleteCommandCrudGenerator(
-        GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
         _commandName = Scheme.Configuration.Operation.Name;
         _handlerName = Scheme.Configuration.Handler.Name;

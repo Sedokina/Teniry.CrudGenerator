@@ -2,7 +2,6 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.T
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -18,10 +17,9 @@ internal class
     private readonly string _dtoName;
 
     public CreateCommandCrudGenerator(
-        GeneratorExecutionContext context,
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
         EndpointRouteConfigurationBuilder? getByIdEndpointRouteConfigurationBuilder,
-        string? getByIdOperationName) : base(context, scheme)
+        string? getByIdOperationName) : base(scheme)
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _getByIdOperationName = getByIdOperationName;

@@ -5,6 +5,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFa
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
+using ITech.CrudGenerator.Tests.Helpers;
 
 namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
@@ -13,12 +14,18 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     private readonly CreateCommandDefaultConfigurationBuilderFactory _sut;
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
+    private readonly EntityScheme _entityScheme;
 
     public CreateCommandDefaultConfigurationBuilderFactoryTests()
     {
         _sut = new CreateCommandDefaultConfigurationBuilderFactory();
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
-        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilder();
+        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder
+            { TemplatesBasePath = "AllFiles" };
+        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
+        var entitySchemeFactory = new EntitySchemeFactory();
+        var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
+        _entityScheme = entitySchemeFactory.Construct(symbol, new InternalEntityGeneratorConfiguration(),
+            new DbContextSchemeStub());
     }
 
     [Fact]
@@ -38,86 +45,71 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     [Fact]
     public void Should_SetCorrectDefaultValues()
     {
-        // Arrange
-        var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Create";
-        var path = "AllFiles";
-
         // Act
-        var actual = _sut.Construct(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            new InternalEntityGeneratorCreateOperationConfiguration());
+        var actual = _sut
+            .Construct(
+                _globalCqrsGeneratorConfigurationBuilder,
+                _cqrsOperationsSharedConfigurationBuilder,
+                new InternalEntityGeneratorCreateOperationConfiguration())
+            .Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
         actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be(operationName);
-        actual.OperationGroup.GetName(entityName, operationName).Should().Be("CreateTestEntity");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateCommand.txt");
-        actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CreateTestEntityCommand");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreatedDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("CreatedTestEntityDto");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateHandler.txt");
-        actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CreateTestEntityHandler");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateEndpoint.txt");
-        actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CreateTestEntityEndpoint");
+        actual.OperationName.Should().Be("Create");
+        actual.OperationGroup.Should().Be("CreateTestEntity");
+        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
+        actual.Operation.Name.Should().Be("CreateTestEntityCommand");
+        actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
+        actual.Dto.Name.Should().Be("CreatedTestEntityDto");
+        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
+        actual.Handler.Name.Should().Be("CreateTestEntityHandler");
+        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
+        actual.Endpoint.Name.Should().Be("CreateTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("CreateAsync");
-        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, [])
-            .Should().Be("/testentity/create");
+        actual.Endpoint.FunctionName.Should().Be("CreateAsync");
+        actual.Endpoint.Route.Should().Be("/testEntity/create");
     }
 
     [Fact]
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Add";
-        var path = "AllFiles";
         var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
         {
-            Operation = operationName
+            Operation = "Add"
         };
 
         // Act
-        var actual = _sut.Construct(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            operationConfiguration);
+        var actual = _sut
+            .Construct(
+                _globalCqrsGeneratorConfigurationBuilder,
+                _cqrsOperationsSharedConfigurationBuilder,
+                operationConfiguration)
+            .Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
         actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be(operationName);
-        actual.OperationGroup.GetName(entityName, operationName).Should().Be("AddTestEntity");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateCommand.txt");
-        actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("AddTestEntityCommand");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreatedDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("CreatedTestEntityDto");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateHandler.txt");
-        actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("AddTestEntityHandler");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateEndpoint.txt");
-        actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("AddTestEntityEndpoint");
+        actual.OperationName.Should().Be("Add");
+        actual.OperationGroup.Should().Be("AddTestEntity");
+        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
+        actual.Operation.Name.Should().Be("AddTestEntityCommand");
+        actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
+        actual.Dto.Name.Should().Be("CreatedTestEntityDto");
+        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
+        actual.Handler.Name.Should().Be("AddTestEntityHandler");
+        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
+        actual.Endpoint.Name.Should().Be("AddTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("AddAsync");
-        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, [])
-            .Should().Be("/testentity/add");
+        actual.Endpoint.FunctionName.Should().Be("AddAsync");
+        actual.Endpoint.Route.Should().Be("/testEntity/add");
     }
-    
-     [Fact]
+
+    [Fact]
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Create";
-        var path = "AllFiles";
         var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
         {
             Generate = false,
@@ -133,29 +125,26 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut.Construct(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            operationConfiguration);
+                _globalCqrsGeneratorConfigurationBuilder,
+                _cqrsOperationsSharedConfigurationBuilder,
+                operationConfiguration)
+            .Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
         actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be(operationName);
-        actual.OperationGroup.GetName(entityName, operationName).Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateCommand.txt");
-        actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CustomCommandName");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreatedDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("CustomDtoName");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateHandler.txt");
-        actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CustomHandlerName");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Create.CreateEndpoint.txt");
-        actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CustomEndpointClassName");
+        actual.OperationName.Should().Be("Create");
+        actual.OperationGroup.Should().Be("CustomOperationGroupName");
+        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
+        actual.Operation.Name.Should().Be("CustomCommandName");
+        actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
+        actual.Dto.Name.Should().Be("CustomDtoName");
+        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
+        actual.Handler.Name.Should().Be("CustomHandlerName");
+        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
+        actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
-        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("CustomEndpointFunctionName");
-        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, [])
-            .Should().Be("CustomEndpointRoute");
+        actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
+        actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
     }
 }

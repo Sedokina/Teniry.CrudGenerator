@@ -2,7 +2,6 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfi
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -16,9 +15,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
     private readonly string _endpointClassName;
     private readonly string _filterName;
 
-    public ListQueryCrudGenerator(
-        GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(context, scheme)
+    public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme)
     {
         _queryName = Scheme.Configuration.Operation.Name;
         _listItemDtoName = Scheme.Configuration.DtoListItem.Name;

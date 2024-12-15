@@ -97,6 +97,43 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         actual.CreateOperation.EndpointFunctionName.Should().Be("RunCreateAsync");
         actual.CreateOperation.RouteName.Should().Be("/customizedManagedEntityCreate");
     }
+    
+    [Fact]
+    public void Should_ConstructCreateOperationConfigurationWithAllProperties_When_TypeOfConfigurationIsImplicit()
+    {
+        // Arrange
+        var generator = CreateEntityGeneratorClass(
+            @"CreateOperation = new()
+            {
+                Generate = true,
+                Operation = ""CustomOperation"",
+                OperationGroup = ""ManagedEntityCreateOperationCustomNs"",
+                CommandName = ""CustomizedNameCreateManagedEntityCommand"",
+                HandlerName = ""CustomizedNameCreateManagedEntityHandler"",
+                DtoName = ""CustomizedNameCreatedManagedEntityDto"",
+                GenerateEndpoint = true,
+                EndpointClassName = ""CustomizedNameCreateManagedEntityEndpoint"",
+                EndpointFunctionName = ""RunCreateAsync"",
+                RouteName = ""/customizedManagedEntityCreate""
+            };"
+        );
+
+        // Act
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+
+        // Assert
+        actual.CreateOperation.Should().NotBeNull();
+        actual.CreateOperation!.Generate.Should().BeTrue();
+        actual.CreateOperation.Operation.Should().Be("CustomOperation");
+        actual.CreateOperation.OperationGroup.Should().Be("ManagedEntityCreateOperationCustomNs");
+        actual.CreateOperation.CommandName.Should().Be("CustomizedNameCreateManagedEntityCommand");
+        actual.CreateOperation.HandlerName.Should().Be("CustomizedNameCreateManagedEntityHandler");
+        actual.CreateOperation.DtoName.Should().Be("CustomizedNameCreatedManagedEntityDto");
+        actual.CreateOperation.GenerateEndpoint.Should().BeTrue();
+        actual.CreateOperation.EndpointClassName.Should().Be("CustomizedNameCreateManagedEntityEndpoint");
+        actual.CreateOperation.EndpointFunctionName.Should().Be("RunCreateAsync");
+        actual.CreateOperation.RouteName.Should().Be("/customizedManagedEntityCreate");
+    }
 
     [Fact]
     public void Should_ConstructUpdateOperationConfigurationWithAllProperties()
