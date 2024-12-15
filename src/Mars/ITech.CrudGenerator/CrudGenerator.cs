@@ -10,7 +10,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator;

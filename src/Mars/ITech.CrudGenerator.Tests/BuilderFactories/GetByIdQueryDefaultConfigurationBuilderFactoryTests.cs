@@ -3,7 +3,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
 namespace ITech.CrudGenerator.Tests.BuilderFactories;
 

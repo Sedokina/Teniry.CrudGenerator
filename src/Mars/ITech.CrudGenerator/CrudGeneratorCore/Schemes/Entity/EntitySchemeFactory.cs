@@ -5,8 +5,8 @@ using System.Text.RegularExpressions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Extensions;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 using Pluralize.NET;
 

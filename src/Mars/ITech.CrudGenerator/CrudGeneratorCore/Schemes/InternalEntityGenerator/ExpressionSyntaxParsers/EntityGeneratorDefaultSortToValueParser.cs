@@ -3,7 +3,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.ExpressionSyntaxParsers;
 
 internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValueParser
 {

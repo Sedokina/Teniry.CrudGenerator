@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.Configuration;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.ExpressionSyntaxParsers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
 internal class InternalEntityGeneratorConfigurationFactory
 {

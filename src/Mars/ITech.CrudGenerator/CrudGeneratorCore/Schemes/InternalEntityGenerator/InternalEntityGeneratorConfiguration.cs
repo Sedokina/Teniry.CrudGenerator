@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
 internal class InternalEntityGeneratorConfiguration
 {
