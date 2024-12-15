@@ -123,7 +123,7 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var updateOperationConfiguration = UpdateCommandDefaultConfigurationBuilderFactory
+                var updateOperationConfiguration = new UpdateCommandDefaultConfigurationBuilderFactory()
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,

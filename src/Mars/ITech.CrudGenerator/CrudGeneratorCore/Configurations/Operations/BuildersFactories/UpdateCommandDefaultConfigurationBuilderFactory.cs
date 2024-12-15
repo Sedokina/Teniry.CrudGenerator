@@ -6,7 +6,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class UpdateCommandDefaultConfigurationBuilderFactory
 {
-    public static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Construct(
+    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         EntityUpdateOperationCustomizationScheme? customizationScheme)
