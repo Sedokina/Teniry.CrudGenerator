@@ -1,4 +1,3 @@
-using System.Reflection;
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
@@ -9,8 +8,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
+using ITech.CrudGenerator.Tests.Helpers;
 
 namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
@@ -28,7 +26,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
             { TemplatesBasePath = "AllFiles" };
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var entitySchemeFactory = new EntitySchemeFactory();
-        var symbol = GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
+        var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
         _entityScheme = entitySchemeFactory.Construct(symbol, new InternalEntityGeneratorConfiguration(),
             new DbContextScheme("", "", DbContextDbProvider.Mongo, new Dictionary<FilterType, FilterExpression>()));
     }
@@ -151,28 +149,5 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
-    }
-
-    public ISymbol GenerateEntity(string entityName, string body = "")
-    {
-        var entityClass = $@"using System;
-
-namespace ITech.CrudGenerator.Tests {{
-    public class {entityName}
-    {{
-        {body}
-    }}
-}}
-";
-
-        var syntaxTree = CSharpSyntaxTree.ParseText(entityClass);
-        var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-        var compilation = CSharpCompilation.Create(
-            Assembly.GetExecutingAssembly().FullName,
-            [syntaxTree],
-            references: new[] { mscorlib },
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        var symbol = compilation.GetSymbolsWithName(entityName).First();
-        return symbol;
     }
 }
