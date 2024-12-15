@@ -4,8 +4,6 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.Tests.Helpers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.Tests.Schemes;
 
@@ -26,7 +24,7 @@ public class EntitySchemeFactoryTests
     public void Should_GetEntityNameFromSymbol()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName");
+        var symbol = DynamicClassBuilder.GenerateEntity("MyEntityName");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -43,7 +41,7 @@ public class EntitySchemeFactoryTests
     public void Should_GeneratePluralName_From_EntityName(string singular, string plural)
     {
         // Arrange
-        var symbol = GenerateEntity(singular);
+        var symbol = DynamicClassBuilder.GenerateEntity(singular);
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -62,7 +60,7 @@ public class EntitySchemeFactoryTests
     public void Should_addSuffixToEntityPluralName_When_PluralAndSingularFormIsSame(string singular, string plural)
     {
         // Arrange
-        var symbol = GenerateEntity(singular);
+        var symbol = DynamicClassBuilder.GenerateEntity(singular);
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -75,7 +73,7 @@ public class EntitySchemeFactoryTests
     public void Should_GenerateTitle_From_EntityName()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName");
+        var symbol = DynamicClassBuilder.GenerateEntity("MyEntityName");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -92,7 +90,7 @@ public class EntitySchemeFactoryTests
     public void Should_GeneratePluralTitle_From_EntityPluralName(string entityName, string pluralTitle)
     {
         // Arrange
-        var symbol = GenerateEntity(entityName);
+        var symbol = DynamicClassBuilder.GenerateEntity(entityName);
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -105,7 +103,7 @@ public class EntitySchemeFactoryTests
     public void Should_ExtractEntityNamespaceAndAssembly()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName");
+        var symbol = DynamicClassBuilder.GenerateEntity("MyEntityName");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -119,7 +117,7 @@ public class EntitySchemeFactoryTests
     public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInInternalEntityGeneratorConfiguration()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName");
+        var symbol = DynamicClassBuilder.GenerateEntity("MyEntityName");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -132,7 +130,7 @@ public class EntitySchemeFactoryTests
     public void Should_UseDefaultSort_From_InternalEntityGeneratorConfiguration()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName");
+        var symbol = DynamicClassBuilder.GenerateEntity("MyEntityName");
         _internalEntityGeneratorConfiguration.DefaultSort = new EntityDefaultSort("asc", "MyProp");
 
         // Act
@@ -148,7 +146,8 @@ public class EntitySchemeFactoryTests
     public void Should_IgnoreReferenceProperties()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public EntitySchemeFactoryTests ReferenceProp { get; set; }");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", "public EntitySchemeFactoryTests ReferenceProp { get; set; }");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -161,7 +160,8 @@ public class EntitySchemeFactoryTests
     public void Should_ExtractSimpleProperty()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public int SimpleProp { get; set; }");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", "public int SimpleProp { get; set; }");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -174,7 +174,8 @@ public class EntitySchemeFactoryTests
     public void Should_IgnoreSystemPrefixInPropertyTypes()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public DateTimeOffset DateTimeProp { get; set; }");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", "public DateTimeOffset DateTimeProp { get; set; }");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -188,7 +189,8 @@ public class EntitySchemeFactoryTests
     public void Should_HaveDefaultValueForString()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public string StringProp { get; set; }");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", "public string StringProp { get; set; }");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -208,7 +210,8 @@ public class EntitySchemeFactoryTests
     public void Should_DetectEntityIdProperty(string propertyName, bool isEntityId)
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", $"public Guid {propertyName} {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", $"public Guid {propertyName} {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -239,7 +242,8 @@ public class EntitySchemeFactoryTests
     public void Should_DetectSortableProperty(string propertyType)
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", $"public {propertyType} SortableProperty {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", $"public {propertyType} SortableProperty {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -252,7 +256,8 @@ public class EntitySchemeFactoryTests
     public void Should_NameSortablePropertyKeyInCamelCase()
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", "public int SortableProperty {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", "public int SortableProperty {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -279,7 +284,8 @@ public class EntitySchemeFactoryTests
         string expectedFilterPropertyName)
     {
         // Arrange
-        var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -319,7 +325,8 @@ public class EntitySchemeFactoryTests
     {
         // Arrange
         var propertyName = "FilteredProperty";
-        var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -353,7 +360,8 @@ public class EntitySchemeFactoryTests
     {
         // Arrange
         var propertyName = "FilteredProperty";
-        var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
+        var symbol = DynamicClassBuilder
+            .GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
         var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -373,28 +381,5 @@ public class EntitySchemeFactoryTests
                         f.FilterExpression.Should().BeOfType(filterExpressionType);
                     });
             });
-    }
-
-    public ISymbol GenerateEntity(string entityName, string body = "")
-    {
-        var entityClass = $@"using System;
-
-namespace ITech.CrudGenerator.Tests {{
-    public class {entityName}
-    {{
-        {body}
-    }}
-}}
-";
-
-        var syntaxTree = CSharpSyntaxTree.ParseText(entityClass);
-        var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
-        var compilation = CSharpCompilation.Create(
-            Assembly.GetExecutingAssembly().FullName,
-            [syntaxTree],
-            references: new[] { mscorlib },
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-        var symbol = compilation.GetSymbolsWithName(entityName).First();
-        return symbol;
     }
 }
