@@ -16,9 +16,8 @@ internal class UpdateCommandCrudGenerator
     private readonly string _endpointClassName;
 
     public UpdateCommandCrudGenerator(
-        GeneratorExecutionContext context,
         CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> scheme)
-        : base(context, scheme)
+        : base(scheme)
     {
         _commandName = scheme.Configuration.Operation.Name;
         _handlerName = scheme.Configuration.Handler.Name;

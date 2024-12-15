@@ -16,8 +16,7 @@ internal class
     private readonly string _endpointClassName;
 
     public GetByIdQueryCrudGenerator(
-        GeneratorExecutionContext context,
-        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(context, scheme)
+        CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
         _queryName = Scheme.Configuration.Operation.Name;
         _handlerName = Scheme.Configuration.Handler.Name;
