@@ -4,7 +4,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class CqrsOperationsSharedConfigurationBuilderFactory
 {
-    public static CqrsOperationsSharedConfigurationBuilder Construct()
+    public CqrsOperationsSharedConfigurationBuilder Construct()
     {
         return new()
         {

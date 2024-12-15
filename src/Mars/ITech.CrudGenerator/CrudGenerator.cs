@@ -33,7 +33,7 @@ public class CrudGenerator : ISourceGenerator
 
             List<EndpointMap> endpointsMaps = new();
             var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
-            var sharedConfigurationBuilder = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
+            var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
 
             var internalEntityGeneratorConfigurationFactory = new InternalEntityGeneratorConfigurationFactory();
             foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
