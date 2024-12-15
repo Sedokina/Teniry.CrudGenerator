@@ -71,7 +71,7 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var getListConfiguration = GetListQueryDefaultConfigurationBulderFactory
+                var getListConfiguration = new GetListQueryDefaultConfigurationBulderFactory()
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
