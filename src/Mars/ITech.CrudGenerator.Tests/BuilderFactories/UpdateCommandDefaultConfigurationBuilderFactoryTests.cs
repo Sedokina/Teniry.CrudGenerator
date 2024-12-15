@@ -71,7 +71,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("UpdateTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("UpdateAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}/update");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}/update");
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("UpdTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("UpdAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}/upd");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}/upd");
     }
 
     [Fact]

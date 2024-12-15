@@ -69,7 +69,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("DeleteTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DeleteAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}/delete");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}/delete");
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("DelTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DelAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}/del");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}/del");
     }
 
     [Fact]

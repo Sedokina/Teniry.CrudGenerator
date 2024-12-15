@@ -71,7 +71,7 @@ public class GetListQueryDefaultFactoryTests
         actual.Endpoint.Name.Should().Be("GetTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("GetAsync");
-        actual.Endpoint.Route.Should().Be("/testentity");
+        actual.Endpoint.Route.Should().Be("/testEntity");
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class GetListQueryDefaultFactoryTests
         actual.Endpoint.Name.Should().Be("ObtainTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("ObtainAsync");
-        actual.Endpoint.Route.Should().Be("/testentity");
+        actual.Endpoint.Route.Should().Be("/testEntity");
     }
 
     [Fact]

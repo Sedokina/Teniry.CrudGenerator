@@ -71,7 +71,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("CreateTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("CreateAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/create");
+        actual.Endpoint.Route.Should().Be("/testEntity/create");
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("AddTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("AddAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/add");
+        actual.Endpoint.Route.Should().Be("/testEntity/add");
     }
 
     [Fact]

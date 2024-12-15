@@ -71,7 +71,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("GetTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("GetAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}");
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Name.Should().Be("ObtainTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("ObtainAsync");
-        actual.Endpoint.Route.Should().Be("/testentity/{id}");
+        actual.Endpoint.Route.Should().Be("/testEntity/{id}");
     }
 
     [Fact]
