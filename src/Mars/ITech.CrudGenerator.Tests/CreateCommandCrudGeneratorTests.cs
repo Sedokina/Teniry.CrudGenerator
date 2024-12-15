@@ -31,7 +31,7 @@ public class CreateCommandCrudGeneratorTests
             new DbContextScheme("", "", DbContextDbProvider.Mongo, new Dictionary<FilterType, FilterExpression>()));
 
         var dbContextScheme = new DbContextScheme("", "", DbContextDbProvider.Mongo,
-            new Dictionary<FilterType, FilterExpression>()
+            new Dictionary<FilterType, FilterExpression>
             {
                 { FilterType.Contains, new ContainsFilterExpression() },
                 { FilterType.Equals, new EqualsFilterExpression() },
@@ -58,14 +58,31 @@ public class CreateCommandCrudGeneratorTests
             new EndpointRouteConfigurationBuilder("mygetroute/{{id_param_name}}");
         var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, getByIdEndpointRouteConfigurationBuilder,
             "getbyid");
-        
+
         // Act
         sut.RunGenerator();
-        
+
         // Assert
         var endpoint = sut.GeneratedFiles.Find(x => x.FileName.Equals("CreateTestEntityEndpoint.g.cs"));
         endpoint.Should().NotBeNull();
         endpoint!.Source.ToString().Should()
             .Contain(@"return TypedResults.Created($""mygetroute/{result.Id}"", result);");
+    }
+
+    [Fact]
+    public void
+        Should_NotReturnGetRouteFromCreateEndpoint_When_GetRouteConfigurationNotProvided_Or_GetEndpointNotGenerated()
+    {
+        // Arrange
+        var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, null, null);
+
+        // Act
+        sut.RunGenerator();
+
+        // Assert
+        var endpoint = sut.GeneratedFiles.Find(x => x.FileName.Equals("CreateTestEntityEndpoint.g.cs"));
+        endpoint.Should().NotBeNull();
+        endpoint!.Source.ToString().Should()
+            .Contain(@"return TypedResults.Created($"""", result);");
     }
 }
