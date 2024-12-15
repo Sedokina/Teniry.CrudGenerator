@@ -13,13 +13,13 @@ namespace ITech.CrudGenerator.Tests.Schemes;
 public class EntitySchemeFactoryTests
 {
     private readonly EntitySchemeFactory _sut;
-    private readonly EntityCustomizationScheme _entityCustomizationScheme;
+    private readonly InternalEntityGeneratorConfiguration _internalEntityGeneratorConfiguration;
     private readonly DbContextScheme _dbContextScheme;
 
     public EntitySchemeFactoryTests()
     {
         _sut = new();
-        _entityCustomizationScheme = new();
+        _internalEntityGeneratorConfiguration = new();
         _dbContextScheme = new("", "", DbContextDbProvider.Mongo, new Dictionary<FilterType, FilterExpression>()
         {
             { FilterType.Contains, new ContainsFilterExpression() },
@@ -37,7 +37,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.Name.Should().Be("MyEntityName");
@@ -54,7 +54,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity(singular);
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.PluralName.Should().Be(plural);
@@ -73,7 +73,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity(singular);
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.PluralName.Should().Be(plural);
@@ -86,7 +86,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityTitle.Title.Should().Be("My entity name");
@@ -103,7 +103,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity(entityName);
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityTitle.PluralTitle.Should().Be(pluralTitle);
@@ -116,7 +116,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityNamespace.Should().Be("ITech.CrudGenerator.Tests");
@@ -124,27 +124,27 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInEntityCustomization()
+    public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInInternalEntityGeneratorConfiguration()
     {
         // Arrange
         var symbol = GenerateEntity("MyEntityName");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.DefaultSort.Should().BeNull();
     }
 
     [Fact]
-    public void Should_UseDefaultSort_From_EntityCustomizationScheme()
+    public void Should_UseDefaultSort_From_InternalEntityGeneratorConfiguration()
     {
         // Arrange
         var symbol = GenerateEntity("MyEntityName");
-        _entityCustomizationScheme.DefaultSort = new EntityDefaultSort("asc", "MyProp");
+        _internalEntityGeneratorConfiguration.DefaultSort = new EntityDefaultSort("asc", "MyProp");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.DefaultSort.Should().NotBeNull();
@@ -159,7 +159,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", "public EntitySchemeFactoryTests ReferenceProp { get; set; }");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().NotContain(x => x.PropertyName == "ReferenceProp");
@@ -172,7 +172,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", "public int SimpleProp { get; set; }");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "SimpleProp");
@@ -185,7 +185,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", "public DateTimeOffset DateTimeProp { get; set; }");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -199,7 +199,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", "public string StringProp { get; set; }");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "StringProp" &&
@@ -219,7 +219,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", $"public Guid {propertyName} {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == propertyName &&
@@ -250,7 +250,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", $"public {propertyType} SortableProperty {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "SortableProperty" && x.CanBeSorted == true);
@@ -263,7 +263,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", "public int SortableProperty {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -290,7 +290,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -330,7 +330,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -364,7 +364,7 @@ public class EntitySchemeFactoryTests
         var symbol = GenerateEntity("MyEntityName", $"public {typeName} {propertyName} {{ get; set; }}");
 
         // Act
-        var actual = _sut.Construct(symbol, _entityCustomizationScheme, _dbContextScheme);
+        var actual = _sut.Construct(symbol, _internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()

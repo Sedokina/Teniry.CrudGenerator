@@ -27,7 +27,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityGetListOperationCustomizationScheme());
+            new InternalEntityGeneratorGetListOperationConfiguration());
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -46,7 +46,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityGetListOperationCustomizationScheme());
+            new InternalEntityGeneratorGetListOperationConfiguration());
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -71,13 +71,13 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInCustomizationScheme()
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Obtain";
         var path = "AllFiles";
-        var entityGetListOperationCustomizationScheme = new EntityGetListOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorGetListOperationConfiguration
         {
             Operation = operationName
         };
@@ -86,7 +86,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityGetListOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -117,7 +117,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Get";
         var path = "AllFiles";
-        var entityGetListOperationCustomizationScheme = new EntityGetListOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorGetListOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -134,7 +134,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityGetListOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeFalse();

@@ -9,55 +9,56 @@ internal class GetListQueryDefaultConfigurationBulderFactory
     public CqrsListOperationConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        EntityGetListOperationCustomizationScheme? customizationScheme)
+        InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration)
     {
         return new CqrsListOperationConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = customizationScheme?.Generate ?? true,
+            Generate = operationConfiguration?.Generate ?? true,
             OperationType = CqrsOperationType.Query,
-            OperationName = customizationScheme?.Operation ?? "Get",
-            OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
+            OperationName = operationConfiguration?.Operation ?? "Get",
+            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListQuery.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.QueryName ??
+                NameConfigurationBuilder = new(operationConfiguration?.QueryName ??
                                                "{{operation_name}}{{entity_name_plural}}Query")
             },
             Dto = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListDto.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.DtoName ??
+                NameConfigurationBuilder = new(operationConfiguration?.DtoName ??
                                                "{{entity_name_plural}}Dto")
             },
             DtoListItem = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListItemDto.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.ListItemDtoName ??
+                NameConfigurationBuilder = new(operationConfiguration?.ListItemDtoName ??
                                                "{{entity_name_plural}}ListItemDto")
             },
             Filter = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListFilter.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.FilterName ??
+                NameConfigurationBuilder = new(operationConfiguration?.FilterName ??
                                                "{{operation_name}}{{entity_name_plural}}Filter")
             },
             Handler = new()
             {
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListHandler.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.HandlerName ??
+                NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name_plural}}Handler")
             },
             Endpoint = new()
             {
                 // If general generate is false, than endpoint generate is also false
-                Generate = customizationScheme?.Generate != false && (customizationScheme?.GenerateEndpoint ?? true),
+                Generate = operationConfiguration?.Generate != false &&
+                           (operationConfiguration?.GenerateEndpoint ?? true),
                 TemplatePath = new("{{templates_base_path}}.GetList.GetListEndpoint.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
+                NameConfigurationBuilder = new(operationConfiguration?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name_plural}}Endpoint"),
-                FunctionName = new(customizationScheme?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder = new(customizationScheme?.RouteName ?? "/{{entity_name}}")
+                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
+                RouteConfigurationBuilder = new(operationConfiguration?.RouteName ?? "/{{entity_name}}")
             }
         };
     }

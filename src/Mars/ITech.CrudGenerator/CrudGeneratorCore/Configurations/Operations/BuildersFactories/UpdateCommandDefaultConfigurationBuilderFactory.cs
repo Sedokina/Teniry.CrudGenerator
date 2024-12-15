@@ -9,43 +9,44 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
     public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        EntityUpdateOperationCustomizationScheme? customizationScheme)
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)
     {
         return new CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = customizationScheme?.Generate ?? true,
+            Generate = operationConfiguration?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = customizationScheme?.Operation ?? "Update",
-            OperationGroup = new(customizationScheme?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            OperationName = operationConfiguration?.Operation ?? "Update",
+            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateCommand.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.CommandName ??
+                NameConfigurationBuilder = new(operationConfiguration?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },
             Handler = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateHandler.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.HandlerName ??
+                NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
             ViewModel = new()
             {
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateVm.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.ViewModelName ??
+                NameConfigurationBuilder = new(operationConfiguration?.ViewModelName ??
                                                "{{operation_name}}{{entity_name}}Vm")
             },
             Endpoint = new()
             {
                 // If general generate is false, than endpoint generate is also false
-                Generate = customizationScheme?.Generate != false && (customizationScheme?.GenerateEndpoint ?? true),
+                Generate = operationConfiguration?.Generate != false &&
+                           (operationConfiguration?.GenerateEndpoint ?? true),
                 TemplatePath = new("{{templates_base_path}}.Update.UpdateEndpoint.txt"),
-                NameConfigurationBuilder = new(customizationScheme?.EndpointClassName ??
+                NameConfigurationBuilder = new(operationConfiguration?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name}}Endpoint"),
-                FunctionName = new(customizationScheme?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder = new(customizationScheme?.RouteName ??
+                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
+                RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
         };

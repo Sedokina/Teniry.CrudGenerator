@@ -23,18 +23,18 @@ internal class EntitySchemeFactory
 
     internal EntityScheme Construct(
         ISymbol symbol,
-        EntityCustomizationScheme entityCustomizationScheme,
+        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
         DbContextScheme dbContextScheme)
     {
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
-        var entityTitle = CreateEntityTitle(entityCustomizationScheme, entityName);
+        var entityTitle = CreateEntityTitle(internalEntityGeneratorConfiguration, entityName);
         var properties = GetEntityProperties(symbol, dbContextScheme);
         return new EntityScheme(symbol,
             entityName,
             entityTitle,
             symbol.ContainingNamespace.ToString(),
             symbol.ContainingAssembly.Name,
-            entityCustomizationScheme.DefaultSort,
+            internalEntityGeneratorConfiguration.DefaultSort,
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
             properties.Where(x => !x.IsEntityId).ToList(),
@@ -42,13 +42,13 @@ internal class EntitySchemeFactory
     }
 
     private EntityTitle CreateEntityTitle(
-        EntityCustomizationScheme entityCustomizationScheme,
+        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
         EntityName entityName)
     {
-        var entityTitle = entityCustomizationScheme.Title ?? GetTitleFromEntityName(entityName.ToString());
+        var entityTitle = internalEntityGeneratorConfiguration.Title ?? GetTitleFromEntityName(entityName.ToString());
         var title = new EntityTitle(
             entityTitle,
-            entityCustomizationScheme.TitlePlural ?? GetPluralEntityTitle(entityTitle));
+            internalEntityGeneratorConfiguration.TitlePlural ?? GetPluralEntityTitle(entityTitle));
         return title;
     }
 

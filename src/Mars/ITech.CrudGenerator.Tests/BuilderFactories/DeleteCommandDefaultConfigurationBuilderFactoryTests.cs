@@ -27,7 +27,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityDeleteOperationCustomizationScheme());
+            new InternalEntityGeneratorDeleteOperationConfiguration());
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -46,7 +46,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityDeleteOperationCustomizationScheme());
+            new InternalEntityGeneratorDeleteOperationConfiguration());
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -69,13 +69,13 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInCustomizationScheme()
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Del";
         var path = "AllFiles";
-        var entityDeleteOperationCustomizationScheme = new EntityDeleteOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorDeleteOperationConfiguration
         {
             Operation = operationName
         };
@@ -84,7 +84,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityDeleteOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -113,7 +113,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Delete";
         var path = "AllFiles";
-        var entityDeleteOperationCustomizationScheme = new EntityDeleteOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorDeleteOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -129,7 +129,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityDeleteOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeFalse();

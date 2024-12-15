@@ -35,23 +35,23 @@ public class CrudGenerator : ISourceGenerator
             var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
             var sharedConfigurationBuilder = CqrsOperationsSharedConfigurationBuilderFactory.Construct();
 
-            var entityCustomizationSchemeFactory = new EntityCustomizationSchemeFactory();
+            var internalEntityGeneratorConfigurationFactory = new InternalEntityGeneratorConfigurationFactory();
             foreach (var classSyntax in syntaxReceiver.ClassesForCrudGeneration)
             {
                 var (entityGeneratorConfigurationSymbol, entitySymbol) = classSyntax.AsSymbol(context);
 
-                var entityCustomizationScheme = entityCustomizationSchemeFactory
+                var internalEntityGeneratorConfiguration = internalEntityGeneratorConfigurationFactory
                     .Construct(entityGeneratorConfigurationSymbol as INamedTypeSymbol, context.Compilation);
                 var entityScheme = new EntitySchemeFactory().Construct(
                     entitySymbol,
-                    entityCustomizationScheme,
+                    internalEntityGeneratorConfiguration,
                     dbContextScheme);
 
                 var getByIdQueryConfigurationBuilder = new GetByIdQueryDefaultConfigurationBuilderFactory()
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        entityCustomizationScheme.GetByIdOperation);
+                        internalEntityGeneratorConfiguration.GetByIdOperation);
 
                 var getByIdQueryConfiguration = getByIdQueryConfigurationBuilder.Build(entityScheme);
                 if (getByIdQueryConfiguration.Generate)
@@ -75,7 +75,7 @@ public class CrudGenerator : ISourceGenerator
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        entityCustomizationScheme.GetListOperation)
+                        internalEntityGeneratorConfiguration.GetListOperation)
                     .Build(entityScheme);
                 if (getListConfiguration.Generate)
                 {
@@ -97,7 +97,7 @@ public class CrudGenerator : ISourceGenerator
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        entityCustomizationScheme.CreateOperation)
+                        internalEntityGeneratorConfiguration.CreateOperation)
                     .Build(entityScheme);
                 if (createCommandConfiguration.Generate)
                 {
@@ -127,7 +127,7 @@ public class CrudGenerator : ISourceGenerator
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        entityCustomizationScheme.UpdateOperation)
+                        internalEntityGeneratorConfiguration.UpdateOperation)
                     .Build(entityScheme);
                 if (updateOperationConfiguration.Generate)
                 {
@@ -150,7 +150,7 @@ public class CrudGenerator : ISourceGenerator
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        entityCustomizationScheme.DeleteOperation)
+                        internalEntityGeneratorConfiguration.DeleteOperation)
                     .Build(entityScheme);
                 if (deleteCommandConfiguration.Generate)
                 {

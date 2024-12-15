@@ -2,19 +2,19 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 
-internal class EntityCustomizationScheme
+internal class InternalEntityGeneratorConfiguration
 {
     public string? Title { get; set; }
     public string? TitlePlural { get; set; }
     public EntityDefaultSort? DefaultSort { get; set; }
-    public EntityCreateOperationCustomizationScheme? CreateOperation { get; set; }
-    public EntityDeleteOperationCustomizationScheme? DeleteOperation { get; set; }
-    public EntityUpdateOperationCustomizationScheme? UpdateOperation { get; set; }
-    public EntityGetByIdOperationCustomizationScheme? GetByIdOperation { get; set; }
-    public EntityGetListOperationCustomizationScheme? GetListOperation { get; set; }
+    public InternalEntityGeneratorCreateOperationConfiguration? CreateOperation { get; set; }
+    public InternalEntityGeneratorDeleteOperationConfiguration? DeleteOperation { get; set; }
+    public InternalEntityGeneratorUpdateOperationConfiguration? UpdateOperation { get; set; }
+    public InternalEntityGeneratorGetByIdOperationConfiguration? GetByIdOperation { get; set; }
+    public InternalEntityGeneratorGetListOperationConfiguration? GetListOperation { get; set; }
 }
 
-internal class EntityCreateOperationCustomizationScheme
+internal class InternalEntityGeneratorCreateOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
@@ -28,7 +28,7 @@ internal class EntityCreateOperationCustomizationScheme
     public bool? GenerateEndpoint { get; set; }
 }
 
-internal class EntityDeleteOperationCustomizationScheme
+internal class InternalEntityGeneratorDeleteOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
@@ -41,7 +41,7 @@ internal class EntityDeleteOperationCustomizationScheme
     public bool? GenerateEndpoint { get; set; }
 }
 
-internal class EntityUpdateOperationCustomizationScheme
+internal class InternalEntityGeneratorUpdateOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
@@ -55,7 +55,7 @@ internal class EntityUpdateOperationCustomizationScheme
     public string? ViewModelName { get; set; }
 }
 
-internal class EntityGetByIdOperationCustomizationScheme
+internal class InternalEntityGeneratorGetByIdOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
@@ -69,7 +69,7 @@ internal class EntityGetByIdOperationCustomizationScheme
     public bool? GenerateEndpoint { get; set; }
 }
 
-internal class EntityGetListOperationCustomizationScheme
+internal class InternalEntityGeneratorGetListOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
