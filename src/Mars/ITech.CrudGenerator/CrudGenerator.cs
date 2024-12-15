@@ -146,7 +146,7 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var deleteCommandConfiguration = DeleteCommandDefaultConfigurationBuilderFactory
+                var deleteCommandConfiguration = new DeleteCommandDefaultConfigurationBuilderFactory()
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,

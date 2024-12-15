@@ -6,7 +6,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class DeleteCommandDefaultConfigurationBuilderFactory
 {
-    public static CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
+    public CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         EntityDeleteOperationCustomizationScheme? customizationScheme)
