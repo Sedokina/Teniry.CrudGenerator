@@ -7,7 +7,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class GetByIdQueryDefaultConfigurationBuilderFactory
 {
-    public static CqrsOperationWithReturnValueConfigurationBuilder Construct(
+    public CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         EntityGetByIdOperationCustomizationScheme? customizationScheme)

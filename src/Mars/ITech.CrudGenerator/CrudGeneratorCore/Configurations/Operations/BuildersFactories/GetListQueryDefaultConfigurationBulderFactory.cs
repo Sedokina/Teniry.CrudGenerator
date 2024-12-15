@@ -6,7 +6,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class GetListQueryDefaultConfigurationBulderFactory
 {
-    public static CqrsListOperationConfigurationBuilder Construct(
+    public CqrsListOperationConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         EntityGetListOperationCustomizationScheme? customizationScheme)

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ITech.CrudGenerator.Abstractions;
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
@@ -27,5 +26,10 @@ internal class DbContextScheme
     public FilterExpression GetFilterExpression(FilterType filterType)
     {
         return _filterExpressions[filterType];
+    }
+
+    public bool ContainsFilter(FilterType filterType)
+    {
+        return _filterExpressions.ContainsKey(filterType);
     }
 }

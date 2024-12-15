@@ -26,9 +26,9 @@ internal class EntitySchemeFactory
         EntityCustomizationScheme entityCustomizationScheme,
         DbContextScheme dbContextScheme)
     {
-        var properties = GetEntityProperties(symbol, dbContextScheme);
         var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
         var entityTitle = CreateEntityTitle(entityCustomizationScheme, entityName);
+        var properties = GetEntityProperties(symbol, dbContextScheme);
         return new EntityScheme(symbol,
             entityName,
             entityTitle,
@@ -122,13 +122,18 @@ internal class EntitySchemeFactory
         if (isForeignOrPrimaryKey)
         {
             var pluralPropertyName = _pluralizer.Pluralize(propertyName);
-            return
-            [
-                new EntityFilterProperty(
-                    $"{propertyTypeName}[]?",
-                    pluralPropertyName,
-                    dbContextScheme.GetFilterExpression(FilterType.Contains))
-            ];
+            if (dbContextScheme.ContainsFilter(FilterType.Contains))
+            {
+                return
+                [
+                    new EntityFilterProperty(
+                        $"{propertyTypeName}[]?",
+                        pluralPropertyName,
+                        dbContextScheme.GetFilterExpression(FilterType.Contains))
+                ];
+            }
+
+            return [];
         }
 
         if (propertyType.NullableAnnotation != NullableAnnotation.Annotated)
@@ -138,25 +143,50 @@ internal class EntitySchemeFactory
 
         if (propertyType.IsRangeType())
         {
-            return
-            [
-                new EntityFilterProperty(
-                    propertyTypeName,
-                    $"{propertyName}From",
-                    dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)),
-                new EntityFilterProperty(
-                    propertyTypeName,
-                    $"{propertyName}To",
-                    dbContextScheme.GetFilterExpression(FilterType.LessThan))
-            ];
+            if (dbContextScheme.ContainsFilter(FilterType.GreaterThanOrEqual) &&
+                dbContextScheme.ContainsFilter(FilterType.LessThan))
+            {
+                return
+                [
+                    new EntityFilterProperty(
+                        propertyTypeName,
+                        $"{propertyName}From",
+                        dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)),
+                    new EntityFilterProperty(
+                        propertyTypeName,
+                        $"{propertyName}To",
+                        dbContextScheme.GetFilterExpression(FilterType.LessThan))
+                ];
+            }
+
+            return [];
         }
 
         if (propertyType.IsSimple())
         {
-            FilterExpression filterExpression = propertyType.SpecialType == SpecialType.System_String
-                ? dbContextScheme.GetFilterExpression(FilterType.Like)
-                : dbContextScheme.GetFilterExpression(FilterType.Equals);
-            return [new EntityFilterProperty(propertyTypeName, propertyName, filterExpression)];
+            if (propertyType.SpecialType == SpecialType.System_String)
+            {
+                if (dbContextScheme.ContainsFilter(FilterType.Like))
+                {
+                    return
+                    [
+                        new EntityFilterProperty(
+                            propertyTypeName,
+                            propertyName,
+                            dbContextScheme.GetFilterExpression(FilterType.Like))
+                    ];
+                }
+
+                return [];
+            }
+
+            return
+            [
+                new EntityFilterProperty(
+                    propertyTypeName,
+                    propertyName,
+                    dbContextScheme.GetFilterExpression(FilterType.Equals))
+            ];
         }
 
         return [];

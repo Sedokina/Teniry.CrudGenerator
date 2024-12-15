@@ -40,10 +40,6 @@
         <PackageReference Include="Scriban" Version="3.9.0" IncludeAssets="Build" PrivateAssets="all"/>
     </ItemGroup>
 
-<!--    <ItemGroup>-->
-<!--        <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer"  PrivateAssets="all"/>-->
-<!--    </ItemGroup>-->
-
     <ItemGroup>
         <ProjectReference Include="..\ITech.CrudGenerator.Abstractions\ITech.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer"  GeneratePathProperty="true" PrivateAssets="all"/>
     </ItemGroup>
@@ -63,6 +59,10 @@
             <None Include="$(PKGpluralize_net)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         </ItemGroup>
     </Target>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ITech.CrudGenerator.Tests"/>
+    </ItemGroup>
 
     <!-- Include Scriban code templates -->
     <ItemGroup>

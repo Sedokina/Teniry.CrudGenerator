@@ -5,14 +5,14 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.Expr
 
 internal class LiteralExpressionToValueParser : IExpressionSyntaxToValueParser
 {
-    public bool CanParse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public bool CanParse(Compilation compilation, ExpressionSyntax expression)
     {
         return expression is LiteralExpressionSyntax;
     }
 
-    public object? Parse(GeneratorExecutionContext context, ExpressionSyntax expression)
+    public object? Parse(Compilation compilation, ExpressionSyntax expression)
     {
-        var model = context.Compilation.GetSemanticModel(expression.SyntaxTree);
+        var model = compilation.GetSemanticModel(expression.SyntaxTree);
         var constant = model.GetConstantValue(expression);
         return constant.Value;
     }
