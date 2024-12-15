@@ -19,7 +19,8 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
 
     public bool CanParse(Compilation compilation, ExpressionSyntax expression)
     {
-        if (expression is not ObjectCreationExpressionSyntax)
+        if (expression is not ObjectCreationExpressionSyntax &&
+            expression is not ImplicitObjectCreationExpressionSyntax)
         {
             return false;
         }
@@ -44,7 +45,7 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
 
     public object Parse(Compilation compilation, ExpressionSyntax expression)
     {
-        var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
+        var objectCreationExpression = (BaseObjectCreationExpressionSyntax)expression;
         var result = new TTo();
         if (objectCreationExpression.Initializer == null)
         {

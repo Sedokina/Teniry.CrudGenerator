@@ -12,10 +12,9 @@
 * Critical: Id сущности не находит, если перед Id стоит название сущности
 * Bug: Название endpoint'ов (сам роут) должен использовать CamelCase, сейчас нет - ("/customoperationnameentity/{id}/customopupdate")
 * Bug: В CreateCustomizedManageEntityEndpoint, endpoint не возвращает Get Route. Это не баг, так как в CustomizedManageEntity не существует Get endpoint, он не генерируется
+* Bug: Конфигурация не считывается если указывать new() вместо полного названия типа new EntityGeneratorGetListOperationConfiguration()
 
 Сделать:
-* Bug: Конфигурация не считывается если указывать new() вместо полного названия типа new
-* EntityGeneratorGetListOperationConfiguration()
 * Improve: При изменении сущности, если обновляемый ключ зависит от связанной сущности, провалидировать, что связанная
 * сущность существует
 * Bug: Что если существительное в единственном и множественном числе пишется одинаково?
