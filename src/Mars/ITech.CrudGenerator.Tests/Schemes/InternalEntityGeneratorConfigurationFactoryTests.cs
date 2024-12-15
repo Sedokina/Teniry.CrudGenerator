@@ -2,17 +2,17 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using ITech.CrudGenerator.Abstractions.Configuration;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.Tests.Schemes;
 
-public class EntityCustomizationSchemeFactoryTests
+public class InternalEntityGeneratorConfigurationFactoryTests
 {
-    private readonly EntityCustomizationSchemeFactory _sut;
+    private readonly InternalEntityGeneratorConfigurationFactory _sut;
 
-    public EntityCustomizationSchemeFactoryTests()
+    public InternalEntityGeneratorConfigurationFactoryTests()
     {
         _sut = new();
     }

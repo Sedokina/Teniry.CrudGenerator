@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.Configuration;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.ExpressionSyntaxParsers;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
-internal class EntityCustomizationSchemeFactory
+internal class InternalEntityGeneratorConfigurationFactory
 {
-    internal EntityCustomizationScheme Construct(
+    internal InternalEntityGeneratorConfiguration Construct(
         INamedTypeSymbol? generatorSymbol,
         Compilation compilation)
     {
-        var generatorScheme = new EntityCustomizationScheme();
+        var generatorScheme = new InternalEntityGeneratorConfiguration();
         if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration))
         {
             return generatorScheme;
@@ -62,23 +63,23 @@ internal class EntityCustomizationSchemeFactory
         availableAssignmentExpressionsRightSideParsers
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorCreateOperationConfiguration,
-                EntityCreateOperationCustomizationScheme>(assignmentExpressionParer));
+                InternalEntityGeneratorCreateOperationConfiguration>(assignmentExpressionParer));
         availableAssignmentExpressionsRightSideParsers
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorDeleteOperationConfiguration,
-                EntityDeleteOperationCustomizationScheme>(assignmentExpressionParer));
+                InternalEntityGeneratorDeleteOperationConfiguration>(assignmentExpressionParer));
         availableAssignmentExpressionsRightSideParsers
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorUpdateOperationConfiguration,
-                EntityUpdateOperationCustomizationScheme>(assignmentExpressionParer));
+                InternalEntityGeneratorUpdateOperationConfiguration>(assignmentExpressionParer));
         availableAssignmentExpressionsRightSideParsers
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorGetByIdOperationConfiguration,
-                EntityGetByIdOperationCustomizationScheme>(assignmentExpressionParer));
+                InternalEntityGeneratorGetByIdOperationConfiguration>(assignmentExpressionParer));
         availableAssignmentExpressionsRightSideParsers
             .Add(new ObjectCreationToObjectParser<
                 EntityGeneratorGetListOperationConfiguration,
-                EntityGetListOperationCustomizationScheme>(assignmentExpressionParer));
+                InternalEntityGeneratorGetListOperationConfiguration>(assignmentExpressionParer));
         return assignmentExpressionParer;
     }
 

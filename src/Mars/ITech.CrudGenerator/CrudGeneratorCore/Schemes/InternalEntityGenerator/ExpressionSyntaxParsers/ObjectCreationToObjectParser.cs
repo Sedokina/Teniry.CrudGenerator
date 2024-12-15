@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using ITech.CrudGenerator.CrudGeneratorCore.ConfigurationsReceiver;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization.ExpressionSyntaxParsers;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.ExpressionSyntaxParsers;
 
 internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToValueParser
     where TFrom : class

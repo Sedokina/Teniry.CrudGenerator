@@ -3,7 +3,8 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
@@ -27,7 +28,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityCreateOperationCustomizationScheme());
+            new InternalEntityGeneratorCreateOperationConfiguration());
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -46,7 +47,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityCreateOperationCustomizationScheme());
+            new InternalEntityGeneratorCreateOperationConfiguration());
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -71,13 +72,13 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInCustomizationScheme()
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Add";
         var path = "AllFiles";
-        var entityCreateOperationCustomizationScheme = new EntityCreateOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
         {
             Operation = operationName
         };
@@ -86,7 +87,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityCreateOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -117,7 +118,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         var entityName = new EntityName("TestEntity", "TestEntities");
         var operationName = "Create";
         var path = "AllFiles";
-        var entityCreateOperationCustomizationScheme = new EntityCreateOperationCustomizationScheme
+        var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -134,7 +135,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityCreateOperationCustomizationScheme);
+            operationConfiguration);
 
         // Assert
         actual.Generate.Should().BeFalse();
