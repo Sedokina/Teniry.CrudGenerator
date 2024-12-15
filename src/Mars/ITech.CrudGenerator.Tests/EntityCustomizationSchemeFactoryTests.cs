@@ -10,11 +10,11 @@ namespace ITech.CrudGenerator.Tests;
 
 public class EntityCustomizationSchemeFactoryTests
 {
-    private readonly EntityCustomizationSchemeFactory _factory;
+    private readonly EntityCustomizationSchemeFactory _sut;
 
     public EntityCustomizationSchemeFactoryTests()
     {
-        _factory = new();
+        _sut = new();
     }
 
     [Fact]
@@ -24,10 +24,10 @@ public class EntityCustomizationSchemeFactoryTests
         var generator = CreateEntityGeneratorClass("Title = \"My custom title\";");
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.Title.Should().Be("My custom title");
+        actual.Title.Should().Be("My custom title");
     }
 
     [Fact]
@@ -37,10 +37,10 @@ public class EntityCustomizationSchemeFactoryTests
         var generator = CreateEntityGeneratorClass("TitlePlural = \"My custom title plural\";");
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.TitlePlural.Should().Be("My custom title plural");
+        actual.TitlePlural.Should().Be("My custom title plural");
     }
 
     [Theory]
@@ -53,12 +53,12 @@ public class EntityCustomizationSchemeFactoryTests
             $"DefaultSort = new EntityGeneratorDefaultSort<MyCustomClass>(\"{direction}\", x => x.{propertyName});");
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.DefaultSort.Should().NotBeNull();
-        sut.DefaultSort!.Direction.Should().Be(direction);
-        sut.DefaultSort.PropertyName.Should().Be(propertyName);
+        actual.DefaultSort.Should().NotBeNull();
+        actual.DefaultSort!.Direction.Should().Be(direction);
+        actual.DefaultSort.PropertyName.Should().Be(propertyName);
     }
 
     [Fact]
@@ -82,22 +82,22 @@ public class EntityCustomizationSchemeFactoryTests
         );
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.CreateOperation.Should().NotBeNull();
-        sut.CreateOperation!.Generate.Should().BeTrue();
-        sut.CreateOperation.Operation.Should().Be("CustomOperation");
-        sut.CreateOperation.OperationGroup.Should().Be("ManagedEntityCreateOperationCustomNs");
-        sut.CreateOperation.CommandName.Should().Be("CustomizedNameCreateManagedEntityCommand");
-        sut.CreateOperation.HandlerName.Should().Be("CustomizedNameCreateManagedEntityHandler");
-        sut.CreateOperation.DtoName.Should().Be("CustomizedNameCreatedManagedEntityDto");
-        sut.CreateOperation.GenerateEndpoint.Should().BeTrue();
-        sut.CreateOperation.EndpointClassName.Should().Be("CustomizedNameCreateManagedEntityEndpoint");
-        sut.CreateOperation.EndpointFunctionName.Should().Be("RunCreateAsync");
-        sut.CreateOperation.RouteName.Should().Be("/customizedManagedEntityCreate");
+        actual.CreateOperation.Should().NotBeNull();
+        actual.CreateOperation!.Generate.Should().BeTrue();
+        actual.CreateOperation.Operation.Should().Be("CustomOperation");
+        actual.CreateOperation.OperationGroup.Should().Be("ManagedEntityCreateOperationCustomNs");
+        actual.CreateOperation.CommandName.Should().Be("CustomizedNameCreateManagedEntityCommand");
+        actual.CreateOperation.HandlerName.Should().Be("CustomizedNameCreateManagedEntityHandler");
+        actual.CreateOperation.DtoName.Should().Be("CustomizedNameCreatedManagedEntityDto");
+        actual.CreateOperation.GenerateEndpoint.Should().BeTrue();
+        actual.CreateOperation.EndpointClassName.Should().Be("CustomizedNameCreateManagedEntityEndpoint");
+        actual.CreateOperation.EndpointFunctionName.Should().Be("RunCreateAsync");
+        actual.CreateOperation.RouteName.Should().Be("/customizedManagedEntityCreate");
     }
-    
+
     [Fact]
     public void Should_ConstructUpdateOperationConfigurationWithAllProperties()
     {
@@ -119,22 +119,22 @@ public class EntityCustomizationSchemeFactoryTests
         );
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.UpdateOperation.Should().NotBeNull();
-        sut.UpdateOperation!.Generate.Should().BeTrue();
-        sut.UpdateOperation.Operation.Should().Be("CustomOperation");
-        sut.UpdateOperation.OperationGroup.Should().Be("ManagedEntityUpdateOperationCustomNs");
-        sut.UpdateOperation.CommandName.Should().Be("CustomizedNameUpdateManagedEntityCommand");
-        sut.UpdateOperation.HandlerName.Should().Be("CustomizedNameUpdateManagedEntityHandler");
-        sut.UpdateOperation.GenerateEndpoint.Should().BeTrue();
-        sut.UpdateOperation.EndpointClassName.Should().Be("CustomizedNameUpdateManagedEntityEndpoint");
-        sut.UpdateOperation.EndpointFunctionName.Should().Be("RunUpdateAsync");
-        sut.UpdateOperation.RouteName.Should().Be("/customizedManagedEntityUpdate");
-        sut.UpdateOperation.ViewModelName.Should().Be("CustomizedNameUpdatedManagedEntityViewModel");
+        actual.UpdateOperation.Should().NotBeNull();
+        actual.UpdateOperation!.Generate.Should().BeTrue();
+        actual.UpdateOperation.Operation.Should().Be("CustomOperation");
+        actual.UpdateOperation.OperationGroup.Should().Be("ManagedEntityUpdateOperationCustomNs");
+        actual.UpdateOperation.CommandName.Should().Be("CustomizedNameUpdateManagedEntityCommand");
+        actual.UpdateOperation.HandlerName.Should().Be("CustomizedNameUpdateManagedEntityHandler");
+        actual.UpdateOperation.GenerateEndpoint.Should().BeTrue();
+        actual.UpdateOperation.EndpointClassName.Should().Be("CustomizedNameUpdateManagedEntityEndpoint");
+        actual.UpdateOperation.EndpointFunctionName.Should().Be("RunUpdateAsync");
+        actual.UpdateOperation.RouteName.Should().Be("/customizedManagedEntityUpdate");
+        actual.UpdateOperation.ViewModelName.Should().Be("CustomizedNameUpdatedManagedEntityViewModel");
     }
-    
+
     [Fact]
     public void Should_ConstructDeleteOperationConfigurationWithAllProperties()
     {
@@ -155,21 +155,21 @@ public class EntityCustomizationSchemeFactoryTests
         );
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.DeleteOperation.Should().NotBeNull();
-        sut.DeleteOperation!.Generate.Should().BeTrue();
-        sut.DeleteOperation.Operation.Should().Be("CustomOperation");
-        sut.DeleteOperation.OperationGroup.Should().Be("ManagedEntityDeleteOperationCustomNs");
-        sut.DeleteOperation.CommandName.Should().Be("CustomizedNameDeleteManagedEntityCommand");
-        sut.DeleteOperation.HandlerName.Should().Be("CustomizedNameDeleteManagedEntityHandler");
-        sut.DeleteOperation.GenerateEndpoint.Should().BeTrue();
-        sut.DeleteOperation.EndpointClassName.Should().Be("CustomizedNameDeleteManagedEntityEndpoint");
-        sut.DeleteOperation.EndpointFunctionName.Should().Be("RunDeleteAsync");
-        sut.DeleteOperation.RouteName.Should().Be("/customizedManagedEntityDelete");
+        actual.DeleteOperation.Should().NotBeNull();
+        actual.DeleteOperation!.Generate.Should().BeTrue();
+        actual.DeleteOperation.Operation.Should().Be("CustomOperation");
+        actual.DeleteOperation.OperationGroup.Should().Be("ManagedEntityDeleteOperationCustomNs");
+        actual.DeleteOperation.CommandName.Should().Be("CustomizedNameDeleteManagedEntityCommand");
+        actual.DeleteOperation.HandlerName.Should().Be("CustomizedNameDeleteManagedEntityHandler");
+        actual.DeleteOperation.GenerateEndpoint.Should().BeTrue();
+        actual.DeleteOperation.EndpointClassName.Should().Be("CustomizedNameDeleteManagedEntityEndpoint");
+        actual.DeleteOperation.EndpointFunctionName.Should().Be("RunDeleteAsync");
+        actual.DeleteOperation.RouteName.Should().Be("/customizedManagedEntityDelete");
     }
-    
+
     [Fact]
     public void Should_ConstructGetByIdOperationConfigurationWithAllProperties()
     {
@@ -191,22 +191,22 @@ public class EntityCustomizationSchemeFactoryTests
         );
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.GetByIdOperation.Should().NotBeNull();
-        sut.GetByIdOperation!.Generate.Should().BeTrue();
-        sut.GetByIdOperation.Operation.Should().Be("CustomOperation");
-        sut.GetByIdOperation.OperationGroup.Should().Be("ManagedEntityGetByIdOperationCustomNs");
-        sut.GetByIdOperation.QueryName.Should().Be("CustomizedNameGetByIdManagedEntityQuery");
-        sut.GetByIdOperation.DtoName.Should().Be("CustomizedNameGetByIddManagedEntityDto");
-        sut.GetByIdOperation.HandlerName.Should().Be("CustomizedNameGetByIdManagedEntityHandler");
-        sut.GetByIdOperation.GenerateEndpoint.Should().BeTrue();
-        sut.GetByIdOperation.EndpointClassName.Should().Be("CustomizedNameGetByIdManagedEntityEndpoint");
-        sut.GetByIdOperation.EndpointFunctionName.Should().Be("RunGetByIdAsync");
-        sut.GetByIdOperation.RouteName.Should().Be("/customizedManagedEntityGetById");
+        actual.GetByIdOperation.Should().NotBeNull();
+        actual.GetByIdOperation!.Generate.Should().BeTrue();
+        actual.GetByIdOperation.Operation.Should().Be("CustomOperation");
+        actual.GetByIdOperation.OperationGroup.Should().Be("ManagedEntityGetByIdOperationCustomNs");
+        actual.GetByIdOperation.QueryName.Should().Be("CustomizedNameGetByIdManagedEntityQuery");
+        actual.GetByIdOperation.DtoName.Should().Be("CustomizedNameGetByIddManagedEntityDto");
+        actual.GetByIdOperation.HandlerName.Should().Be("CustomizedNameGetByIdManagedEntityHandler");
+        actual.GetByIdOperation.GenerateEndpoint.Should().BeTrue();
+        actual.GetByIdOperation.EndpointClassName.Should().Be("CustomizedNameGetByIdManagedEntityEndpoint");
+        actual.GetByIdOperation.EndpointFunctionName.Should().Be("RunGetByIdAsync");
+        actual.GetByIdOperation.RouteName.Should().Be("/customizedManagedEntityGetById");
     }
-    
+
     [Fact]
     public void Should_ConstructGetListOperationConfigurationWithAllProperties()
     {
@@ -229,21 +229,21 @@ public class EntityCustomizationSchemeFactoryTests
         );
 
         // Act
-        var sut = _factory.Construct(generator.Symbol, generator.Compilation);
+        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
-        sut.GetListOperation.Should().NotBeNull();
-        sut.GetListOperation!.Generate.Should().BeTrue();
-        sut.GetListOperation.Operation.Should().Be("CustomOperation");
-        sut.GetListOperation.OperationGroup.Should().Be("ManagedEntityGetListOperationCustomNs");
-        sut.GetListOperation.QueryName.Should().Be("CustomizedNameGetListManagedEntityQuery");
-        sut.GetListOperation.DtoName.Should().Be("CustomizedNameGetListManagedEntityDto");
-        sut.GetListOperation.ListItemDtoName.Should().Be("CustomizedNameGetListItemManagedEntityDto");
-        sut.GetListOperation.HandlerName.Should().Be("CustomizedNameGetListManagedEntityHandler");
-        sut.GetListOperation.GenerateEndpoint.Should().BeTrue();
-        sut.GetListOperation.EndpointClassName.Should().Be("CustomizedNameGetListManagedEntityEndpoint");
-        sut.GetListOperation.EndpointFunctionName.Should().Be("RunGetListAsync");
-        sut.GetListOperation.RouteName.Should().Be("/customizedManagedEntityGetList");
+        actual.GetListOperation.Should().NotBeNull();
+        actual.GetListOperation!.Generate.Should().BeTrue();
+        actual.GetListOperation.Operation.Should().Be("CustomOperation");
+        actual.GetListOperation.OperationGroup.Should().Be("ManagedEntityGetListOperationCustomNs");
+        actual.GetListOperation.QueryName.Should().Be("CustomizedNameGetListManagedEntityQuery");
+        actual.GetListOperation.DtoName.Should().Be("CustomizedNameGetListManagedEntityDto");
+        actual.GetListOperation.ListItemDtoName.Should().Be("CustomizedNameGetListItemManagedEntityDto");
+        actual.GetListOperation.HandlerName.Should().Be("CustomizedNameGetListManagedEntityHandler");
+        actual.GetListOperation.GenerateEndpoint.Should().BeTrue();
+        actual.GetListOperation.EndpointClassName.Should().Be("CustomizedNameGetListManagedEntityEndpoint");
+        actual.GetListOperation.EndpointFunctionName.Should().Be("RunGetListAsync");
+        actual.GetListOperation.RouteName.Should().Be("/customizedManagedEntityGetList");
     }
 
     public (INamedTypeSymbol Symbol, CSharpCompilation Compilation) CreateEntityGeneratorClass(

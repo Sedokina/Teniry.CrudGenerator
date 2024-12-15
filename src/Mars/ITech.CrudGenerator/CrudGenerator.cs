@@ -93,7 +93,7 @@ public class CrudGenerator : ISourceGenerator
                     }
                 }
 
-                var createCommandConfiguration = CreateCommandDefaultConfigurationBuilderFactory
+                var createCommandConfiguration = new CreateCommandDefaultConfigurationBuilderFactory()
                     .Construct(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
