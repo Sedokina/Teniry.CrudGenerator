@@ -5,7 +5,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFa
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
 public class UpdateCommandDefaultConfigurationBuilderFactoryTests
 {

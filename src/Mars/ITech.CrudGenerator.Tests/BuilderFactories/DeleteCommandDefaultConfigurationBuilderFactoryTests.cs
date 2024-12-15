@@ -5,17 +5,17 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFa
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
-public class GetListQueryDefaultConfigurationBuilderFactoryTests
+public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 {
-    private readonly GetListQueryDefaultConfigurationBulderFactory _sut;
+    private readonly DeleteCommandDefaultConfigurationBuilderFactory _sut;
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
 
-    public GetListQueryDefaultConfigurationBuilderFactoryTests()
+    public DeleteCommandDefaultConfigurationBuilderFactoryTests()
     {
-        _sut = new GetListQueryDefaultConfigurationBulderFactory();
+        _sut = new DeleteCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilder();
     }
@@ -27,7 +27,7 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityGetListOperationCustomizationScheme());
+            new EntityDeleteOperationCustomizationScheme());
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -39,35 +39,33 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Get";
+        var operationName = "Delete";
         var path = "AllFiles";
 
         // Act
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            new EntityGetListOperationCustomizationScheme());
+            new EntityDeleteOperationCustomizationScheme());
 
         // Assert
         actual.Generate.Should().BeTrue();
-        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be(operationName);
-        actual.OperationGroup.GetName(entityName, operationName).Should().Be("GetTestEntities");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListQuery.txt");
+        actual.OperationGroup.GetName(entityName, operationName).Should().Be("DeleteTestEntity");
+        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("GetTestEntitiesQuery");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("TestEntitiesDto");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListHandler.txt");
+            .Should().Be("DeleteTestEntityCommand");
+        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteHandler.txt");
         actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("GetTestEntitiesHandler");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+            .Should().Be("DeleteTestEntityHandler");
+        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("GetTestEntitiesEndpoint");
+            .Should().Be("DeleteTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("GetAsync");
-        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, [])
-            .Should().Be("/testentity");
+        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("DeleteAsync");
+        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, ["id"])
+            .Should().Be("/testentity/{id}/delete");
     }
 
     [Fact]
@@ -75,9 +73,9 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Obtain";
+        var operationName = "Del";
         var path = "AllFiles";
-        var entityGetListOperationCustomizationScheme = new EntityGetListOperationCustomizationScheme
+        var entityDeleteOperationCustomizationScheme = new EntityDeleteOperationCustomizationScheme
         {
             Operation = operationName
         };
@@ -86,28 +84,26 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityGetListOperationCustomizationScheme);
+            entityDeleteOperationCustomizationScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
-        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be(operationName);
-        actual.OperationGroup.GetName(entityName, operationName).Should().Be("ObtainTestEntities");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListQuery.txt");
+        actual.OperationGroup.GetName(entityName, operationName).Should().Be("DelTestEntity");
+        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("ObtainTestEntitiesQuery");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("TestEntitiesDto");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListHandler.txt");
+            .Should().Be("DelTestEntityCommand");
+        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteHandler.txt");
         actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("ObtainTestEntitiesHandler");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+            .Should().Be("DelTestEntityHandler");
+        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("ObtainTestEntitiesEndpoint");
+            .Should().Be("DelTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("ObtainAsync");
-        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, [])
-            .Should().Be("/testentity");
+        actual.Endpoint.FunctionName.GetName(entityName, operationName).Should().Be("DelAsync");
+        actual.Endpoint.RouteConfigurationBuilder.GetRoute(entityName.Name, operationName, ["id"])
+            .Should().Be("/testentity/{id}/del");
     }
     
      [Fact]
@@ -115,14 +111,13 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
     {
         // Arrange
         var entityName = new EntityName("TestEntity", "TestEntities");
-        var operationName = "Get";
+        var operationName = "Delete";
         var path = "AllFiles";
-        var entityGetListOperationCustomizationScheme = new EntityGetListOperationCustomizationScheme
+        var entityDeleteOperationCustomizationScheme = new EntityDeleteOperationCustomizationScheme
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
-            QueryName = "CustomQueryName",
-            DtoName = "CustomDtoName",
+            CommandName = "CustomCommandName",
             HandlerName = "CustomHandlerName",
             EndpointClassName = "CustomEndpointClassName",
             EndpointFunctionName = "CustomEndpointFunctionName",
@@ -134,22 +129,20 @@ public class GetListQueryDefaultConfigurationBuilderFactoryTests
         var actual = _sut.Construct(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
-            entityGetListOperationCustomizationScheme);
+            entityDeleteOperationCustomizationScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
-        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be(operationName);
         actual.OperationGroup.GetName(entityName, operationName).Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListQuery.txt");
+        actual.Operation.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.NameConfigurationBuilder.GetName(entityName, operationName)
-            .Should().Be("CustomQueryName");
-        actual.Dto.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListDto.txt");
-        actual.Dto.NameConfigurationBuilder.GetName(entityName, operationName).Should().Be("CustomDtoName");
-        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListHandler.txt");
+            .Should().Be("CustomCommandName");
+        actual.Handler.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteHandler.txt");
         actual.Handler.NameConfigurationBuilder.GetName(entityName, operationName)
             .Should().Be("CustomHandlerName");
-        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+        actual.Endpoint.TemplatePath.GetPath(path, "").Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.NameConfigurationBuilder.GetName(entityName, operationName)
             .Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();

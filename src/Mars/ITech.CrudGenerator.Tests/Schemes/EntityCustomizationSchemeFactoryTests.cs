@@ -6,7 +6,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.EntityCustomization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.Schemes;
 
 public class EntityCustomizationSchemeFactoryTests
 {
