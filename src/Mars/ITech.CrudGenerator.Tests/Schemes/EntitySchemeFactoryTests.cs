@@ -57,7 +57,7 @@ public class EntitySchemeFactoryTests
     [InlineData("Employees", "EmployeesList")]
     [InlineData("Currencies", "CurrenciesList")]
     [InlineData("DepartmentGroups", "DepartmentGroupsList")]
-    public void Should_addSuffixToEntityPluralName_When_PluralAndSingularFormIsSame(string singular, string plural)
+    public void Should_AddSuffixToEntityPluralName_When_PluralAndSingularFormAreSame(string singular, string plural)
     {
         // Arrange
         var symbol = DynamicClassBuilder.GenerateEntity(singular);
