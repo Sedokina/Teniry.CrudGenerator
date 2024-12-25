@@ -123,7 +123,11 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
     private void GenerateEndpoint()
     {
-        var endpointClass = new ClassBuilder(_endpointClassName)
+        var endpointClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.PartialKeyword
+            ], _endpointClassName)
             .WithUsings([
                 "Microsoft.AspNetCore.Mvc",
                 "ITech.Cqrs.Cqrs.Queries",

@@ -14,8 +14,7 @@ internal class MethodBuilder
     {
         var returnTypeSyntax = SyntaxFactory.ParseTypeName(returnType);
         _methodDeclaration = SyntaxFactory.MethodDeclaration(returnTypeSyntax, name)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token)
-                .ToArray());
+            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
     }
 
     public MethodBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
@@ -39,6 +38,15 @@ internal class MethodBuilder
 ///     {summary}
 /// </summary>
 /// <response code=""{responseStatusCode}"">{response}</response>
+";
+        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
+        return this;
+    }
+    
+    public MethodBuilder WithXmlInheritdoc()
+    {
+        var xmlDoc = @"
+/// <inheritdoc />
 ";
         _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
         return this;

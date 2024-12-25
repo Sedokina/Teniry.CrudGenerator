@@ -3,6 +3,7 @@ using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
@@ -75,6 +76,43 @@ internal class MethodBodyBuilder
         return this;
     }
 
+    public MethodBodyBuilder InitVariableFromGenericMethodCall(
+        string variableName,
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        var methodCall = SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectWithMethod),
+                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
+                        .WithTypeArgumentList(
+                            SyntaxFactory.TypeArgumentList(
+                                SyntaxFactory.SeparatedList<TypeSyntax>(
+                                    methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
+                                )
+                            )
+                        )
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            );
+
+        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
+            null,
+            SyntaxFactory.EqualsValueClause(methodCall));
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(
+                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        return this;
+    }
+
     public MethodBodyBuilder CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -105,25 +143,32 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
         return this;
     }
-    
+
     public MethodBodyBuilder CallMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
         var methodCall = SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName(objectWithMethod),
-                    SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(methodNameToCall))
-                ),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
-                ))
-            );
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(objectWithMethod),
+                SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(methodNameToCall))
+            ),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                methodArgumentsAsVariableNames
+                    .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+            ))
+        );
 
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
+        return this;
+    }
+    
+    public MethodBodyBuilder ReturnVariable(string variableName)
+    {
+        var returnStatement = SyntaxFactory.ReturnStatement(SyntaxFactory.IdentifierName(variableName));
+        _body = _body.AddStatements(returnStatement);
         return this;
     }
 
