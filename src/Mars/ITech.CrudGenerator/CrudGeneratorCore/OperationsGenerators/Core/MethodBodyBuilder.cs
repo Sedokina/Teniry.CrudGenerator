@@ -239,4 +239,27 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(assignmentExpression));
         return this;
     }
+
+    public MethodBodyBuilder ThrowIfEntityNotFound(string variableName, string entityTypeName)
+    {
+        var ifStatement = SyntaxFactory.IfStatement(SyntaxFactory.ParseExpression($"{variableName} == null"),
+            SyntaxFactory.Block(
+                SyntaxFactory.ThrowStatement(
+                    SyntaxFactory.ObjectCreationExpression(
+                        SyntaxFactory.ParseTypeName("EfEntityNotFoundException")
+                    ).WithArgumentList(
+                        SyntaxFactory.ArgumentList(
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.TypeOfExpression(SyntaxFactory.ParseTypeName(entityTypeName))
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        );
+        _body = _body.AddStatements(ifStatement);
+        return this;
+    }
 }

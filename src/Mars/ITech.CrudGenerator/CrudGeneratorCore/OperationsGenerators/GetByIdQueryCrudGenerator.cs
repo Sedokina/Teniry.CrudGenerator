@@ -105,6 +105,7 @@ internal class
             .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
                 [EntityScheme.EntityName.ToString()],
                 findParameters.Concat(["cancellation"]).ToList())
+            .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
             .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
             .ReturnVariable("result");
 
