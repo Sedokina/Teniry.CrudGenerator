@@ -73,11 +73,21 @@ internal class
             .WithUsings([
                 "ITech.Cqrs.Cqrs.Queries",
                 "ITech.Cqrs.Domain.Exceptions",
+                Scheme.DbContextScheme.DbContextNamespace,
+                EntityScheme.EntityNamespace,
                 "Mapster"
             ])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .Implements("IQueryHandler", _queryName, _dtoName);
+            .Implements("IQueryHandler", _queryName, _dtoName)
+            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName, "_db");
 
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+            .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
+        var constructorBody = new MethodBodyBuilder()
+            .AssignVariable("_db", "db");
+
+        constructor.WithBody(constructorBody.Build());
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,
@@ -100,6 +110,7 @@ internal class
 
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
+        handlerClass.WithMethod(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         // var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("query");

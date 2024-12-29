@@ -84,23 +84,23 @@ internal class MethodBodyBuilder
         List<string> methodArgumentsAsVariableNames)
     {
         var methodCall = SyntaxFactory.InvocationExpression(
-                SyntaxFactory.MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    SyntaxFactory.IdentifierName(objectWithMethod),
-                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
-                        .WithTypeArgumentList(
-                            SyntaxFactory.TypeArgumentList(
-                                SyntaxFactory.SeparatedList<TypeSyntax>(
-                                    methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
-                                )
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(objectWithMethod),
+                SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
+                    .WithTypeArgumentList(
+                        SyntaxFactory.TypeArgumentList(
+                            SyntaxFactory.SeparatedList<TypeSyntax>(
+                                methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
                             )
                         )
-                ),
-                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
-                ))
-            );
+                    )
+            ),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                methodArgumentsAsVariableNames
+                    .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+            ))
+        );
 
         var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
             null,
@@ -164,7 +164,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
         return this;
     }
-    
+
     public MethodBodyBuilder ReturnVariable(string variableName)
     {
         var returnStatement = SyntaxFactory.ReturnStatement(SyntaxFactory.IdentifierName(variableName));
@@ -230,5 +230,13 @@ internal class MethodBodyBuilder
     public BlockSyntax Build()
     {
         return _body;
+    }
+
+    public MethodBodyBuilder AssignVariable(string assignTo, string from)
+    {
+        var assignmentExpression = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+            SyntaxFactory.IdentifierName(assignTo), SyntaxFactory.IdentifierName(from));
+        _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(assignmentExpression));
+        return this;
     }
 }

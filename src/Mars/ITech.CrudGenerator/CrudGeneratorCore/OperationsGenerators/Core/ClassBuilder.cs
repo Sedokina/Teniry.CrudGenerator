@@ -14,6 +14,7 @@ internal class ClassBuilder
     private readonly List<BaseTypeSyntax> _implementInterfaces = [];
     private ClassDeclarationSyntax _classDeclaration;
     private readonly List<MemberDeclarationSyntax> _methods = new();
+    private readonly List<MemberDeclarationSyntax> _fields = new();
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
     {
@@ -47,6 +48,21 @@ internal class ClassBuilder
         return this;
     }
 
+
+    public ClassBuilder WithPrivateField(SyntaxKind[] modifiers, string fieldType, string fieldName)
+    {
+        var field = SyntaxFactory.FieldDeclaration(
+                SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fieldType))
+                    .WithVariables(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.VariableDeclarator(
+                                SyntaxFactory.Identifier(fieldName)))))
+            .WithModifiers(
+                SyntaxFactory.TokenList(modifiers.Select(SyntaxFactory.Token).ToArray()));
+        _fields.Add(field);
+        return this;
+    }
+
     public CompilationUnitSyntax Build()
     {
         var compilationUnit = SyntaxFactory.CompilationUnit();
@@ -56,6 +72,7 @@ internal class ClassBuilder
 
         _classDeclaration = _classDeclaration.AddBaseListTypes(_implementInterfaces.ToArray());
 
+        _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
         _namespace = _namespace?.AddMembers(_classDeclaration);
 
