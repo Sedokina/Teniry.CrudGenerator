@@ -101,10 +101,10 @@ internal class
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
         var methodBodyBuilder = new MethodBodyBuilder()
-            // .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
+            .InitArrayVariable("object", "entityIds", findParameters)
             .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                findParameters.Concat(["cancellation"]).ToList())
+                ["entityIds", "cancellation"])
             .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
             .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
             .ReturnVariable("result");
@@ -123,7 +123,7 @@ internal class
         //     FindParameters = findParameters
         // };
 
-        WriteFile(_endpointClassName, handlerClass.BuildAsString());
+        WriteFile(_handlerName, handlerClass.BuildAsString());
 
         // WriteFile(templatePath, model, _handlerName);
     }

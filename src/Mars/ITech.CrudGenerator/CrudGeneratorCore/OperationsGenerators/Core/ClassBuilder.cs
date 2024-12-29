@@ -70,7 +70,10 @@ internal class ClassBuilder
         compilationUnit = compilationUnit.AddUsings(usings);
         // _classDeclaration = _classDeclaration.AddBaseListTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName("IDisposable")));
 
-        _classDeclaration = _classDeclaration.AddBaseListTypes(_implementInterfaces.ToArray());
+        if (_implementInterfaces.Count > 0)
+        {
+            _classDeclaration = _classDeclaration.AddBaseListTypes(_implementInterfaces.ToArray());
+        }
 
         _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
