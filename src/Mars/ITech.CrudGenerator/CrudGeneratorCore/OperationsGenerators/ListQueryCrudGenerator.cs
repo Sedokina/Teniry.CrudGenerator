@@ -1,3 +1,4 @@
+using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
@@ -31,7 +32,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         GenerateListItemDto(Scheme.Configuration.DtoListItem.TemplatePath);
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
-        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -107,18 +108,63 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         return "base.DefaultSort(query);";
     }
 
-    private void GenerateHandler(string templatePath)
+    private void GenerateHandler()
     {
-        var model = new
-        {
-            QueryName = _queryName,
-            HandlerName = _handlerName,
-            DtoName = _dtoName,
-            DtoListItemName = _listItemDtoName,
-            FilterName = _filterName
-        };
+        var handlerClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _handlerName)
+            .WithUsings([
+                "Microsoft.EntityFrameworkCore",
+                "ITech.Cqrs.Cqrs.Queries",
+                "ITech.Cqrs.Domain.Exceptions",
+                "ITech.Cqrs.Queryables.Page",
+                "ITech.Cqrs.Queryables.Filter",
+                Scheme.DbContextScheme.DbContextNamespace,
+                EntityScheme.EntityNamespace,
+                "Mapster"
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .Implements("IQueryHandler", _queryName, _dtoName)
+            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName, "_db");
 
-        WriteFile(templatePath, model, _handlerName);
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+            .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
+        var constructorBody = new MethodBodyBuilder()
+            .AssignVariable("_db", "db");
+
+        constructor.WithBody(constructorBody.Build());
+
+        var methodBuilder = new MethodBuilder([
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.AsyncKeyword
+                ], $"Task<{_dtoName}>", "HandleAsync")
+            .WithParameters([
+                new ParameterOfMethodBuilder(_queryName, "query"),
+                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+            ])
+            .WithXmlInheritdoc();
+
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromGenericMethodCall("filter", "query", "Adapt", [_filterName], [])
+            .AssignVariable("filter.Sorts", "query.Sort")
+            .InitVariableFromAsyncMethodCall("items", linqBuilder =>
+            {
+                linqBuilder.CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
+                    .ThenMethod("Filter", ["filter"])
+                    .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
+                    .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
+            })
+            .InitVariableFromConstructorCall("result", _dtoName, ["items.ToList()", "items.GetPage()"])
+            .ReturnVariable("result");
+
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
     private void GenerateEndpoint()

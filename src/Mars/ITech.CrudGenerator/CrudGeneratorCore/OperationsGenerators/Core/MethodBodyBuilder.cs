@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
@@ -35,7 +36,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclaration));
         return this;
     }
-    
+
     public MethodBodyBuilder InitVariableFromConstructorCall(
         string variableName,
         string className,
@@ -98,6 +99,25 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
     }
+
+
+    public MethodBodyBuilder InitVariableFromAsyncMethodCall(
+        string variableName,
+        Action<LinqCallBuilder> linqCallBuilderFunc)
+    {
+        var linqCallBuilder = new LinqCallBuilder();
+        linqCallBuilderFunc(linqCallBuilder);
+        var variableDeclaratorResultVariable = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName),
+            null,
+            SyntaxFactory.EqualsValueClause(SyntaxFactory.AwaitExpression(linqCallBuilder.Build())));
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(
+                SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        return this;
+    }
+
 
     public MethodBodyBuilder InitVariableFromGenericMethodCall(
         string variableName,
@@ -346,5 +366,88 @@ internal class MethodBodyBuilder
 
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
+    }
+}
+
+public class LinqCallBuilder
+{
+    private InvocationExpressionSyntax _call = null!;
+
+    public LinqCallBuilder CallGenericMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _call =
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectWithMethod),
+                    SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
+                        .WithTypeArgumentList(
+                            SyntaxFactory.TypeArgumentList(
+                                SyntaxFactory.SeparatedList<TypeSyntax>(
+                                    methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
+                                )
+                            )
+                        )
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            );
+
+        return this;
+    }
+
+    public LinqCallBuilder ThenMethod(
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _call = _call.WithExpression(
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                _call,
+                SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(methodNameToCall))
+            )
+        ).WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+            methodArgumentsAsVariableNames
+                .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+        )));
+
+        return this;
+    }
+
+    public LinqCallBuilder ThenGenericMethod(
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _call = _call.WithExpression(
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                _call,
+                SyntaxFactory.GenericName(SyntaxFactory.Identifier(methodNameToCall))
+                    .WithTypeArgumentList(
+                        SyntaxFactory.TypeArgumentList(
+                            SyntaxFactory.SeparatedList<TypeSyntax>(
+                                methodGenericTypeNames.Select(SyntaxFactory.IdentifierName)
+                            )
+                        )
+                    )
+            )
+        ).WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+            methodArgumentsAsVariableNames
+                .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+        )));
+
+        return this;
+    }
+
+    public InvocationExpressionSyntax Build()
+    {
+        return _call;
     }
 }
