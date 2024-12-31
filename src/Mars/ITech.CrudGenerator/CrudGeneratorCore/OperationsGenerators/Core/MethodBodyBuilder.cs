@@ -3,7 +3,6 @@ using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
@@ -257,6 +256,17 @@ internal class MethodBodyBuilder
                         )
                     )
                 )
+            )
+        );
+        _body = _body.AddStatements(ifStatement);
+        return this;
+    }
+    
+    public MethodBodyBuilder ReturnIfNull(string variableName)
+    {
+        var ifStatement = SyntaxFactory.IfStatement(SyntaxFactory.ParseExpression($"{variableName} == null"),
+            SyntaxFactory.Block(
+                SyntaxFactory.ReturnStatement()
             )
         );
         _body = _body.AddStatements(ifStatement);

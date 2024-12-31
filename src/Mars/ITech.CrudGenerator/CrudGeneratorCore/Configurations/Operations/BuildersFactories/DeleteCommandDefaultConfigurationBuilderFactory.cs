@@ -27,7 +27,7 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             },
             Handler = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Delete.DeleteHandler.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
