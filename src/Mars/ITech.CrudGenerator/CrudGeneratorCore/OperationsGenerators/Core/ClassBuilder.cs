@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
@@ -13,8 +12,9 @@ internal class ClassBuilder
     private readonly List<string> _usings = [];
     private readonly List<BaseTypeSyntax> _implementInterfaces = [];
     private ClassDeclarationSyntax _classDeclaration;
-    private readonly List<MemberDeclarationSyntax> _methods = new();
-    private readonly List<MemberDeclarationSyntax> _fields = new();
+    private readonly List<MemberDeclarationSyntax> _methods = [];
+    private readonly List<MemberDeclarationSyntax> _fields = [];
+    private readonly List<MemberDeclarationSyntax> _properties = [];
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
     {
@@ -63,6 +63,23 @@ internal class ClassBuilder
         return this;
     }
 
+    public ClassBuilder WithProperty(string fieldType, string fieldName)
+    {
+        var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(fieldType), fieldName)
+            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+            .WithAccessorList(SyntaxFactory.AccessorList(
+                SyntaxFactory.List([
+                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+                ])));
+
+        _properties.Add(property);
+        return this;
+    }
+
+
     public CompilationUnitSyntax Build()
     {
         var compilationUnit = SyntaxFactory.CompilationUnit();
@@ -75,6 +92,7 @@ internal class ClassBuilder
         }
 
         _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
+        _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
         _namespace = _namespace?.AddMembers(_classDeclaration);
 

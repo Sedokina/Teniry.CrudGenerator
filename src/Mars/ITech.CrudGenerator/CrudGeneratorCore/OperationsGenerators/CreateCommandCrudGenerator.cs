@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
@@ -34,7 +35,7 @@ internal class
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler();
-        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateDto();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -54,19 +55,29 @@ internal class
         WriteFile(templatePath, model, _commandName);
     }
 
-    private void GenerateDto(string templatePath)
+    private void GenerateDto()
     {
-        var properties = EntityScheme.PrimaryKeys.FormatAsProperties();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
-        var model = new
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _dtoName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
+        
+        var constructorParameters = EntityScheme.PrimaryKeys
+            .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _dtoName)
+            .WithParameters(constructorParameters);
+        var constructorBody = new MethodBodyBuilder();
+        foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
-            DtoName = _dtoName,
-            Properties = properties,
-            ConstructorParameters = constructorParameters,
-            ConstructorBody = constructorBody
-        };
-        WriteFile(templatePath, model, _dtoName);
+            dtoClass.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
+            constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
+        }
+        
+        constructor.WithBody(constructorBody.Build());
+        dtoClass.WithMethod(constructor.Build());
+
+        WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
     private void GenerateHandler()
