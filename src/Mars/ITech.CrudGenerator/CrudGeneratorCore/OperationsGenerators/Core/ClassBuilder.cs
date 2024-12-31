@@ -68,7 +68,6 @@ internal class ClassBuilder
         var compilationUnit = SyntaxFactory.CompilationUnit();
         var usings = _usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray();
         compilationUnit = compilationUnit.AddUsings(usings);
-        // _classDeclaration = _classDeclaration.AddBaseListTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName("IDisposable")));
 
         if (_implementInterfaces.Count > 0)
         {

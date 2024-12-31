@@ -62,7 +62,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("GetTestEntityQuery");
         actual.Dto.TemplatePath.Should().Be("AllFiles.GetById.GetByIdDto.txt");
         actual.Dto.Name.Should().Be("TestEntityDto");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.GetById.GetByIdHandler.txt");
         actual.Handler.Name.Should().Be("GetTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("GetTestEntityEndpoint");
@@ -98,7 +97,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("ObtainTestEntityQuery");
         actual.Dto.TemplatePath.Should().Be("AllFiles.GetById.GetByIdDto.txt");
         actual.Dto.Name.Should().Be("TestEntityDto");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.GetById.GetByIdHandler.txt");
         actual.Handler.Name.Should().Be("ObtainTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("ObtainTestEntityEndpoint");
@@ -142,7 +140,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("CustomQueryName");
         actual.Dto.TemplatePath.Should().Be("AllFiles.GetById.GetByIdDto.txt");
         actual.Dto.Name.Should().Be("CustomDtoName");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.GetById.GetByIdHandler.txt");
         actual.Handler.Name.Should().Be("CustomHandlerName");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");

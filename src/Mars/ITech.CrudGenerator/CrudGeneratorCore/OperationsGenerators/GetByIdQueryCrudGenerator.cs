@@ -7,8 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
-internal class
-    GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -27,7 +27,7 @@ internal class
     public override void RunGenerator()
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
-        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateHandler();
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -64,7 +64,7 @@ internal class
         WriteFile(templatePath, model, _dtoName);
     }
 
-    private void GenerateHandler(string templatePath)
+    private void GenerateHandler()
     {
         var handlerClass = new ClassBuilder([
                 SyntaxKind.PublicKeyword,
@@ -114,18 +114,7 @@ internal class
         handlerClass.WithMethod(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
-        // var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("query");
-        // var model = new
-        // {
-        //     QueryName = _queryName,
-        //     HandlerName = _handlerName,
-        //     DtoName = _dtoName,
-        //     FindParameters = findParameters
-        // };
-
         WriteFile(_handlerName, handlerClass.BuildAsString());
-
-        // WriteFile(templatePath, model, _handlerName);
     }
 
     private void GenerateEndpoint()

@@ -32,7 +32,7 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             },
             Handler = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdHandler.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
