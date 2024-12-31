@@ -27,7 +27,7 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
             },
             Handler = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Update.UpdateHandler.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
