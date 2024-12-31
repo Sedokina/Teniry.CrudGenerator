@@ -88,7 +88,7 @@ internal class
                 ["entityIds", "cancellation"])
             .ReturnIfNull("entity")
             .CallMethod("_db", "Remove", ["entity"])
-            .CallMethod("_db", "SaveChangesAsync", ["cancellation"]);
+            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
 
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
@@ -96,16 +96,6 @@ internal class
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());
-        
-        // var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("command");
-        // var model = new
-        // {
-        //     CommandName = _commandName,
-        //     HandlerName = _handlerName,
-        //     FindParameters = findParameters
-        // };
-        //
-        // WriteFile(templatePath, model, _handlerName);
     }
 
     private void GenerateEndpoint()
@@ -139,7 +129,7 @@ internal class
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
-            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 
         methodBuilder.WithBody(methodBodyBuilder.Build());

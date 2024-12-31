@@ -110,7 +110,7 @@ internal class UpdateCommandCrudGenerator
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
             .CallMethod("vm", "Adapt", ["command"])
-            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 
         methodBuilder.WithBody(methodBodyBuilder.Build());

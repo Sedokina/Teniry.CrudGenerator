@@ -62,7 +62,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("CreateTestEntityCommand");
         actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
         actual.Dto.Name.Should().Be("CreatedTestEntityDto");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
         actual.Handler.Name.Should().Be("CreateTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CreateTestEntityEndpoint");
@@ -97,7 +96,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("AddTestEntityCommand");
         actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
         actual.Dto.Name.Should().Be("CreatedTestEntityDto");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
         actual.Handler.Name.Should().Be("AddTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("AddTestEntityEndpoint");
@@ -139,7 +137,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Dto.TemplatePath.Should().Be("AllFiles.Create.CreatedDto.txt");
         actual.Dto.Name.Should().Be("CustomDtoName");
-        actual.Handler.TemplatePath.Should().Be("AllFiles.Create.CreateHandler.txt");
         actual.Handler.Name.Should().Be("CustomHandlerName");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Create.CreateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");

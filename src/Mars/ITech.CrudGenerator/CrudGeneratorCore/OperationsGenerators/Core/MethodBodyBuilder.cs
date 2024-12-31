@@ -35,6 +35,30 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclaration));
         return this;
     }
+    
+    public MethodBodyBuilder InitVariableFromConstructorCall(
+        string variableName,
+        string className,
+        List<string> constructorArguments)
+    {
+        ExpressionSyntax initializationExpression = SyntaxFactory.ObjectCreationExpression(
+            SyntaxFactory.Token(SyntaxKind.NewKeyword),
+            SyntaxFactory.ParseTypeName(className),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                constructorArguments.Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+            )),
+            null
+        );
+
+        // Initialize query variable with query object value
+        var variableDeclarator = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName), null,
+            SyntaxFactory.EqualsValueClause(initializationExpression));
+        var variableDeclaration = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclaration));
+        return this;
+    }
 
     public MethodBodyBuilder InitVariableFromGenericAsyncMethodCall(
         string variableName,
@@ -112,7 +136,7 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder CallAsyncMethod(
+    public MethodBodyBuilder CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -158,6 +182,29 @@ internal class MethodBodyBuilder
                 methodArgumentsAsVariableNames
                     .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
             ))
+        );
+
+        _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
+        return this;
+    }
+
+    public MethodBodyBuilder CallAsyncMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        var methodCall = SyntaxFactory.AwaitExpression(
+            SyntaxFactory.InvocationExpression(
+                SyntaxFactory.MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    SyntaxFactory.IdentifierName(objectWithMethod),
+                    SyntaxFactory.IdentifierName(SyntaxFactory.Identifier(methodNameToCall))
+                ),
+                SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x))).ToArray()
+                ))
+            )
         );
 
         _body = _body.AddStatements(SyntaxFactory.ExpressionStatement(methodCall));
@@ -261,7 +308,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ifStatement);
         return this;
     }
-    
+
     public MethodBodyBuilder ReturnIfNull(string variableName)
     {
         var ifStatement = SyntaxFactory.IfStatement(SyntaxFactory.ParseExpression($"{variableName} == null"),
