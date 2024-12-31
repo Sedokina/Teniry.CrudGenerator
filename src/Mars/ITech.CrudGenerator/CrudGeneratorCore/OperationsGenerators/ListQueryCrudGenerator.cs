@@ -29,7 +29,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
     public override void RunGenerator()
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
-        GenerateListItemDto(Scheme.Configuration.DtoListItem.TemplatePath);
+        GenerateListItemDto();
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
         GenerateHandler();
@@ -55,16 +55,20 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(templatePath, model, _queryName);
     }
 
-    private void GenerateListItemDto(string templatePath)
+    private void GenerateListItemDto()
     {
-        var properties = EntityScheme.Properties.FormatAsProperties();
-        var model = new
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _listItemDtoName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
+    
+        foreach (var property in EntityScheme.Properties)
         {
-            ListItemDtoName = _listItemDtoName,
-            Properties = properties
-        };
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
 
-        WriteFile(templatePath, model, _listItemDtoName);
+        WriteFile(_listItemDtoName, dtoClass.BuildAsString());
     }
 
     private void GenerateDto(string templatePath)

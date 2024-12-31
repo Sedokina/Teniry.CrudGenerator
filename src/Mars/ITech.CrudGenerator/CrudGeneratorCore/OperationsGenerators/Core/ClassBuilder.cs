@@ -63,7 +63,7 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithProperty(string fieldType, string fieldName)
+    public ClassBuilder WithProperty(string fieldType, string fieldName, string? defaultValue = null)
     {
         var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(fieldType), fieldName)
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
@@ -74,6 +74,14 @@ internal class ClassBuilder
                     SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                         .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
                 ])));
+
+        if (defaultValue is not null)
+        {
+            property = property.WithInitializer(SyntaxFactory.EqualsValueClause(
+                    SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,
+                        SyntaxFactory.Literal("")))) // TODO: set actual default value, when it would not be "\"\""
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+        }
 
         _properties.Add(property);
         return this;
