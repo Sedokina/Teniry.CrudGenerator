@@ -45,7 +45,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             },
             Handler = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetList.GetListHandler.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name_plural}}Handler")
             },

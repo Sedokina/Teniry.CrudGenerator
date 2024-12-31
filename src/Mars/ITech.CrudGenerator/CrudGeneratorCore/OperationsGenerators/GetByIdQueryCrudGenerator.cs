@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
@@ -6,8 +7,8 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
-internal class
-    GetByIdQueryCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class GetByIdQueryCrudGenerator
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly string _dtoName;
     private readonly string _handlerName;
@@ -26,7 +27,7 @@ internal class
     public override void RunGenerator()
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
-        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateHandler();
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -63,23 +64,66 @@ internal class
         WriteFile(templatePath, model, _dtoName);
     }
 
-    private void GenerateHandler(string templatePath)
+    private void GenerateHandler()
     {
-        var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("query");
-        var model = new
-        {
-            QueryName = _queryName,
-            HandlerName = _handlerName,
-            DtoName = _dtoName,
-            FindParameters = findParameters
-        };
+        var handlerClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _handlerName)
+            .WithUsings([
+                "ITech.Cqrs.Cqrs.Queries",
+                "ITech.Cqrs.Domain.Exceptions",
+                Scheme.DbContextScheme.DbContextNamespace,
+                EntityScheme.EntityNamespace,
+                "Mapster"
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .Implements("IQueryHandler", _queryName, _dtoName)
+            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName, "_db");
 
-        WriteFile(templatePath, model, _handlerName);
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+            .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
+        var constructorBody = new MethodBodyBuilder()
+            .AssignVariable("_db", "db");
+
+        constructor.WithBody(constructorBody.Build());
+
+        var methodBuilder = new MethodBuilder([
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.AsyncKeyword
+                ], $"Task<{_dtoName}>", "HandleAsync")
+            .WithParameters([
+                new ParameterOfMethodBuilder(_queryName, "query"),
+                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+            ])
+            .WithXmlInheritdoc();
+
+        var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitArrayVariable("object", "entityIds", findParameters)
+            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
+                [EntityScheme.EntityName.ToString()],
+                ["entityIds", "cancellation"])
+            .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
+            .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
+            .ReturnVariable("result");
+
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
     private void GenerateEndpoint()
     {
-        var endpointClass = new ClassBuilder(_endpointClassName)
+        var endpointClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.PartialKeyword
+            ], _endpointClassName)
             .WithUsings([
                 "Microsoft.AspNetCore.Mvc",
                 "ITech.Cqrs.Cqrs.Queries",
@@ -104,7 +148,8 @@ internal class
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
-            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync", [_queryName, _dtoName],
+            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
+                [_queryName, _dtoName],
                 ["query", "cancellation"])
             .ReturnTypedResultOk("result");
 

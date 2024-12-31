@@ -1,3 +1,4 @@
+using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -32,7 +33,7 @@ internal class
     public override void RunGenerator()
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
-        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateHandler();
         GenerateDto(Scheme.Configuration.Dto.TemplatePath);
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -68,24 +69,62 @@ internal class
         WriteFile(templatePath, model, _dtoName);
     }
 
-    private void GenerateHandler(string templatePath)
+    private void GenerateHandler()
     {
-        var constructorParams = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("entity.");
+        var handlerClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _handlerName)
+            .WithUsings([
+                "ITech.Cqrs.Cqrs.Commands",
+                Scheme.DbContextScheme.DbContextNamespace,
+                EntityScheme.EntityNamespace,
+                "Mapster",
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .Implements("ICommandHandler", _commandName, _dtoName)
+            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName, "_db");
 
-        var model = new
-        {
-            CommandName = _commandName,
-            DtoName = _dtoName,
-            HandlerName = _handlerName,
-            CreatedDtoConstructorParams = constructorParams
-        };
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+            .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
+        var constructorBody = new MethodBodyBuilder()
+            .AssignVariable("_db", "db");
 
-        WriteFile(templatePath, model, _handlerName);
+        constructor.WithBody(constructorBody.Build());
+
+        var methodBuilder = new MethodBuilder([
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.AsyncKeyword
+                ], $"Task<{_dtoName}>", "HandleAsync")
+            .WithParameters([
+                new ParameterOfMethodBuilder(_commandName, "command"),
+                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+            ])
+            .WithXmlInheritdoc();
+
+        var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitVariableFromGenericMethodCall("entity", "command", "Adapt", [EntityScheme.EntityName.ToString()], [])
+            .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
+            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
+            .InitVariableFromConstructorCall("result", _dtoName, constructorParams)
+            .ReturnVariable("result");
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
     private void GenerateEndpoint()
     {
-        var endpointClass = new ClassBuilder(_endpointClassName)
+        var endpointClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.PartialKeyword
+            ], _endpointClassName)
             .WithUsings([
                 "Microsoft.AspNetCore.Mvc",
                 "ITech.Cqrs.Cqrs.Commands",

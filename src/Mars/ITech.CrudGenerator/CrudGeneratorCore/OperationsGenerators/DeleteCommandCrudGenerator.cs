@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
@@ -24,7 +25,7 @@ internal class
     public override void RunGenerator()
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
-        GenerateHandler(Scheme.Configuration.Handler.TemplatePath);
+        GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -46,22 +47,64 @@ internal class
         WriteFile(templatePath, model, _commandName);
     }
 
-    private void GenerateHandler(string templatePath)
+    private void GenerateHandler()
     {
-        var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("command");
-        var model = new
-        {
-            CommandName = _commandName,
-            HandlerName = _handlerName,
-            FindParameters = findParameters
-        };
+          var handlerClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _handlerName)
+            .WithUsings([
+                "ITech.Cqrs.Cqrs.Commands",
+                Scheme.DbContextScheme.DbContextNamespace,
+                EntityScheme.EntityNamespace,
+            ])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .Implements("ICommandHandler", _commandName)
+            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName, "_db");
 
-        WriteFile(templatePath, model, _handlerName);
+        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+            .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
+        var constructorBody = new MethodBodyBuilder()
+            .AssignVariable("_db", "db");
+
+        constructor.WithBody(constructorBody.Build());
+
+        var methodBuilder = new MethodBuilder([
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.AsyncKeyword
+                ], "Task", "HandleAsync")
+            .WithParameters([
+                new ParameterOfMethodBuilder(_commandName, "command"),
+                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+            ])
+            .WithXmlInheritdoc();
+
+        var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
+        var methodBodyBuilder = new MethodBodyBuilder()
+            .InitArrayVariable("object", "entityIds", findParameters)
+            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
+                [EntityScheme.EntityName.ToString()],
+                ["entityIds", "cancellation"])
+            .ReturnIfNull("entity")
+            .CallMethod("_db", "Remove", ["entity"])
+            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
+
+
+        methodBuilder.WithBody(methodBodyBuilder.Build());
+        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithMethod(methodBuilder.Build());
+
+        WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
     private void GenerateEndpoint()
     {
-        var endpointClass = new ClassBuilder(_endpointClassName)
+        var endpointClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.StaticKeyword,
+                SyntaxKind.PartialKeyword
+            ], _endpointClassName)
             .WithUsings([
                 "Microsoft.AspNetCore.Mvc",
                 "ITech.Cqrs.Cqrs.Commands",
@@ -86,7 +129,7 @@ internal class
 
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
-            .CallAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 
         methodBuilder.WithBody(methodBodyBuilder.Build());

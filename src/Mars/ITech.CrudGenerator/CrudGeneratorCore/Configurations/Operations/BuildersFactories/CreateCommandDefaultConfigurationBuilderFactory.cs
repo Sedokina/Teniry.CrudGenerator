@@ -33,7 +33,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             },
             Handler = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Create.CreateHandler.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
