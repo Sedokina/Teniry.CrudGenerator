@@ -80,7 +80,7 @@ internal class UpdateCommandCrudGenerator
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,
                     SyntaxKind.AsyncKeyword
-                ], $"Task", "HandleAsync")
+                ], "Task", "HandleAsync")
             .WithParameters([
                 new ParameterOfMethodBuilder(_commandName, "command"),
                 new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
@@ -102,17 +102,6 @@ internal class UpdateCommandCrudGenerator
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());
-        
-        
-        // var findParameters = EntityScheme.PrimaryKeys.FormatAsMethodCallParameters("command");
-        // var model = new
-        // {
-        //     CommandName = _commandName,
-        //     HandlerName = _handlerName,
-        //     FindParameters = findParameters
-        // };
-
-        // WriteFile(templatePath, model, _handlerName);
     }
 
     private void GenerateViewModel(string templatePath)
