@@ -27,7 +27,7 @@ internal class UpdateCommandCrudGenerator
 
     public override void RunGenerator()
     {
-        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateCommand();
         GenerateHandler();
         GenerateViewModel();
         if (Scheme.Configuration.Endpoint.Generate)
@@ -36,20 +36,42 @@ internal class UpdateCommandCrudGenerator
         }
     }
 
-    private void GenerateCommand(string templatePath)
+    private void GenerateCommand()
     {
-        var properties = EntityScheme.Properties.FormatAsProperties();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
-        var model = new
-        {
-            CommandName = _commandName,
-            Properties = properties,
-            ConstructorParameters = constructorParameters,
-            ConstructorBody = constructorBody
-        };
+        var command = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _commandName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
+            .WithXmlDoc($"Update {EntityScheme.EntityTitle}", "Nothing",
+            [
+                new ResultException(
+                    "EfEntityNotFoundException",
+                    $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
+                )
+            ]);
 
-        WriteFile(templatePath, model, _commandName);
+        var constructorParameters = EntityScheme.PrimaryKeys
+            .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _commandName)
+            .WithParameters(constructorParameters);
+        var constructorBody = new MethodBodyBuilder();
+        foreach (var primaryKey in EntityScheme.PrimaryKeys)
+        {
+            command.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
+            constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
+        }
+
+        foreach (var property in EntityScheme.NotPrimaryKeys)
+        {
+            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        constructor.WithBody(constructorBody.Build());
+        command.WithConstructor(constructor.Build());
+
+        WriteFile(_commandName, command.BuildAsString());
     }
 
     private void GenerateHandler()
@@ -78,9 +100,9 @@ internal class UpdateCommandCrudGenerator
         constructor.WithBody(constructorBody.Build());
 
         var methodBuilder = new MethodBuilder([
-                    SyntaxKind.PublicKeyword,
-                    SyntaxKind.AsyncKeyword
-                ], "Task", "HandleAsync")
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task", "HandleAsync")
             .WithParameters([
                 new ParameterOfMethodBuilder(_commandName, "command"),
                 new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")

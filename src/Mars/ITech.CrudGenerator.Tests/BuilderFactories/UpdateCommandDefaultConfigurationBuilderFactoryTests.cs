@@ -58,7 +58,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Update");
         actual.OperationGroup.Should().Be("UpdateTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("UpdateTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdateTestEntityHandler");
         actual.ViewModel.Name.Should().Be("UpdateTestEntityVm");
@@ -91,7 +90,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Upd");
         actual.OperationGroup.Should().Be("UpdTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("UpdTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdTestEntityHandler");
         actual.ViewModel.Name.Should().Be("UpdTestEntityVm");
@@ -132,7 +130,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Update");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
         actual.ViewModel.Name.Should().Be("CustomViewModelName");
