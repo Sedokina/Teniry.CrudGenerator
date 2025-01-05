@@ -19,8 +19,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public DeleteCommandDefaultConfigurationBuilderFactoryTests()
     {
         _sut = new DeleteCommandDefaultConfigurationBuilderFactory();
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder
-            { TemplatesBasePath = "AllFiles" };
+        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var entitySchemeFactory = new EntitySchemeFactory();
         var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
@@ -60,7 +59,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationGroup.Should().Be("DeleteTestEntity");
         actual.Operation.Name.Should().Be("DeleteTestEntityCommand");
         actual.Handler.Name.Should().Be("DeleteTestEntityHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.Name.Should().Be("DeleteTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DeleteAsync");
@@ -92,7 +90,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationGroup.Should().Be("DelTestEntity");
         actual.Operation.Name.Should().Be("DelTestEntityCommand");
         actual.Handler.Name.Should().Be("DelTestEntityHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.Name.Should().Be("DelTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DelAsync");
@@ -131,7 +128,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");

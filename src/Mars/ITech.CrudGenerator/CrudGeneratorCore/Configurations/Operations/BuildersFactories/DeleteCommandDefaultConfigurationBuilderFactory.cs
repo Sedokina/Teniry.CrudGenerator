@@ -21,13 +21,11 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },
             Handler = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name}}Handler")
             },
@@ -36,7 +34,6 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
-                TemplatePath = new("{{templates_base_path}}.Delete.DeleteEndpoint.txt"),
                 NameConfigurationBuilder = new(operationConfiguration?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),

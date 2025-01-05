@@ -19,8 +19,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     public GetByIdQueryDefaultConfigurationBuilderFactoryTests()
     {
         _sut = new GetByIdQueryDefaultConfigurationBuilderFactory();
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder
-            { TemplatesBasePath = "AllFiles" };
+        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var entitySchemeFactory = new EntitySchemeFactory();
         var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
@@ -61,7 +60,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("GetTestEntityQuery");
         actual.Dto.Name.Should().Be("TestEntityDto");
         actual.Handler.Name.Should().Be("GetTestEntityHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("GetTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("GetAsync");
@@ -94,7 +92,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("ObtainTestEntityQuery");
         actual.Dto.Name.Should().Be("TestEntityDto");
         actual.Handler.Name.Should().Be("ObtainTestEntityHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("ObtainTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("ObtainAsync");
@@ -135,7 +132,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("CustomQueryName");
         actual.Dto.Name.Should().Be("CustomDtoName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetById.GetByIdEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");

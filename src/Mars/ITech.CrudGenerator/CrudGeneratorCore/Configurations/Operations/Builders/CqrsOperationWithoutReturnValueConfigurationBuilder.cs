@@ -29,19 +29,14 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
 
         configuration.Operation = new()
         {
-            TemplatePath = Operation.TemplatePath
-                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
             Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
         };
         configuration.Handler = new()
         {
-            TemplatePath = Handler.TemplatePath
-                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
             Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
         };
 
-        configuration.Endpoint = Endpoint
-            .Build(entityScheme, configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName);
+        configuration.Endpoint = Endpoint.Build(entityScheme, configuration.OperationName);
     }
 
     public CqrsOperationWithoutReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)

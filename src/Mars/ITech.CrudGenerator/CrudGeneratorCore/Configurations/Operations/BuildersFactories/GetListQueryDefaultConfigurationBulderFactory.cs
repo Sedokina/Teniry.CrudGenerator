@@ -21,31 +21,26 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
             Operation = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.QueryName ??
                                                "{{operation_name}}{{entity_name_plural}}Query")
             },
             Dto = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.DtoName ??
                                                "{{entity_name_plural}}Dto")
             },
             DtoListItem = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.ListItemDtoName ??
                                                "{{entity_name_plural}}ListItemDto")
             },
             Filter = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.FilterName ??
                                                "{{operation_name}}{{entity_name_plural}}Filter")
             },
             Handler = new()
             {
-                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
                                                "{{operation_name}}{{entity_name_plural}}Handler")
             },
@@ -54,7 +49,6 @@ internal class GetListQueryDefaultConfigurationBulderFactory
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
-                TemplatePath = new("{{templates_base_path}}.GetList.GetListEndpoint.txt"),
                 NameConfigurationBuilder = new(operationConfiguration?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name_plural}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),

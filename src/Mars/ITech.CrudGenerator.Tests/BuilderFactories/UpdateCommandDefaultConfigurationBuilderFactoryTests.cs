@@ -19,8 +19,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
     public UpdateCommandDefaultConfigurationBuilderFactoryTests()
     {
         _sut = new UpdateCommandDefaultConfigurationBuilderFactory();
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder
-            { TemplatesBasePath = "AllFiles" };
+        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var entitySchemeFactory = new EntitySchemeFactory();
         var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
@@ -61,7 +60,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("UpdateTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdateTestEntityHandler");
         actual.ViewModel.Name.Should().Be("UpdateTestEntityVm");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("UpdateTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("UpdateAsync");
@@ -93,7 +91,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("UpdTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdTestEntityHandler");
         actual.ViewModel.Name.Should().Be("UpdTestEntityVm");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("UpdTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("UpdAsync");
@@ -133,7 +130,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
         actual.ViewModel.Name.Should().Be("CustomViewModelName");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");

@@ -15,8 +15,6 @@ internal class CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationB
         Init(built, entityScheme);
         built.ViewModel = new()
         {
-            TemplatePath = ViewModel.TemplatePath
-                .GetPath(built.GlobalConfiguration.TemplatesBasePath, built.OperationName),
             Name = ViewModel.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
         };
         return built;
