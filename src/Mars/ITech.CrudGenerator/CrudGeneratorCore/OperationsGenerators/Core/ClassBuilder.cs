@@ -138,7 +138,7 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithXmlDoc(string summary, string returns = "")
+    public ClassBuilder WithXmlDoc(string summary, string returns = "", ResultException[]? exceptions = null)
     {
         var xmlDoc = new StringBuilder();
         xmlDoc.AppendLine(@$"
@@ -150,7 +150,21 @@ internal class ClassBuilder
             xmlDoc.AppendLine($"/// <returns>{returns}</returns>");
         }
 
+        if (exceptions is not null)
+        {
+            foreach (var exception in exceptions)
+            {
+                xmlDoc.AppendLine($"/// <exception cref=\"{exception.TypeName}\">{exception.Description}</exception>");
+            }
+        }
+
         _xmlDoc = SyntaxFactory.ParseLeadingTrivia(xmlDoc.ToString());
         return this;
     }
+}
+
+internal class ResultException(string typeName, string description)
+{
+    public string TypeName { get; set; } = typeName;
+    public string Description { get; set; } = description;
 }

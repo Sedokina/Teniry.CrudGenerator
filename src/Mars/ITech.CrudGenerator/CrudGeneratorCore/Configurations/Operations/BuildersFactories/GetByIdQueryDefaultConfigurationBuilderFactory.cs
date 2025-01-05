@@ -21,7 +21,7 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdQuery.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.QueryName ??
                                                "{{operation_name}}{{entity_name}}Query")
             },
