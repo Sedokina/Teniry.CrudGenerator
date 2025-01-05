@@ -1,4 +1,4 @@
-using System.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 
@@ -11,5 +11,5 @@ public abstract class FilterExpression
         FilterType = filterType;
     }
 
-    public abstract StringBuilder Format(StringBuilder sb, string filterPropertyName, string entityPropertyToFilter);
+    public abstract StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter);
 }

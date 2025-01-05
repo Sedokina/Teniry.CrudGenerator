@@ -63,9 +63,4 @@
     <ItemGroup>
         <InternalsVisibleTo Include="ITech.CrudGenerator.Tests"/>
     </ItemGroup>
-
-    <!-- Include Scriban code templates -->
-    <ItemGroup>
-        <EmbeddedResource Include="Templates\**\*.txt"/>
-    </ItemGroup>
 </Project>

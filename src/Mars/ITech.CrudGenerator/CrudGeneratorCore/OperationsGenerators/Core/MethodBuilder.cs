@@ -25,12 +25,13 @@ internal class MethodBuilder
                 var a = x.GetAsMethodParameter();
                 return SyntaxFactory
                     .Parameter(SyntaxFactory.Identifier(a.Name))
-                    .WithType(SyntaxFactory.ParseTypeName(a.Type));
+                    .WithType(SyntaxFactory.ParseTypeName(a.Type))
+                    .WithModifiers(SyntaxFactory.TokenList(x.Modifiers.Select(SyntaxFactory.Token)));
             }).ToArray());
         return this;
     }
-    
-    
+
+
     public MethodBuilder WithXmlDoc(string summary, int responseStatusCode, string response)
     {
         var xmlDoc = @$"
@@ -42,7 +43,7 @@ internal class MethodBuilder
         _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
         return this;
     }
-    
+
     public MethodBuilder WithXmlInheritdoc()
     {
         var xmlDoc = @"
@@ -108,11 +109,13 @@ internal class ParameterOfMethodBuilder
 {
     public string Type { get; set; }
     public string Name { get; set; }
+    public SyntaxKind[] Modifiers { get; set; }
 
-    public ParameterOfMethodBuilder(string type, string name)
+    public ParameterOfMethodBuilder(string type, string name, SyntaxKind[]? modifiers = null)
     {
         Type = type;
         Name = name;
+        Modifiers = modifiers ?? [];
     }
 
     public (string Type, string Name) GetAsMethodParameter()

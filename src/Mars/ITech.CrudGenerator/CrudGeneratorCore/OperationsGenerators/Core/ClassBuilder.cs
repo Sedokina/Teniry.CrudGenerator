@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,6 +16,7 @@ internal class ClassBuilder
     private readonly List<MemberDeclarationSyntax> _methods = [];
     private readonly List<MemberDeclarationSyntax> _fields = [];
     private readonly List<MemberDeclarationSyntax> _properties = [];
+    private SyntaxTriviaList _xmlDoc;
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
     {
@@ -63,7 +65,11 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithProperty(string fieldType, string fieldName, string? defaultValue = null)
+    public ClassBuilder WithProperty(
+        string fieldType,
+        string fieldName,
+        string? defaultValue = null,
+        bool inheritdoc = false)
     {
         var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(fieldType), fieldName)
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
@@ -83,10 +89,14 @@ internal class ClassBuilder
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
+        if (inheritdoc)
+        {
+            property = property.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia("/// <inheritdoc />\n"));
+        }
+
         _properties.Add(property);
         return this;
     }
-
 
     public CompilationUnitSyntax Build()
     {
@@ -102,6 +112,7 @@ internal class ClassBuilder
         _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
+        _classDeclaration = _classDeclaration.WithLeadingTrivia(_xmlDoc);
         _namespace = _namespace?.AddMembers(_classDeclaration);
 
 
@@ -128,10 +139,40 @@ internal class ClassBuilder
         _methods.Add(endpointMethod);
         return this;
     }
-    
+
     public ClassBuilder WithConstructor(ConstructorDeclarationSyntax constructorDeclaration)
     {
         _methods.Add(constructorDeclaration);
         return this;
     }
+
+    public ClassBuilder WithXmlDoc(string summary, string returns = "", ResultException[]? exceptions = null)
+    {
+        var xmlDoc = new StringBuilder();
+        xmlDoc.AppendLine(@$"
+/// <summary>
+///     {summary}
+/// </summary>");
+        if (!string.IsNullOrEmpty(returns))
+        {
+            xmlDoc.AppendLine($"/// <returns>{returns}</returns>");
+        }
+
+        if (exceptions is not null)
+        {
+            foreach (var exception in exceptions)
+            {
+                xmlDoc.AppendLine($"/// <exception cref=\"{exception.TypeName}\">{exception.Description}</exception>");
+            }
+        }
+
+        _xmlDoc = SyntaxFactory.ParseLeadingTrivia(xmlDoc.ToString());
+        return this;
+    }
+}
+
+internal class ResultException(string typeName, string description)
+{
+    public string TypeName { get; set; } = typeName;
+    public string Description { get; set; } = description;
 }

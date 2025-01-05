@@ -25,15 +25,15 @@ internal class
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _getByIdOperationName = getByIdOperationName;
-        _commandName = scheme.Configuration.Operation.Name;
-        _handlerName = scheme.Configuration.Handler.Name;
-        _dtoName = scheme.Configuration.Dto.Name;
+        _commandName = scheme.Configuration.Operation;
+        _handlerName = scheme.Configuration.Handler;
+        _dtoName = scheme.Configuration.Dto;
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateCommand();
         GenerateHandler();
         GenerateDto();
         if (Scheme.Configuration.Endpoint.Generate)
@@ -42,17 +42,22 @@ internal class
         }
     }
 
-    private void GenerateCommand(string templatePath)
+    private void GenerateCommand()
     {
-        var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
-        var model = new
-        {
-            CommandName = _commandName,
-            DtoName = _dtoName,
-            Properties = properties
-        };
+        var command = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _commandName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithXmlDoc($"Create {Scheme.EntityScheme.EntityTitle}",
+                $"Returns id of created entity of type <see cref=\"{_dtoName}\" />");
 
-        WriteFile(templatePath, model, _commandName);
+        foreach (var property in EntityScheme.NotPrimaryKeys)
+        {
+            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_commandName, command.BuildAsString());
     }
 
     private void GenerateDto()
@@ -62,7 +67,7 @@ internal class
                 SyntaxKind.PartialKeyword
             ], _dtoName)
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
-        
+
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
         var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _dtoName)
@@ -73,7 +78,7 @@ internal class
             dtoClass.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
-        
+
         constructor.WithBody(constructorBody.Build());
         dtoClass.WithConstructor(constructor.Build());
 
@@ -170,11 +175,12 @@ internal class
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Post",
             Scheme.Configuration.Endpoint.Route,
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+            _endpointClassName,
+            Scheme.Configuration.Endpoint.FunctionName);
     }
 
     private string GetByIdRoute()

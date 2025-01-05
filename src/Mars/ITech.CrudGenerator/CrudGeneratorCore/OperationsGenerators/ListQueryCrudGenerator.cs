@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -18,20 +20,20 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
     public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme)
     {
-        _queryName = Scheme.Configuration.Operation.Name;
-        _listItemDtoName = Scheme.Configuration.DtoListItem.Name;
-        _dtoName = Scheme.Configuration.Dto.Name;
-        _filterName = Scheme.Configuration.Filter.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
+        _queryName = Scheme.Configuration.Operation;
+        _listItemDtoName = Scheme.Configuration.DtoListItem;
+        _dtoName = Scheme.Configuration.Dto;
+        _filterName = Scheme.Configuration.Filter;
+        _handlerName = Scheme.Configuration.Handler;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateQuery();
         GenerateListItemDto();
         GenerateDto();
-        GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
+        GenerateFilter();
         GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -39,20 +41,45 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         }
     }
 
-    private void GenerateQuery(string templatePath)
+    private void GenerateQuery()
     {
-        var properties = EntityScheme.Properties.FormatAsFilterProperties();
-        var sortKeys = EntityScheme.SortableProperties.FormatAsSortKeys();
+        var query = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _queryName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithUsings([
+                "ITech.Cqrs.Queryables.Page",
+                "ITech.Cqrs.Queryables.Sort"
+            ])
+            .Implements("IDefineSortable")
+            .Implements("IPage")
+            .WithXmlDoc($"Get {EntityScheme.EntityTitle.PluralTitle}",
+                $"Returns {EntityScheme.EntityTitle.PluralTitle} of type <see cref=\"{_dtoName}\" />");
 
-        var model = new
+        foreach (var property in EntityScheme.Properties)
         {
-            QueryName = _queryName,
-            DtoName = _dtoName,
-            PutIntoNamespace = Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation,
-            Properties = properties,
-            SortKeys = sortKeys
-        };
-        WriteFile(templatePath, model, _queryName);
+            if (property.FilterProperties.Length <= 0) continue;
+            foreach (var filterProperty in property.FilterProperties)
+            {
+                query.WithProperty(filterProperty.TypeName, filterProperty.PropertyName);
+            }
+        }
+
+        query.WithProperty("int", "Page", inheritdoc: true);
+        query.WithProperty("int", "PageSize", inheritdoc: true);
+        query.WithProperty("string[]?", "Sort", inheritdoc: true);
+
+        var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
+            .WithXmlInheritdoc();
+        var methodBody = new MethodBodyBuilder()
+            .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
+            .ReturnVariable("result");
+
+        method.WithBody(methodBody.Build());
+        query.WithMethod(method.Build());
+
+        WriteFile(_queryName, query.BuildAsString());
     }
 
     private void GenerateListItemDto()
@@ -87,43 +114,165 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 new ParameterOfMethodBuilder("PageInfo", "page")
             ])
             .WithBaseConstructor(["items", "page"]);
-        
+
         constructor.WithBody(new MethodBodyBuilder().Build());
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateFilter(string templatePath)
+    private void GenerateFilter()
     {
-        var properties = EntityScheme.Properties.FormatAsFilterProperties();
-        var filter = EntityScheme.Properties.FormatAsFilterBody();
-        var sorts = EntityScheme.SortableProperties.FormatAsSortCalls();
-        var defaultSort = FormatDefaultSort(EntityScheme.DefaultSort);
+        var query = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _filterName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithUsings([
+                "System.Linq.Expressions",
+                "Microsoft.EntityFrameworkCore",
+                "ITech.Cqrs.Queryables.Filter",
+                Scheme.EntityScheme.EntityNamespace
+            ])
+            .Implements("QueryableFilter", EntityScheme.EntityName.ToString());
 
-        var model = new
+        foreach (var property in EntityScheme.Properties)
         {
-            FilterName = _filterName,
-            Properties = properties,
-            Filter = filter,
-            Sorts = sorts,
-            DefaultSort = defaultSort
-        };
-        WriteFile(templatePath, model, _filterName);
-    }
-
-    private static string FormatDefaultSort(EntityDefaultSort? defaultSort)
-    {
-        if (defaultSort != null)
-        {
-            return defaultSort.Direction.Equals("asc")
-                ? $"query.OrderBy(x => x.{defaultSort.PropertyName});"
-                : $"query.OrderByDescending(x => x.{defaultSort.PropertyName});";
+            if (property.FilterProperties.Length <= 0) continue;
+            foreach (var filterProperty in property.FilterProperties)
+            {
+                query.WithProperty(filterProperty.TypeName, filterProperty.PropertyName);
+            }
         }
 
-        return "base.DefaultSort(query);";
+        query.WithMethod(CreateSortMethodForFilter().Build());
+        query.WithMethod(CreateDefaultSortMethod().Build());
+        query.WithMethod(CreateFilterMethod().Build());
+
+        WriteFile(_filterName, query.BuildAsString());
     }
 
+    private MethodBuilder CreateFilterMethod()
+    {
+        var filterMethod = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
+                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "Filter")
+            .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
+            .WithXmlInheritdoc();
+
+        var filterBody = new MethodBodyBuilder();
+
+        foreach (var property in EntityScheme.Properties)
+        {
+            foreach (var filterProperty in property.FilterProperties)
+            {
+                var expression = filterProperty.FilterExpression
+                    .BuildExpression(filterProperty.PropertyName, property.PropertyName);
+                filterBody.AddExpression(expression);
+            }
+        }
+
+        filterBody.ReturnVariable("query");
+
+        filterMethod.WithBody(filterBody.Build());
+        return filterMethod;
+    }
+
+    private MethodBuilder CreateSortMethodForFilter()
+    {
+        var method = new MethodBuilder([SyntaxKind.PublicKeyword, SyntaxKind.OverrideKeyword],
+                $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>", "Sort")
+            .WithXmlInheritdoc();
+
+        var dictionaryInitializationArgumets = new List<SyntaxNodeOrToken>();
+
+        foreach (var sortableProperty in EntityScheme.SortableProperties)
+        {
+            dictionaryInitializationArgumets.Add(SyntaxFactory.InitializerExpression(
+                SyntaxKind.ComplexElementInitializerExpression,
+                SyntaxFactory.SeparatedList<ExpressionSyntax>(
+                    new SyntaxNodeOrToken[]
+                    {
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SyntaxFactory.Literal(sortableProperty.SortKey)),
+                        SyntaxFactory.Token(SyntaxKind.CommaToken),
+                        SyntaxFactory.SimpleLambdaExpression(
+                                SyntaxFactory.Parameter(
+                                    SyntaxFactory.Identifier("x")))
+                            .WithExpressionBody(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    SyntaxFactory.IdentifierName("x"),
+                                    SyntaxFactory.IdentifierName(sortableProperty.PropertyName)))
+                    })));
+            dictionaryInitializationArgumets.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
+        }
+
+        var resultDictionary = SyntaxFactory.ObjectCreationExpression(
+                SyntaxFactory.ParseTypeName(
+                    $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>"))
+            .WithInitializer(
+                SyntaxFactory.InitializerExpression(
+                    SyntaxKind.CollectionInitializerExpression,
+                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArgumets.ToArray())));
+
+        var sortMethodBody = SyntaxFactory.Block(
+            SyntaxFactory.ReturnStatement(resultDictionary)
+        );
+
+        method.WithBody(sortMethodBody);
+        return method;
+    }
+
+    private MethodBuilder CreateDefaultSortMethod()
+    {
+        var method = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
+                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "DefaultSort")
+            .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
+            .WithXmlInheritdoc();
+
+        BlockSyntax? defaultSortBody;
+        if (EntityScheme.DefaultSort is null)
+        {
+            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(
+                SyntaxFactory.InvocationExpression(
+                        SyntaxFactory.MemberAccessExpression(
+                            SyntaxKind.SimpleMemberAccessExpression,
+                            SyntaxFactory.BaseExpression(),
+                            SyntaxFactory.IdentifierName("DefaultSort")))
+                    .WithArgumentList(
+                        SyntaxFactory.ArgumentList(
+                            SyntaxFactory.SingletonSeparatedList(
+                                SyntaxFactory.Argument(
+                                    SyntaxFactory.IdentifierName("query")))))));
+        }
+        else
+        {
+            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(SyntaxFactory.InvocationExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        SyntaxFactory.IdentifierName("query"),
+                        SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.Direction.Equals("asc")
+                            ? "OrderBy"
+                            : "OrderByDescending")))
+                .WithArgumentList(
+                    SyntaxFactory.ArgumentList(
+                        SyntaxFactory.SingletonSeparatedList(
+                            SyntaxFactory.Argument(
+                                SyntaxFactory.SimpleLambdaExpression(
+                                        SyntaxFactory.Parameter(
+                                            SyntaxFactory.Identifier("x")))
+                                    .WithExpressionBody(
+                                        SyntaxFactory.MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            SyntaxFactory.IdentifierName("x"),
+                                            SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.PropertyName)))))))));
+        }
+
+        method.WithBody(defaultSortBody);
+        return method;
+    }
+    
     private void GenerateHandler()
     {
         var handlerClass = new ClassBuilder([
@@ -223,10 +372,11 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
             Scheme.Configuration.Endpoint.Route,
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+            _endpointClassName,
+            Scheme.Configuration.Endpoint.FunctionName);
     }
 }

@@ -13,8 +13,8 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
     public CqrsOperationType OperationType { get; set; }
     public string OperationName { get; set; } = "";
     public NameConfigurationBuilder OperationGroup { get; set; } = null!;
-    public FileTemplateBasedOperationConfigurationBuilder Operation { get; set; } = null!;
-    public FileTemplateBasedOperationConfigurationBuilder Handler { get; set; } = null!;
+    public NameConfigurationBuilder Operation { get; set; } = null!;
+    public NameConfigurationBuilder Handler { get; set; } = null!;
     public MinimalApiEndpointConfigurationBuilder Endpoint { get; set; } = null!;
 
     protected void Init(CqrsOperationWithoutReturnValueGeneratorConfiguration configuration, EntityScheme entityScheme)
@@ -26,22 +26,9 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
         configuration.OperationGroup = OperationGroup.GetName(entityScheme.EntityName, configuration.OperationName);
         configuration.OperationsSharedConfiguration = OperationsSharedConfiguration
             .Build(entityScheme, configuration.OperationName, configuration.OperationGroup);
-
-        configuration.Operation = new()
-        {
-            TemplatePath = Operation.TemplatePath
-                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
-            Name = Operation.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
-        };
-        configuration.Handler = new()
-        {
-            TemplatePath = Handler.TemplatePath
-                .GetPath(configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName),
-            Name = Handler.NameConfigurationBuilder.GetName(entityScheme.EntityName, configuration.OperationName),
-        };
-
-        configuration.Endpoint = Endpoint
-            .Build(entityScheme, configuration.GlobalConfiguration.TemplatesBasePath, configuration.OperationName);
+        configuration.Operation = Operation.GetName(entityScheme.EntityName, configuration.OperationName);
+        configuration.Handler = Handler.GetName(entityScheme.EntityName, configuration.OperationName);
+        configuration.Endpoint = Endpoint.Build(entityScheme, configuration.OperationName);
     }
 
     public CqrsOperationWithoutReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)

@@ -17,14 +17,14 @@ internal class
     public DeleteCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
-        _commandName = Scheme.Configuration.Operation.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
+        _commandName = Scheme.Configuration.Operation;
+        _handlerName = Scheme.Configuration.Handler;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
+        GenerateCommand();
         GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -32,19 +32,30 @@ internal class
         }
     }
 
-    private void GenerateCommand(string templatePath)
+    private void GenerateCommand()
     {
-        var properties = EntityScheme.PrimaryKeys.FormatAsProperties();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
-        var model = new
+        var command = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _commandName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithXmlDoc($"Delete {EntityScheme.EntityTitle}", "Nothing");
+
+        var constructorParameters = EntityScheme.PrimaryKeys
+            .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _commandName)
+            .WithParameters(constructorParameters);
+        var constructorBody = new MethodBodyBuilder();
+        foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
-            CommandName = _commandName,
-            Properties = properties,
-            ConstructorParameters = constructorParameters,
-            ConstructorBody = constructorBody
-        };
-        WriteFile(templatePath, model, _commandName);
+            command.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
+            constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
+        }
+
+        constructor.WithBody(constructorBody.Build());
+        command.WithConstructor(constructor.Build());
+
+        WriteFile(_commandName, command.BuildAsString());
     }
 
     private void GenerateHandler()
@@ -137,10 +148,11 @@ internal class
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",
             Scheme.Configuration.Endpoint.Route,
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+            _endpointClassName,
+            Scheme.Configuration.Endpoint.FunctionName);
     }
 }

@@ -18,15 +18,15 @@ internal class GetByIdQueryCrudGenerator
     public GetByIdQueryCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
-        _queryName = Scheme.Configuration.Operation.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
-        _dtoName = Scheme.Configuration.Dto.Name;
+        _queryName = Scheme.Configuration.Operation;
+        _handlerName = Scheme.Configuration.Handler;
+        _dtoName = Scheme.Configuration.Dto;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
     public override void RunGenerator()
     {
-        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateQuery();
         GenerateHandler();
         GenerateDto();
         if (Scheme.Configuration.Endpoint.Generate)
@@ -35,21 +35,38 @@ internal class GetByIdQueryCrudGenerator
         }
     }
 
-    private void GenerateQuery(string templatePath)
+    private void GenerateQuery()
     {
-        var properties = EntityScheme.PrimaryKeys.FormatAsProperties();
-        var constructorParameters = EntityScheme.PrimaryKeys.FormatAsMethodDeclarationParameters();
-        var constructorBody = EntityScheme.PrimaryKeys.FormatAsConstructorBody();
-        var model = new
-        {
-            QueryName = _queryName,
-            DtoName = _dtoName,
-            Properties = properties,
-            ConstructorParameters = constructorParameters,
-            ConstructorBody = constructorBody
-        };
+        var query = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _queryName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
+            .WithXmlDoc($"Get {EntityScheme.EntityTitle} by id",
+                $"Returns full entity data of type <see cref=\"{_dtoName}\" />",
+                [
+                    new ResultException(
+                        "EfEntityNotFoundException",
+                        $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
+                    )
+                ]);
 
-        WriteFile(templatePath, model, _queryName);
+        var constructorParameters = EntityScheme.PrimaryKeys
+            .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _queryName)
+            .WithParameters(constructorParameters);
+        var constructorBody = new MethodBodyBuilder();
+        foreach (var primaryKey in EntityScheme.PrimaryKeys)
+        {
+            query.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
+            constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
+        }
+
+        constructor.WithBody(constructorBody.Build());
+        query.WithConstructor(constructor.Build());
+
+        WriteFile(_queryName, query.BuildAsString());
     }
 
     private void GenerateDto()
@@ -162,10 +179,11 @@ internal class GetByIdQueryCrudGenerator
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
             Scheme.Configuration.Endpoint.Route,
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+            _endpointClassName,
+            Scheme.Configuration.Endpoint.FunctionName);
     }
 }

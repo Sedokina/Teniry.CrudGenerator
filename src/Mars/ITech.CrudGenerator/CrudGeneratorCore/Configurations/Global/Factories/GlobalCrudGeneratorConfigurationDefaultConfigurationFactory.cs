@@ -16,7 +16,6 @@ internal class GlobalCrudGeneratorConfigurationDefaultConfigurationFactory
 // </auto-generated>
 //------------------------------------------------------------------------------",
             NullableEnable = true,
-            TemplatesBasePath = "ITech.CrudGenerator.Templates.Crud",
         };
     }
 }

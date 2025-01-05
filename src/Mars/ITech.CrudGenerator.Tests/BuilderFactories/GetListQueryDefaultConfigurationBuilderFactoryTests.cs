@@ -19,8 +19,7 @@ public class GetListQueryDefaultFactoryTests
     public GetListQueryDefaultFactoryTests()
     {
         _sut = new GetListQueryDefaultConfigurationBulderFactory();
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder
-            { TemplatesBasePath = "AllFiles" };
+        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var entitySchemeFactory = new EntitySchemeFactory();
         var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
@@ -58,11 +57,9 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Get");
         actual.OperationGroup.Should().Be("GetTestEntities");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
-        actual.Operation.Name.Should().Be("GetTestEntitiesQuery");
-        actual.Dto.Name.Should().Be("TestEntitiesDto");
-        actual.Handler.Name.Should().Be("GetTestEntitiesHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+        actual.Operation.Should().Be("GetTestEntitiesQuery");
+        actual.Dto.Should().Be("TestEntitiesDto");
+        actual.Handler.Should().Be("GetTestEntitiesHandler");
         actual.Endpoint.Name.Should().Be("GetTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("GetAsync");
@@ -91,11 +88,9 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Obtain");
         actual.OperationGroup.Should().Be("ObtainTestEntities");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
-        actual.Operation.Name.Should().Be("ObtainTestEntitiesQuery");
-        actual.Dto.Name.Should().Be("TestEntitiesDto");
-        actual.Handler.Name.Should().Be("ObtainTestEntitiesHandler");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+        actual.Operation.Should().Be("ObtainTestEntitiesQuery");
+        actual.Dto.Should().Be("TestEntitiesDto");
+        actual.Handler.Should().Be("ObtainTestEntitiesHandler");
         actual.Endpoint.Name.Should().Be("ObtainTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("ObtainAsync");
@@ -132,11 +127,9 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Get");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
-        actual.Operation.Name.Should().Be("CustomQueryName");
-        actual.Dto.Name.Should().Be("CustomDtoName");
-        actual.Handler.Name.Should().Be("CustomHandlerName");
-        actual.Endpoint.TemplatePath.Should().Be("AllFiles.GetList.GetListEndpoint.txt");
+        actual.Operation.Should().Be("CustomQueryName");
+        actual.Dto.Should().Be("CustomDtoName");
+        actual.Handler.Should().Be("CustomHandlerName");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
