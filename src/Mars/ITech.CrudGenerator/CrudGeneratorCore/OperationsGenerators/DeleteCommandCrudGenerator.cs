@@ -148,10 +148,11 @@ internal class
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityName.ToString(),
+        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",
             Scheme.Configuration.Endpoint.Route,
-            $"{_endpointClassName}.{Scheme.Configuration.Endpoint.FunctionName}");
+            _endpointClassName,
+            Scheme.Configuration.Endpoint.FunctionName);
     }
 }

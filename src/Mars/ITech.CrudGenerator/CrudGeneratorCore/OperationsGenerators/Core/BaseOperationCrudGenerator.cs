@@ -77,19 +77,21 @@ internal abstract class BaseOperationCrudGenerator<TConfiguration> : BaseGenerat
 
 internal class EndpointMap
 {
-    public string EntityName { get; set; }
+    public string EntityTitle { get; set; }
     public string EndpointNamespace { get; set; }
     public string HttpMethod { get; }
     public string EndpointRoute { get; set; }
-    public string FunctionCall { get; set; }
+    public string ClassName { get; set; }
+    public string FunctionName { get; set; }
 
-    public EndpointMap(string entityName, string endpointNamespace, string httpMethod, string endpointRoute,
-        string functionCall)
+    public EndpointMap(string entityTitle, string endpointNamespace, string httpMethod, string endpointRoute,
+        string className, string functionName)
     {
-        EntityName = entityName;
+        EntityTitle = entityTitle;
         EndpointNamespace = endpointNamespace;
         HttpMethod = httpMethod;
         EndpointRoute = endpointRoute;
-        FunctionCall = functionCall;
+        ClassName = className;
+        FunctionName = functionName;
     }
 }
