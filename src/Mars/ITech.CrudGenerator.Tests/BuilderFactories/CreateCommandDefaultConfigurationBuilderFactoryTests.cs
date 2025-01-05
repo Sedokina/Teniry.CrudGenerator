@@ -58,7 +58,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Create");
         actual.OperationGroup.Should().Be("CreateTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
         actual.Operation.Name.Should().Be("CreateTestEntityCommand");
         actual.Dto.Name.Should().Be("CreatedTestEntityDto");
         actual.Handler.Name.Should().Be("CreateTestEntityHandler");
@@ -91,7 +90,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Add");
         actual.OperationGroup.Should().Be("AddTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
         actual.Operation.Name.Should().Be("AddTestEntityCommand");
         actual.Dto.Name.Should().Be("CreatedTestEntityDto");
         actual.Handler.Name.Should().Be("AddTestEntityHandler");
@@ -131,7 +129,6 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Create");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Create.CreateCommand.txt");
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Dto.Name.Should().Be("CustomDtoName");
         actual.Handler.Name.Should().Be("CustomHandlerName");

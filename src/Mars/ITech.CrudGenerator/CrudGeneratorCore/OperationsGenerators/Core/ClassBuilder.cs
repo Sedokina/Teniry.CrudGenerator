@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,6 +16,7 @@ internal class ClassBuilder
     private readonly List<MemberDeclarationSyntax> _methods = [];
     private readonly List<MemberDeclarationSyntax> _fields = [];
     private readonly List<MemberDeclarationSyntax> _properties = [];
+    private SyntaxTriviaList _xmlDoc;
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
     {
@@ -102,6 +104,7 @@ internal class ClassBuilder
         _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
+        _classDeclaration = _classDeclaration.WithLeadingTrivia(_xmlDoc);
         _namespace = _namespace?.AddMembers(_classDeclaration);
 
 
@@ -128,10 +131,26 @@ internal class ClassBuilder
         _methods.Add(endpointMethod);
         return this;
     }
-    
+
     public ClassBuilder WithConstructor(ConstructorDeclarationSyntax constructorDeclaration)
     {
         _methods.Add(constructorDeclaration);
+        return this;
+    }
+
+    public ClassBuilder WithXmlDoc(string summary, string returns = "")
+    {
+        var xmlDoc = new StringBuilder();
+        xmlDoc.AppendLine(@$"
+/// <summary>
+///     {summary}
+/// </summary>");
+        if (!string.IsNullOrEmpty(returns))
+        {
+            xmlDoc.AppendLine($"/// <returns>{returns}</returns>");
+        }
+
+        _xmlDoc = SyntaxFactory.ParseLeadingTrivia(xmlDoc.ToString());
         return this;
     }
 }

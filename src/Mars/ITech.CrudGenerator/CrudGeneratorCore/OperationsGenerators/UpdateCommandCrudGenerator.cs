@@ -106,7 +106,7 @@ internal class UpdateCommandCrudGenerator
 
     private void GenerateViewModel()
     {
-        var dtoClass = new ClassBuilder([
+        var vmClass = new ClassBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.PartialKeyword
             ], _vmName)
@@ -114,10 +114,10 @@ internal class UpdateCommandCrudGenerator
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            vmClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
         }
 
-        WriteFile(_vmName, dtoClass.BuildAsString());
+        WriteFile(_vmName, vmClass.BuildAsString());
     }
 
     private void GenerateEndpoint()
