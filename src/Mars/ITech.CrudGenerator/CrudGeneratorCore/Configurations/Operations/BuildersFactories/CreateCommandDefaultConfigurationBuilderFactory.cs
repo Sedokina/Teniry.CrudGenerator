@@ -27,7 +27,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory
             },
             Dto = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Create.CreatedDto.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.DtoName ??
                                                "Created{{entity_name}}Dto")
             },

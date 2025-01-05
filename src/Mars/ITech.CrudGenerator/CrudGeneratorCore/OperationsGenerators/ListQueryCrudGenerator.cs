@@ -29,8 +29,8 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
     public override void RunGenerator()
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
-        GenerateListItemDto(Scheme.Configuration.DtoListItem.TemplatePath);
-        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateListItemDto();
+        GenerateDto();
         GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
         GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
@@ -55,27 +55,43 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(templatePath, model, _queryName);
     }
 
-    private void GenerateListItemDto(string templatePath)
+    private void GenerateListItemDto()
     {
-        var properties = EntityScheme.Properties.FormatAsProperties();
-        var model = new
-        {
-            ListItemDtoName = _listItemDtoName,
-            Properties = properties
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _listItemDtoName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
 
-        WriteFile(templatePath, model, _listItemDtoName);
+        foreach (var property in EntityScheme.Properties)
+        {
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_listItemDtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateDto(string templatePath)
+    private void GenerateDto()
     {
-        var model = new
-        {
-            DtoName = _dtoName,
-            ListItemDtoName = _listItemDtoName
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _dtoName)
+            .WithUsings(["ITech.Cqrs.Queryables.Page"])
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .Implements("PagedResult", _listItemDtoName);
 
-        WriteFile(templatePath, model, _dtoName);
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _dtoName)
+            .WithParameters([
+                new ParameterOfMethodBuilder($"List<{_listItemDtoName}>", "items"),
+                new ParameterOfMethodBuilder("PageInfo", "page")
+            ])
+            .WithBaseConstructor(["items", "page"]);
+        
+        constructor.WithBody(new MethodBodyBuilder().Build());
+        dtoClass.WithConstructor(constructor.Build());
+
+        WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
     private void GenerateFilter(string templatePath)
@@ -129,7 +145,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
@@ -161,7 +177,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
-        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());

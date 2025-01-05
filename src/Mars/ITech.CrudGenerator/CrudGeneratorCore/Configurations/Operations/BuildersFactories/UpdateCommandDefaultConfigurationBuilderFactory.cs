@@ -33,7 +33,7 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
             },
             ViewModel = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Update.UpdateVm.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.ViewModelName ??
                                                "{{operation_name}}{{entity_name}}Vm")
             },

@@ -27,7 +27,7 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
             },
             Dto = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetById.GetByIdDto.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto")
             },
             Handler = new()

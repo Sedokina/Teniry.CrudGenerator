@@ -28,7 +28,7 @@ internal class GetByIdQueryCrudGenerator
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler();
-        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateDto();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -52,16 +52,20 @@ internal class GetByIdQueryCrudGenerator
         WriteFile(templatePath, model, _queryName);
     }
 
-    private void GenerateDto(string templatePath)
+    private void GenerateDto()
     {
-        var properties = EntityScheme.Properties.FormatAsProperties();
-        var model = new
-        {
-            DtoName = _dtoName,
-            Properties = properties
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _dtoName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
 
-        WriteFile(templatePath, model, _dtoName);
+        foreach (var property in EntityScheme.Properties)
+        {
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
     private void GenerateHandler()
@@ -82,7 +86,7 @@ internal class GetByIdQueryCrudGenerator
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
@@ -111,7 +115,7 @@ internal class GetByIdQueryCrudGenerator
 
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
-        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());

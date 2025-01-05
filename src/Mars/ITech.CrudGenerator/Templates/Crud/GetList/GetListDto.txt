@@ -1,8 +1,0 @@
-using ITech.Cqrs.Queryables.Page;
-
-namespace {{business_logic_namespace}};
-
-public partial class {{dto_name}} : PagedResult<{{list_item_dto_name}}>
-{
-    public {{dto_name}}(List<{{list_item_dto_name}}> items, PageInfo page) : base(items, page) { }
-}

@@ -29,7 +29,7 @@ internal class UpdateCommandCrudGenerator
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler();
-        GenerateViewModel(Scheme.Configuration.ViewModel.TemplatePath);
+        GenerateViewModel();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -70,7 +70,7 @@ internal class UpdateCommandCrudGenerator
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
@@ -98,22 +98,26 @@ internal class UpdateCommandCrudGenerator
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
-        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
-    private void GenerateViewModel(string templatePath)
+    private void GenerateViewModel()
     {
-        var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
-        var model = new
-        {
-            VmName = _vmName,
-            Properties = properties,
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _vmName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        WriteFile(templatePath, model, _vmName);
+        foreach (var property in EntityScheme.NotPrimaryKeys)
+        {
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_vmName, dtoClass.BuildAsString());
     }
 
     private void GenerateEndpoint()
