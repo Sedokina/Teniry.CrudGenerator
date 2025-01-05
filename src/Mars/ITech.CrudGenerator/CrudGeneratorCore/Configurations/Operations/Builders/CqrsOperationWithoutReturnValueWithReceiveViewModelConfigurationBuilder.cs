@@ -7,7 +7,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 internal class CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
     : CqrsOperationWithoutReturnValueConfigurationBuilder
 {
-    public FileTemplateBasedOperationConfigurationBuilder ViewModel { get; set; } = null!;
+    public NameConfigurationBuilder ViewModel { get; set; } = null!;
 
     public new CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Build(EntityScheme entityScheme)
     {
@@ -15,7 +15,7 @@ internal class CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationB
         Init(built, entityScheme);
         built.ViewModel = new()
         {
-            Name = ViewModel.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
+            Name = ViewModel.GetName(entityScheme.EntityName, built.OperationName),
         };
         return built;
     }

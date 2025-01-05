@@ -6,8 +6,8 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnValueConfigurationBuilder
 {
-    public FileTemplateBasedOperationConfigurationBuilder Filter { get; set; } = null!;
-    public FileTemplateBasedOperationConfigurationBuilder DtoListItem { get; set; } = null!;
+    public NameConfigurationBuilder Filter { get; set; } = null!;
+    public NameConfigurationBuilder DtoListItem { get; set; } = null!;
 
     public new CqrsListOperationGeneratorConfiguration Build(EntityScheme entityScheme)
     {
@@ -15,17 +15,17 @@ internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnVa
         Init(built, entityScheme);
         built.Dto = new()
         {
-            Name = Dto.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
+            Name = Dto.GetName(entityScheme.EntityName, built.OperationName),
         };
 
         built.Filter = new()
         {
-            Name = Filter.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
+            Name = Filter.GetName(entityScheme.EntityName, built.OperationName),
         };
 
         built.DtoListItem = new()
         {
-            Name = DtoListItem.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
+            Name = DtoListItem.GetName(entityScheme.EntityName, built.OperationName),
         };
 
         return built;

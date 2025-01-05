@@ -19,27 +19,15 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory
             OperationType = CqrsOperationType.Command,
             OperationName = operationConfiguration?.Operation ?? "Update",
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            Operation = new()
-            {
-                NameConfigurationBuilder = new(operationConfiguration?.CommandName ??
-                                               "{{operation_name}}{{entity_name}}Command")
-            },
-            Handler = new()
-            {
-                NameConfigurationBuilder = new(operationConfiguration?.HandlerName ??
-                                               "{{operation_name}}{{entity_name}}Handler")
-            },
-            ViewModel = new()
-            {
-                NameConfigurationBuilder = new(operationConfiguration?.ViewModelName ??
-                                               "{{operation_name}}{{entity_name}}Vm")
-            },
+            Operation =  new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            ViewModel = new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
             Endpoint = new()
             {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
-                NameConfigurationBuilder = new(operationConfiguration?.EndpointClassName ??
+                ClassName = new(operationConfiguration?.EndpointClassName ??
                                                "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??

@@ -7,7 +7,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 internal class MinimalApiEndpointConfigurationBuilder
 {
     public bool Generate { get; set; } = true;
-    public NameConfigurationBuilder NameConfigurationBuilder { get; set; } = null!;
+    public NameConfigurationBuilder ClassName { get; set; } = null!;
     public NameConfigurationBuilder FunctionName { get; set; } = null!;
     public EndpointRouteConfigurationBuilder RouteConfigurationBuilder { get; set; } = null!;
 
@@ -19,7 +19,7 @@ internal class MinimalApiEndpointConfigurationBuilder
         return new()
         {
             Generate = Generate,
-            Name = NameConfigurationBuilder.GetName(entityScheme.EntityName, operationName),
+            Name = ClassName.GetName(entityScheme.EntityName, operationName),
             FunctionName = FunctionName.GetName(entityScheme.EntityName, operationName),
             Route = RouteConfigurationBuilder
                 .GetRoute(entityScheme.EntityName.Name, operationName, constructorParametersForRoute)

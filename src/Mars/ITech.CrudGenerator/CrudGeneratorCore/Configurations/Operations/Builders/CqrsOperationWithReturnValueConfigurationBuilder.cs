@@ -7,7 +7,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 internal class CqrsOperationWithReturnValueConfigurationBuilder :
     CqrsOperationWithoutReturnValueConfigurationBuilder
 {
-    public FileTemplateBasedOperationConfigurationBuilder Dto { get; set; } = null!;
+    public NameConfigurationBuilder Dto { get; set; } = null!;
 
     public new CqrsOperationWithReturnValueGeneratorConfiguration Build(EntityScheme entityScheme)
     {
@@ -15,7 +15,7 @@ internal class CqrsOperationWithReturnValueConfigurationBuilder :
         Init(built, entityScheme);
         built.Dto = new()
         {
-            Name = Dto.NameConfigurationBuilder.GetName(entityScheme.EntityName, built.OperationName),
+            Name = Dto.GetName(entityScheme.EntityName, built.OperationName),
         };
         return built;
     }
