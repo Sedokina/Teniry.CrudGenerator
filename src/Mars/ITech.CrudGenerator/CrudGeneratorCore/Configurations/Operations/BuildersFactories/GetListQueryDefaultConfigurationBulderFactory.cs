@@ -27,7 +27,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             },
             Dto = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetList.GetListDto.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.DtoName ??
                                                "{{entity_name_plural}}Dto")
             },

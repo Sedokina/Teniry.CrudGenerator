@@ -128,4 +128,10 @@ internal class ClassBuilder
         _methods.Add(endpointMethod);
         return this;
     }
+    
+    public ClassBuilder WithConstructor(ConstructorDeclarationSyntax constructorDeclaration)
+    {
+        _methods.Add(constructorDeclaration);
+        return this;
+    }
 }
