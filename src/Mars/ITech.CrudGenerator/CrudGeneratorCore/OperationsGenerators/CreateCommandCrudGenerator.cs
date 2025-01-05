@@ -65,7 +65,7 @@ internal class
         
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _dtoName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _dtoName)
             .WithParameters(constructorParameters);
         var constructorBody = new MethodBodyBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
@@ -75,7 +75,7 @@ internal class
         }
         
         constructor.WithBody(constructorBody.Build());
-        dtoClass.WithMethod(constructor.Build());
+        dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
     }
@@ -97,7 +97,7 @@ internal class
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
@@ -123,7 +123,7 @@ internal class
             .ReturnVariable("result");
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
-        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());

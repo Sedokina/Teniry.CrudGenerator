@@ -63,7 +63,7 @@ internal class
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new MethodBuilder([SyntaxKind.PublicKeyword], "", _handlerName)
+        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
@@ -92,7 +92,7 @@ internal class
 
 
         methodBuilder.WithBody(methodBodyBuilder.Build());
-        handlerClass.WithMethod(constructor.Build());
+        handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_handlerName, handlerClass.BuildAsString());
