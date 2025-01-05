@@ -21,7 +21,7 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new()
             {
-                TemplatePath = new("{{templates_base_path}}.Delete.DeleteCommand.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.CommandName ??
                                                "{{operation_name}}{{entity_name}}Command")
             },

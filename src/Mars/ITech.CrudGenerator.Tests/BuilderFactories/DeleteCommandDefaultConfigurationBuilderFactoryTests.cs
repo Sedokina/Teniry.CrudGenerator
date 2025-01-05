@@ -58,7 +58,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Delete");
         actual.OperationGroup.Should().Be("DeleteTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.Name.Should().Be("DeleteTestEntityCommand");
         actual.Handler.Name.Should().Be("DeleteTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
@@ -91,7 +90,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Del");
         actual.OperationGroup.Should().Be("DelTestEntity");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.Name.Should().Be("DelTestEntityCommand");
         actual.Handler.Name.Should().Be("DelTestEntityHandler");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
@@ -131,7 +129,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Delete");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.Delete.DeleteCommand.txt");
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Delete.DeleteEndpoint.txt");
