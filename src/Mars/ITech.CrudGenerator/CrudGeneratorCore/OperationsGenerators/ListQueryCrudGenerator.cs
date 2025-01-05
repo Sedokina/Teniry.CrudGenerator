@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -273,19 +272,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         method.WithBody(defaultSortBody);
         return method;
     }
-
-    private static string FormatDefaultSort(EntityDefaultSort? defaultSort)
-    {
-        if (defaultSort != null)
-        {
-            return defaultSort.Direction.Equals("asc")
-                ? $"query.OrderBy(x => x.{defaultSort.PropertyName});"
-                : $"query.OrderByDescending(x => x.{defaultSort.PropertyName});";
-        }
-
-        return "base.DefaultSort(query);";
-    }
-
+    
     private void GenerateHandler()
     {
         var handlerClass = new ClassBuilder([

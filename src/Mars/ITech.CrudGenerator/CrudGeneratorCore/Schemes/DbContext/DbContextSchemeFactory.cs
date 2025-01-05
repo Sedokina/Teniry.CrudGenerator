@@ -36,9 +36,9 @@ internal class DbContextSchemeFactory
                 $"Class of {nameof(UseDbContextAttribute)} not found, may be attribute applied not to a class");
         }
 
-        var dbContextClassSemanticModel = context.Compilation.GetSemanticModel(dbContextClass!.SyntaxTree);
+        var dbContextClassSemanticModel = context.Compilation.GetSemanticModel(dbContextClass.SyntaxTree);
         var dbContextClassSymbol = (INamedTypeSymbol)dbContextClassSemanticModel.GetDeclaredSymbol(dbContextClass)!;
-        var baseName = dbContextClassSymbol!.BaseType!.Name;
+        var baseName = dbContextClassSymbol.BaseType!.Name;
 
         if (!baseName.ToLower().EndsWith("dbcontext"))
         {
@@ -53,7 +53,7 @@ internal class DbContextSchemeFactory
             .GetOperation(dbProviderArgument.Expression)!.ConstantValue.Value!;
         return new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
-            dbContextClassSymbol!.Name,
+            dbContextClassSymbol.Name,
             dbProviderArgumentValue,
             GetFilterExpressionsFor(dbProviderArgumentValue));
     }

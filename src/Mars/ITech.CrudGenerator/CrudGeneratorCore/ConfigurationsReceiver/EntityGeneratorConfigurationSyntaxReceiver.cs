@@ -15,7 +15,7 @@ internal class EntityGeneratorConfigurationSyntaxReceiver : ISyntaxReceiver
         if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax &&
             IsInheritedFrom(classDeclarationSyntax, TypeNamesForAnalyzers.EntityGeneratorConfiguration))
         {
-            var baseTypeSyntax = classDeclarationSyntax!.BaseList!.Types
+            var baseTypeSyntax = classDeclarationSyntax.BaseList!.Types
                 .First(x => x.Type is GenericNameSyntax baseClass &&
                             baseClass.Identifier.ToString().Equals(TypeNamesForAnalyzers.EntityGeneratorConfiguration));
             var entityClass = (baseTypeSyntax.Type as GenericNameSyntax)!.TypeArgumentList.Arguments.First();
