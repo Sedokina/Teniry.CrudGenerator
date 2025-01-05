@@ -29,7 +29,7 @@ internal class UpdateCommandCrudGenerator
     {
         GenerateCommand(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler();
-        GenerateViewModel(Scheme.Configuration.ViewModel.TemplatePath);
+        GenerateViewModel();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -104,16 +104,20 @@ internal class UpdateCommandCrudGenerator
         WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
-    private void GenerateViewModel(string templatePath)
+    private void GenerateViewModel()
     {
-        var properties = EntityScheme.NotPrimaryKeys.FormatAsProperties();
-        var model = new
-        {
-            VmName = _vmName,
-            Properties = properties,
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _vmName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        WriteFile(templatePath, model, _vmName);
+        foreach (var property in EntityScheme.NotPrimaryKeys)
+        {
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_vmName, dtoClass.BuildAsString());
     }
 
     private void GenerateEndpoint()

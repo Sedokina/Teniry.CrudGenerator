@@ -61,7 +61,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("UpdateTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdateTestEntityHandler");
-        actual.ViewModel.TemplatePath.Should().Be("AllFiles.Update.UpdateVm.txt");
         actual.ViewModel.Name.Should().Be("UpdateTestEntityVm");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("UpdateTestEntityEndpoint");
@@ -95,7 +94,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("UpdTestEntityCommand");
         actual.Handler.Name.Should().Be("UpdTestEntityHandler");
-        actual.ViewModel.TemplatePath.Should().Be("AllFiles.Update.UpdateVm.txt");
         actual.ViewModel.Name.Should().Be("UpdTestEntityVm");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("UpdTestEntityEndpoint");
@@ -137,7 +135,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         actual.Operation.TemplatePath.Should().Be("AllFiles.Update.UpdateCommand.txt");
         actual.Operation.Name.Should().Be("CustomCommandName");
         actual.Handler.Name.Should().Be("CustomHandlerName");
-        actual.ViewModel.TemplatePath.Should().Be("AllFiles.Update.UpdateVm.txt");
         actual.ViewModel.Name.Should().Be("CustomViewModelName");
         actual.Endpoint.TemplatePath.Should().Be("AllFiles.Update.UpdateEndpoint.txt");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
