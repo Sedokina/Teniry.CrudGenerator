@@ -24,13 +24,13 @@ internal static class EntitySchemeFilterPropertiesFormatter {
 
         foreach (var property in properties)
         {
-            foreach (var filterProperty in property.FilterProperties)
-            {
-                filterProperty.FilterExpression.Format(
-                    stringBuilder,
-                    filterProperty.PropertyName,
-                    property.PropertyName);
-            }
+            // foreach (var filterProperty in property.FilterProperties)
+            // {
+            //     filterProperty.FilterExpression.BuildExpression(
+            //         stringBuilder,
+            //         filterProperty.PropertyName,
+            //         property.PropertyName);
+            // }
         }
 
 

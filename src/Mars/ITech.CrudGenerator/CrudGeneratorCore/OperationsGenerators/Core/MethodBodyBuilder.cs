@@ -396,6 +396,11 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
     }
+
+    public void AddExpression(StatementSyntax expression)
+    {
+        _body = _body.AddStatements(expression);
+    }
 }
 
 public class LinqCallBuilder

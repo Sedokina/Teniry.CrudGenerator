@@ -150,18 +150,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        var filterMethod = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
-                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "Filter")
-            .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
-            .WithXmlInheritdoc();
-
-        var filterBody = new MethodBodyBuilder()
-            .ReturnVariable("query");
-
-        filterMethod.WithBody(filterBody.Build());
         query.WithMethod(CreateSortMethodForFilter().Build());
         query.WithMethod(CreateDefaultSortMethod().Build());
-        query.WithMethod(filterMethod.Build());
+        query.WithMethod(CreateFilterMethod().Build());
 
         WriteFile(_filterName, query.BuildAsString());
 
@@ -179,6 +170,31 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         //     DefaultSort = defaultSort
         // };
         // WriteFile(templatePath, model, _filterName);
+    }
+
+    private MethodBuilder CreateFilterMethod()
+    {
+        var filterMethod = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
+                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "Filter")
+            .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
+            .WithXmlInheritdoc();
+
+        var filterBody = new MethodBodyBuilder();
+
+        foreach (var property in EntityScheme.Properties)
+        {
+            foreach (var filterProperty in property.FilterProperties)
+            {
+                var expression = filterProperty.FilterExpression
+                    .BuildExpression(filterProperty.PropertyName, property.PropertyName);
+                filterBody.AddExpression(expression);
+            }
+        }
+
+        filterBody.ReturnVariable("query");
+
+        filterMethod.WithBody(filterBody.Build());
+        return filterMethod;
     }
 
     private MethodBuilder CreateSortMethodForFilter()
