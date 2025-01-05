@@ -1,4 +1,3 @@
-using System.Text;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
