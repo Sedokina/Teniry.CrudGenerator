@@ -13,20 +13,9 @@ internal class CqrsListOperationConfigurationBuilder : CqrsOperationWithReturnVa
     {
         var built = new CqrsListOperationGeneratorConfiguration();
         Init(built, entityScheme);
-        built.Dto = new()
-        {
-            Name = Dto.GetName(entityScheme.EntityName, built.OperationName),
-        };
-
-        built.Filter = new()
-        {
-            Name = Filter.GetName(entityScheme.EntityName, built.OperationName),
-        };
-
-        built.DtoListItem = new()
-        {
-            Name = DtoListItem.GetName(entityScheme.EntityName, built.OperationName),
-        };
+        built.Dto = Dto.GetName(entityScheme.EntityName, built.OperationName);
+        built.Filter = Filter.GetName(entityScheme.EntityName, built.OperationName);
+        built.DtoListItem = DtoListItem.GetName(entityScheme.EntityName, built.OperationName);
 
         return built;
     }

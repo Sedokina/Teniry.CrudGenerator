@@ -11,7 +11,7 @@ internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
     public CqrsOperationType OperationType { get; set; }
     public string OperationGroup { get; set; } = "";
     public string OperationName { get; set; } = "";
-    public FileTemplateBasedOperationConfiguration Operation { get; set; } = null!;
-    public FileTemplateBasedOperationConfiguration Handler { get; set; } = null!;
+    public string Operation { get; set; } = null!;
+    public string Handler { get; set; } = null!;
     public MinimalApiEndpointConfiguration Endpoint { get; set; } = null!;
 }

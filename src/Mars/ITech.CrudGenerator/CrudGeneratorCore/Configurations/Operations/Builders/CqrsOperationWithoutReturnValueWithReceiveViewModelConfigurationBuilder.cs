@@ -13,10 +13,7 @@ internal class CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationB
     {
         var built = new CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration();
         Init(built, entityScheme);
-        built.ViewModel = new()
-        {
-            Name = ViewModel.GetName(entityScheme.EntityName, built.OperationName),
-        };
+        built.ViewModel = ViewModel.GetName(entityScheme.EntityName, built.OperationName);
         return built;
     }
 }

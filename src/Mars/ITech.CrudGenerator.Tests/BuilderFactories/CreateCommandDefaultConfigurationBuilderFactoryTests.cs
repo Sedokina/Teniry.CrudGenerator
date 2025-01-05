@@ -57,9 +57,9 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Create");
         actual.OperationGroup.Should().Be("CreateTestEntity");
-        actual.Operation.Name.Should().Be("CreateTestEntityCommand");
-        actual.Dto.Name.Should().Be("CreatedTestEntityDto");
-        actual.Handler.Name.Should().Be("CreateTestEntityHandler");
+        actual.Operation.Should().Be("CreateTestEntityCommand");
+        actual.Dto.Should().Be("CreatedTestEntityDto");
+        actual.Handler.Should().Be("CreateTestEntityHandler");
         actual.Endpoint.Name.Should().Be("CreateTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("CreateAsync");
@@ -88,9 +88,9 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Add");
         actual.OperationGroup.Should().Be("AddTestEntity");
-        actual.Operation.Name.Should().Be("AddTestEntityCommand");
-        actual.Dto.Name.Should().Be("CreatedTestEntityDto");
-        actual.Handler.Name.Should().Be("AddTestEntityHandler");
+        actual.Operation.Should().Be("AddTestEntityCommand");
+        actual.Dto.Should().Be("CreatedTestEntityDto");
+        actual.Handler.Should().Be("AddTestEntityHandler");
         actual.Endpoint.Name.Should().Be("AddTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("AddAsync");
@@ -126,9 +126,9 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Create");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.Name.Should().Be("CustomCommandName");
-        actual.Dto.Name.Should().Be("CustomDtoName");
-        actual.Handler.Name.Should().Be("CustomHandlerName");
+        actual.Operation.Should().Be("CustomCommandName");
+        actual.Dto.Should().Be("CustomDtoName");
+        actual.Handler.Should().Be("CustomHandlerName");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");

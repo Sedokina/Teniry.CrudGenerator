@@ -18,9 +18,9 @@ internal class GetByIdQueryCrudGenerator
     public GetByIdQueryCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
-        _queryName = Scheme.Configuration.Operation.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
-        _dtoName = Scheme.Configuration.Dto.Name;
+        _queryName = Scheme.Configuration.Operation;
+        _handlerName = Scheme.Configuration.Handler;
+        _dtoName = Scheme.Configuration.Dto;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 

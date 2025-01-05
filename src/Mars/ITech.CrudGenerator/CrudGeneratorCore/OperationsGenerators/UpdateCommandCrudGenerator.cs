@@ -19,9 +19,9 @@ internal class UpdateCommandCrudGenerator
         CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> scheme)
         : base(scheme)
     {
-        _commandName = scheme.Configuration.Operation.Name;
-        _handlerName = scheme.Configuration.Handler.Name;
-        _vmName = scheme.Configuration.ViewModel.Name;
+        _commandName = scheme.Configuration.Operation;
+        _handlerName = scheme.Configuration.Handler;
+        _vmName = scheme.Configuration.ViewModel;
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 

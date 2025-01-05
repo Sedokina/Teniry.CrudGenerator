@@ -25,9 +25,9 @@ internal class
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _getByIdOperationName = getByIdOperationName;
-        _commandName = scheme.Configuration.Operation.Name;
-        _handlerName = scheme.Configuration.Handler.Name;
-        _dtoName = scheme.Configuration.Dto.Name;
+        _commandName = scheme.Configuration.Operation;
+        _handlerName = scheme.Configuration.Handler;
+        _dtoName = scheme.Configuration.Dto;
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 

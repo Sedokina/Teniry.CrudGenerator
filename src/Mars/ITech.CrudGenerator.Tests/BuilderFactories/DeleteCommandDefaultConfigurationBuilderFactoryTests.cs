@@ -57,8 +57,8 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Delete");
         actual.OperationGroup.Should().Be("DeleteTestEntity");
-        actual.Operation.Name.Should().Be("DeleteTestEntityCommand");
-        actual.Handler.Name.Should().Be("DeleteTestEntityHandler");
+        actual.Operation.Should().Be("DeleteTestEntityCommand");
+        actual.Handler.Should().Be("DeleteTestEntityHandler");
         actual.Endpoint.Name.Should().Be("DeleteTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DeleteAsync");
@@ -88,8 +88,8 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Del");
         actual.OperationGroup.Should().Be("DelTestEntity");
-        actual.Operation.Name.Should().Be("DelTestEntityCommand");
-        actual.Handler.Name.Should().Be("DelTestEntityHandler");
+        actual.Operation.Should().Be("DelTestEntityCommand");
+        actual.Handler.Should().Be("DelTestEntityHandler");
         actual.Endpoint.Name.Should().Be("DelTestEntityEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
         actual.Endpoint.FunctionName.Should().Be("DelAsync");
@@ -126,8 +126,8 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Command);
         actual.OperationName.Should().Be("Delete");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.Name.Should().Be("CustomCommandName");
-        actual.Handler.Name.Should().Be("CustomHandlerName");
+        actual.Operation.Should().Be("CustomCommandName");
+        actual.Handler.Should().Be("CustomHandlerName");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");

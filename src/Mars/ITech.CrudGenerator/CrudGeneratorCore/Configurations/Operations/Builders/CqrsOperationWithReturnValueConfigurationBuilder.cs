@@ -13,10 +13,7 @@ internal class CqrsOperationWithReturnValueConfigurationBuilder :
     {
         var built = new CqrsOperationWithReturnValueGeneratorConfiguration();
         Init(built, entityScheme);
-        built.Dto = new()
-        {
-            Name = Dto.GetName(entityScheme.EntityName, built.OperationName),
-        };
+        built.Dto = Dto.GetName(entityScheme.EntityName, built.OperationName);
         return built;
     }
 }

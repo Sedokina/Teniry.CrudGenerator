@@ -26,16 +26,8 @@ internal class CqrsOperationWithoutReturnValueConfigurationBuilder
         configuration.OperationGroup = OperationGroup.GetName(entityScheme.EntityName, configuration.OperationName);
         configuration.OperationsSharedConfiguration = OperationsSharedConfiguration
             .Build(entityScheme, configuration.OperationName, configuration.OperationGroup);
-
-        configuration.Operation = new()
-        {
-            Name = Operation.GetName(entityScheme.EntityName, configuration.OperationName),
-        };
-        configuration.Handler = new()
-        {
-            Name = Handler.GetName(entityScheme.EntityName, configuration.OperationName),
-        };
-
+        configuration.Operation = Operation.GetName(entityScheme.EntityName, configuration.OperationName);
+        configuration.Handler = Handler.GetName(entityScheme.EntityName, configuration.OperationName);
         configuration.Endpoint = Endpoint.Build(entityScheme, configuration.OperationName);
     }
 

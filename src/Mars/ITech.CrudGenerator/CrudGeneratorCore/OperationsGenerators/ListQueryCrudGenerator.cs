@@ -20,11 +20,11 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
     public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme)
     {
-        _queryName = Scheme.Configuration.Operation.Name;
-        _listItemDtoName = Scheme.Configuration.DtoListItem.Name;
-        _dtoName = Scheme.Configuration.Dto.Name;
-        _filterName = Scheme.Configuration.Filter.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
+        _queryName = Scheme.Configuration.Operation;
+        _listItemDtoName = Scheme.Configuration.DtoListItem;
+        _dtoName = Scheme.Configuration.Dto;
+        _filterName = Scheme.Configuration.Filter;
+        _handlerName = Scheme.Configuration.Handler;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 

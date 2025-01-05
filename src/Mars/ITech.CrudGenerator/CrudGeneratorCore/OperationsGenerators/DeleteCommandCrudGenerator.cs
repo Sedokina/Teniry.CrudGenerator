@@ -17,8 +17,8 @@ internal class
     public DeleteCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(scheme)
     {
-        _commandName = Scheme.Configuration.Operation.Name;
-        _handlerName = Scheme.Configuration.Handler.Name;
+        _commandName = Scheme.Configuration.Operation;
+        _handlerName = Scheme.Configuration.Handler;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
