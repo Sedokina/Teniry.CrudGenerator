@@ -1,6 +1,0 @@
-namespace {{business_logic_namespace}};
-
-public partial class {{dto_name}}
-{
-    {{properties}}
-}

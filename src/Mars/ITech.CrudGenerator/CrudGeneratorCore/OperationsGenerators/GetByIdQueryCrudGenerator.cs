@@ -28,7 +28,7 @@ internal class GetByIdQueryCrudGenerator
     {
         GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
         GenerateHandler();
-        GenerateDto(Scheme.Configuration.Dto.TemplatePath);
+        GenerateDto();
         if (Scheme.Configuration.Endpoint.Generate)
         {
             GenerateEndpoint();
@@ -52,16 +52,20 @@ internal class GetByIdQueryCrudGenerator
         WriteFile(templatePath, model, _queryName);
     }
 
-    private void GenerateDto(string templatePath)
+    private void GenerateDto()
     {
-        var properties = EntityScheme.Properties.FormatAsProperties();
-        var model = new
-        {
-            DtoName = _dtoName,
-            Properties = properties
-        };
+        var dtoClass = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _dtoName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
 
-        WriteFile(templatePath, model, _dtoName);
+        foreach (var property in EntityScheme.Properties)
+        {
+            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+        }
+
+        WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
     private void GenerateHandler()
