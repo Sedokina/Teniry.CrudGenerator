@@ -21,7 +21,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
             Operation = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetList.GetListQuery.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.QueryName ??
                                                "{{operation_name}}{{entity_name_plural}}Query")
             },

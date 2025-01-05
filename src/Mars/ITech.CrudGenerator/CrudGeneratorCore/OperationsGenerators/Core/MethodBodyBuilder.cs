@@ -367,6 +367,35 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
     }
+
+    public MethodBodyBuilder InitStringArray(string variableName, IEnumerable<string> parameters)
+    {
+        var arrayType = SyntaxFactory.ArrayType(SyntaxFactory.ParseTypeName("string"))
+            .WithRankSpecifiers(
+                SyntaxFactory.SingletonList(
+                    SyntaxFactory.ArrayRankSpecifier(SyntaxFactory.SeparatedList<ExpressionSyntax>())));
+
+
+        var arrayVariableDeclaration = SyntaxFactory.VariableDeclarator(SyntaxFactory.Identifier(variableName))
+            .WithInitializer(
+                SyntaxFactory.EqualsValueClause(
+                    SyntaxFactory.ArrayCreationExpression(arrayType)
+                        .WithInitializer(SyntaxFactory.InitializerExpression(
+                            SyntaxKind.ArrayInitializerExpression,
+                            SyntaxFactory.SeparatedList<ExpressionSyntax>(
+                                parameters.Select(p => SyntaxFactory.LiteralExpression(
+                                    SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(p))).ToArray()
+                            )
+                        ))
+                )
+            );
+
+        var variableDeclarationResultVariable = SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName("var"))
+            .WithVariables(SyntaxFactory.SeparatedList<VariableDeclaratorSyntax>().Add(arrayVariableDeclaration));
+
+        _body = _body.AddStatements(SyntaxFactory.LocalDeclarationStatement(variableDeclarationResultVariable));
+        return this;
+    }
 }
 
 public class LinqCallBuilder

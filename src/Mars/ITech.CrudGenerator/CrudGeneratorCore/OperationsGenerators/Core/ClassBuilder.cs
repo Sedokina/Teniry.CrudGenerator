@@ -65,7 +65,11 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithProperty(string fieldType, string fieldName, string? defaultValue = null)
+    public ClassBuilder WithProperty(
+        string fieldType,
+        string fieldName,
+        string? defaultValue = null,
+        bool inheritdoc = false)
     {
         var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(fieldType), fieldName)
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
@@ -85,10 +89,14 @@ internal class ClassBuilder
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
         }
 
+        if (inheritdoc)
+        {
+            property = property.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia("/// <inheritdoc />\n"));
+        }
+
         _properties.Add(property);
         return this;
     }
-
 
     public CompilationUnitSyntax Build()
     {

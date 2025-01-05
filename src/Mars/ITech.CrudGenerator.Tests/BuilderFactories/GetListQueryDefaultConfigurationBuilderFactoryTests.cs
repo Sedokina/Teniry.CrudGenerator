@@ -58,7 +58,6 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Get");
         actual.OperationGroup.Should().Be("GetTestEntities");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
         actual.Operation.Name.Should().Be("GetTestEntitiesQuery");
         actual.Dto.Name.Should().Be("TestEntitiesDto");
         actual.Handler.Name.Should().Be("GetTestEntitiesHandler");
@@ -91,7 +90,6 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Obtain");
         actual.OperationGroup.Should().Be("ObtainTestEntities");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
         actual.Operation.Name.Should().Be("ObtainTestEntitiesQuery");
         actual.Dto.Name.Should().Be("TestEntitiesDto");
         actual.Handler.Name.Should().Be("ObtainTestEntitiesHandler");
@@ -132,7 +130,6 @@ public class GetListQueryDefaultFactoryTests
         actual.OperationType.Should().Be(CqrsOperationType.Query);
         actual.OperationName.Should().Be("Get");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.TemplatePath.Should().Be("AllFiles.GetList.GetListQuery.txt");
         actual.Operation.Name.Should().Be("CustomQueryName");
         actual.Dto.Name.Should().Be("CustomDtoName");
         actual.Handler.Name.Should().Be("CustomHandlerName");

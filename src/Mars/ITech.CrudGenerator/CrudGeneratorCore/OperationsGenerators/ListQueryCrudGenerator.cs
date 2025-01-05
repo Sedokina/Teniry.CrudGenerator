@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -28,7 +29,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
     public override void RunGenerator()
     {
-        GenerateQuery(Scheme.Configuration.Operation.TemplatePath);
+        GenerateQuery();
         GenerateListItemDto();
         GenerateDto();
         GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
@@ -39,20 +40,46 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         }
     }
 
-    private void GenerateQuery(string templatePath)
+    private void GenerateQuery()
     {
-        var properties = EntityScheme.Properties.FormatAsFilterProperties();
-        var sortKeys = EntityScheme.SortableProperties.FormatAsSortKeys();
+        var query = new ClassBuilder([
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.PartialKeyword
+            ], _queryName)
+            .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
+            .WithUsings([
+                "ITech.Cqrs.Queryables.Page",
+                "ITech.Cqrs.Queryables.Sort"
+            ])
+            .Implements("IDefineSortable")
+            .Implements("IPage")
+            .WithXmlDoc($"Get {EntityScheme.EntityTitle.PluralTitle}",
+                $"Returns {EntityScheme.EntityTitle.PluralTitle} of type <see cref=\"{_dtoName}\" />");
 
-        var model = new
+
+        foreach (var property in EntityScheme.Properties)
         {
-            QueryName = _queryName,
-            DtoName = _dtoName,
-            PutIntoNamespace = Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation,
-            Properties = properties,
-            SortKeys = sortKeys
-        };
-        WriteFile(templatePath, model, _queryName);
+            if (property.FilterProperties.Length <= 0) continue;
+            foreach (var filterProperty in property.FilterProperties)
+            {
+                query.WithProperty(filterProperty.TypeName, filterProperty.PropertyName);
+            }
+        }
+
+        query.WithProperty("int", "Page", inheritdoc: true);
+        query.WithProperty("int", "PageSize", inheritdoc: true);
+        query.WithProperty("string[]?", "Sort", inheritdoc: true);
+
+        var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
+            .WithXmlInheritdoc();
+        var methodBody = new MethodBodyBuilder()
+            .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
+            .ReturnVariable("result");
+
+        method.WithBody(methodBody.Build());
+        query.WithMethod(method.Build());
+
+        WriteFile(_queryName, query.BuildAsString());
     }
 
     private void GenerateListItemDto()
@@ -87,7 +114,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 new ParameterOfMethodBuilder("PageInfo", "page")
             ])
             .WithBaseConstructor(["items", "page"]);
-        
+
         constructor.WithBody(new MethodBodyBuilder().Build());
         dtoClass.WithConstructor(constructor.Build());
 
