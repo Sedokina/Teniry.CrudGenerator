@@ -1,16 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Editing;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -38,7 +34,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         GenerateQuery();
         GenerateListItemDto();
         GenerateDto();
-        GenerateFilter(Scheme.Configuration.Filter.TemplatePath);
+        GenerateFilter();
         GenerateHandler();
         if (Scheme.Configuration.Endpoint.Generate)
         {
@@ -126,7 +122,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateFilter(string templatePath)
+    private void GenerateFilter()
     {
         var query = new ClassBuilder([
                 SyntaxKind.PublicKeyword,
@@ -155,21 +151,6 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         query.WithMethod(CreateFilterMethod().Build());
 
         WriteFile(_filterName, query.BuildAsString());
-
-        // var properties = EntityScheme.Properties.FormatAsFilterProperties();
-        // var filter = EntityScheme.Properties.FormatAsFilterBody();
-        // var sorts = EntityScheme.SortableProperties.FormatAsSortCalls();
-        // var defaultSort = FormatDefaultSort(EntityScheme.DefaultSort);
-        //
-        // var model = new
-        // {
-        //     FilterName = _filterName,
-        //     Properties = properties,
-        //     Filter = filter,
-        //     Sorts = sorts,
-        //     DefaultSort = defaultSort
-        // };
-        // WriteFile(templatePath, model, _filterName);
     }
 
     private MethodBuilder CreateFilterMethod()

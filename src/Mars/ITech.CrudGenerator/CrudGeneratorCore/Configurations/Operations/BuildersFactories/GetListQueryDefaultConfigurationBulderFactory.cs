@@ -39,7 +39,7 @@ internal class GetListQueryDefaultConfigurationBulderFactory
             },
             Filter = new()
             {
-                TemplatePath = new("{{templates_base_path}}.GetList.GetListFilter.txt"),
+                TemplatePath = new(""),
                 NameConfigurationBuilder = new(operationConfiguration?.FilterName ??
                                                "{{operation_name}}{{entity_name_plural}}Filter")
             },
