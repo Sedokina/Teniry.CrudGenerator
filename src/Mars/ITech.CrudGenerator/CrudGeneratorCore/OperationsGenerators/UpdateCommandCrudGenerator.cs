@@ -122,7 +122,7 @@ internal class UpdateCommandCrudGenerator
                     [EntityScheme.EntityName.ToString()],
                     ["entityIds", "cancellation"])
             )
-            .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
+            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
             .CallMethod("command", "Adapt", ["entity"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
 

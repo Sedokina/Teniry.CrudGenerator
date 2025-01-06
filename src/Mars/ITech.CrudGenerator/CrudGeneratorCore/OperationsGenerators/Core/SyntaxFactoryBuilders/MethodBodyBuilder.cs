@@ -263,29 +263,6 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(assignmentExpression));
         return this;
     }
-
-    public MethodBodyBuilder ThrowIfEntityNotFound(string variableName, string entityTypeName)
-    {
-        var ifStatement = IfStatement(ParseExpression($"{variableName} == null"),
-            Block(
-                ThrowStatement(
-                    ObjectCreationExpression(
-                        ParseTypeName("EfEntityNotFoundException")
-                    ).WithArgumentList(
-                        ArgumentList(
-                            SingletonSeparatedList(
-                                Argument(
-                                    TypeOfExpression(ParseTypeName(entityTypeName))
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        );
-        _body = _body.AddStatements(ifStatement);
-        return this;
-    }
     
     public MethodBodyBuilder IfNull(string variableName, Func<MethodBodyBuilder, MethodBodyBuilder> bodyBuilderFunc)
     {
@@ -293,6 +270,23 @@ internal class MethodBodyBuilder
         bodyBuilderFunc(ifBody);
         var ifStatement = IfStatement(ParseExpression($"{variableName} == null"), ifBody.Build());
         _body = _body.AddStatements(ifStatement);
+        return this;
+    }
+    
+    public MethodBodyBuilder ThrowEntityNotFoundException(string entityTypeName)
+    {
+        var throwStatement = ThrowStatement(ObjectCreationExpression(ParseTypeName("EfEntityNotFoundException"))
+            .WithArgumentList(
+                ArgumentList(
+                    SingletonSeparatedList(
+                        Argument(
+                            TypeOfExpression(ParseTypeName(entityTypeName))
+                        )
+                    )
+                )
+            )
+        );
+        _body = _body.AddStatements(throwStatement);
         return this;
     }
     
