@@ -11,8 +11,8 @@ using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.Syn
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
-internal class
-    CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class CreateCommandCrudGenerator
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string? _getByIdOperationName;
@@ -170,9 +170,9 @@ internal class
 
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("result", CallGenericAsyncMethod("commandDispatcher",
-                    "DispatchAsync",
-                    [_commandName, _dtoName],
-                    ["command", "cancellation"]))
+                "DispatchAsync",
+                [_commandName, _dtoName],
+                ["command", "cancellation"]))
             .InitVariable("resourceRoute", InterpolatedString(GetByIdRoute()))
             .Return(CallMethod("TypedResults", "Created", ["resourceRoute", "result"]));
 
