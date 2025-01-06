@@ -40,7 +40,7 @@ public class SimpleSyntaxFactory
             ))
         );
     }
-    
+
     public AwaitExpressionSyntax CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -143,7 +143,7 @@ public class SimpleSyntaxFactory
                 )
             ));
     }
-    
+
     public AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
     {
         return AwaitExpression(linqCallBuilder.Build());
@@ -174,8 +174,7 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf
-            .CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+        var statementBuilder = _sf.CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
@@ -186,8 +185,7 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf
-            .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+        var statementBuilder = _sf.CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
@@ -199,13 +197,12 @@ internal class BlockBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf
-            .CallGenericAsyncMethod(
-                objectWithMethod,
-                methodNameToCall,
-                methodGenericTypeNames,
-                methodArgumentsAsVariableNames
-            );
+        var statementBuilder = _sf.CallGenericAsyncMethod(
+            objectWithMethod,
+            methodNameToCall,
+            methodGenericTypeNames,
+            methodArgumentsAsVariableNames
+        );
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
     }
@@ -274,6 +271,7 @@ internal class BlockBuilder
 public class LinqCallBuilder
 {
     private InvocationExpressionSyntax _call = null!;
+    private readonly SimpleSyntaxFactory _sf = new();
 
     public LinqCallBuilder CallGenericMethod(
         string objectWithMethod,
@@ -281,32 +279,16 @@ public class LinqCallBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        _call =
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    GenericName(Identifier(methodNameToCall))
-                        .WithTypeArgumentList(
-                            TypeArgumentList(
-                                SeparatedList<TypeSyntax>(
-                                    methodGenericTypeNames.Select(IdentifierName)
-                                )
-                            )
-                        )
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
-            );
-
+        _call = _sf.CallGenericMethod(
+            objectWithMethod,
+            methodNameToCall,
+            methodGenericTypeNames,
+            methodArgumentsAsVariableNames
+        );
         return this;
     }
 
-    public LinqCallBuilder ThenMethod(
-        string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
+    public LinqCallBuilder ThenMethod(string methodNameToCall, List<string> methodArgumentsAsVariableNames)
     {
         _call = _call.WithExpression(
             MemberAccessExpression(
