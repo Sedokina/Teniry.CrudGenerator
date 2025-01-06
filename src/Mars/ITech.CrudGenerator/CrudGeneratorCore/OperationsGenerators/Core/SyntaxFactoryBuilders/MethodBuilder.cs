@@ -4,6 +4,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
@@ -13,25 +14,19 @@ internal class MethodBuilder
 
     public MethodBuilder(SyntaxKind[] modifiers, string returnType, string name)
     {
-        var returnTypeSyntax = SyntaxFactory.ParseTypeName(returnType);
-        _methodDeclaration = SyntaxFactory.MethodDeclaration(returnTypeSyntax, name)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
+        _methodDeclaration = MethodDeclaration(ParseTypeName(returnType), name)
+            .AddModifiers(modifiers.Select(Token).ToArray());
     }
 
     public MethodBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
     {
-        _methodDeclaration = _methodDeclaration.AddParameterListParameters(properties
-            .Select(x =>
-            {
-                var a = x.GetAsMethodParameter();
-                return SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier(a.Name))
-                    .WithType(SyntaxFactory.ParseTypeName(a.Type))
-                    .WithModifiers(SyntaxFactory.TokenList(x.Modifiers.Select(SyntaxFactory.Token)));
-            }).ToArray());
+        _methodDeclaration = _methodDeclaration.AddParameterListParameters(
+            properties.Select(x => Parameter(Identifier(x.Name))
+                .WithType(ParseTypeName(x.Type))
+                .WithModifiers(TokenList(x.Modifiers.Select(Token)))).ToArray()
+        );
         return this;
     }
-
 
     public MethodBuilder WithXmlDoc(string summary, int responseStatusCode, string response)
     {
@@ -41,16 +36,13 @@ internal class MethodBuilder
 /// </summary>
 /// <response code=""{responseStatusCode}"">{response}</response>
 ";
-        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
+        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(ParseLeadingTrivia(xmlDoc));
         return this;
     }
 
     public MethodBuilder WithXmlInheritdoc()
     {
-        var xmlDoc = @"
-/// <inheritdoc />
-";
-        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia(xmlDoc));
+        _methodDeclaration = _methodDeclaration.WithLeadingTrivia(ParseLeadingTrivia("/// <inheritdoc />\n"));
         return this;
     }
 
@@ -60,43 +52,10 @@ internal class MethodBuilder
         return this;
     }
 
-    public MethodBuilder WithProducesResponseTypeAttribute(string typeName, int statusCode = 200)
+    public MethodBuilder WithAttribute(ProducesResponseTypeAttributeBuilder attribute)
     {
-        ProducesResponseTypeAttribute(typeName, statusCode);
-        return this;
-    }
-
-    public MethodBuilder WithProducesResponseTypeAttribute(int statusCode = 200)
-    {
-        ProducesResponseTypeAttribute(null, statusCode);
-        return this;
-    }
-
-    private MethodBuilder ProducesResponseTypeAttribute(string? typeName, int statusCode)
-    {
-        var arguments = new List<SyntaxNodeOrToken>();
-        if (!string.IsNullOrEmpty(typeName))
-        {
-            arguments.AddRange(
-            [
-                SyntaxFactory.AttributeArgument(SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(typeName))),
-                SyntaxFactory.Token(SyntaxKind.CommaToken)
-            ]);
-        }
-
-        arguments.Add(SyntaxFactory.AttributeArgument(
-            SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(statusCode))));
-
-
-        _methodDeclaration = _methodDeclaration.WithAttributeLists(SyntaxFactory.SingletonList(
-            SyntaxFactory.AttributeList(
-                SyntaxFactory.SingletonSeparatedList(
-                    SyntaxFactory.Attribute(
-                            SyntaxFactory.IdentifierName("ProducesResponseType"))
-                        .WithArgumentList(
-                            SyntaxFactory.AttributeArgumentList(
-                                SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(arguments)))))
-        ));
+        _methodDeclaration = _methodDeclaration
+            .AddAttributeLists(AttributeList(SingletonSeparatedList(attribute.Build())));
         return this;
     }
 

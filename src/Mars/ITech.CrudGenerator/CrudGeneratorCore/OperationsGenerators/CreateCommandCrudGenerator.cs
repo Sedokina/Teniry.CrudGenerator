@@ -161,7 +161,7 @@ internal class
                 new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
-            .WithProducesResponseTypeAttribute(201)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(201))
             .WithXmlDoc(
                 $"Create {Scheme.EntityScheme.EntityTitle}",
                 201,

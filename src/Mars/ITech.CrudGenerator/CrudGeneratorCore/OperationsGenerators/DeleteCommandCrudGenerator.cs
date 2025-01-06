@@ -135,7 +135,7 @@ internal class
                 .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithProducesResponseTypeAttribute(204)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(204))
             .WithXmlDoc($"Delete {Scheme.EntityScheme.EntityTitle}",
                 204,
                 $"{Scheme.EntityScheme.EntityTitle} deleted");

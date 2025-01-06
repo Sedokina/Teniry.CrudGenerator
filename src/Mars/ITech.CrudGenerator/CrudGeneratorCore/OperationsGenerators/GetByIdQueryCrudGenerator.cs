@@ -165,7 +165,7 @@ internal class GetByIdQueryCrudGenerator
                 .Append(new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
             .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle} by id",
                 200,
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");

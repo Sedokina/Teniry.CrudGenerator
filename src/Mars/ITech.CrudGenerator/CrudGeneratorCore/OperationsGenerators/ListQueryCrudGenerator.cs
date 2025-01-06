@@ -359,7 +359,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
-            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
             .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
                 200,
                 $"Returns {Scheme.EntityScheme.EntityTitle} list");

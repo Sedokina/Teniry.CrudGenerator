@@ -14,9 +14,4 @@ internal class ParameterOfMethodBuilder
         Name = name;
         Modifiers = modifiers ?? [];
     }
-
-    public (string Type, string Name) GetAsMethodParameter()
-    {
-        return (Type, Name);
-    }
 }
