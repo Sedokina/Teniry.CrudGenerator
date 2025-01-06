@@ -40,6 +40,14 @@ public class SimpleSyntaxFactory
             ))
         );
     }
+    
+    public AwaitExpressionSyntax CallAsyncMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames));
+    }
 
     public InvocationExpressionSyntax CallGenericMethod(
         string objectWithMethod,
@@ -81,19 +89,6 @@ public class SimpleSyntaxFactory
                 methodArgumentsAsVariableNames
             )
         );
-    }
-
-    public AwaitExpressionSyntax CallAsyncMethod(
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
-    {
-        return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames));
-    }
-
-    public AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
-    {
-        return AwaitExpression(linqCallBuilder.Build());
     }
 
     public IdentifierNameSyntax Variable(string variableName)
@@ -147,6 +142,11 @@ public class SimpleSyntaxFactory
                     parameters.Select(p => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(p))).ToArray()
                 )
             ));
+    }
+    
+    public AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
+    {
+        return AwaitExpression(linqCallBuilder.Build());
     }
 }
 
