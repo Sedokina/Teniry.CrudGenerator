@@ -149,24 +149,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
         return this;
     }
-
-    public MethodBodyBuilder CallGenericAsyncMethod(
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
-    {
-        var statementBuilder = new StatementBuilder()
-            .CallGenericAsyncMethod(
-                objectWithMethod,
-                methodNameToCall,
-                methodGenericTypeNames,
-                methodArgumentsAsVariableNames
-            );
-        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
-        return this;
-    }
-
+    
     public MethodBodyBuilder CallMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -187,6 +170,23 @@ internal class MethodBodyBuilder
         var statementBuilder = new StatementBuilder()
             .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
+        return this;
+    }
+
+    public MethodBodyBuilder CallGenericAsyncMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        var statementBuilder = new StatementBuilder()
+            .CallGenericAsyncMethod(
+                objectWithMethod,
+                methodNameToCall,
+                methodGenericTypeNames,
+                methodArgumentsAsVariableNames
+            );
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
