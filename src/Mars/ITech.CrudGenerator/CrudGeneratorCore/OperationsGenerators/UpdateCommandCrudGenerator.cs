@@ -186,7 +186,7 @@ internal class UpdateCommandCrudGenerator
                 EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
             .CallMethod("vm", "Adapt", ["command"])
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
-            .ReturnTypedResultNoContent();
+            .Return(x => x.CallMethod("TypedResults", "NoContent", []));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

@@ -203,18 +203,6 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ReturnStatement(statement));
         return this;
     }
-    
-    public MethodBodyBuilder ReturnTypedResultNoContent()
-    {
-        var returnStatement = ReturnStatement(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName("TypedResults"),
-                    IdentifierName("NoContent"))));
-        _body = _body.AddStatements(returnStatement);
-        return this;
-    }
 
     public MethodBodyBuilder ReturnTypedResultCreated(string getRoute, string variableName)
     {

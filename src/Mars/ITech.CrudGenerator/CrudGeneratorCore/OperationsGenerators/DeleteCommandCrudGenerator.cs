@@ -149,7 +149,7 @@ internal class
                 builder => builder.CallConstructor(_commandName,
                     EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
-            .ReturnTypedResultNoContent();
+            .Return(x => x.CallMethod("TypedResults", "NoContent", []));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
