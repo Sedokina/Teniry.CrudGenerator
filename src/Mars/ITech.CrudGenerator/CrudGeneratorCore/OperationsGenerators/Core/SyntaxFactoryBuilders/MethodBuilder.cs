@@ -46,16 +46,22 @@ internal class MethodBuilder
         return this;
     }
 
-    public MethodBuilder WithBody(BlockSyntax body)
-    {
-        _methodDeclaration = _methodDeclaration.WithBody(body);
-        return this;
-    }
-
     public MethodBuilder WithAttribute(ProducesResponseTypeAttributeBuilder attribute)
     {
         _methodDeclaration = _methodDeclaration
             .AddAttributeLists(AttributeList(SingletonSeparatedList(attribute.Build())));
+        return this;
+    }
+    
+    public MethodBuilder WithBody(MethodBodyBuilder body)
+    {
+        _methodDeclaration = _methodDeclaration.WithBody(body.Build());
+        return this;
+    }
+    
+    public MethodBuilder WithBody(BlockSyntax body)
+    {
+        _methodDeclaration = _methodDeclaration.WithBody(body);
         return this;
     }
 

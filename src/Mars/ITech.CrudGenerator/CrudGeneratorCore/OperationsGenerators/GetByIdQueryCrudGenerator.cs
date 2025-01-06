@@ -134,7 +134,7 @@ internal class GetByIdQueryCrudGenerator
             .ReturnVariable("result");
 
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -177,7 +177,7 @@ internal class GetByIdQueryCrudGenerator
                 ["query", "cancellation"])
             .ReturnTypedResultOk("result");
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

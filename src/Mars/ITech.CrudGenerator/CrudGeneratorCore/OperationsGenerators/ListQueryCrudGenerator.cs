@@ -78,7 +78,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
             .ReturnVariable("result");
 
-        method.WithBody(methodBody.Build());
+        method.WithBody(methodBody);
         query.WithMethod(method.Build());
 
         WriteFile(_queryName, query.BuildAsString());
@@ -176,7 +176,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         filterBody.ReturnVariable("query");
 
-        filterMethod.WithBody(filterBody.Build());
+        filterMethod.WithBody(filterBody);
         return filterMethod;
     }
 
@@ -328,7 +328,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .ReturnVariable("result");
 
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -370,7 +370,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 ["query", "cancellation"])
             .ReturnTypedResultOk("result");
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

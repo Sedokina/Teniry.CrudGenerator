@@ -130,7 +130,7 @@ internal class
             .InitVariableFromConstructorCall("result", _dtoName, constructorParams)
             .ReturnVariable("result");
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -173,7 +173,7 @@ internal class
                 ["command", "cancellation"])
             .ReturnTypedResultCreated(GetByIdRoute(), "result");
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

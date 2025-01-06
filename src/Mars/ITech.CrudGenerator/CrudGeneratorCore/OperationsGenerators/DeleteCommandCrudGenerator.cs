@@ -104,7 +104,7 @@ internal class
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
 
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -145,7 +145,7 @@ internal class
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
