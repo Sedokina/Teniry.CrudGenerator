@@ -126,9 +126,13 @@ internal class GetByIdQueryCrudGenerator
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitArrayVariable("object", "entityIds", findParameters)
-            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
-                [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
+            .InitVariable("entity", builder => builder
+                .CallGenericAsyncMethod(
+                    "_db",
+                    "FindAsync",
+                    [EntityScheme.EntityName.ToString()],
+                    ["entityIds", "cancellation"])
+            )
             .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
             .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
             .ReturnVariable("result");
@@ -174,9 +178,13 @@ internal class GetByIdQueryCrudGenerator
             .InitVariable("query",
                 builder => builder.CallConstructor(_queryName,
                     EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
-            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
-                [_queryName, _dtoName],
-                ["query", "cancellation"])
+            .InitVariable("result", builder => builder
+                .CallGenericAsyncMethod(
+                    "queryDispatcher",
+                    "DispatchAsync",
+                    [_queryName, _dtoName],
+                    ["query", "cancellation"])
+            )
             .ReturnTypedResultOk("result");
 
         methodBuilder.WithBody(methodBodyBuilder);

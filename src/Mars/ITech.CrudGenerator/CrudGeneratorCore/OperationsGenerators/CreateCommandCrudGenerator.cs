@@ -168,9 +168,11 @@ internal class
                 $"New {Scheme.EntityScheme.EntityTitle} created");
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericAsyncMethodCall("result", "commandDispatcher", "DispatchAsync",
-                [_commandName, _dtoName],
-                ["command", "cancellation"])
+            .InitVariable("result", builder => builder
+                .CallGenericAsyncMethod("commandDispatcher",
+                    "DispatchAsync",
+                    [_commandName, _dtoName],
+                    ["command", "cancellation"]))
             .ReturnTypedResultCreated(GetByIdRoute(), "result");
 
         methodBuilder.WithBody(methodBodyBuilder);

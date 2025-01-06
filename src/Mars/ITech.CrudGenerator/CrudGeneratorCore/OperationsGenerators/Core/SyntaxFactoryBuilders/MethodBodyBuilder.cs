@@ -27,6 +27,34 @@ public class StatementBuilder
         return this;
     }
 
+    public StatementBuilder CallGenericAsyncMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _statement = AwaitExpression(
+            InvocationExpression(
+                MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    IdentifierName(objectWithMethod),
+                    GenericName(Identifier(methodNameToCall))
+                        .WithTypeArgumentList(
+                            TypeArgumentList(
+                                SeparatedList<TypeSyntax>(
+                                    methodGenericTypeNames.Select(IdentifierName)
+                                )
+                            )
+                        )
+                ),
+                ArgumentList(SeparatedList(
+                    methodArgumentsAsVariableNames.Select(x => Argument(IdentifierName(x))).ToArray()
+                ))
+            )
+        );
+        return this;
+    }
+    
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -49,46 +77,6 @@ internal class MethodBodyBuilder
         return this;
     }
     
-    public MethodBodyBuilder InitVariableFromGenericAsyncMethodCall(
-        string variableName,
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
-    {
-        var methodCall = AwaitExpression(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    GenericName(Identifier(methodNameToCall))
-                        .WithTypeArgumentList(
-                            TypeArgumentList(
-                                SeparatedList<TypeSyntax>(
-                                    methodGenericTypeNames.Select(IdentifierName)
-                                )
-                            )
-                        )
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
-            )
-        );
-
-        var variableDeclaratorResultVariable = VariableDeclarator(Identifier(variableName),
-            null,
-            EqualsValueClause(methodCall));
-        var variableDeclarationResultVariable = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(
-                SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclarationResultVariable));
-        return this;
-    }
-
-
     public MethodBodyBuilder InitVariableFromAsyncMethodCall(
         string variableName,
         Action<LinqCallBuilder> linqCallBuilderFunc)

@@ -365,9 +365,13 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 $"Returns {Scheme.EntityScheme.EntityTitle} list");
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
-                [_queryName, _dtoName],
-                ["query", "cancellation"])
+            .InitVariable("result", builder => builder
+                .CallGenericAsyncMethod(
+                    "queryDispatcher",
+                    "DispatchAsync",
+                    [_queryName, _dtoName],
+                    ["query", "cancellation"])
+            )
             .ReturnTypedResultOk("result");
 
         methodBuilder.WithBody(methodBodyBuilder);

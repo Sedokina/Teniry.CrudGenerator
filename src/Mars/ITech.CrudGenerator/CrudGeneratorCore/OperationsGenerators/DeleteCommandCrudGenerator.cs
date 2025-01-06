@@ -96,9 +96,13 @@ internal class
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitArrayVariable("object", "entityIds", findParameters)
-            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
-                [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
+            .InitVariable("entity", builder => builder
+                .CallGenericAsyncMethod(
+                    "_db",
+                    "FindAsync",
+                    [EntityScheme.EntityName.ToString()],
+                    ["entityIds", "cancellation"])
+            )
             .ReturnIfNull("entity")
             .CallMethod("_db", "Remove", ["entity"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
