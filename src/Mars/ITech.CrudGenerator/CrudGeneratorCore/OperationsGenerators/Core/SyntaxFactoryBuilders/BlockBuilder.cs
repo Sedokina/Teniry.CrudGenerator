@@ -7,15 +7,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
-public class ExpressionBuilder
+public class SimpleSyntaxFactory
 {
-    private ExpressionSyntax _statement;
-
-    public ExpressionBuilder CallConstructor(
+    public ObjectCreationExpressionSyntax CallConstructor(
         string className,
         List<string> constructorArguments)
     {
-        _statement = ObjectCreationExpression(
+        return ObjectCreationExpression(
             Token(SyntaxKind.NewKeyword),
             ParseTypeName(className),
             ArgumentList(SeparatedList(
@@ -23,15 +21,14 @@ public class ExpressionBuilder
             )),
             null
         );
-        return this;
     }
 
-    public ExpressionBuilder CallMethod(
+    public InvocationExpressionSyntax CallMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        _statement = InvocationExpression(
+        return InvocationExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 IdentifierName(objectWithMethod),
@@ -42,17 +39,15 @@ public class ExpressionBuilder
                     .Select(x => Argument(IdentifierName(x))).ToArray()
             ))
         );
-
-        return this;
     }
 
-    public ExpressionBuilder CallGenericMethod(
+    public InvocationExpressionSyntax CallGenericMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        _statement = InvocationExpression(
+        return InvocationExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 IdentifierName(objectWithMethod),
@@ -70,73 +65,45 @@ public class ExpressionBuilder
                     .Select(x => Argument(IdentifierName(x))).ToArray()
             ))
         );
-        return this;
     }
 
-    public ExpressionBuilder CallGenericAsyncMethod(
+    public AwaitExpressionSyntax CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        _statement = AwaitExpression(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    GenericName(Identifier(methodNameToCall))
-                        .WithTypeArgumentList(
-                            TypeArgumentList(
-                                SeparatedList<TypeSyntax>(
-                                    methodGenericTypeNames.Select(IdentifierName)
-                                )
-                            )
-                        )
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames.Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
+        return AwaitExpression(
+            CallGenericMethod(
+                objectWithMethod,
+                methodNameToCall,
+                methodGenericTypeNames,
+                methodArgumentsAsVariableNames
             )
         );
-        return this;
     }
 
-    public ExpressionBuilder CallAsyncMethod(
+    public AwaitExpressionSyntax CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        _statement = AwaitExpression(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    IdentifierName(Identifier(methodNameToCall))
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
-            )
-        );
-        return this;
+        return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames));
     }
 
-    public ExpressionBuilder WithAsyncLinq(LinqCallBuilder linqCallBuilder)
+    public AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
     {
-        _statement = AwaitExpression(linqCallBuilder.Build());
-        return this;
+        return AwaitExpression(linqCallBuilder.Build());
     }
 
-    public ExpressionBuilder Variable(string variableName)
+    public IdentifierNameSyntax Variable(string variableName)
     {
-        _statement = IdentifierName(variableName);
-        return this;
+        return IdentifierName(variableName);
     }
 
-    public ExpressionBuilder InterpolatedString(string interpolatedString)
+    public InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)
     {
-        _statement = InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
+        return InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
             .WithContents(
                 SingletonList<InterpolatedStringContentSyntax>(
                     InterpolatedStringText().WithTextToken(
@@ -150,74 +117,50 @@ public class ExpressionBuilder
                     )
                 )
             );
-        return this;
     }
 
-    public ExpressionBuilder NewArray(string typeName, IEnumerable<string> parameters)
+    public ArrayCreationExpressionSyntax NewArray(string typeName, IEnumerable<string> parameters)
     {
         var arrayType = ArrayType(ParseTypeName(typeName))
             .WithRankSpecifiers(SingletonList(
                 ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
 
-        _statement = ArrayCreationExpression(arrayType)
+        return ArrayCreationExpression(arrayType)
             .WithInitializer(InitializerExpression(
                 SyntaxKind.ArrayInitializerExpression,
                 SeparatedList<ExpressionSyntax>(
                     parameters.Select(IdentifierName).ToArray()
                 )
             ));
-        return this;
     }
 
-    public ExpressionBuilder NewStringLiteralArray(IEnumerable<string> parameters)
+    public ArrayCreationExpressionSyntax NewStringLiteralArray(IEnumerable<string> parameters)
     {
         var arrayType = ArrayType(ParseTypeName("string"))
             .WithRankSpecifiers(SingletonList(
                 ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
 
-        _statement = ArrayCreationExpression(arrayType)
+        return ArrayCreationExpression(arrayType)
             .WithInitializer(InitializerExpression(
                 SyntaxKind.ArrayInitializerExpression,
                 SeparatedList<ExpressionSyntax>(
                     parameters.Select(p => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(p))).ToArray()
                 )
             ));
-        return this;
-    }
-
-    public ExpressionSyntax Build()
-    {
-        return _statement;
     }
 }
-
-// public class StatementBuilder
-// {
-//     private StatementSyntax _statement;
-//
-//     public StatementBuilder IfNull(string variableName)
-//     {
-//         _statement = IfStatement(ParseExpression($"{variableName} == null"),
-//             Block(
-//             )
-//         );
-//         return this;
-//     }
-//
-//     public StatementBuilder Build()
-//     {
-//         return this;
-//     }
-// }
 
 internal class BlockBuilder
 {
     private BlockSyntax _body = Block();
+    private readonly SimpleSyntaxFactory _sf = new();
 
-    public BlockBuilder InitVariable(string variableName,
-        Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
+    public BlockBuilder InitVariable(
+        string variableName,
+        Func<SimpleSyntaxFactory, ExpressionSyntax> expressionBuilderFunc
+    )
     {
-        var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
+        var statement = expressionBuilderFunc(_sf);
         var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
             EqualsValueClause(statement));
         var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
@@ -231,10 +174,10 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new ExpressionBuilder()
+        var statementBuilder = _sf
             .CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
-        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
     }
 
@@ -243,10 +186,10 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new ExpressionBuilder()
+        var statementBuilder = _sf
             .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
-        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
     }
 
@@ -256,14 +199,14 @@ internal class BlockBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new ExpressionBuilder()
+        var statementBuilder = _sf
             .CallGenericAsyncMethod(
                 objectWithMethod,
                 methodNameToCall,
                 methodGenericTypeNames,
                 methodArgumentsAsVariableNames
             );
-        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
     }
 
@@ -273,9 +216,9 @@ internal class BlockBuilder
         return this;
     }
 
-    public BlockBuilder Return(Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
+    public BlockBuilder Return(Func<SimpleSyntaxFactory, ExpressionSyntax> expressionBuilderFunc)
     {
-        var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
+        var statement = expressionBuilderFunc(_sf);
         _body = _body.AddStatements(ReturnStatement(statement));
         return this;
     }
