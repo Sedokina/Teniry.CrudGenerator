@@ -58,7 +58,7 @@ internal class UpdateCommandCrudGenerator
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
         var constructor = new ConstructorBuilder(_commandName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             command.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
@@ -97,7 +97,7 @@ internal class UpdateCommandCrudGenerator
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
         constructor.WithBody(constructorBody);
@@ -113,7 +113,7 @@ internal class UpdateCommandCrudGenerator
             .WithXmlInheritdoc();
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entityIds", builder => builder.NewArray("object", findParameters))
             .InitVariable("entity", builder => builder
                 .CallGenericAsyncMethod(
@@ -181,7 +181,7 @@ internal class UpdateCommandCrudGenerator
                 204,
                 $"{Scheme.EntityScheme.EntityTitle} updated");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("command", builder => builder.CallConstructor(_commandName,
                 EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
             .CallMethod("vm", "Adapt", ["command"])

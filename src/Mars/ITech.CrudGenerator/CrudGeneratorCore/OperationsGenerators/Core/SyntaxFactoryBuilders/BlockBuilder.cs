@@ -210,11 +210,11 @@ public class ExpressionBuilder
 //     }
 // }
 
-internal class MethodBodyBuilder
+internal class BlockBuilder
 {
     private BlockSyntax _body = Block();
 
-    public MethodBodyBuilder InitVariable(string variableName,
+    public BlockBuilder InitVariable(string variableName,
         Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
     {
         var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
@@ -226,7 +226,7 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder CallMethod(
+    public BlockBuilder CallMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -238,7 +238,7 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder CallAsyncMethod(
+    public BlockBuilder CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -250,7 +250,7 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder CallGenericAsyncMethod(
+    public BlockBuilder CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -267,13 +267,13 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder Return()
+    public BlockBuilder Return()
     {
         _body = _body.AddStatements(ReturnStatement());
         return this;
     }
 
-    public MethodBodyBuilder Return(Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
+    public BlockBuilder Return(Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
     {
         var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
         _body = _body.AddStatements(ReturnStatement(statement));
@@ -285,7 +285,7 @@ internal class MethodBodyBuilder
         return _body;
     }
 
-    public MethodBodyBuilder AssignVariable(string assignTo, string from)
+    public BlockBuilder AssignVariable(string assignTo, string from)
     {
         var assignmentExpression = AssignmentExpression(
             SyntaxKind.SimpleAssignmentExpression,
@@ -296,16 +296,16 @@ internal class MethodBodyBuilder
         return this;
     }
 
-    public MethodBodyBuilder IfNull(string variableName, Func<MethodBodyBuilder, MethodBodyBuilder> bodyBuilderFunc)
+    public BlockBuilder IfNull(string variableName, Func<BlockBuilder, BlockBuilder> bodyBuilderFunc)
     {
-        var ifBody = new MethodBodyBuilder();
+        var ifBody = new BlockBuilder();
         bodyBuilderFunc(ifBody);
         var ifStatement = IfStatement(ParseExpression($"{variableName} == null"), ifBody.Build());
         _body = _body.AddStatements(ifStatement);
         return this;
     }
 
-    public MethodBodyBuilder ThrowEntityNotFoundException(string entityTypeName)
+    public BlockBuilder ThrowEntityNotFoundException(string entityTypeName)
     {
         var throwStatement = ThrowStatement(ObjectCreationExpression(ParseTypeName("EfEntityNotFoundException"))
             .WithArgumentList(

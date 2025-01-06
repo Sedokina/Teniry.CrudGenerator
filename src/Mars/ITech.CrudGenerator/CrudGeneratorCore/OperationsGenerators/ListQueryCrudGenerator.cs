@@ -74,7 +74,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
-        var methodBody = new MethodBodyBuilder()
+        var methodBody = new BlockBuilder()
             .InitVariable("result", builder => builder
                 .NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
             )
@@ -120,7 +120,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithBaseConstructor(["items", "page"]);
 
-        constructor.WithBody(new MethodBodyBuilder());
+        constructor.WithBody(new BlockBuilder());
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -164,7 +164,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
-        var filterBody = new MethodBodyBuilder();
+        var filterBody = new BlockBuilder();
 
         foreach (var property in EntityScheme.Properties)
         {
@@ -301,7 +301,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
         constructor.WithBody(constructorBody);
@@ -316,7 +316,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithXmlInheritdoc();
 
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("filter", builder => builder.CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
             .InitVariable("items", builder =>
@@ -367,7 +367,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 200,
                 $"Returns {Scheme.EntityScheme.EntityTitle} list");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("result", builder => builder
                 .CallGenericAsyncMethod(
                     "queryDispatcher",

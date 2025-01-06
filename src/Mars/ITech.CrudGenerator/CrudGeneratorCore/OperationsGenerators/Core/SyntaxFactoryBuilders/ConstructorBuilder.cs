@@ -27,7 +27,7 @@ internal class ConstructorBuilder
         return this;
     }
 
-    public ConstructorBuilder WithBody(MethodBodyBuilder body)
+    public ConstructorBuilder WithBody(BlockBuilder body)
     {
         _constructorDeclaration = _constructorDeclaration.WithBody(body.Build());
         return this;

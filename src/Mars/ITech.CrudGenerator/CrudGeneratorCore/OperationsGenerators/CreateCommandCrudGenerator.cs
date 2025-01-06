@@ -75,7 +75,7 @@ internal class
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
         var constructor = new ConstructorBuilder(_dtoName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             dtoClass.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
@@ -107,7 +107,7 @@ internal class
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
         constructor.WithBody(constructorBody);
@@ -123,7 +123,7 @@ internal class
             .WithXmlInheritdoc();
 
         var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entity", builder => builder
                 .CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], [])
             )
@@ -169,7 +169,7 @@ internal class
                 201,
                 $"New {Scheme.EntityScheme.EntityTitle} created");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("result", builder => builder
                 .CallGenericAsyncMethod("commandDispatcher",
                     "DispatchAsync",

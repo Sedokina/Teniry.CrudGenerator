@@ -53,7 +53,7 @@ internal class MethodBuilder
         return this;
     }
     
-    public MethodBuilder WithBody(MethodBodyBuilder body)
+    public MethodBuilder WithBody(BlockBuilder body)
     {
         _methodDeclaration = _methodDeclaration.WithBody(body.Build());
         return this;

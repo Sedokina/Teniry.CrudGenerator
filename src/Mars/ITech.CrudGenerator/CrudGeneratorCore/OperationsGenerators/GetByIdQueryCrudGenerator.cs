@@ -58,7 +58,7 @@ internal class GetByIdQueryCrudGenerator
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
         var constructor = new ConstructorBuilder(_queryName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             query.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
@@ -108,7 +108,7 @@ internal class GetByIdQueryCrudGenerator
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
         constructor.WithBody(constructorBody);
@@ -124,7 +124,7 @@ internal class GetByIdQueryCrudGenerator
             .WithXmlInheritdoc();
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entityIds", builder => builder.NewArray("object", findParameters))
             .InitVariable("entity", builder => builder
                 .CallGenericAsyncMethod(
@@ -175,7 +175,7 @@ internal class GetByIdQueryCrudGenerator
                 200,
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
+        var methodBodyBuilder = new BlockBuilder()
             .InitVariable("query",
                 builder => builder.CallConstructor(_queryName,
                     EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
