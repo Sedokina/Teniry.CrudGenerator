@@ -130,7 +130,7 @@ internal class
             .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
             .InitVariable("result", builder => builder.CallConstructor(_dtoName, constructorParams))
-            .ReturnVariable("result");
+            .Return(builder => builder.Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());

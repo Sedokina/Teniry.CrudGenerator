@@ -76,7 +76,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithXmlInheritdoc();
         var methodBody = new MethodBodyBuilder()
             .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
-            .ReturnVariable("result");
+            .Return(builder => builder.Variable("result"));
 
         method.WithBody(methodBody);
         query.WithMethod(method.Build());
@@ -174,7 +174,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        filterBody.ReturnVariable("query");
+        filterBody.Return(builder => builder.Variable("query"));
 
         filterMethod.WithBody(filterBody);
         return filterMethod;
@@ -327,8 +327,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 return builder.WithAsyncLinq(linqBuilder);
             })
             .InitVariable("result", builder => builder.CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
-            .ReturnVariable("result");
-
+            .Return(builder => builder.Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());

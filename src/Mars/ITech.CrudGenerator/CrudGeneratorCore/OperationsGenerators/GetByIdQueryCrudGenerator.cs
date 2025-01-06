@@ -137,8 +137,7 @@ internal class GetByIdQueryCrudGenerator
             .InitVariable("result", builder => builder
                 .CallGenericMethod("entity", "Adapt", [_dtoName], [])
             )
-            .ReturnVariable("result");
-
+            .Return(builder => builder.Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());

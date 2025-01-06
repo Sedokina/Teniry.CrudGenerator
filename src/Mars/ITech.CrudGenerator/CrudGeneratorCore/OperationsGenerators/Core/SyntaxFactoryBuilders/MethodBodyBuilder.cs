@@ -128,6 +128,12 @@ public class StatementBuilder
         return this;
     }
 
+    public StatementBuilder Variable(string variableName)
+    {
+        _statement = IdentifierName(variableName);
+        return this;
+    }
+    
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -190,11 +196,11 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
-
-    public MethodBodyBuilder ReturnVariable(string variableName)
+    
+    public MethodBodyBuilder Return(Func<StatementBuilder, StatementBuilder> statementBuilderFunc)
     {
-        var returnStatement = ReturnStatement(IdentifierName(variableName));
-        _body = _body.AddStatements(returnStatement);
+        var statement = statementBuilderFunc(new StatementBuilder()).Build();
+        _body = _body.AddStatements(ReturnStatement(statement));
         return this;
     }
 
