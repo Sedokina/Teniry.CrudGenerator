@@ -315,7 +315,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithXmlInheritdoc();
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericMethodCall("filter", "query", "Adapt", [_filterName], [])
+            .InitVariable("filter", builder => builder.CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
             .InitVariableFromAsyncMethodCall("items", linqBuilder =>
             {

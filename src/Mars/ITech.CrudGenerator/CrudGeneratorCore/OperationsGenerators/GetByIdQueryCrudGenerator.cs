@@ -134,7 +134,9 @@ internal class GetByIdQueryCrudGenerator
                     ["entityIds", "cancellation"])
             )
             .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
-            .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
+            .InitVariable("result", builder => builder
+                .CallGenericMethod("entity", "Adapt", [_dtoName], [])
+            )
             .ReturnVariable("result");
 
 

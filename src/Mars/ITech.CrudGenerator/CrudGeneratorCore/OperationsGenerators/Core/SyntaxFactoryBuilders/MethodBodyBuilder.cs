@@ -27,6 +27,33 @@ public class StatementBuilder
         return this;
     }
 
+    public StatementBuilder CallGenericMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodGenericTypeNames,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _statement = InvocationExpression(
+            MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                IdentifierName(objectWithMethod),
+                GenericName(Identifier(methodNameToCall))
+                    .WithTypeArgumentList(
+                        TypeArgumentList(
+                            SeparatedList<TypeSyntax>(
+                                methodGenericTypeNames.Select(IdentifierName)
+                            )
+                        )
+                    )
+            ),
+            ArgumentList(SeparatedList(
+                methodArgumentsAsVariableNames
+                    .Select(x => Argument(IdentifierName(x))).ToArray()
+            ))
+        );
+        return this;
+    }
+
     public StatementBuilder CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -54,7 +81,7 @@ public class StatementBuilder
         );
         return this;
     }
-    
+
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -76,7 +103,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
         return this;
     }
-    
+
     public MethodBodyBuilder InitVariableFromAsyncMethodCall(
         string variableName,
         Action<LinqCallBuilder> linqCallBuilderFunc)
