@@ -127,7 +127,7 @@ internal class
             .InitVariableFromGenericMethodCall("entity", "command", "Adapt", [EntityScheme.EntityName.ToString()], [])
             .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
-            .InitVariableFromConstructorCall("result", _dtoName, constructorParams)
+            .InitVariable("result", builder => builder.CallConstructor(_dtoName, constructorParams))
             .ReturnVariable("result");
 
         methodBuilder.WithBody(methodBodyBuilder);

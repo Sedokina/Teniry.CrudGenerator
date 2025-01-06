@@ -324,7 +324,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                     .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
                     .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
             })
-            .InitVariableFromConstructorCall("result", _dtoName, ["items.ToList()", "items.GetPage()"])
+            .InitVariable("result", builder => builder.CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
             .ReturnVariable("result");
 
 

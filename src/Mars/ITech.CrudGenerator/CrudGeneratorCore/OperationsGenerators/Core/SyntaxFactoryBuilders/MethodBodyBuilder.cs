@@ -7,16 +7,16 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
-internal class MethodBodyBuilder
+public class StatementBuilder
 {
-    private BlockSyntax _body = Block();
+    private ExpressionSyntax _statement;
 
-    public MethodBodyBuilder InitVariableFromConstructorCall(
-        string variableName,
+
+    public StatementBuilder CallConstructor(
         string className,
         List<string> constructorArguments)
     {
-        ExpressionSyntax initializationExpression = ObjectCreationExpression(
+        _statement = ObjectCreationExpression(
             Token(SyntaxKind.NewKeyword),
             ParseTypeName(className),
             ArgumentList(SeparatedList(
@@ -24,17 +24,31 @@ internal class MethodBodyBuilder
             )),
             null
         );
-
-        // Initialize query variable with query object value
-        var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
-            EqualsValueClause(initializationExpression));
-        var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
         return this;
     }
 
+    public ExpressionSyntax Build()
+    {
+        return _statement;
+    }
+}
+
+internal class MethodBodyBuilder
+{
+    private BlockSyntax _body = Block();
+
+    public MethodBodyBuilder InitVariable(string variableName,
+        Func<StatementBuilder, StatementBuilder> statementBuilderFunc)
+    {
+        var statement = statementBuilderFunc(new StatementBuilder()).Build();
+        var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
+            EqualsValueClause(statement));
+        var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
+            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
+        return this;
+    }
+    
     public MethodBodyBuilder InitVariableFromGenericAsyncMethodCall(
         string variableName,
         string objectWithMethod,

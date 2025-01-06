@@ -141,8 +141,9 @@ internal class
                 $"{Scheme.EntityScheme.EntityTitle} deleted");
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromConstructorCall("command", _commandName,
-                EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList())
+            .InitVariable("command",
+                builder => builder.CallConstructor(_commandName,
+                    EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 
