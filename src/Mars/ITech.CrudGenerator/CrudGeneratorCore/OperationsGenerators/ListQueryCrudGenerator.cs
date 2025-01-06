@@ -75,7 +75,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
         var methodBody = new MethodBodyBuilder()
-            .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
+            .InitVariable("result", builder => builder
+                .NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
+            )
             .Return(builder => builder.Variable("result"));
 
         method.WithBody(methodBody);

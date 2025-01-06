@@ -153,6 +153,38 @@ public class ExpressionBuilder
         return this;
     }
 
+    public ExpressionBuilder NewArray(string typeName, IEnumerable<string> parameters)
+    {
+        var arrayType = ArrayType(ParseTypeName(typeName))
+            .WithRankSpecifiers(SingletonList(
+                ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
+
+        _statement = ArrayCreationExpression(arrayType)
+            .WithInitializer(InitializerExpression(
+                SyntaxKind.ArrayInitializerExpression,
+                SeparatedList<ExpressionSyntax>(
+                    parameters.Select(IdentifierName).ToArray()
+                )
+            ));
+        return this;
+    }
+
+    public ExpressionBuilder NewStringLiteralArray(IEnumerable<string> parameters)
+    {
+        var arrayType = ArrayType(ParseTypeName("string"))
+            .WithRankSpecifiers(SingletonList(
+                ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
+
+        _statement = ArrayCreationExpression(arrayType)
+            .WithInitializer(InitializerExpression(
+                SyntaxKind.ArrayInitializerExpression,
+                SeparatedList<ExpressionSyntax>(
+                    parameters.Select(p => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(p))).ToArray()
+                )
+            ));
+        return this;
+    }
+
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -234,7 +266,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
-    
+
     public MethodBodyBuilder Return()
     {
         _body = _body.AddStatements(ReturnStatement());
@@ -247,7 +279,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ReturnStatement(statement));
         return this;
     }
-    
+
     public BlockSyntax Build()
     {
         return _body;
@@ -263,7 +295,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(assignmentExpression));
         return this;
     }
-    
+
     public MethodBodyBuilder IfNull(string variableName, Func<MethodBodyBuilder, MethodBodyBuilder> bodyBuilderFunc)
     {
         var ifBody = new MethodBodyBuilder();
@@ -272,7 +304,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ifStatement);
         return this;
     }
-    
+
     public MethodBodyBuilder ThrowEntityNotFoundException(string entityTypeName)
     {
         var throwStatement = ThrowStatement(ObjectCreationExpression(ParseTypeName("EfEntityNotFoundException"))
@@ -287,63 +319,6 @@ internal class MethodBodyBuilder
             )
         );
         _body = _body.AddStatements(throwStatement);
-        return this;
-    }
-    
-    public MethodBodyBuilder InitArrayVariable(string typeName, string variableName, IEnumerable<string> parameters)
-    {
-        var arrayType = ArrayType(ParseTypeName(typeName))
-            .WithRankSpecifiers(
-                SingletonList(
-                    ArrayRankSpecifier(SeparatedList<ExpressionSyntax>())));
-
-
-        var arrayVariableDeclaration = VariableDeclarator(Identifier(variableName))
-            .WithInitializer(
-                EqualsValueClause(
-                    ArrayCreationExpression(arrayType)
-                        .WithInitializer(InitializerExpression(
-                            SyntaxKind.ArrayInitializerExpression,
-                            SeparatedList<ExpressionSyntax>(
-                                parameters.Select(IdentifierName).ToArray()
-                            )
-                        ))
-                )
-            );
-
-        var variableDeclarationResultVariable = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(arrayVariableDeclaration));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclarationResultVariable));
-        return this;
-    }
-
-    public MethodBodyBuilder InitStringArray(string variableName, IEnumerable<string> parameters)
-    {
-        var arrayType = ArrayType(ParseTypeName("string"))
-            .WithRankSpecifiers(
-                SingletonList(
-                    ArrayRankSpecifier(SeparatedList<ExpressionSyntax>())));
-
-
-        var arrayVariableDeclaration = VariableDeclarator(Identifier(variableName))
-            .WithInitializer(
-                EqualsValueClause(
-                    ArrayCreationExpression(arrayType)
-                        .WithInitializer(InitializerExpression(
-                            SyntaxKind.ArrayInitializerExpression,
-                            SeparatedList<ExpressionSyntax>(
-                                parameters.Select(p => LiteralExpression(
-                                    SyntaxKind.StringLiteralExpression, Literal(p))).ToArray()
-                            )
-                        ))
-                )
-            );
-
-        var variableDeclarationResultVariable = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(arrayVariableDeclaration));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
     }
 

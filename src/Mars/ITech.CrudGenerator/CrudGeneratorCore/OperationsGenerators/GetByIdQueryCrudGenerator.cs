@@ -125,7 +125,7 @@ internal class GetByIdQueryCrudGenerator
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitArrayVariable("object", "entityIds", findParameters)
+            .InitVariable("entityIds", builder => builder.NewArray("object", findParameters))
             .InitVariable("entity", builder => builder
                 .CallGenericAsyncMethod(
                     "_db",
