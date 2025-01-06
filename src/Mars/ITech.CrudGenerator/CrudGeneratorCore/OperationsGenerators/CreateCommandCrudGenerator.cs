@@ -175,7 +175,8 @@ internal class
                     "DispatchAsync",
                     [_commandName, _dtoName],
                     ["command", "cancellation"]))
-            .ReturnTypedResultCreated(GetByIdRoute(), "result");
+            .InitVariable("resourceRoute", builder => builder.InterpolatedString(GetByIdRoute()))
+            .Return(builder => builder.CallMethod("TypedResults", "Created", ["resourceRoute", "result"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

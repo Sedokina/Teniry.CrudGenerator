@@ -133,7 +133,26 @@ public class StatementBuilder
         _statement = IdentifierName(variableName);
         return this;
     }
-    
+
+    public StatementBuilder InterpolatedString(string interpolatedString)
+    {
+        _statement = InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
+            .WithContents(
+                SingletonList<InterpolatedStringContentSyntax>(
+                    InterpolatedStringText().WithTextToken(
+                        Token(
+                            TriviaList(),
+                            SyntaxKind.InterpolatedStringTextToken,
+                            interpolatedString,
+                            interpolatedString,
+                            TriviaList()
+                        )
+                    )
+                )
+            );
+        return this;
+    }
+
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -155,7 +174,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
         return this;
     }
-    
+
     public MethodBodyBuilder CallMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -196,39 +215,11 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
-    
+
     public MethodBodyBuilder Return(Func<StatementBuilder, StatementBuilder> statementBuilderFunc)
     {
         var statement = statementBuilderFunc(new StatementBuilder()).Build();
         _body = _body.AddStatements(ReturnStatement(statement));
-        return this;
-    }
-
-    public MethodBodyBuilder ReturnTypedResultCreated(string getRoute, string variableName)
-    {
-        var returnStatement = ReturnStatement(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName("TypedResults"),
-                    IdentifierName("Created")),
-                ArgumentList(SeparatedList([
-                    Argument(
-                        InterpolatedStringExpression(
-                                Token(SyntaxKind.InterpolatedStringStartToken))
-                            .WithContents(
-                                SingletonList<InterpolatedStringContentSyntax>(
-                                    InterpolatedStringText()
-                                        .WithTextToken(
-                                            Token(
-                                                TriviaList(),
-                                                SyntaxKind.InterpolatedStringTextToken,
-                                                getRoute,
-                                                getRoute,
-                                                TriviaList()))))),
-                    Argument(IdentifierName(variableName))
-                ]))));
-        _body = _body.AddStatements(returnStatement);
         return this;
     }
 
