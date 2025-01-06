@@ -19,13 +19,11 @@ internal class ConstructorBuilder
 
     public ConstructorBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
     {
-        _constructorDeclaration = _constructorDeclaration.AddParameterListParameters(properties
-            .Select(x =>
-            {
-                var methodParameter = x.GetAsMethodParameter();
-                return Parameter(Identifier(methodParameter.Name))
-                    .WithType(ParseTypeName(methodParameter.Type));
-            }).ToArray());
+        _constructorDeclaration = _constructorDeclaration.AddParameterListParameters(
+            properties.Select(
+                x => Parameter(Identifier(x.Name)).WithType(ParseTypeName(x.Type))
+            ).ToArray()
+        );
         return this;
     }
 
