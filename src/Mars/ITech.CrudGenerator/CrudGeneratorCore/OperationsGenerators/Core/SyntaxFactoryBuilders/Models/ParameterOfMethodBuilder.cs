@@ -4,14 +4,21 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.Syntax
 
 internal class ParameterOfMethodBuilder
 {
+    /// <summary>
+    ///     This modifier is requrired, if for example you need SyntaxKind.ThisKeyword for static method
+    /// </summary>
+    public SyntaxKind[] Modifiers { get; set; }
     public string Type { get; set; }
     public string Name { get; set; }
-    public SyntaxKind[] Modifiers { get; set; }
 
-    public ParameterOfMethodBuilder(string type, string name, SyntaxKind[]? modifiers = null)
+    public ParameterOfMethodBuilder(SyntaxKind[] modifiers, string type, string name)
     {
+        Modifiers = modifiers;
         Type = type;
         Name = name;
-        Modifiers = modifiers ?? [];
+    }
+
+    public ParameterOfMethodBuilder(string type, string name) : this([], type, name)
+    {
     }
 }

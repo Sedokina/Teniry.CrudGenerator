@@ -34,7 +34,7 @@ internal class EndpointsMapGenerator : BaseGenerator
 
         var mapMethod = new MethodBuilder([SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword], "void",
                 "MapGeneratedEndpoints")
-            .WithParameters([new ParameterOfMethodBuilder("WebApplication", "app", [SyntaxKind.ThisKeyword])]);
+            .WithParameters([new ParameterOfMethodBuilder([SyntaxKind.ThisKeyword], "WebApplication", "app")]);
 
         var mapBody = SyntaxFactory.Block();
 
