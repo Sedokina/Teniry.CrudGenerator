@@ -186,7 +186,7 @@ internal class GetByIdQueryCrudGenerator
                     [_queryName, _dtoName],
                     ["query", "cancellation"])
             )
-            .ReturnTypedResultOk("result");
+            .Return(builder => builder.CallMethod("TypedResults", "Ok", ["result"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

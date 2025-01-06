@@ -203,22 +203,7 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ReturnStatement(statement));
         return this;
     }
-
-    public MethodBodyBuilder ReturnTypedResultOk(string variableName)
-    {
-        var returnStatement = ReturnStatement(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName("TypedResults"),
-                    IdentifierName("Ok")),
-                ArgumentList(SeparatedList([
-                    Argument(IdentifierName(variableName))
-                ]))));
-        _body = _body.AddStatements(returnStatement);
-        return this;
-    }
-
+    
     public MethodBodyBuilder ReturnTypedResultNoContent()
     {
         var returnStatement = ReturnStatement(
