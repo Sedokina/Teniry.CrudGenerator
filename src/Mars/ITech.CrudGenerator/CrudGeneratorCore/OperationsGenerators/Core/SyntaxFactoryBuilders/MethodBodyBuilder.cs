@@ -82,6 +82,12 @@ public class StatementBuilder
         return this;
     }
 
+    public StatementBuilder WithAsyncLinq(LinqCallBuilder linqCallBuilder)
+    {
+        _statement = AwaitExpression(linqCallBuilder.Build());
+        return this;
+    }
+
     public ExpressionSyntax Build()
     {
         return _statement;
@@ -101,61 +107,6 @@ internal class MethodBodyBuilder
         var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
             .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
-        return this;
-    }
-
-    public MethodBodyBuilder InitVariableFromAsyncMethodCall(
-        string variableName,
-        Action<LinqCallBuilder> linqCallBuilderFunc)
-    {
-        var linqCallBuilder = new LinqCallBuilder();
-        linqCallBuilderFunc(linqCallBuilder);
-        var variableDeclaratorResultVariable = VariableDeclarator(Identifier(variableName),
-            null,
-            EqualsValueClause(AwaitExpression(linqCallBuilder.Build())));
-        var variableDeclarationResultVariable = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(
-                SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclarationResultVariable));
-        return this;
-    }
-
-
-    public MethodBodyBuilder InitVariableFromGenericMethodCall(
-        string variableName,
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
-    {
-        var methodCall = InvocationExpression(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName(objectWithMethod),
-                GenericName(Identifier(methodNameToCall))
-                    .WithTypeArgumentList(
-                        TypeArgumentList(
-                            SeparatedList<TypeSyntax>(
-                                methodGenericTypeNames.Select(IdentifierName)
-                            )
-                        )
-                    )
-            ),
-            ArgumentList(SeparatedList(
-                methodArgumentsAsVariableNames
-                    .Select(x => Argument(IdentifierName(x))).ToArray()
-            ))
-        );
-
-        var variableDeclaratorResultVariable = VariableDeclarator(Identifier(variableName),
-            null,
-            EqualsValueClause(methodCall));
-        var variableDeclarationResultVariable = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(
-                SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclaratorResultVariable));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclarationResultVariable));
         return this;
     }
 

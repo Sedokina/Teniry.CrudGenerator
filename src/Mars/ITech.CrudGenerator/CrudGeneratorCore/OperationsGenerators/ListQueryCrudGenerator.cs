@@ -317,12 +317,14 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var methodBodyBuilder = new MethodBodyBuilder()
             .InitVariable("filter", builder => builder.CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
-            .InitVariableFromAsyncMethodCall("items", linqBuilder =>
+            .InitVariable("items", builder =>
             {
-                linqBuilder.CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
+                var linqBuilder = new LinqCallBuilder()
+                    .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
                     .ThenMethod("Filter", ["filter"])
                     .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
                     .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
+                return builder.WithAsyncLinq(linqBuilder);
             })
             .InitVariable("result", builder => builder.CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
             .ReturnVariable("result");
