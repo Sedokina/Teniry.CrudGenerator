@@ -62,7 +62,7 @@ internal class
 
     private void GenerateHandler()
     {
-          var handlerClass = new ClassBuilder([
+        var handlerClass = new ClassBuilder([
                 SyntaxKind.PublicKeyword,
                 SyntaxKind.PartialKeyword
             ], _handlerName)
@@ -84,9 +84,9 @@ internal class
         constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
-                    SyntaxKind.PublicKeyword,
-                    SyntaxKind.AsyncKeyword
-                ], "Task", "HandleAsync")
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.AsyncKeyword
+            ], "Task", "HandleAsync")
             .WithParameters([
                 new ParameterOfMethodBuilder(_commandName, "command"),
                 new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
@@ -141,7 +141,8 @@ internal class
                 $"{Scheme.EntityScheme.EntityTitle} deleted");
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
+            .InitVariableFromConstructorCall("command", _commandName,
+                EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList())
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .ReturnTypedResultNoContent();
 

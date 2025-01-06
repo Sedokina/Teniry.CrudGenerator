@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -11,32 +10,6 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.Syntax
 internal class MethodBodyBuilder
 {
     private BlockSyntax _body = Block();
-
-    public MethodBodyBuilder InitVariableFromConstructorCall(
-        string variableName,
-        string className,
-        List<EntityProperty> constructorArguments)
-    {
-        ExpressionSyntax initializationExpression = ObjectCreationExpression(
-            Token(SyntaxKind.NewKeyword),
-            ParseTypeName(className),
-            ArgumentList(SeparatedList(
-                constructorArguments.Select(x => Argument(
-                        IdentifierName(x.PropertyNameAsMethodParameterName)))
-                    .ToArray()
-            )),
-            null
-        );
-
-        // Initialize query variable with query object value
-        var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
-            EqualsValueClause(initializationExpression));
-        var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
-
-        _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
-        return this;
-    }
 
     public MethodBodyBuilder InitVariableFromConstructorCall(
         string variableName,

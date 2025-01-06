@@ -171,7 +171,8 @@ internal class GetByIdQueryCrudGenerator
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
         var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
+            .InitVariableFromConstructorCall("query", _queryName,
+                EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList())
             .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
                 [_queryName, _dtoName],
                 ["query", "cancellation"])
