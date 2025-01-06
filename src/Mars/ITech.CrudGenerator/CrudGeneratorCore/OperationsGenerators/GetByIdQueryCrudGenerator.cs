@@ -79,7 +79,8 @@ internal class GetByIdQueryCrudGenerator
 
         foreach (var property in EntityScheme.Properties)
         {
-            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            dtoClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_dtoName, dtoClass.BuildAsString());

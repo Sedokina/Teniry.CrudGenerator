@@ -66,9 +66,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        query.WithProperty("int", "Page", inheritdoc: true);
-        query.WithProperty("int", "PageSize", inheritdoc: true);
-        query.WithProperty("string[]?", "Sort", inheritdoc: true);
+        query.WithProperty("int", "Page").WithInheritDoc();
+        query.WithProperty("int", "PageSize").WithInheritDoc();
+        query.WithProperty("string[]?", "Sort").WithInheritDoc();
 
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
@@ -92,7 +92,8 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         foreach (var property in EntityScheme.Properties)
         {
-            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            dtoClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_listItemDtoName, dtoClass.BuildAsString());
@@ -272,7 +273,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         method.WithBody(defaultSortBody);
         return method;
     }
-    
+
     private void GenerateHandler()
     {
         var handlerClass = new ClassBuilder([

@@ -65,7 +65,8 @@ internal class UpdateCommandCrudGenerator
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            command.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         constructor.WithBody(constructorBody.Build());
@@ -136,7 +137,8 @@ internal class UpdateCommandCrudGenerator
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            vmClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            vmClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_vmName, vmClass.BuildAsString());

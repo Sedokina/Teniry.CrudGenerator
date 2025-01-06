@@ -16,7 +16,7 @@ internal class ClassBuilder
     private ClassDeclarationSyntax _classDeclaration;
     private readonly List<MemberDeclarationSyntax> _methods = [];
     private readonly List<MemberDeclarationSyntax> _fields = [];
-    private readonly List<MemberDeclarationSyntax> _properties = [];
+    private readonly List<PropertyBuilder> _propertyBuilders = [];
     private SyntaxTriviaList _xmlDoc;
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
@@ -76,37 +76,11 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithProperty(
-        string fieldType,
-        string fieldName,
-        string? defaultValue = null,
-        bool inheritdoc = false)
+    public PropertyBuilder WithProperty(string typeName, string propertyName)
     {
-        var property = PropertyDeclaration(ParseTypeName(fieldType), fieldName)
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .WithAccessorList(AccessorList(
-                List([
-                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                    AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                ])));
-
-        if (defaultValue is not null)
-        {
-            property = property.WithInitializer(EqualsValueClause(
-                    LiteralExpression(SyntaxKind.StringLiteralExpression,
-                        Literal("")))) // TODO: set actual default value, when it would not be "\"\""
-                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        }
-
-        if (inheritdoc)
-        {
-            property = property.WithLeadingTrivia(ParseLeadingTrivia("/// <inheritdoc />\n"));
-        }
-
-        _properties.Add(property);
-        return this;
+        var propertyBuilder = new PropertyBuilder(typeName, propertyName);
+        _propertyBuilders.Add(propertyBuilder);
+        return propertyBuilder;
     }
 
     public ClassBuilder WithMethod(MethodDeclarationSyntax endpointMethod)
@@ -158,7 +132,7 @@ internal class ClassBuilder
         }
 
         _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
-        _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
+        _classDeclaration = _classDeclaration.AddMembers(_propertyBuilders.Select(x => x.Build()).ToArray<MemberDeclarationSyntax>());
         _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
         _classDeclaration = _classDeclaration.WithLeadingTrivia(_xmlDoc);
         _namespace = _namespace?.AddMembers(_classDeclaration);
@@ -186,48 +160,4 @@ internal class XmlDocException(string typeName, string description)
 {
     public string TypeName { get; set; } = typeName;
     public string Description { get; set; } = description;
-}
-
-public class PropertyBuilder
-{
-    private PropertyDeclarationSyntax _property;
-
-    public PropertyBuilder(string fieldType, string fieldName)
-    {
-        _property = PropertyDeclaration(ParseTypeName(fieldType), fieldName)
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .WithAccessorList(AccessorList(
-                List([
-                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                    AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
-                ])));
-    }
-
-    public PropertyBuilder WithDefaultValue(string? defaultValue = null)
-    {
-        if (defaultValue is null)
-        {
-            return this;
-        }
-
-        _property = _property.WithInitializer(
-                // TODO: set actual default value, when it would not be "\"\""
-                EqualsValueClause(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal("")))
-            )
-            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
-        return this;
-    }
-    
-    public PropertyBuilder WithInheritDoc()
-    {
-        _property = _property.WithLeadingTrivia(ParseLeadingTrivia("/// <inheritdoc />\n"));
-        return this;
-    }
-
-    public PropertyDeclarationSyntax Build()
-    {
-        return _property;
-    }
 }

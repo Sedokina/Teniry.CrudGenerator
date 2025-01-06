@@ -54,7 +54,8 @@ internal class
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            command.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_commandName, command.BuildAsString());
