@@ -7,6 +7,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -124,13 +125,11 @@ internal class
 
         var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("entity", builder => builder
-                .CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], [])
-            )
+            .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
             .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
-            .InitVariable("result", builder => builder.CallConstructor(_dtoName, constructorParams))
-            .Return(builder => builder.Variable("result"));
+            .InitVariable("result", CallConstructor(_dtoName, constructorParams))
+            .Return(Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -170,13 +169,12 @@ internal class
                 $"New {Scheme.EntityScheme.EntityTitle} created");
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("result", builder => builder
-                .CallGenericAsyncMethod("commandDispatcher",
+            .InitVariable("result", CallGenericAsyncMethod("commandDispatcher",
                     "DispatchAsync",
                     [_commandName, _dtoName],
                     ["command", "cancellation"]))
-            .InitVariable("resourceRoute", builder => builder.InterpolatedString(GetByIdRoute()))
-            .Return(builder => builder.CallMethod("TypedResults", "Created", ["resourceRoute", "result"]));
+            .InitVariable("resourceRoute", InterpolatedString(GetByIdRoute()))
+            .Return(CallMethod("TypedResults", "Created", ["resourceRoute", "result"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

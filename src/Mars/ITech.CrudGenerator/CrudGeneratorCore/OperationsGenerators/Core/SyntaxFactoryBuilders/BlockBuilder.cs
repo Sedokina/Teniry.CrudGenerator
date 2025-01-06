@@ -7,9 +7,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
-public class SimpleSyntaxFactory
+public static class SimpleSyntaxFactory
 {
-    public ObjectCreationExpressionSyntax CallConstructor(
+    public static ObjectCreationExpressionSyntax CallConstructor(
         string className,
         List<string> constructorArguments)
     {
@@ -23,7 +23,7 @@ public class SimpleSyntaxFactory
         );
     }
 
-    public InvocationExpressionSyntax CallMethod(
+    public static InvocationExpressionSyntax CallMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -41,7 +41,7 @@ public class SimpleSyntaxFactory
         );
     }
 
-    public AwaitExpressionSyntax CallAsyncMethod(
+    public static AwaitExpressionSyntax CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -49,7 +49,7 @@ public class SimpleSyntaxFactory
         return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames));
     }
 
-    public InvocationExpressionSyntax CallGenericMethod(
+    public static InvocationExpressionSyntax CallGenericMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -75,7 +75,7 @@ public class SimpleSyntaxFactory
         );
     }
 
-    public AwaitExpressionSyntax CallGenericAsyncMethod(
+    public static AwaitExpressionSyntax CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -91,12 +91,12 @@ public class SimpleSyntaxFactory
         );
     }
 
-    public IdentifierNameSyntax Variable(string variableName)
+    public static IdentifierNameSyntax Variable(string variableName)
     {
         return IdentifierName(variableName);
     }
 
-    public InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)
+    public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)
     {
         return InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
             .WithContents(
@@ -114,7 +114,7 @@ public class SimpleSyntaxFactory
             );
     }
 
-    public ArrayCreationExpressionSyntax NewArray(string typeName, IEnumerable<string> parameters)
+    public static ArrayCreationExpressionSyntax NewArray(string typeName, IEnumerable<string> parameters)
     {
         var arrayType = ArrayType(ParseTypeName(typeName))
             .WithRankSpecifiers(SingletonList(
@@ -129,7 +129,7 @@ public class SimpleSyntaxFactory
             ));
     }
 
-    public ArrayCreationExpressionSyntax NewStringLiteralArray(IEnumerable<string> parameters)
+    public static ArrayCreationExpressionSyntax NewStringLiteralArray(IEnumerable<string> parameters)
     {
         var arrayType = ArrayType(ParseTypeName("string"))
             .WithRankSpecifiers(SingletonList(
@@ -144,7 +144,7 @@ public class SimpleSyntaxFactory
             ));
     }
 
-    public AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
+    public static AwaitExpressionSyntax WithAsyncLinq(LinqCallBuilder linqCallBuilder)
     {
         return AwaitExpression(linqCallBuilder.Build());
     }
@@ -153,16 +153,14 @@ public class SimpleSyntaxFactory
 internal class BlockBuilder
 {
     private BlockSyntax _body = Block();
-    private readonly SimpleSyntaxFactory _sf = new();
 
     public BlockBuilder InitVariable(
         string variableName,
-        Func<SimpleSyntaxFactory, ExpressionSyntax> expressionBuilderFunc
+        ExpressionSyntax expressionSyntax
     )
     {
-        var statement = expressionBuilderFunc(_sf);
         var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
-            EqualsValueClause(statement));
+            EqualsValueClause(expressionSyntax));
         var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
             .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
@@ -174,7 +172,7 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf.CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+        var statementBuilder = SimpleSyntaxFactory.CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
@@ -185,7 +183,7 @@ internal class BlockBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf.CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+        var statementBuilder = SimpleSyntaxFactory.CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
@@ -197,7 +195,7 @@ internal class BlockBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = _sf.CallGenericAsyncMethod(
+        var statementBuilder = SimpleSyntaxFactory.CallGenericAsyncMethod(
             objectWithMethod,
             methodNameToCall,
             methodGenericTypeNames,
@@ -213,16 +211,10 @@ internal class BlockBuilder
         return this;
     }
 
-    public BlockBuilder Return(Func<SimpleSyntaxFactory, ExpressionSyntax> expressionBuilderFunc)
+    public BlockBuilder Return(ExpressionSyntax expressionSyntax)
     {
-        var statement = expressionBuilderFunc(_sf);
-        _body = _body.AddStatements(ReturnStatement(statement));
+        _body = _body.AddStatements(ReturnStatement(expressionSyntax));
         return this;
-    }
-
-    public BlockSyntax Build()
-    {
-        return _body;
     }
 
     public BlockBuilder AssignVariable(string assignTo, string from)
@@ -266,12 +258,16 @@ internal class BlockBuilder
     {
         _body = _body.AddStatements(expression);
     }
+    
+    public BlockSyntax Build()
+    {
+        return _body;
+    }
 }
 
 public class LinqCallBuilder
 {
     private InvocationExpressionSyntax _call = null!;
-    private readonly SimpleSyntaxFactory _sf = new();
 
     public LinqCallBuilder CallGenericMethod(
         string objectWithMethod,
@@ -279,7 +275,7 @@ public class LinqCallBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        _call = _sf.CallGenericMethod(
+        _call = SimpleSyntaxFactory.CallGenericMethod(
             objectWithMethod,
             methodNameToCall,
             methodGenericTypeNames,

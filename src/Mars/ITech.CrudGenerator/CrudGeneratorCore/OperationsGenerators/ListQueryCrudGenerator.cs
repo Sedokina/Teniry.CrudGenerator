@@ -8,6 +8,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -75,10 +76,10 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
         var methodBody = new BlockBuilder()
-            .InitVariable("result", builder => builder
-                .NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
+            .InitVariable("result",
+                NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
             )
-            .Return(builder => builder.Variable("result"));
+            .Return(Variable("result"));
 
         method.WithBody(methodBody);
         query.WithMethod(method.Build());
@@ -176,7 +177,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        filterBody.Return(builder => builder.Variable("query"));
+        filterBody.Return(Variable("query"));
 
         filterMethod.WithBody(filterBody);
         return filterMethod;
@@ -316,20 +317,18 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithXmlInheritdoc();
 
+        var linqBuilder = new LinqCallBuilder()
+            .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
+            .ThenMethod("Filter", ["filter"])
+            .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
+            .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
+
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("filter", builder => builder.CallGenericMethod("query", "Adapt", [_filterName], []))
+            .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
-            .InitVariable("items", builder =>
-            {
-                var linqBuilder = new LinqCallBuilder()
-                    .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
-                    .ThenMethod("Filter", ["filter"])
-                    .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
-                    .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
-                return builder.WithAsyncLinq(linqBuilder);
-            })
-            .InitVariable("result", builder => builder.CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
-            .Return(builder => builder.Variable("result"));
+            .InitVariable("items", WithAsyncLinq(linqBuilder))
+            .InitVariable("result", CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
+            .Return(Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -368,14 +367,13 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 $"Returns {Scheme.EntityScheme.EntityTitle} list");
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("result", builder => builder
-                .CallGenericAsyncMethod(
-                    "queryDispatcher",
-                    "DispatchAsync",
-                    [_queryName, _dtoName],
-                    ["query", "cancellation"])
+            .InitVariable("result", CallGenericAsyncMethod(
+                "queryDispatcher",
+                "DispatchAsync",
+                [_queryName, _dtoName],
+                ["query", "cancellation"])
             )
-            .Return(builder => builder.CallMethod("TypedResults", "Ok", ["result"]));
+            .Return(CallMethod("TypedResults", "Ok", ["result"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

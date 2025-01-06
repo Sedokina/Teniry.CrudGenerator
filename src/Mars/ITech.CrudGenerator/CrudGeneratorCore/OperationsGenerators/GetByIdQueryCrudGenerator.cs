@@ -6,6 +6,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -125,19 +126,16 @@ internal class GetByIdQueryCrudGenerator
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("entityIds", builder => builder.NewArray("object", findParameters))
-            .InitVariable("entity", builder => builder
-                .CallGenericAsyncMethod(
-                    "_db",
-                    "FindAsync",
-                    [EntityScheme.EntityName.ToString()],
-                    ["entityIds", "cancellation"])
+            .InitVariable("entityIds", NewArray("object", findParameters))
+            .InitVariable("entity", CallGenericAsyncMethod(
+                "_db",
+                "FindAsync",
+                [EntityScheme.EntityName.ToString()],
+                ["entityIds", "cancellation"])
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
-            .InitVariable("result", builder => builder
-                .CallGenericMethod("entity", "Adapt", [_dtoName], [])
-            )
-            .Return(builder => builder.Variable("result"));
+            .InitVariable("result", CallGenericMethod("entity", "Adapt", [_dtoName], []))
+            .Return(Variable("result"));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -176,17 +174,15 @@ internal class GetByIdQueryCrudGenerator
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("query",
-                builder => builder.CallConstructor(_queryName,
-                    EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
-            .InitVariable("result", builder => builder
-                .CallGenericAsyncMethod(
-                    "queryDispatcher",
-                    "DispatchAsync",
-                    [_queryName, _dtoName],
-                    ["query", "cancellation"])
+            .InitVariable("query", CallConstructor(_queryName,
+                EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
+            .InitVariable("result", CallGenericAsyncMethod(
+                "queryDispatcher",
+                "DispatchAsync",
+                [_queryName, _dtoName],
+                ["query", "cancellation"])
             )
-            .Return(builder => builder.CallMethod("TypedResults", "Ok", ["result"]));
+            .Return(CallMethod("TypedResults", "Ok", ["result"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

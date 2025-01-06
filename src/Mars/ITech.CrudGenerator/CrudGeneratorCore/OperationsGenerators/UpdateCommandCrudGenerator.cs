@@ -6,6 +6,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -114,13 +115,12 @@ internal class UpdateCommandCrudGenerator
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("entityIds", builder => builder.NewArray("object", findParameters))
-            .InitVariable("entity", builder => builder
-                .CallGenericAsyncMethod(
-                    "_db",
-                    "FindAsync",
-                    [EntityScheme.EntityName.ToString()],
-                    ["entityIds", "cancellation"])
+            .InitVariable("entityIds", NewArray("object", findParameters))
+            .InitVariable("entity", CallGenericAsyncMethod(
+                "_db",
+                "FindAsync",
+                [EntityScheme.EntityName.ToString()],
+                ["entityIds", "cancellation"])
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
             .CallMethod("command", "Adapt", ["entity"])
@@ -182,11 +182,11 @@ internal class UpdateCommandCrudGenerator
                 $"{Scheme.EntityScheme.EntityTitle} updated");
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("command", builder => builder.CallConstructor(_commandName,
+            .InitVariable("command", CallConstructor(_commandName,
                 EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
             .CallMethod("vm", "Adapt", ["command"])
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
-            .Return(x => x.CallMethod("TypedResults", "NoContent", []));
+            .Return(CallMethod("TypedResults", "NoContent", []));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
