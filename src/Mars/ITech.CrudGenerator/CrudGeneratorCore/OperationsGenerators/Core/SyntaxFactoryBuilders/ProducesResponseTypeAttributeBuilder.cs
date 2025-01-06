@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
@@ -26,19 +27,17 @@ public class ProducesResponseTypeAttributeBuilder
         {
             arguments.AddRange(
             [
-                SyntaxFactory.AttributeArgument(
-                    SyntaxFactory.TypeOfExpression(SyntaxFactory.IdentifierName(typeName!))),
-                SyntaxFactory.Token(SyntaxKind.CommaToken)
+                AttributeArgument(
+                    TypeOfExpression(IdentifierName(typeName!))),
+                Token(SyntaxKind.CommaToken)
             ]);
         }
 
-        arguments.Add(SyntaxFactory.AttributeArgument(
-            SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(statusCode))));
+        arguments.Add(AttributeArgument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(statusCode))));
 
 
-        return SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("ProducesResponseType"))
-            .WithArgumentList(
-                SyntaxFactory.AttributeArgumentList(SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(arguments)));
+        return Attribute(IdentifierName("ProducesResponseType"))
+            .WithArgumentList(AttributeArgumentList(SeparatedList<AttributeArgumentSyntax>(arguments)));
     }
 
     public AttributeSyntax Build()
