@@ -54,7 +54,7 @@ internal class
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
         command.WithConstructor(constructor.Build());
 
         WriteFile(_commandName, command.BuildAsString());
@@ -81,7 +81,7 @@ internal class
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,

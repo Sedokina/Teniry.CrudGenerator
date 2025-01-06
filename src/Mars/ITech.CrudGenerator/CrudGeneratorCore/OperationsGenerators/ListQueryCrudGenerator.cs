@@ -118,7 +118,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithBaseConstructor(["items", "page"]);
 
-        constructor.WithBody(new MethodBodyBuilder().Build());
+        constructor.WithBody(new MethodBodyBuilder());
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -302,7 +302,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,

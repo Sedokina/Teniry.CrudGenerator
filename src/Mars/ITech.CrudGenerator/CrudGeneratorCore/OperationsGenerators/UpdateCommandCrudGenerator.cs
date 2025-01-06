@@ -71,7 +71,7 @@ internal class UpdateCommandCrudGenerator
                 .WithDefaultValue(property.DefaultValue);
         }
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
         command.WithConstructor(constructor.Build());
 
         WriteFile(_commandName, command.BuildAsString());
@@ -100,7 +100,7 @@ internal class UpdateCommandCrudGenerator
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
