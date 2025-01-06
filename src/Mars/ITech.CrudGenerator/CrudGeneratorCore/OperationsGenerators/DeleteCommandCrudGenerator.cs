@@ -103,7 +103,7 @@ internal class
                     [EntityScheme.EntityName.ToString()],
                     ["entityIds", "cancellation"])
             )
-            .ReturnIfNull("entity")
+            .IfNull("entity", builder => builder.Return())
             .CallMethod("_db", "Remove", ["entity"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
 

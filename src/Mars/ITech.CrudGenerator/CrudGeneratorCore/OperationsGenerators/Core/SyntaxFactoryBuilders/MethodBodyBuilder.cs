@@ -7,11 +7,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
-public class StatementBuilder
+public class ExpressionBuilder
 {
     private ExpressionSyntax _statement;
 
-    public StatementBuilder CallConstructor(
+    public ExpressionBuilder CallConstructor(
         string className,
         List<string> constructorArguments)
     {
@@ -26,7 +26,7 @@ public class StatementBuilder
         return this;
     }
 
-    public StatementBuilder CallMethod(
+    public ExpressionBuilder CallMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -46,7 +46,7 @@ public class StatementBuilder
         return this;
     }
 
-    public StatementBuilder CallGenericMethod(
+    public ExpressionBuilder CallGenericMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -73,7 +73,7 @@ public class StatementBuilder
         return this;
     }
 
-    public StatementBuilder CallGenericAsyncMethod(
+    public ExpressionBuilder CallGenericAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -101,7 +101,7 @@ public class StatementBuilder
         return this;
     }
 
-    public StatementBuilder CallAsyncMethod(
+    public ExpressionBuilder CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
@@ -122,19 +122,19 @@ public class StatementBuilder
         return this;
     }
 
-    public StatementBuilder WithAsyncLinq(LinqCallBuilder linqCallBuilder)
+    public ExpressionBuilder WithAsyncLinq(LinqCallBuilder linqCallBuilder)
     {
         _statement = AwaitExpression(linqCallBuilder.Build());
         return this;
     }
 
-    public StatementBuilder Variable(string variableName)
+    public ExpressionBuilder Variable(string variableName)
     {
         _statement = IdentifierName(variableName);
         return this;
     }
 
-    public StatementBuilder InterpolatedString(string interpolatedString)
+    public ExpressionBuilder InterpolatedString(string interpolatedString)
     {
         _statement = InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
             .WithContents(
@@ -159,14 +159,33 @@ public class StatementBuilder
     }
 }
 
+// public class StatementBuilder
+// {
+//     private StatementSyntax _statement;
+//
+//     public StatementBuilder IfNull(string variableName)
+//     {
+//         _statement = IfStatement(ParseExpression($"{variableName} == null"),
+//             Block(
+//             )
+//         );
+//         return this;
+//     }
+//
+//     public StatementBuilder Build()
+//     {
+//         return this;
+//     }
+// }
+
 internal class MethodBodyBuilder
 {
     private BlockSyntax _body = Block();
 
     public MethodBodyBuilder InitVariable(string variableName,
-        Func<StatementBuilder, StatementBuilder> statementBuilderFunc)
+        Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
     {
-        var statement = statementBuilderFunc(new StatementBuilder()).Build();
+        var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
         var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
             EqualsValueClause(statement));
         var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
@@ -180,7 +199,7 @@ internal class MethodBodyBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new StatementBuilder()
+        var statementBuilder = new ExpressionBuilder()
             .CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
@@ -192,7 +211,7 @@ internal class MethodBodyBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new StatementBuilder()
+        var statementBuilder = new ExpressionBuilder()
             .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
@@ -205,7 +224,7 @@ internal class MethodBodyBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var statementBuilder = new StatementBuilder()
+        var statementBuilder = new ExpressionBuilder()
             .CallGenericAsyncMethod(
                 objectWithMethod,
                 methodNameToCall,
@@ -215,14 +234,20 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
-
-    public MethodBodyBuilder Return(Func<StatementBuilder, StatementBuilder> statementBuilderFunc)
+    
+    public MethodBodyBuilder Return()
     {
-        var statement = statementBuilderFunc(new StatementBuilder()).Build();
-        _body = _body.AddStatements(ReturnStatement(statement));
+        _body = _body.AddStatements(ReturnStatement());
         return this;
     }
 
+    public MethodBodyBuilder Return(Func<ExpressionBuilder, ExpressionBuilder> expressionBuilderFunc)
+    {
+        var statement = expressionBuilderFunc(new ExpressionBuilder()).Build();
+        _body = _body.AddStatements(ReturnStatement(statement));
+        return this;
+    }
+    
     public BlockSyntax Build()
     {
         return _body;
@@ -230,8 +255,11 @@ internal class MethodBodyBuilder
 
     public MethodBodyBuilder AssignVariable(string assignTo, string from)
     {
-        var assignmentExpression = AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-            IdentifierName(assignTo), IdentifierName(from));
+        var assignmentExpression = AssignmentExpression(
+            SyntaxKind.SimpleAssignmentExpression,
+            IdentifierName(assignTo),
+            IdentifierName(from)
+        );
         _body = _body.AddStatements(ExpressionStatement(assignmentExpression));
         return this;
     }
@@ -258,18 +286,16 @@ internal class MethodBodyBuilder
         _body = _body.AddStatements(ifStatement);
         return this;
     }
-
-    public MethodBodyBuilder ReturnIfNull(string variableName)
+    
+    public MethodBodyBuilder IfNull(string variableName, Func<MethodBodyBuilder, MethodBodyBuilder> bodyBuilderFunc)
     {
-        var ifStatement = IfStatement(ParseExpression($"{variableName} == null"),
-            Block(
-                ReturnStatement()
-            )
-        );
+        var ifBody = new MethodBodyBuilder();
+        bodyBuilderFunc(ifBody);
+        var ifStatement = IfStatement(ParseExpression($"{variableName} == null"), ifBody.Build());
         _body = _body.AddStatements(ifStatement);
         return this;
     }
-
+    
     public MethodBodyBuilder InitArrayVariable(string typeName, string variableName, IEnumerable<string> parameters)
     {
         var arrayType = ArrayType(ParseTypeName(typeName))
