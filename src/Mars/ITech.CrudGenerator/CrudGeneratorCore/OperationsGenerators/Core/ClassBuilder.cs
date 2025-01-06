@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
@@ -20,13 +21,12 @@ internal class ClassBuilder
 
     public ClassBuilder(SyntaxKind[] modifiers, string className)
     {
-        _classDeclaration = SyntaxFactory.ClassDeclaration(className)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
+        _classDeclaration = ClassDeclaration(className).AddModifiers(modifiers.Select(Token).ToArray());
     }
 
     public ClassBuilder WithNamespace(string @namespace)
     {
-        _namespace = SyntaxFactory.FileScopedNamespaceDeclaration(SyntaxFactory.ParseName(@namespace));
+        _namespace = FileScopedNamespaceDeclaration(ParseName(@namespace));
         return this;
     }
 
@@ -38,29 +38,39 @@ internal class ClassBuilder
 
     public ClassBuilder Implements(string interfaceName, params string[] interfaceParams)
     {
-        var addInterface = interfaceName;
         if (interfaceParams.Length > 0)
         {
-            var newParams = string.Join(", ", interfaceParams);
-            addInterface = $"{addInterface}<{newParams}>";
+            var arguments = new List<SyntaxNodeOrToken>();
+
+            for (var i = 0; i < interfaceParams.Length; i++)
+            {
+                arguments.Add(IdentifierName(interfaceParams[i]));
+                if (i != interfaceParams.Length - 1)
+                {
+                    arguments.Add(Token(SyntaxKind.CommaToken));
+                }
+            }
+
+            _implementInterfaces.Add(SimpleBaseType(GenericName(Identifier(interfaceName))
+                .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(arguments.ToArray())))));
+            return this;
         }
 
-        _implementInterfaces.Add(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(addInterface)));
-
+        _implementInterfaces.Add(SimpleBaseType(IdentifierName(interfaceName)));
         return this;
     }
 
 
     public ClassBuilder WithPrivateField(SyntaxKind[] modifiers, string fieldType, string fieldName)
     {
-        var field = SyntaxFactory.FieldDeclaration(
-                SyntaxFactory.VariableDeclaration(SyntaxFactory.ParseTypeName(fieldType))
+        var field = FieldDeclaration(
+                VariableDeclaration(ParseTypeName(fieldType))
                     .WithVariables(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.VariableDeclarator(
-                                SyntaxFactory.Identifier(fieldName)))))
+                        SingletonSeparatedList(
+                            VariableDeclarator(
+                                Identifier(fieldName)))))
             .WithModifiers(
-                SyntaxFactory.TokenList(modifiers.Select(SyntaxFactory.Token).ToArray()));
+                TokenList(modifiers.Select(Token).ToArray()));
         _fields.Add(field);
         return this;
     }
@@ -71,27 +81,27 @@ internal class ClassBuilder
         string? defaultValue = null,
         bool inheritdoc = false)
     {
-        var property = SyntaxFactory.PropertyDeclaration(SyntaxFactory.ParseTypeName(fieldType), fieldName)
-            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-            .WithAccessorList(SyntaxFactory.AccessorList(
-                SyntaxFactory.List([
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                    SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken))
+        var property = PropertyDeclaration(ParseTypeName(fieldType), fieldName)
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithAccessorList(AccessorList(
+                List([
+                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                    AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
                 ])));
 
         if (defaultValue is not null)
         {
-            property = property.WithInitializer(SyntaxFactory.EqualsValueClause(
-                    SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression,
-                        SyntaxFactory.Literal("")))) // TODO: set actual default value, when it would not be "\"\""
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+            property = property.WithInitializer(EqualsValueClause(
+                    LiteralExpression(SyntaxKind.StringLiteralExpression,
+                        Literal("")))) // TODO: set actual default value, when it would not be "\"\""
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
         }
 
         if (inheritdoc)
         {
-            property = property.WithLeadingTrivia(SyntaxFactory.ParseLeadingTrivia("/// <inheritdoc />\n"));
+            property = property.WithLeadingTrivia(ParseLeadingTrivia("/// <inheritdoc />\n"));
         }
 
         _properties.Add(property);
@@ -100,8 +110,8 @@ internal class ClassBuilder
 
     public CompilationUnitSyntax Build()
     {
-        var compilationUnit = SyntaxFactory.CompilationUnit();
-        var usings = _usings.Select(x => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(x))).ToArray();
+        var compilationUnit = CompilationUnit();
+        var usings = _usings.Select(x => UsingDirective(ParseName(x))).ToArray();
         compilationUnit = compilationUnit.AddUsings(usings);
 
         if (_implementInterfaces.Count > 0)
@@ -166,7 +176,7 @@ internal class ClassBuilder
             }
         }
 
-        _xmlDoc = SyntaxFactory.ParseLeadingTrivia(xmlDoc.ToString());
+        _xmlDoc = ParseLeadingTrivia(xmlDoc.ToString());
         return this;
     }
 }
