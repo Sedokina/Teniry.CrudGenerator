@@ -5,7 +5,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
 internal class MethodBodyBuilder
 {

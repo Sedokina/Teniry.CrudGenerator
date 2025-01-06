@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
 internal class ConstructorBuilder
 {
