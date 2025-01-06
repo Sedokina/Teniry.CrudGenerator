@@ -3,6 +3,7 @@ using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -44,7 +45,7 @@ internal class
 
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _commandName)
+        var constructor = new ConstructorBuilder(_commandName)
             .WithParameters(constructorParameters);
         var constructorBody = new MethodBodyBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
@@ -75,7 +76,7 @@ internal class
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
+        var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
         var constructorBody = new MethodBodyBuilder()
             .AssignVariable("_db", "db");

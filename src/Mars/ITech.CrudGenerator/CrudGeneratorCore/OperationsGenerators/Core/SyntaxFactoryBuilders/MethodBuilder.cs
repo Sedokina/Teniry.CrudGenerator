@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -102,24 +103,5 @@ internal class MethodBuilder
     public MethodDeclarationSyntax Build()
     {
         return _methodDeclaration;
-    }
-}
-
-internal class ParameterOfMethodBuilder
-{
-    public string Type { get; set; }
-    public string Name { get; set; }
-    public SyntaxKind[] Modifiers { get; set; }
-
-    public ParameterOfMethodBuilder(string type, string name, SyntaxKind[]? modifiers = null)
-    {
-        Type = type;
-        Name = name;
-        Modifiers = modifiers ?? [];
-    }
-
-    public (string Type, string Name) GetAsMethodParameter()
-    {
-        return (Type, Name);
     }
 }

@@ -147,7 +147,7 @@ internal class ClassBuilder
 
     public string BuildAsString()
     {
-        // Normalize and get code as string.
+        // Normalize and get code as string
         var result = Build()
             .NormalizeWhitespace()
             .ToFullString();

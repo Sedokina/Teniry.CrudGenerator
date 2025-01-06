@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
@@ -9,11 +11,10 @@ internal class ConstructorBuilder
 {
     private ConstructorDeclarationSyntax _constructorDeclaration;
 
-    public ConstructorBuilder(SyntaxKind[] modifiers, string name)
+    public ConstructorBuilder(string name)
     {
-        _constructorDeclaration = SyntaxFactory
-            .ConstructorDeclaration(name)
-            .AddModifiers(modifiers.Select(SyntaxFactory.Token).ToArray());
+        _constructorDeclaration = ConstructorDeclaration(name)
+            .AddModifiers(Token(SyntaxKind.PublicKeyword));
     }
 
     public ConstructorBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
@@ -21,10 +22,9 @@ internal class ConstructorBuilder
         _constructorDeclaration = _constructorDeclaration.AddParameterListParameters(properties
             .Select(x =>
             {
-                var a = x.GetAsMethodParameter();
-                return SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier(a.Name))
-                    .WithType(SyntaxFactory.ParseTypeName(a.Type));
+                var methodParameter = x.GetAsMethodParameter();
+                return Parameter(Identifier(methodParameter.Name))
+                    .WithType(ParseTypeName(methodParameter.Type));
             }).ToArray());
         return this;
     }
@@ -35,20 +35,20 @@ internal class ConstructorBuilder
         return this;
     }
 
+    public ConstructorBuilder WithBaseConstructor(string[] argumentNames)
+    {
+        var baseArguments = ArgumentList(
+            SeparatedList(argumentNames.Select(x =>
+                Argument(IdentifierName(x)))));
+
+        _constructorDeclaration = _constructorDeclaration.WithInitializer(
+            ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseArguments));
+
+        return this;
+    }
+
     public ConstructorDeclarationSyntax Build()
     {
         return _constructorDeclaration;
-    }
-
-    public ConstructorBuilder WithBaseConstructor(string[] argumentNames)
-    {
-        var baseArguments = SyntaxFactory.ArgumentList(
-            SyntaxFactory.SeparatedList(argumentNames.Select(x =>
-                SyntaxFactory.Argument(SyntaxFactory.IdentifierName(x)))));
-
-        _constructorDeclaration = _constructorDeclaration.WithInitializer(
-            SyntaxFactory.ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseArguments));
-
-        return this;
     }
 }
