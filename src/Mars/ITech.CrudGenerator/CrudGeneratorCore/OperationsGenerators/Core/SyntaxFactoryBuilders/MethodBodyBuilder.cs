@@ -11,7 +11,6 @@ public class StatementBuilder
 {
     private ExpressionSyntax _statement;
 
-
     public StatementBuilder CallConstructor(
         string className,
         List<string> constructorArguments)
@@ -24,6 +23,26 @@ public class StatementBuilder
             )),
             null
         );
+        return this;
+    }
+
+    public StatementBuilder CallMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _statement = InvocationExpression(
+            MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                IdentifierName(objectWithMethod),
+                IdentifierName(Identifier(methodNameToCall))
+            ),
+            ArgumentList(SeparatedList(
+                methodArgumentsAsVariableNames
+                    .Select(x => Argument(IdentifierName(x))).ToArray()
+            ))
+        );
+
         return this;
     }
 
@@ -82,6 +101,27 @@ public class StatementBuilder
         return this;
     }
 
+    public StatementBuilder CallAsyncMethod(
+        string objectWithMethod,
+        string methodNameToCall,
+        List<string> methodArgumentsAsVariableNames)
+    {
+        _statement = AwaitExpression(
+            InvocationExpression(
+                MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    IdentifierName(objectWithMethod),
+                    IdentifierName(Identifier(methodNameToCall))
+                ),
+                ArgumentList(SeparatedList(
+                    methodArgumentsAsVariableNames
+                        .Select(x => Argument(IdentifierName(x))).ToArray()
+                ))
+            )
+        );
+        return this;
+    }
+
     public StatementBuilder WithAsyncLinq(LinqCallBuilder linqCallBuilder)
     {
         _statement = AwaitExpression(linqCallBuilder.Build());
@@ -116,28 +156,14 @@ internal class MethodBodyBuilder
         List<string> methodGenericTypeNames,
         List<string> methodArgumentsAsVariableNames)
     {
-        var methodCall = AwaitExpression(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    GenericName(Identifier(methodNameToCall))
-                        .WithTypeArgumentList(
-                            TypeArgumentList(
-                                SeparatedList<TypeSyntax>(
-                                    methodGenericTypeNames.Select(IdentifierName)
-                                )
-                            )
-                        )
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
-            )
-        );
-
-        _body = _body.AddStatements(ExpressionStatement(methodCall));
+        var statementBuilder = new StatementBuilder()
+            .CallGenericAsyncMethod(
+                objectWithMethod,
+                methodNameToCall,
+                methodGenericTypeNames,
+                methodArgumentsAsVariableNames
+            );
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
 
@@ -146,19 +172,10 @@ internal class MethodBodyBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var methodCall = InvocationExpression(
-            MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName(objectWithMethod),
-                IdentifierName(Identifier(methodNameToCall))
-            ),
-            ArgumentList(SeparatedList(
-                methodArgumentsAsVariableNames
-                    .Select(x => Argument(IdentifierName(x))).ToArray()
-            ))
-        );
+        var statementBuilder = new StatementBuilder()
+            .CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
-        _body = _body.AddStatements(ExpressionStatement(methodCall));
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
 
@@ -167,21 +184,10 @@ internal class MethodBodyBuilder
         string methodNameToCall,
         List<string> methodArgumentsAsVariableNames)
     {
-        var methodCall = AwaitExpression(
-            InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    IdentifierName(objectWithMethod),
-                    IdentifierName(Identifier(methodNameToCall))
-                ),
-                ArgumentList(SeparatedList(
-                    methodArgumentsAsVariableNames
-                        .Select(x => Argument(IdentifierName(x))).ToArray()
-                ))
-            )
-        );
+        var statementBuilder = new StatementBuilder()
+            .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
 
-        _body = _body.AddStatements(ExpressionStatement(methodCall));
+        _body = _body.AddStatements(ExpressionStatement(statementBuilder.Build()));
         return this;
     }
 
