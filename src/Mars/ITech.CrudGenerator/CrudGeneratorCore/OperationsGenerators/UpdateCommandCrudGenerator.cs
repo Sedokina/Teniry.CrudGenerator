@@ -46,7 +46,7 @@ internal class UpdateCommandCrudGenerator
             .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
             .WithXmlDoc($"Update {EntityScheme.EntityTitle}", "Nothing",
             [
-                new ResultException(
+                new XmlDocException(
                     "EfEntityNotFoundException",
                     $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                 )

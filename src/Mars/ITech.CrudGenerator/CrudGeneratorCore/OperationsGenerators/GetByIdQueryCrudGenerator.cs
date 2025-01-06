@@ -46,7 +46,7 @@ internal class GetByIdQueryCrudGenerator
             .WithXmlDoc($"Get {EntityScheme.EntityTitle} by id",
                 $"Returns full entity data of type <see cref=\"{_dtoName}\" />",
                 [
-                    new ResultException(
+                    new XmlDocException(
                         "EfEntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )

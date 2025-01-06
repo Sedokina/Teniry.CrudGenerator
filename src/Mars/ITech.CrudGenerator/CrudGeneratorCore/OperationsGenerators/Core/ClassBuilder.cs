@@ -51,8 +51,12 @@ internal class ClassBuilder
                 }
             }
 
-            _implementInterfaces.Add(SimpleBaseType(GenericName(Identifier(interfaceName))
-                .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(arguments.ToArray())))));
+            _implementInterfaces.Add(
+                SimpleBaseType(
+                    GenericName(Identifier(interfaceName))
+                        .WithTypeArgumentList(TypeArgumentList(SeparatedList<TypeSyntax>(arguments.ToArray())))
+                )
+            );
             return this;
         }
 
@@ -65,12 +69,9 @@ internal class ClassBuilder
     {
         var field = FieldDeclaration(
                 VariableDeclaration(ParseTypeName(fieldType))
-                    .WithVariables(
-                        SingletonSeparatedList(
-                            VariableDeclarator(
-                                Identifier(fieldName)))))
-            .WithModifiers(
-                TokenList(modifiers.Select(Token).ToArray()));
+                    .WithVariables(SingletonSeparatedList(VariableDeclarator(Identifier(fieldName))))
+            )
+            .WithModifiers(TokenList(modifiers.Select(Token).ToArray()));
         _fields.Add(field);
         return this;
     }
@@ -108,42 +109,6 @@ internal class ClassBuilder
         return this;
     }
 
-    public CompilationUnitSyntax Build()
-    {
-        var compilationUnit = CompilationUnit();
-        var usings = _usings.Select(x => UsingDirective(ParseName(x))).ToArray();
-        compilationUnit = compilationUnit.AddUsings(usings);
-
-        if (_implementInterfaces.Count > 0)
-        {
-            _classDeclaration = _classDeclaration.AddBaseListTypes(_implementInterfaces.ToArray());
-        }
-
-        _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
-        _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
-        _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
-        _classDeclaration = _classDeclaration.WithLeadingTrivia(_xmlDoc);
-        _namespace = _namespace?.AddMembers(_classDeclaration);
-
-
-        if (_namespace != null)
-        {
-            compilationUnit = compilationUnit.AddMembers(_namespace);
-        }
-
-        return compilationUnit;
-    }
-
-    public string BuildAsString()
-    {
-        // Normalize and get code as string.
-        var result = Build()
-            .NormalizeWhitespace()
-            .ToFullString();
-
-        return result;
-    }
-
     public ClassBuilder WithMethod(MethodDeclarationSyntax endpointMethod)
     {
         _methods.Add(endpointMethod);
@@ -156,7 +121,7 @@ internal class ClassBuilder
         return this;
     }
 
-    public ClassBuilder WithXmlDoc(string summary, string returns = "", ResultException[]? exceptions = null)
+    public ClassBuilder WithXmlDoc(string summary, string returns = "", XmlDocException[]? exceptions = null)
     {
         var xmlDoc = new StringBuilder();
         xmlDoc.AppendLine(@$"
@@ -179,9 +144,45 @@ internal class ClassBuilder
         _xmlDoc = ParseLeadingTrivia(xmlDoc.ToString());
         return this;
     }
+
+
+    public CompilationUnitSyntax Build()
+    {
+        var compilationUnit = CompilationUnit();
+        var usings = _usings.Select(x => UsingDirective(ParseName(x))).ToArray();
+        compilationUnit = compilationUnit.AddUsings(usings);
+
+        if (_implementInterfaces.Count > 0)
+        {
+            _classDeclaration = _classDeclaration.AddBaseListTypes(_implementInterfaces.ToArray());
+        }
+
+        _classDeclaration = _classDeclaration.AddMembers(_fields.ToArray());
+        _classDeclaration = _classDeclaration.AddMembers(_properties.ToArray());
+        _classDeclaration = _classDeclaration.AddMembers(_methods.ToArray());
+        _classDeclaration = _classDeclaration.WithLeadingTrivia(_xmlDoc);
+        _namespace = _namespace?.AddMembers(_classDeclaration);
+
+        if (_namespace != null)
+        {
+            compilationUnit = compilationUnit.AddMembers(_namespace);
+        }
+
+        return compilationUnit;
+    }
+
+    public string BuildAsString()
+    {
+        // Normalize and get code as string.
+        var result = Build()
+            .NormalizeWhitespace()
+            .ToFullString();
+
+        return result;
+    }
 }
 
-internal class ResultException(string typeName, string description)
+internal class XmlDocException(string typeName, string description)
 {
     public string TypeName { get; set; } = typeName;
     public string Description { get; set; } = description;
