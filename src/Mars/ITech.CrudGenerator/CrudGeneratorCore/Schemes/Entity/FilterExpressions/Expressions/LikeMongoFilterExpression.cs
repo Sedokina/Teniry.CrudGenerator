@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 
@@ -12,52 +13,52 @@ internal class LikeMongoFilterExpression : FilterExpression
 
     public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
     {
-        var whereArguments = SyntaxFactory.ArgumentList(
-            SyntaxFactory.SingletonSeparatedList(
-                SyntaxFactory.Argument(
-                    SyntaxFactory.SimpleLambdaExpression(
-                            SyntaxFactory.Parameter(
-                                SyntaxFactory.Identifier("x")))
+        var whereArguments = ArgumentList(
+            SingletonSeparatedList(
+                Argument(
+                    SimpleLambdaExpression(
+                            Parameter(
+                                Identifier("x")))
                         .WithExpressionBody(
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.InvocationExpression(
-                                            SyntaxFactory.MemberAccessExpression(
+                                        InvocationExpression(
+                                            MemberAccessExpression(
                                                 SyntaxKind.SimpleMemberAccessExpression,
-                                                SyntaxFactory.MemberAccessExpression(
+                                                MemberAccessExpression(
                                                     SyntaxKind.SimpleMemberAccessExpression,
-                                                    SyntaxFactory.IdentifierName("x"),
-                                                    SyntaxFactory.IdentifierName(entityPropertyToFilter)),
-                                                SyntaxFactory.IdentifierName("ToLower"))),
-                                        SyntaxFactory.IdentifierName("Contains")))
+                                                    IdentifierName("x"),
+                                                    IdentifierName(entityPropertyToFilter)),
+                                                IdentifierName("ToLower"))),
+                                        IdentifierName("Contains")))
                                 .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.InvocationExpression(
-                                                    SyntaxFactory.MemberAccessExpression(
+                                    ArgumentList(
+                                        SingletonSeparatedList(
+                                            Argument(
+                                                InvocationExpression(
+                                                    MemberAccessExpression(
                                                         SyntaxKind.SimpleMemberAccessExpression,
-                                                        SyntaxFactory.IdentifierName(filterPropertyName),
-                                                        SyntaxFactory.IdentifierName("ToLower")))))))))));
-        var result = SyntaxFactory.IfStatement(
-            SyntaxFactory.IsPatternExpression(
-                SyntaxFactory.IdentifierName(filterPropertyName),
-                SyntaxFactory.UnaryPattern(
-                    SyntaxFactory.ConstantPattern(
-                        SyntaxFactory.LiteralExpression(
+                                                        IdentifierName(filterPropertyName),
+                                                        IdentifierName("ToLower")))))))))));
+        var result = IfStatement(
+            IsPatternExpression(
+                IdentifierName(filterPropertyName),
+                UnaryPattern(
+                    ConstantPattern(
+                        LiteralExpression(
                             SyntaxKind.NullLiteralExpression)))),
-            SyntaxFactory.Block(
-                SyntaxFactory.SingletonList<StatementSyntax>(
-                    SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
+            Block(
+                SingletonList<StatementSyntax>(
+                    ExpressionStatement(
+                        AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
-                            SyntaxFactory.IdentifierName("query"),
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            IdentifierName("query"),
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("query"),
-                                        SyntaxFactory.IdentifierName("Where")))
+                                        IdentifierName("query"),
+                                        IdentifierName("Where")))
                                 .WithArgumentList(whereArguments))))));
 
         return result;
