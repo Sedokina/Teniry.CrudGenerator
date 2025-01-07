@@ -92,7 +92,13 @@ internal class BlockBuilder
     {
         var ifBody = new BlockBuilder();
         bodyBuilderFunc(ifBody);
-        var ifStatement = IfStatement(ParseExpression($"{variableName} == null"), ifBody.Build());
+
+        var condition = BinaryExpression(
+            SyntaxKind.EqualsExpression,
+            IdentifierName(variableName),
+            LiteralExpression(SyntaxKind.NullLiteralExpression)
+        );
+        var ifStatement = IfStatement(condition, ifBody.Build());
         _body = _body.AddStatements(ifStatement);
         return this;
     }
