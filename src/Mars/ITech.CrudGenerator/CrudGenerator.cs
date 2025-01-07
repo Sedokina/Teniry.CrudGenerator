@@ -27,9 +27,8 @@ public class CrudGenerator : IIncrementalGenerator
             transform: (syntaxContext, _) => Transform(syntaxContext)
         );
 
-        var attributeQualifiedName =
-            $"{typeof(UseDbContextAttribute).AssemblyQualifiedName}{nameof(UseDbContextAttribute)}";
-        var dbContextSchemeProviders = context.SyntaxProvider.ForAttributeWithMetadataName(attributeQualifiedName,
+        var dbContextSchemeProviders = context.SyntaxProvider.ForAttributeWithMetadataName(
+            typeof(UseDbContextAttribute).FullName ?? "",
             predicate: (node, token) => true,
             transform: (syntaxContext, token) => DbContextSchemeFactory.Construct(syntaxContext));
 
@@ -52,7 +51,7 @@ public class CrudGenerator : IIncrementalGenerator
                     endpointsMaps
                 )
         );
-        
+
         context.RegisterPostInitializationOutput(initializationContext =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfigurationBuilder);
