@@ -186,11 +186,11 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>", "Sort")
             .WithXmlInheritdoc();
 
-        var dictionaryInitializationArgumets = new List<SyntaxNodeOrToken>();
+        var dictionaryInitializationArguments = new List<SyntaxNodeOrToken>();
 
         foreach (var sortableProperty in EntityScheme.SortableProperties)
         {
-            dictionaryInitializationArgumets.Add(SyntaxFactory.InitializerExpression(
+            dictionaryInitializationArguments.Add(SyntaxFactory.InitializerExpression(
                 SyntaxKind.ComplexElementInitializerExpression,
                 SyntaxFactory.SeparatedList<ExpressionSyntax>(
                     new SyntaxNodeOrToken[]
@@ -199,16 +199,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                             SyntaxKind.StringLiteralExpression,
                             SyntaxFactory.Literal(sortableProperty.SortKey)),
                         SyntaxFactory.Token(SyntaxKind.CommaToken),
-                        SyntaxFactory.SimpleLambdaExpression(
-                                SyntaxFactory.Parameter(
-                                    SyntaxFactory.Identifier("x")))
-                            .WithExpressionBody(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName("x"),
-                                    SyntaxFactory.IdentifierName(sortableProperty.PropertyName)))
+                        Expression(sortableProperty.PropertyName)
                     })));
-            dictionaryInitializationArgumets.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
+            dictionaryInitializationArguments.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
         }
 
         var resultDictionary = SyntaxFactory.ObjectCreationExpression(
@@ -217,7 +210,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithInitializer(
                 SyntaxFactory.InitializerExpression(
                     SyntaxKind.CollectionInitializerExpression,
-                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArgumets.ToArray())));
+                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArguments.ToArray())));
 
         var sortMethodBody = SyntaxFactory.Block(
             SyntaxFactory.ReturnStatement(resultDictionary)
