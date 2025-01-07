@@ -171,7 +171,7 @@ internal class CreateCommandCrudGenerator
             .InitVariable("result", CallGenericAsyncMethod("commandDispatcher",
                 "DispatchAsync",
                 [_commandName, _dtoName],
-                ["command", "cancellation"]))
+                [Variable("command"), Variable("cancellation")]))
             .Return(CallMethod("TypedResults", "Created", [InterpolatedString(GetByIdRoute()), Variable("result")]));
 
         methodBuilder.WithBody(methodBodyBuilder);

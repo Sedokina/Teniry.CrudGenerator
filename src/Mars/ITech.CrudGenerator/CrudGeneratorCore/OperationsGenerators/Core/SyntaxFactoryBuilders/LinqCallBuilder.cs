@@ -14,18 +14,18 @@ public class LinqCallBuilder
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
         _call = SimpleSyntaxFactory.CallGenericMethod(
             objectWithMethod,
             methodNameToCall,
             methodGenericTypeNames,
-            methodArgumentsAsVariableNames
+            arguments
         );
         return this;
     }
 
-    public LinqCallBuilder ThenMethod(string methodNameToCall, List<string> methodArgumentsAsVariableNames)
+    public LinqCallBuilder ThenMethod(string methodNameToCall, List<ExpressionSyntax> arguments)
     {
         _call = _call.WithExpression(
             MemberAccessExpression(
@@ -33,9 +33,7 @@ public class LinqCallBuilder
                 _call,
                 IdentifierName(Identifier(methodNameToCall))
             )
-        ).WithArgumentList(ArgumentList(SeparatedList(
-            methodArgumentsAsVariableNames.Select(x => Argument(IdentifierName(x))).ToArray()
-        )));
+        ).WithArgumentList(ArgumentList(SeparatedList(arguments.Select(Argument).ToArray())));
 
         return this;
     }
@@ -43,7 +41,7 @@ public class LinqCallBuilder
     public LinqCallBuilder ThenGenericMethod(
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
         _call = _call.WithExpression(
             MemberAccessExpression(
@@ -57,9 +55,7 @@ public class LinqCallBuilder
                         )
                     )
             )
-        ).WithArgumentList(ArgumentList(SeparatedList(
-            methodArgumentsAsVariableNames.Select(x => Argument(IdentifierName(x))).ToArray()
-        )));
+        ).WithArgumentList(ArgumentList(SeparatedList(arguments.Select(Argument).ToArray())));
 
         return this;
     }

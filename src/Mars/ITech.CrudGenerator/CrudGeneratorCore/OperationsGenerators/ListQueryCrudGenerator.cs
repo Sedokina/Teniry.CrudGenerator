@@ -319,9 +319,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         var linqBuilder = new LinqCallBuilder()
             .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
-            .ThenMethod("Filter", ["filter"])
+            .ThenMethod("Filter", [Variable("filter")])
             .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
-            .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
+            .ThenMethod("ToPagedListAsync", [Variable("query"), Variable("cancellation")]);
 
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
@@ -371,7 +371,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 "queryDispatcher",
                 "DispatchAsync",
                 [_queryName, _dtoName],
-                ["query", "cancellation"])
+                [Variable("query"), Variable("cancellation")])
             )
             .Return(CallMethod("TypedResults", "Ok", [Variable("result")]));
 

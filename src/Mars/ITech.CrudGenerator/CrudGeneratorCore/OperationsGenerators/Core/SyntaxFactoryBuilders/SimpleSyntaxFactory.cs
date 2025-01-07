@@ -49,7 +49,7 @@ public static class SimpleSyntaxFactory
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
         return InvocationExpression(
             MemberAccessExpression(
@@ -63,10 +63,7 @@ public static class SimpleSyntaxFactory
                         )
                     )
             ),
-            ArgumentList(SeparatedList(
-                methodArgumentsAsVariableNames
-                    .Select(x => Argument(IdentifierName(x))).ToArray()
-            ))
+            ArgumentList(SeparatedList(arguments.Select(Argument).ToArray()))
         );
     }
 
@@ -74,14 +71,14 @@ public static class SimpleSyntaxFactory
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
         return AwaitExpression(
             CallGenericMethod(
                 objectWithMethod,
                 methodNameToCall,
                 methodGenericTypeNames,
-                methodArgumentsAsVariableNames
+                arguments
             )
         );
     }

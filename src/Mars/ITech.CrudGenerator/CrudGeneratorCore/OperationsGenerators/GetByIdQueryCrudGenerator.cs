@@ -131,7 +131,7 @@ internal class GetByIdQueryCrudGenerator
                 "_db",
                 "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
+                [Variable("entityIds"), Variable("cancellation")])
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
             .InitVariable("result", CallGenericMethod("entity", "Adapt", [_dtoName], []))
@@ -180,7 +180,7 @@ internal class GetByIdQueryCrudGenerator
                 "queryDispatcher",
                 "DispatchAsync",
                 [_queryName, _dtoName],
-                ["query", "cancellation"])
+                [Variable("query"), Variable("cancellation")])
             )
             .Return(CallMethod("TypedResults", "Ok", [Variable("result")]));
 

@@ -101,7 +101,7 @@ internal class
                 "_db",
                 "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
+                [Variable("entityIds"), Variable("cancellation")])
             )
             .IfNull("entity", builder => builder.Return())
             .CallMethod("_db", "Remove", [Variable("entity")])
@@ -147,7 +147,8 @@ internal class
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("command", CallConstructor(_commandName,
                 EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
-            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
+            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], 
+                [Variable("command"), Variable("cancellation")])
             .Return(CallMethod("TypedResults", "NoContent", []));
 
         methodBuilder.WithBody(methodBodyBuilder);
