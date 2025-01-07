@@ -35,6 +35,11 @@ public class CrudGenerator : IIncrementalGenerator
         var generatorConfigurationsWithDbContextProviders =
             generatorConfigurationsProviders.Combine(dbContextSchemeProviders.Collect());
 
+        var r = generatorConfigurationsProviders
+            .Select((configuration, token) => new EndpointMap(configuration.ClassMetadata.ClassName, "some", "things",
+                "gotta", "give", "well"))
+            .Collect();
+        
         List<EndpointMap> endpointsMaps = new();
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
@@ -51,15 +56,12 @@ public class CrudGenerator : IIncrementalGenerator
                     endpointsMaps
                 )
         );
-
-        context.RegisterPostInitializationOutput(initializationContext =>
+        
+        context.RegisterSourceOutput(r, (productionContext, maps) =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfigurationBuilder);
             mapEndpointsGenerator.RunGenerator();
-            foreach (var file in mapEndpointsGenerator.GeneratedFiles)
-            {
-                initializationContext.AddSource(file.FileName, file.Source);
-            }
+            WriteFiles(productionContext, mapEndpointsGenerator.GeneratedFiles);
         });
     }
 
