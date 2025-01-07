@@ -128,8 +128,7 @@ internal class CreateCommandCrudGenerator
             .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
             .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
             .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
-            .InitVariable("result", CallConstructor(_dtoName, constructorParams))
-            .Return(Variable("result"));
+            .Return(CallConstructor(_dtoName, constructorParams));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
