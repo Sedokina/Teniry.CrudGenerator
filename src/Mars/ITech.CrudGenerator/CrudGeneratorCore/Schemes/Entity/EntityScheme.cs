@@ -6,7 +6,6 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 internal class EntityScheme
 {
-    public ISymbol EntitySymbol { get; }
     public EntityName EntityName { get; set; }
     public EntityTitle EntityTitle { get; set; }
     public string EntityNamespace { get; set; }
@@ -18,7 +17,6 @@ internal class EntityScheme
     public List<EntityProperty> SortableProperties { get; }
 
     public EntityScheme(
-        ISymbol entitySymbol,
         EntityName entityName,
         EntityTitle entityTitle,
         string entityNamespace,
@@ -29,7 +27,6 @@ internal class EntityScheme
         List<EntityProperty> notPrimaryKeys,
         List<EntityProperty> sortableProperties)
     {
-        EntitySymbol = entitySymbol;
         EntityName = entityName;
         EntityTitle = entityTitle;
         EntityNamespace = entityNamespace;

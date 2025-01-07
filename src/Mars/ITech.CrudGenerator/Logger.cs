@@ -14,8 +14,8 @@ internal static class Logger
         Logs.Add("/*\n" + msg + "\n*/");
     }
 
-    public static void FlushLogs(GeneratorExecutionContext context)
-    {
-        context.AddSource("logs.g.cs", SourceText.From(string.Join("\n", Logs), Encoding.UTF8));
-    }
+    // public static void FlushLogs(GeneratorExecutionContext context)
+    // {
+    //     context.AddSource("logs.g.cs", SourceText.From(string.Join("\n", Logs), Encoding.UTF8));
+    // }
 }

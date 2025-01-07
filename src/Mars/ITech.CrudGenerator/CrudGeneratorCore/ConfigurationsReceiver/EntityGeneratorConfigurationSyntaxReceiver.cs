@@ -36,19 +36,19 @@ internal class ClassForCrudGeneration(
     ClassDeclarationSyntax entityGeneratorDeclaration,
     IdentifierNameSyntax entityDeclaration)
 {
-    public (ISymbol EntityGeneratorConfigurationSymbol, ITypeSymbol EntitySymbol)
-        AsSymbol(GeneratorExecutionContext context)
-    {
-        // Converting the class to semantic model to access much more meaningful data.
-        var model = context.Compilation.GetSemanticModel(entityGeneratorDeclaration.SyntaxTree);
-        // Parse to declared symbol, to access each part of code separately,
-        // such as interfaces, methods, members, contructor parameters etc.
-        var entityGeneratorConfigurationSymbol = model.GetDeclaredSymbol(entityGeneratorDeclaration) ??
-                                                 throw new ArgumentException("symbol");
-
-        // Parse to type symbol, to access each part of code separately,
-        // such as interfaces, methods, members, contructor parameters etc.
-        var entitySymbol = model.GetTypeInfo(entityDeclaration).Type;
-        return (entityGeneratorConfigurationSymbol, entitySymbol!);
-    }
+    // public (ISymbol EntityGeneratorConfigurationSymbol, ITypeSymbol EntitySymbol)
+    //     AsSymbol(GeneratorExecutionContext context)
+    // {
+    //     // Converting the class to semantic model to access much more meaningful data.
+    //     var model = context.Compilation.GetSemanticModel(entityGeneratorDeclaration.SyntaxTree);
+    //     // Parse to declared symbol, to access each part of code separately,
+    //     // such as interfaces, methods, members, contructor parameters etc.
+    //     var entityGeneratorConfigurationSymbol = model.GetDeclaredSymbol(entityGeneratorDeclaration) ??
+    //                                              throw new ArgumentException("symbol");
+    //
+    //     // Parse to type symbol, to access each part of code separately,
+    //     // such as interfaces, methods, members, contructor parameters etc.
+    //     var entitySymbol = model.GetTypeInfo(entityDeclaration).Type;
+    //     return (entityGeneratorConfigurationSymbol, entitySymbol!);
+    // }
 }

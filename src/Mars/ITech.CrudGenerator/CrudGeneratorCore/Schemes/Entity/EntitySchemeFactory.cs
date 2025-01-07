@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
@@ -22,23 +23,24 @@ internal class EntitySchemeFactory
     }
 
     internal EntityScheme Construct(
-        ISymbol symbol,
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
         DbContextScheme dbContextScheme)
     {
-        var entityName = new EntityName(symbol.Name, GetPluralEntityName(symbol.Name));
+        var classMetadata = internalEntityGeneratorConfiguration.ClassMetadata;
+        var entityName = new EntityName(classMetadata.ClassName, GetPluralEntityName(classMetadata.ClassName));
         var entityTitle = CreateEntityTitle(internalEntityGeneratorConfiguration, entityName);
-        var properties = GetEntityProperties(symbol, dbContextScheme);
-        return new EntityScheme(symbol,
+        var properties = GetEntityProperties(classMetadata.ClassName, classMetadata.Properties, dbContextScheme);
+        return new EntityScheme(
             entityName,
             entityTitle,
-            symbol.ContainingNamespace.ToString(),
-            symbol.ContainingAssembly.Name,
+            classMetadata.ContainingNamespance,
+            classMetadata.ContainingAssembly,
             internalEntityGeneratorConfiguration.DefaultSort,
             properties,
             properties.Where(x => x.IsEntityId).ToList(),
             properties.Where(x => !x.IsEntityId).ToList(),
-            properties.Where(x => x.CanBeSorted).ToList());
+            properties.Where(x => x.CanBeSorted).ToList()
+        );
     }
 
     private EntityTitle CreateEntityTitle(
@@ -74,38 +76,40 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private List<EntityProperty> GetEntityProperties(ISymbol symbol, DbContextScheme dbContextScheme)
+    private List<EntityProperty> GetEntityProperties(
+        string className,
+        ImmutableArray<InternalEntityClassPropertyMetadata> propertiesMetadata,
+        DbContextScheme dbContextScheme
+    )
     {
-        var propertiesOfClass = ((INamedTypeSymbol)symbol).GetMembers().OfType<IPropertySymbol>();
         var result = new List<EntityProperty>();
-        foreach (var propertySymbol in propertiesOfClass)
+        foreach (var propertyMetadata in propertiesMetadata)
         {
-            if (!propertySymbol.Type.IsSimple()) continue;
+            if (!propertyMetadata.IsSimpleType) continue;
 
             // For DateTimeOffset and other date variations remove system from the property type declaration
-            var propertyTypeName = propertySymbol.Type.ToString().ToLower().StartsWith("system.")
-                ? propertySymbol.Type.MetadataName
-                : propertySymbol.Type.ToString();
+            var propertyTypeName = propertyMetadata.TypeName.ToLower().StartsWith("system.")
+                ? propertyMetadata.TypeMetadataName
+                : propertyMetadata.TypeName;
 
-            var defaultValue = propertySymbol.Type.SpecialType == SpecialType.System_String ? "\"\"" : null;
+            var defaultValue = propertyMetadata.SpecialType == SpecialType.System_String ? "\"\"" : null;
 
-            var isPrimaryKey = IsPrimaryKey(symbol.Name, propertySymbol.Name);
-            var isForeignKey = IsForeignKey(propertySymbol.Name);
+            var isPrimaryKey = IsPrimaryKey(className, propertyMetadata.PropertyName);
+            var isForeignKey = IsForeignKey(propertyMetadata.PropertyName);
             var filterProperties = ConstructFilterProperties(
                 isPrimaryKey || isForeignKey,
                 propertyTypeName,
-                propertySymbol.Name,
-                propertySymbol.Type,
+                propertyMetadata,
                 dbContextScheme);
             result.Add(new EntityProperty(
                 propertyTypeName,
-                propertySymbol.Name,
-                propertySymbol.Name.ToLowerFirstChar(),
+                propertyMetadata.PropertyName,
+                propertyMetadata.PropertyName.ToLowerFirstChar(),
                 defaultValue,
                 isPrimaryKey,
                 filterProperties,
-                propertySymbol.Type.IsSimple(),
-                propertySymbol.Name.ToLowerFirstChar()
+                propertyMetadata.IsSimpleType,
+                propertyMetadata.PropertyName.ToLowerFirstChar()
             ));
         }
 
@@ -115,13 +119,12 @@ internal class EntitySchemeFactory
     private EntityFilterProperty[] ConstructFilterProperties(
         bool isForeignOrPrimaryKey,
         string propertyTypeName,
-        string propertyName,
-        ITypeSymbol propertyType,
+        InternalEntityClassPropertyMetadata propertyMetadata,
         DbContextScheme dbContextScheme)
     {
         if (isForeignOrPrimaryKey)
         {
-            var pluralPropertyName = _pluralizer.Pluralize(propertyName);
+            var pluralPropertyName = _pluralizer.Pluralize(propertyMetadata.PropertyName);
             if (dbContextScheme.ContainsFilter(FilterType.Contains))
             {
                 return
@@ -136,12 +139,12 @@ internal class EntitySchemeFactory
             return [];
         }
 
-        if (propertyType.NullableAnnotation != NullableAnnotation.Annotated)
+        if (propertyMetadata.IsNullable)
         {
             propertyTypeName += "?";
         }
 
-        if (propertyType.IsRangeType())
+        if (propertyMetadata.IsRangeType)
         {
             if (dbContextScheme.ContainsFilter(FilterType.GreaterThanOrEqual) &&
                 dbContextScheme.ContainsFilter(FilterType.LessThan))
@@ -150,11 +153,11 @@ internal class EntitySchemeFactory
                 [
                     new EntityFilterProperty(
                         propertyTypeName,
-                        $"{propertyName}From",
+                        $"{propertyMetadata.PropertyName}From",
                         dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)),
                     new EntityFilterProperty(
                         propertyTypeName,
-                        $"{propertyName}To",
+                        $"{propertyMetadata.PropertyName}To",
                         dbContextScheme.GetFilterExpression(FilterType.LessThan))
                 ];
             }
@@ -162,9 +165,9 @@ internal class EntitySchemeFactory
             return [];
         }
 
-        if (propertyType.IsSimple())
+        if (propertyMetadata.IsSimpleType)
         {
-            if (propertyType.SpecialType == SpecialType.System_String)
+            if (propertyMetadata.SpecialType == SpecialType.System_String)
             {
                 if (dbContextScheme.ContainsFilter(FilterType.Like))
                 {
@@ -172,7 +175,7 @@ internal class EntitySchemeFactory
                     [
                         new EntityFilterProperty(
                             propertyTypeName,
-                            propertyName,
+                            propertyMetadata.PropertyName,
                             dbContextScheme.GetFilterExpression(FilterType.Like))
                     ];
                 }
@@ -184,7 +187,7 @@ internal class EntitySchemeFactory
             [
                 new EntityFilterProperty(
                     propertyTypeName,
-                    propertyName,
+                    propertyMetadata.PropertyName,
                     dbContextScheme.GetFilterExpression(FilterType.Equals))
             ];
         }
