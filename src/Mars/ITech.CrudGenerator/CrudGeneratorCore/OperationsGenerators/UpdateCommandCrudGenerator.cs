@@ -115,12 +115,11 @@ internal class UpdateCommandCrudGenerator
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("entityIds", NewArray("object", findParameters))
             .InitVariable("entity", CallGenericAsyncMethod(
                 "_db",
                 "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                [Variable("entityIds"), Variable("cancellation")])
+                [NewArray("object", findParameters), Variable("cancellation")])
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
             .CallMethod("command", "Adapt", [Variable("entity")])

@@ -76,10 +76,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
         var methodBody = new BlockBuilder()
-            .InitVariable("result",
-                NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
-            )
-            .Return(Variable("result"));
+            .Return(NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray()));
 
         method.WithBody(methodBody);
         query.WithMethod(method.Build());
@@ -327,8 +324,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
             .InitVariable("items", linqBuilder.BuildAsyncCall())
-            .InitVariable("result", CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]))
-            .Return(Variable("result"));
+            .Return(CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
