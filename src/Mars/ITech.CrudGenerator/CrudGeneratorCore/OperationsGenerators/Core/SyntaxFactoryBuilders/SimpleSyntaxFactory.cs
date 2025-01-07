@@ -21,11 +21,11 @@ public static class SimpleSyntaxFactory
             null
         );
     }
-
+    
     public static InvocationExpressionSyntax CallMethod(
         string objectWithMethod,
         string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
         return InvocationExpression(
             MemberAccessExpression(
@@ -33,19 +33,16 @@ public static class SimpleSyntaxFactory
                 IdentifierName(objectWithMethod),
                 IdentifierName(Identifier(methodNameToCall))
             ),
-            ArgumentList(SeparatedList(
-                methodArgumentsAsVariableNames
-                    .Select(x => Argument(IdentifierName(x))).ToArray()
-            ))
+            ArgumentList(SeparatedList(arguments.Select(Argument).ToArray()))
         );
     }
 
     public static AwaitExpressionSyntax CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
+        List<ExpressionSyntax> arguments)
     {
-        return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames));
+        return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, arguments));
     }
 
     public static InvocationExpressionSyntax CallGenericMethod(

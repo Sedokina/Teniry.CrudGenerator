@@ -126,8 +126,8 @@ internal class CreateCommandCrudGenerator
         var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
-            .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
-            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
+            .CallAsyncMethod("_db", "AddAsync", [Variable("entity"), Variable("cancellation")])
+            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")])
             .Return(CallConstructor(_dtoName, constructorParams));
 
         methodBuilder.WithBody(methodBodyBuilder);
@@ -172,8 +172,7 @@ internal class CreateCommandCrudGenerator
                 "DispatchAsync",
                 [_commandName, _dtoName],
                 ["command", "cancellation"]))
-            .InitVariable("resourceRoute", InterpolatedString(GetByIdRoute()))
-            .Return(CallMethod("TypedResults", "Created", ["resourceRoute", "result"]));
+            .Return(CallMethod("TypedResults", "Created", [InterpolatedString(GetByIdRoute()), Variable("result")]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());

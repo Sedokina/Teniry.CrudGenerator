@@ -104,8 +104,8 @@ internal class
                 ["entityIds", "cancellation"])
             )
             .IfNull("entity", builder => builder.Return())
-            .CallMethod("_db", "Remove", ["entity"])
-            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
+            .CallMethod("_db", "Remove", [Variable("entity")])
+            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
 
         methodBuilder.WithBody(methodBodyBuilder);

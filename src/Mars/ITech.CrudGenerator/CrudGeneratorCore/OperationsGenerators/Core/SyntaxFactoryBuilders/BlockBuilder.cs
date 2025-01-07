@@ -23,25 +23,19 @@ internal class BlockBuilder
         return this;
     }
 
-    public BlockBuilder CallMethod(
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
+    public BlockBuilder CallMethod(string objectWithMethod, string methodNameToCall, List<ExpressionSyntax> arguments)
     {
         var statementBuilder =
-            SimpleSyntaxFactory.CallMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+            SimpleSyntaxFactory.CallMethod(objectWithMethod, methodNameToCall, arguments);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;
     }
-
-    public BlockBuilder CallAsyncMethod(
-        string objectWithMethod,
-        string methodNameToCall,
-        List<string> methodArgumentsAsVariableNames)
+    
+    public BlockBuilder CallAsyncMethod(string objectWithMethod, string methodNameToCall, List<ExpressionSyntax> arguments)
     {
         var statementBuilder = SimpleSyntaxFactory
-            .CallAsyncMethod(objectWithMethod, methodNameToCall, methodArgumentsAsVariableNames);
+            .CallAsyncMethod(objectWithMethod, methodNameToCall, arguments);
 
         _body = _body.AddStatements(ExpressionStatement(statementBuilder));
         return this;

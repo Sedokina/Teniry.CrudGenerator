@@ -52,8 +52,8 @@ public class CreateCommandCrudGeneratorTests
         // Assert
         var endpoint = sut.GeneratedFiles.Find(x => x.FileName.Equals("CreateTestEntityEndpoint.g.cs"));
         endpoint.Should().NotBeNull();
-        endpoint!.Source.ToString().Should().Contain(@"var resourceRoute = $""mygetroute/{result.Id}""");
-        endpoint.Source.ToString().Should().Contain("return TypedResults.Created(resourceRoute, result);");
+        endpoint!.Source.ToString().Should()
+            .Contain(@"return TypedResults.Created($""mygetroute/{result.Id}"", result);");
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class CreateCommandCrudGeneratorTests
         // Assert
         var endpoint = sut.GeneratedFiles.Find(x => x.FileName.Equals("CreateTestEntityEndpoint.g.cs"));
         endpoint.Should().NotBeNull();
-        endpoint!.Source.ToString().Should().Contain(@"var resourceRoute = $""""");
-        endpoint.Source.ToString().Should().Contain("return TypedResults.Created(resourceRoute, result);");
+        endpoint!.Source.ToString().Should()
+            .Contain(@"return TypedResults.Created($"""", result);");
     }
 }

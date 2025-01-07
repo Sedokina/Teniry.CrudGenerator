@@ -123,8 +123,8 @@ internal class UpdateCommandCrudGenerator
                 ["entityIds", "cancellation"])
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
-            .CallMethod("command", "Adapt", ["entity"])
-            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
+            .CallMethod("command", "Adapt", [Variable("entity")])
+            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -184,7 +184,7 @@ internal class UpdateCommandCrudGenerator
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("command", CallConstructor(_commandName,
                 EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
-            .CallMethod("vm", "Adapt", ["command"])
+            .CallMethod("vm", "Adapt", [Variable("command")])
             .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
             .Return(CallMethod("TypedResults", "NoContent", []));
 
