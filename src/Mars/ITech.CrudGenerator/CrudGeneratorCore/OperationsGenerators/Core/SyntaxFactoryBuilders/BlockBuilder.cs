@@ -15,10 +15,14 @@ internal class BlockBuilder
         ExpressionSyntax expressionSyntax
     )
     {
-        var variableDeclarator = VariableDeclarator(Identifier(variableName), null,
-            EqualsValueClause(expressionSyntax));
-        var variableDeclaration = VariableDeclaration(ParseTypeName("var"))
-            .WithVariables(SeparatedList<VariableDeclaratorSyntax>().Add(variableDeclarator));
+        var variableDeclaration = VariableDeclaration(
+                IdentifierName(Identifier(TriviaList(), SyntaxKind.VarKeyword, "var", "var", TriviaList()))
+            )
+            .WithVariables(
+                SingletonSeparatedList(
+                    VariableDeclarator(Identifier(variableName), null, EqualsValueClause(expressionSyntax))
+                )
+            );
         _body = _body.AddStatements(LocalDeclarationStatement(variableDeclaration));
         return this;
     }
