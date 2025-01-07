@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
@@ -10,12 +12,68 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator;
 
 [Generator]
-public class CrudGenerator : ISourceGenerator
+public class CrudGenerator : IIncrementalGenerator
 {
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
+        var generatorConfigurationsProviders = context.SyntaxProvider.CreateSyntaxProvider(
+            predicate: (node, _) => IsInheritedFrom(node, "EntityGeneratorConfiguration"),
+            transform: (syntaxContext, _) => Transform(syntaxContext)
+        );
+
+        var attributeQualifiedName =
+            $"{typeof(UseDbContextAttribute).AssemblyQualifiedName}{nameof(UseDbContextAttribute)}";
+        var dbContextSchemeProviders = context.SyntaxProvider.ForAttributeWithMetadataName(attributeQualifiedName,
+            predicate: (node, token) => true,
+            transform: (syntaxContext, token) => DbContextSchemeFactory.Construct(syntaxContext));
+
+        var generatorConfigurationsWithDbContextProviders =
+            generatorConfigurationsProviders.Combine(dbContextSchemeProviders.Collect());
+
+        // TODO: check if there are dbContextSchemes at all
+        context.RegisterSourceOutput(generatorConfigurationsWithDbContextProviders,
+            static (productionContext, generatorConfigurationWithDbContext) =>
+                Execute(
+                    productionContext,
+                    generatorConfigurationWithDbContext.Left,
+                    generatorConfigurationWithDbContext.Right[0]
+                )
+        );
+    }
+
+    internal static void Execute(
+        SourceProductionContext context,
+        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
+        DbContextScheme dbContextScheme
+    )
+    {
+        var entityScheme = new EntitySchemeFactory().Construct(
+            entitySymbol,
+            internalEntityGeneratorConfiguration,
+            dbContextScheme);
+    }
+
+    private static bool IsInheritedFrom(SyntaxNode node, string className)
+    {
+        return node is ClassDeclarationSyntax classDeclarationSyntax &&
+               classDeclarationSyntax is { BaseList.Types.Count: > 0 } &&
+               classDeclarationSyntax.BaseList.Types
+                   .Any(x => x.Type is GenericNameSyntax baseClass &&
+                             baseClass.Identifier.ToString().Equals(className));
+    }
+
+    private InternalEntityGeneratorConfiguration Transform(GeneratorSyntaxContext syntaxContext)
+    {
+        var factory = new InternalEntityGeneratorConfigurationFactory();
+        var symbol = syntaxContext.SemanticModel.GetDeclaredSymbol(syntaxContext.Node) as INamedTypeSymbol;
+        return factory.Construct(symbol, syntaxContext.SemanticModel.Compilation);
+    }
+
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new EntityGeneratorConfigurationSyntaxReceiver());

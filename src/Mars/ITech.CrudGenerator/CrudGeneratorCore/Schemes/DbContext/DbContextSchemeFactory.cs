@@ -11,6 +11,28 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 
 internal class DbContextSchemeFactory
 {
+    public static DbContextScheme Construct(GeneratorAttributeSyntaxContext syntaxContext)
+    {
+        var dbContextClassSymbol = (INamedTypeSymbol)syntaxContext.TargetSymbol;
+        var baseName = dbContextClassSymbol.BaseType!.Name;
+
+        if (!baseName.ToLower().EndsWith("dbcontext"))
+        {
+            throw new Exception(
+                $"{nameof(UseDbContextAttribute)} used on class {baseName}, but it is not DbContext class. If it is DbContext class add postfix DbContext to class name");
+        }
+
+        var dbProviderArgument = syntaxContext.Attributes.First().ConstructorArguments.First();
+        var dbProviderArgumentValue =
+            dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
+
+        return new DbContextScheme(
+            dbContextClassSymbol.ContainingNamespace.ToString(),
+            dbContextClassSymbol.Name,
+            dbProviderArgumentValue,
+            GetFilterExpressionsFor(dbProviderArgumentValue));
+    }
+
     public static DbContextScheme Construct(GeneratorExecutionContext context)
     {
         var attributeName = nameof(UseDbContextAttribute).Replace("Attribute", "");
@@ -29,7 +51,8 @@ internal class DbContextSchemeFactory
 
         var useDbContextAttribute = foundAttributes.First();
 
-        var dbContextClass = (useDbContextAttribute.Parent as AttributeListSyntax)?.Parent as ClassDeclarationSyntax;
+        var dbContextClass =
+            (useDbContextAttribute.Parent as AttributeListSyntax)?.Parent as ClassDeclarationSyntax;
         if (dbContextClass is null)
         {
             throw new Exception(
