@@ -314,7 +314,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithXmlInheritdoc();
 
-        var linqBuilder = new LinqCallBuilder()
+        var linqBuilder = new FluentCallBuilder()
             .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
             .ThenMethod("Filter", [Variable("filter")])
             .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])

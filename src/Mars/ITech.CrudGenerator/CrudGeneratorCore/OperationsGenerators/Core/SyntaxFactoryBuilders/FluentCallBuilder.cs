@@ -6,11 +6,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 
-public class LinqCallBuilder
+public class FluentCallBuilder
 {
     private InvocationExpressionSyntax _call = null!;
 
-    public LinqCallBuilder CallGenericMethod(
+    public FluentCallBuilder CallGenericMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
@@ -25,7 +25,7 @@ public class LinqCallBuilder
         return this;
     }
 
-    public LinqCallBuilder ThenMethod(string methodNameToCall, List<ExpressionSyntax> arguments)
+    public FluentCallBuilder ThenMethod(string methodNameToCall, List<ExpressionSyntax> arguments)
     {
         _call = _call.WithExpression(
             MemberAccessExpression(
@@ -38,7 +38,7 @@ public class LinqCallBuilder
         return this;
     }
 
-    public LinqCallBuilder ThenGenericMethod(
+    public FluentCallBuilder ThenGenericMethod(
         string methodNameToCall,
         List<string> methodGenericTypeNames,
         List<ExpressionSyntax> arguments)
