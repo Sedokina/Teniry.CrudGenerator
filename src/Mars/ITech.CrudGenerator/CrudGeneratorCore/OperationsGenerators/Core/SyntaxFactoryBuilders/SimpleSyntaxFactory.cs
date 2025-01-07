@@ -94,6 +94,16 @@ public static class SimpleSyntaxFactory
             IdentifierName(propertyName));
     }
 
+    public static SimpleLambdaExpressionSyntax Expression(string variableName)
+    {
+        return SimpleLambdaExpression(Parameter(Identifier("x")))
+            .WithExpressionBody(MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                IdentifierName("x"),
+                IdentifierName(variableName))
+            );
+    }
+
     public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)
     {
         return InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))

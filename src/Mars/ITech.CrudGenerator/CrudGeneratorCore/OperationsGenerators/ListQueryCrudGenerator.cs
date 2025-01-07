@@ -234,45 +234,19 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
-        BlockSyntax? defaultSortBody;
+        var methodBody = new BlockBuilder();
+        
         if (EntityScheme.DefaultSort is null)
         {
-            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(
-                SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.BaseExpression(),
-                            SyntaxFactory.IdentifierName("DefaultSort")))
-                    .WithArgumentList(
-                        SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName("query")))))));
+            methodBody.Return(CallMethod("base", "DefaultSort", [Variable("query")]));
         }
         else
         {
-            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(SyntaxFactory.InvocationExpression(
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("query"),
-                        SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.Direction.Equals("asc")
-                            ? "OrderBy"
-                            : "OrderByDescending")))
-                .WithArgumentList(
-                    SyntaxFactory.ArgumentList(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.Argument(
-                                SyntaxFactory.SimpleLambdaExpression(
-                                        SyntaxFactory.Parameter(
-                                            SyntaxFactory.Identifier("x")))
-                                    .WithExpressionBody(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName("x"),
-                                            SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.PropertyName)))))))));
+            var methodName = EntityScheme.DefaultSort.Direction.Equals("asc") ? "OrderBy" : "OrderByDescending";
+            methodBody.Return(CallMethod("query", methodName, [Expression(EntityScheme.DefaultSort.PropertyName)]));
         }
 
-        method.WithBody(defaultSortBody);
+        method.WithBody(methodBody);
         return method;
     }
 
