@@ -2,8 +2,12 @@ using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -46,7 +50,7 @@ internal class UpdateCommandCrudGenerator
             .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
             .WithXmlDoc($"Update {EntityScheme.EntityTitle}", "Nothing",
             [
-                new ResultException(
+                new XmlDocException(
                     "EfEntityNotFoundException",
                     $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                 )
@@ -54,9 +58,9 @@ internal class UpdateCommandCrudGenerator
 
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _commandName)
+        var constructor = new ConstructorBuilder(_commandName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             command.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
@@ -65,10 +69,11 @@ internal class UpdateCommandCrudGenerator
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            command.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
         command.WithConstructor(constructor.Build());
 
         WriteFile(_commandName, command.BuildAsString());
@@ -92,12 +97,12 @@ internal class UpdateCommandCrudGenerator
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
+        var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                 SyntaxKind.PublicKeyword,
@@ -110,16 +115,18 @@ internal class UpdateCommandCrudGenerator
             .WithXmlInheritdoc();
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitArrayVariable("object", "entityIds", findParameters)
-            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("entity", CallGenericAsyncMethod(
+                "_db",
+                "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
-            .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
-            .CallMethod("command", "Adapt", ["entity"])
-            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"]);
+                [NewArray("object", findParameters), Variable("cancellation")])
+            )
+            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
+            .CallMethod("command", "Adapt", [Variable("entity")])
+            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -136,7 +143,8 @@ internal class UpdateCommandCrudGenerator
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            vmClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            vmClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_vmName, vmClass.BuildAsString());
@@ -168,18 +176,26 @@ internal class UpdateCommandCrudGenerator
                 .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithProducesResponseTypeAttribute(204)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(204))
             .WithXmlDoc($"Update {Scheme.EntityScheme.EntityTitle}",
                 204,
                 $"{Scheme.EntityScheme.EntityTitle} updated");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromConstructorCall("command", _commandName, EntityScheme.PrimaryKeys)
-            .CallMethod("vm", "Adapt", ["command"])
-            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName], ["command", "cancellation"])
-            .ReturnTypedResultNoContent();
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("command",
+                CallConstructor(_commandName, EntityScheme.PrimaryKeys
+                    .Select(x => Variable(x.PropertyNameAsMethodParameterName))
+                    .ToList<ExpressionSyntax>()))
+            .CallMethod("vm", "Adapt", [Variable("command")])
+            .CallGenericAsyncMethod(
+                "commandDispatcher",
+                "DispatchAsync",
+                [_commandName],
+                [Variable("command"), Variable("cancellation")]
+            )
+            .Return(CallMethod("TypedResults", "NoContent", []));
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

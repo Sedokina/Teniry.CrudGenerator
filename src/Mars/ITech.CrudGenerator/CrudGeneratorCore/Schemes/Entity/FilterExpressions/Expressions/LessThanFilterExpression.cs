@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 
@@ -12,39 +13,39 @@ internal class LessThanFilterExpression : FilterExpression
 
     public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
     {
-        var result = SyntaxFactory.IfStatement(
-            SyntaxFactory.IsPatternExpression(
-                SyntaxFactory.IdentifierName(filterPropertyName),
-                SyntaxFactory.UnaryPattern(
-                    SyntaxFactory.ConstantPattern(
-                        SyntaxFactory.LiteralExpression(
+        var result = IfStatement(
+            IsPatternExpression(
+                IdentifierName(filterPropertyName),
+                UnaryPattern(
+                    ConstantPattern(
+                        LiteralExpression(
                             SyntaxKind.NullLiteralExpression)))),
-            SyntaxFactory.Block(
-                SyntaxFactory.SingletonList<StatementSyntax>(
-                    SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
+            Block(
+                SingletonList<StatementSyntax>(
+                    ExpressionStatement(
+                        AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
-                            SyntaxFactory.IdentifierName("query"),
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            IdentifierName("query"),
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("query"),
-                                        SyntaxFactory.IdentifierName("Where")))
+                                        IdentifierName("query"),
+                                        IdentifierName("Where")))
                                 .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.SimpleLambdaExpression(
-                                                        SyntaxFactory.Parameter(
-                                                            SyntaxFactory.Identifier("x")))
+                                    ArgumentList(
+                                        SingletonSeparatedList(
+                                            Argument(
+                                                SimpleLambdaExpression(
+                                                        Parameter(
+                                                            Identifier("x")))
                                                     .WithExpressionBody(
-                                                        SyntaxFactory.BinaryExpression(
+                                                        BinaryExpression(
                                                             SyntaxKind.LessThanExpression,
-                                                            SyntaxFactory.MemberAccessExpression(
+                                                            MemberAccessExpression(
                                                                 SyntaxKind.SimpleMemberAccessExpression,
-                                                                SyntaxFactory.IdentifierName("x"),
-                                                                SyntaxFactory.IdentifierName(entityPropertyToFilter)),
-                                                            SyntaxFactory.IdentifierName(filterPropertyName))))))))))));
+                                                                IdentifierName("x"),
+                                                                IdentifierName(entityPropertyToFilter)),
+                                                            IdentifierName(filterPropertyName))))))))))));
         return result;
     }
 }

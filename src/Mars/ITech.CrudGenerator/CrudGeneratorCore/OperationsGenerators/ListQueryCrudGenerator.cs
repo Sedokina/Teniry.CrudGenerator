@@ -3,9 +3,12 @@ using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -66,17 +69,16 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        query.WithProperty("int", "Page", inheritdoc: true);
-        query.WithProperty("int", "PageSize", inheritdoc: true);
-        query.WithProperty("string[]?", "Sort", inheritdoc: true);
+        query.WithProperty("int", "Page").WithInheritDoc();
+        query.WithProperty("int", "PageSize").WithInheritDoc();
+        query.WithProperty("string[]?", "Sort").WithInheritDoc();
 
         var method = new MethodBuilder([SyntaxKind.PublicKeyword], "string[]", "GetSortKeys")
             .WithXmlInheritdoc();
-        var methodBody = new MethodBodyBuilder()
-            .InitStringArray("result", EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray())
-            .ReturnVariable("result");
+        var methodBody = new BlockBuilder()
+            .Return(NewStringLiteralArray(EntityScheme.SortableProperties.Select(x => x.SortKey).ToArray()));
 
-        method.WithBody(methodBody.Build());
+        method.WithBody(methodBody);
         query.WithMethod(method.Build());
 
         WriteFile(_queryName, query.BuildAsString());
@@ -92,7 +94,8 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         foreach (var property in EntityScheme.Properties)
         {
-            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            dtoClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_listItemDtoName, dtoClass.BuildAsString());
@@ -108,14 +111,14 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("PagedResult", _listItemDtoName);
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _dtoName)
+        var constructor = new ConstructorBuilder(_dtoName)
             .WithParameters([
                 new ParameterOfMethodBuilder($"List<{_listItemDtoName}>", "items"),
                 new ParameterOfMethodBuilder("PageInfo", "page")
             ])
             .WithBaseConstructor(["items", "page"]);
 
-        constructor.WithBody(new MethodBodyBuilder().Build());
+        constructor.WithBody(new BlockBuilder());
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -159,7 +162,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
-        var filterBody = new MethodBodyBuilder();
+        var filterBody = new BlockBuilder();
 
         foreach (var property in EntityScheme.Properties)
         {
@@ -171,9 +174,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             }
         }
 
-        filterBody.ReturnVariable("query");
+        filterBody.Return(Variable("query"));
 
-        filterMethod.WithBody(filterBody.Build());
+        filterMethod.WithBody(filterBody);
         return filterMethod;
     }
 
@@ -183,11 +186,11 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>", "Sort")
             .WithXmlInheritdoc();
 
-        var dictionaryInitializationArgumets = new List<SyntaxNodeOrToken>();
+        var dictionaryInitializationArguments = new List<SyntaxNodeOrToken>();
 
         foreach (var sortableProperty in EntityScheme.SortableProperties)
         {
-            dictionaryInitializationArgumets.Add(SyntaxFactory.InitializerExpression(
+            dictionaryInitializationArguments.Add(SyntaxFactory.InitializerExpression(
                 SyntaxKind.ComplexElementInitializerExpression,
                 SyntaxFactory.SeparatedList<ExpressionSyntax>(
                     new SyntaxNodeOrToken[]
@@ -196,16 +199,9 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                             SyntaxKind.StringLiteralExpression,
                             SyntaxFactory.Literal(sortableProperty.SortKey)),
                         SyntaxFactory.Token(SyntaxKind.CommaToken),
-                        SyntaxFactory.SimpleLambdaExpression(
-                                SyntaxFactory.Parameter(
-                                    SyntaxFactory.Identifier("x")))
-                            .WithExpressionBody(
-                                SyntaxFactory.MemberAccessExpression(
-                                    SyntaxKind.SimpleMemberAccessExpression,
-                                    SyntaxFactory.IdentifierName("x"),
-                                    SyntaxFactory.IdentifierName(sortableProperty.PropertyName)))
+                        Expression(sortableProperty.PropertyName)
                     })));
-            dictionaryInitializationArgumets.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
+            dictionaryInitializationArguments.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
         }
 
         var resultDictionary = SyntaxFactory.ObjectCreationExpression(
@@ -214,7 +210,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithInitializer(
                 SyntaxFactory.InitializerExpression(
                     SyntaxKind.CollectionInitializerExpression,
-                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArgumets.ToArray())));
+                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArguments.ToArray())));
 
         var sortMethodBody = SyntaxFactory.Block(
             SyntaxFactory.ReturnStatement(resultDictionary)
@@ -231,48 +227,22 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
-        BlockSyntax? defaultSortBody;
+        var methodBody = new BlockBuilder();
+        
         if (EntityScheme.DefaultSort is null)
         {
-            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(
-                SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
-                            SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.BaseExpression(),
-                            SyntaxFactory.IdentifierName("DefaultSort")))
-                    .WithArgumentList(
-                        SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.Argument(
-                                    SyntaxFactory.IdentifierName("query")))))));
+            methodBody.Return(CallMethod("base", "DefaultSort", [Variable("query")]));
         }
         else
         {
-            defaultSortBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(SyntaxFactory.InvocationExpression(
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName("query"),
-                        SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.Direction.Equals("asc")
-                            ? "OrderBy"
-                            : "OrderByDescending")))
-                .WithArgumentList(
-                    SyntaxFactory.ArgumentList(
-                        SyntaxFactory.SingletonSeparatedList(
-                            SyntaxFactory.Argument(
-                                SyntaxFactory.SimpleLambdaExpression(
-                                        SyntaxFactory.Parameter(
-                                            SyntaxFactory.Identifier("x")))
-                                    .WithExpressionBody(
-                                        SyntaxFactory.MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            SyntaxFactory.IdentifierName("x"),
-                                            SyntaxFactory.IdentifierName(EntityScheme.DefaultSort.PropertyName)))))))));
+            var methodName = EntityScheme.DefaultSort.Direction.Equals("asc") ? "OrderBy" : "OrderByDescending";
+            methodBody.Return(CallMethod("query", methodName, [Expression(EntityScheme.DefaultSort.PropertyName)]));
         }
 
-        method.WithBody(defaultSortBody);
+        method.WithBody(methodBody);
         return method;
     }
-    
+
     private void GenerateHandler()
     {
         var handlerClass = new ClassBuilder([
@@ -294,12 +264,12 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
+        var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,
@@ -311,21 +281,19 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             ])
             .WithXmlInheritdoc();
 
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericMethodCall("filter", "query", "Adapt", [_filterName], [])
+        var linqBuilder = new FluentCallBuilder()
+            .CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
+            .ThenMethod("Filter", [Variable("filter")])
+            .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
+            .ThenMethod("ToPagedListAsync", [Variable("query"), Variable("cancellation")]);
+
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
-            .InitVariableFromAsyncMethodCall("items", linqBuilder =>
-            {
-                linqBuilder.CallGenericMethod("_db", "Set", [Scheme.EntityScheme.EntityName.ToString()], [])
-                    .ThenMethod("Filter", ["filter"])
-                    .ThenGenericMethod("ProjectToType", [_listItemDtoName], [])
-                    .ThenMethod("ToPagedListAsync", ["query", "cancellation"]);
-            })
-            .InitVariableFromConstructorCall("result", _dtoName, ["items.ToList()", "items.GetPage()"])
-            .ReturnVariable("result");
+            .InitVariable("items", linqBuilder.BuildAsyncCall())
+            .Return(CallConstructor(_dtoName, [CallMethod("items", "ToList", []), CallMethod("items", "GetPage", [])]));
 
-
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -356,18 +324,21 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
-            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
             .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
                 200,
                 $"Returns {Scheme.EntityScheme.EntityTitle} list");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("result", CallGenericAsyncMethod(
+                "queryDispatcher",
+                "DispatchAsync",
                 [_queryName, _dtoName],
-                ["query", "cancellation"])
-            .ReturnTypedResultOk("result");
+                [Variable("query"), Variable("cancellation")])
+            )
+            .Return(CallMethod("TypedResults", "Ok", [Variable("result")]));
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

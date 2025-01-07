@@ -1,6 +1,7 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 
@@ -12,59 +13,57 @@ internal class ContainsFilterExpression : FilterExpression
 
     public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
     {
-        
-        var result = SyntaxFactory.IfStatement(
-            SyntaxFactory.BinaryExpression(
+        var result = IfStatement(
+            BinaryExpression(
                 SyntaxKind.LogicalAndExpression,
-                SyntaxFactory.IsPatternExpression(
-                    SyntaxFactory.IdentifierName(filterPropertyName),
-                    SyntaxFactory.UnaryPattern(
-                        SyntaxFactory.ConstantPattern(
-                            SyntaxFactory.LiteralExpression(
+                IsPatternExpression(
+                    IdentifierName(filterPropertyName),
+                    UnaryPattern(
+                        ConstantPattern(
+                            LiteralExpression(
                                 SyntaxKind.NullLiteralExpression)))),
-                SyntaxFactory.BinaryExpression(
+                BinaryExpression(
                     SyntaxKind.GreaterThanExpression,
-                    SyntaxFactory.MemberAccessExpression(
+                    MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                        SyntaxFactory.IdentifierName(filterPropertyName),
-                        SyntaxFactory.IdentifierName("Length")),
-                    SyntaxFactory.LiteralExpression(
+                        IdentifierName(filterPropertyName),
+                        IdentifierName("Length")),
+                    LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        SyntaxFactory.Literal(0)))),
-            SyntaxFactory.Block(
-                SyntaxFactory.SingletonList<StatementSyntax>(
-                    SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
+                        Literal(0)))),
+            Block(
+                SingletonList<StatementSyntax>(
+                    ExpressionStatement(
+                        AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
-                            SyntaxFactory.IdentifierName("query"),
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            IdentifierName("query"),
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("query"),
-                                        SyntaxFactory.IdentifierName("Where")))
+                                        IdentifierName("query"),
+                                        IdentifierName("Where")))
                                 .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.SimpleLambdaExpression(
-                                                        SyntaxFactory.Parameter(
-                                                            SyntaxFactory.Identifier("x")))
+                                    ArgumentList(
+                                        SingletonSeparatedList(
+                                            Argument(
+                                                SimpleLambdaExpression(
+                                                        Parameter(
+                                                            Identifier("x")))
                                                     .WithExpressionBody(
-                                                        SyntaxFactory.InvocationExpression(
-                                                                SyntaxFactory.MemberAccessExpression(
+                                                        InvocationExpression(
+                                                                MemberAccessExpression(
                                                                     SyntaxKind.SimpleMemberAccessExpression,
-                                                                    SyntaxFactory.IdentifierName(filterPropertyName),
-                                                                    SyntaxFactory.IdentifierName("Contains")))
+                                                                    IdentifierName(filterPropertyName),
+                                                                    IdentifierName("Contains")))
                                                             .WithArgumentList(
-                                                                SyntaxFactory.ArgumentList(
-                                                                    SyntaxFactory.SingletonSeparatedList(
-                                                                        SyntaxFactory.Argument(
-                                                                            SyntaxFactory.MemberAccessExpression(
+                                                                ArgumentList(
+                                                                    SingletonSeparatedList(
+                                                                        Argument(
+                                                                            MemberAccessExpression(
                                                                                 SyntaxKind.SimpleMemberAccessExpression,
-                                                                                SyntaxFactory.IdentifierName("x"),
-                                                                                SyntaxFactory
-                                                                                    .IdentifierName(
-                                                                                        entityPropertyToFilter))))))))))))))));
+                                                                                IdentifierName("x"),
+                                                                                IdentifierName(
+                                                                                    entityPropertyToFilter))))))))))))))));
         return result;
     }
 }

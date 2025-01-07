@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator;
 
@@ -32,43 +35,43 @@ internal class EndpointsMapGenerator : BaseGenerator
 
         var mapMethod = new MethodBuilder([SyntaxKind.PublicKeyword, SyntaxKind.StaticKeyword], "void",
                 "MapGeneratedEndpoints")
-            .WithParameters([new ParameterOfMethodBuilder("WebApplication", "app", [SyntaxKind.ThisKeyword])]);
+            .WithParameters([new ParameterOfMethodBuilder([SyntaxKind.ThisKeyword], "WebApplication", "app")]);
 
-        var mapBody = SyntaxFactory.Block();
+        var mapBody = Block();
 
-        StatementSyntax[] mapStatements = _endpointsMaps.Select(endpointMap => SyntaxFactory.ExpressionStatement(
-                SyntaxFactory.InvocationExpression(
-                        SyntaxFactory.MemberAccessExpression(
+        StatementSyntax[] mapStatements = _endpointsMaps.Select(endpointMap => ExpressionStatement(
+                InvocationExpression(
+                        MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("app"),
-                                        SyntaxFactory.IdentifierName($"Map{endpointMap.HttpMethod}")))
+                                        IdentifierName("app"),
+                                        IdentifierName($"Map{endpointMap.HttpMethod}")))
                                 .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SeparatedList<ArgumentSyntax>(
+                                    ArgumentList(
+                                        SeparatedList<ArgumentSyntax>(
                                             new SyntaxNodeOrToken[]
                                             {
-                                                SyntaxFactory.Argument(
-                                                    SyntaxFactory.LiteralExpression(
+                                                Argument(
+                                                    LiteralExpression(
                                                         SyntaxKind.StringLiteralExpression,
-                                                        SyntaxFactory.Literal(endpointMap.EndpointRoute))),
-                                                SyntaxFactory.Token(SyntaxKind.CommaToken),
-                                                SyntaxFactory.Argument(
-                                                    SyntaxFactory.MemberAccessExpression(
+                                                        Literal(endpointMap.EndpointRoute))),
+                                                Token(SyntaxKind.CommaToken),
+                                                Argument(
+                                                    MemberAccessExpression(
                                                         SyntaxKind.SimpleMemberAccessExpression,
-                                                        SyntaxFactory.IdentifierName(endpointMap.ClassName),
-                                                        SyntaxFactory.IdentifierName(endpointMap.FunctionName)))
+                                                        IdentifierName(endpointMap.ClassName),
+                                                        IdentifierName(endpointMap.FunctionName)))
                                             }))),
-                            SyntaxFactory.IdentifierName("WithTags")))
+                            IdentifierName("WithTags")))
                     .WithArgumentList(
-                        SyntaxFactory.ArgumentList(
-                            SyntaxFactory.SingletonSeparatedList(
-                                SyntaxFactory.Argument(
-                                    SyntaxFactory.LiteralExpression(
+                        ArgumentList(
+                            SingletonSeparatedList(
+                                Argument(
+                                    LiteralExpression(
                                         SyntaxKind.StringLiteralExpression,
-                                        SyntaxFactory.Literal(endpointMap.EntityTitle))))))))
+                                        Literal(endpointMap.EntityTitle))))))))
             .ToArray<StatementSyntax>();
         mapBody = mapBody.AddStatements(mapStatements);
 

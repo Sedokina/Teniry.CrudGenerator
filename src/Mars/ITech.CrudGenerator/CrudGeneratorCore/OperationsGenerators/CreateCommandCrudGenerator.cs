@@ -3,13 +3,17 @@ using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
-internal class
-    CreateCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
+internal class CreateCommandCrudGenerator
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
     private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string? _getByIdOperationName;
@@ -54,7 +58,8 @@ internal class
 
         foreach (var property in EntityScheme.NotPrimaryKeys)
         {
-            command.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            command.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_commandName, command.BuildAsString());
@@ -70,16 +75,16 @@ internal class
 
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _dtoName)
+        var constructor = new ConstructorBuilder(_dtoName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             dtoClass.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -102,12 +107,12 @@ internal class
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
+        var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,
@@ -119,15 +124,17 @@ internal class
             ])
             .WithXmlInheritdoc();
 
-        var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericMethodCall("entity", "command", "Adapt", [EntityScheme.EntityName.ToString()], [])
-            .CallAsyncMethod("_db", "AddAsync", ["entity", "cancellation"])
-            .CallAsyncMethod("_db", "SaveChangesAsync", ["cancellation"])
-            .InitVariableFromConstructorCall("result", _dtoName, constructorParams)
-            .ReturnVariable("result");
+        var constructorParams = EntityScheme.PrimaryKeys
+            .Select(x => Property("entity", x.PropertyName))
+            .ToList<ExpressionSyntax>();
+        
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
+            .CallAsyncMethod("_db", "AddAsync", [Variable("entity"), Variable("cancellation")])
+            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")])
+            .Return(CallConstructor(_dtoName, constructorParams));
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -158,19 +165,20 @@ internal class
                 new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
                 new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
             ])
-            .WithProducesResponseTypeAttribute(201)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(201))
             .WithXmlDoc(
                 $"Create {Scheme.EntityScheme.EntityTitle}",
                 201,
                 $"New {Scheme.EntityScheme.EntityTitle} created");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromGenericAsyncMethodCall("result", "commandDispatcher", "DispatchAsync",
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("result", CallGenericAsyncMethod("commandDispatcher",
+                "DispatchAsync",
                 [_commandName, _dtoName],
-                ["command", "cancellation"])
-            .ReturnTypedResultCreated(GetByIdRoute(), "result");
+                [Variable("command"), Variable("cancellation")]))
+            .Return(CallMethod("TypedResults", "Created", [InterpolatedString(GetByIdRoute()), Variable("result")]));
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());

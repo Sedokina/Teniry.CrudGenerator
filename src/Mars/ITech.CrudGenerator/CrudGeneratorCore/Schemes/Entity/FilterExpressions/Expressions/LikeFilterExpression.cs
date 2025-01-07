@@ -2,6 +2,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Cor
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
 
@@ -14,77 +15,76 @@ internal class LikeFilterExpression : FilterExpression
     public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
     {
         var likeArguments =
-            SyntaxFactory.SeparatedList<ArgumentSyntax>(
+            SeparatedList<ArgumentSyntax>(
                 new SyntaxNodeOrToken[]
                 {
-                    SyntaxFactory.Argument(
-                        SyntaxFactory.MemberAccessExpression(
+                    Argument(
+                        MemberAccessExpression(
                             SyntaxKind
                                 .SimpleMemberAccessExpression,
-                            SyntaxFactory.IdentifierName("x"),
-                            SyntaxFactory.IdentifierName(
+                            IdentifierName("x"),
+                            IdentifierName(
                                 entityPropertyToFilter))),
-                    SyntaxFactory.Token(SyntaxKind.CommaToken),
-                    SyntaxFactory.Argument(
-                        SyntaxFactory
-                            .InterpolatedStringExpression(SyntaxFactory.Token(SyntaxKind.InterpolatedStringStartToken))
+                    Token(SyntaxKind.CommaToken),
+                    Argument(
+                        InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
                             .WithContents(
-                                SyntaxFactory.List(
+                                List(
                                     new InterpolatedStringContentSyntax[]
                                     {
-                                        SyntaxFactory.InterpolatedStringText()
-                                            .WithTextToken(SyntaxFactory.Token(SyntaxFactory.TriviaList(),
+                                        InterpolatedStringText()
+                                            .WithTextToken(Token(TriviaList(),
                                                 SyntaxKind.InterpolatedStringTextToken,
                                                 "%",
                                                 "%",
-                                                SyntaxFactory.TriviaList())),
-                                        SyntaxFactory.Interpolation(SyntaxFactory.IdentifierName(filterPropertyName)),
-                                        SyntaxFactory.InterpolatedStringText()
-                                            .WithTextToken(SyntaxFactory.Token(SyntaxFactory.TriviaList(),
+                                                TriviaList())),
+                                        Interpolation(IdentifierName(filterPropertyName)),
+                                        InterpolatedStringText()
+                                            .WithTextToken(Token(TriviaList(),
                                                 SyntaxKind.InterpolatedStringTextToken,
                                                 "%",
                                                 "%",
-                                                SyntaxFactory.TriviaList()))
+                                                TriviaList()))
                                     })))
                 });
 
 
-        var result = SyntaxFactory.IfStatement(
-            SyntaxFactory.IsPatternExpression(
-                SyntaxFactory.IdentifierName(filterPropertyName),
-                SyntaxFactory.UnaryPattern(
-                    SyntaxFactory.ConstantPattern(
-                        SyntaxFactory.LiteralExpression(
+        var result = IfStatement(
+            IsPatternExpression(
+                IdentifierName(filterPropertyName),
+                UnaryPattern(
+                    ConstantPattern(
+                        LiteralExpression(
                             SyntaxKind.NullLiteralExpression)))),
-            SyntaxFactory.Block(
-                SyntaxFactory.SingletonList<StatementSyntax>(
-                    SyntaxFactory.ExpressionStatement(
-                        SyntaxFactory.AssignmentExpression(
+            Block(
+                SingletonList<StatementSyntax>(
+                    ExpressionStatement(
+                        AssignmentExpression(
                             SyntaxKind.SimpleAssignmentExpression,
-                            SyntaxFactory.IdentifierName("query"),
-                            SyntaxFactory.InvocationExpression(
-                                    SyntaxFactory.MemberAccessExpression(
+                            IdentifierName("query"),
+                            InvocationExpression(
+                                    MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
-                                        SyntaxFactory.IdentifierName("query"),
-                                        SyntaxFactory.IdentifierName("Where")))
+                                        IdentifierName("query"),
+                                        IdentifierName("Where")))
                                 .WithArgumentList(
-                                    SyntaxFactory.ArgumentList(
-                                        SyntaxFactory.SingletonSeparatedList(
-                                            SyntaxFactory.Argument(
-                                                SyntaxFactory.SimpleLambdaExpression(
-                                                        SyntaxFactory.Parameter(
-                                                            SyntaxFactory.Identifier("x")))
+                                    ArgumentList(
+                                        SingletonSeparatedList(
+                                            Argument(
+                                                SimpleLambdaExpression(
+                                                        Parameter(
+                                                            Identifier("x")))
                                                     .WithExpressionBody(
-                                                        SyntaxFactory.InvocationExpression(
-                                                                SyntaxFactory.MemberAccessExpression(
+                                                        InvocationExpression(
+                                                                MemberAccessExpression(
                                                                     SyntaxKind.SimpleMemberAccessExpression,
-                                                                    SyntaxFactory.MemberAccessExpression(
+                                                                    MemberAccessExpression(
                                                                         SyntaxKind.SimpleMemberAccessExpression,
-                                                                        SyntaxFactory.IdentifierName("EF"),
-                                                                        SyntaxFactory.IdentifierName("Functions")),
-                                                                    SyntaxFactory.IdentifierName("ILike")))
+                                                                        IdentifierName("EF"),
+                                                                        IdentifierName("Functions")),
+                                                                    IdentifierName("ILike")))
                                                             .WithArgumentList(
-                                                                SyntaxFactory.ArgumentList(likeArguments))))))))))));
+                                                                ArgumentList(likeArguments))))))))))));
         return result;
     }
 }

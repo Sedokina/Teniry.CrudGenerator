@@ -2,8 +2,12 @@ using System.Linq;
 using System.Threading;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 
@@ -46,7 +50,7 @@ internal class GetByIdQueryCrudGenerator
             .WithXmlDoc($"Get {EntityScheme.EntityTitle} by id",
                 $"Returns full entity data of type <see cref=\"{_dtoName}\" />",
                 [
-                    new ResultException(
+                    new XmlDocException(
                         "EfEntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )
@@ -54,16 +58,16 @@ internal class GetByIdQueryCrudGenerator
 
         var constructorParameters = EntityScheme.PrimaryKeys
             .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName)).ToList();
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _queryName)
+        var constructor = new ConstructorBuilder(_queryName)
             .WithParameters(constructorParameters);
-        var constructorBody = new MethodBodyBuilder();
+        var constructorBody = new BlockBuilder();
         foreach (var primaryKey in EntityScheme.PrimaryKeys)
         {
             query.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
         query.WithConstructor(constructor.Build());
 
         WriteFile(_queryName, query.BuildAsString());
@@ -79,7 +83,8 @@ internal class GetByIdQueryCrudGenerator
 
         foreach (var property in EntityScheme.Properties)
         {
-            dtoClass.WithProperty(property.TypeName, property.PropertyName, property.DefaultValue);
+            dtoClass.WithProperty(property.TypeName, property.PropertyName)
+                .WithDefaultValue(property.DefaultValue);
         }
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -103,12 +108,12 @@ internal class GetByIdQueryCrudGenerator
             .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
                 Scheme.DbContextScheme.DbContextName, "_db");
 
-        var constructor = new ConstructorBuilder([SyntaxKind.PublicKeyword], _handlerName)
+        var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
-        var constructorBody = new MethodBodyBuilder()
+        var constructorBody = new BlockBuilder()
             .AssignVariable("_db", "db");
 
-        constructor.WithBody(constructorBody.Build());
+        constructor.WithBody(constructorBody);
 
         var methodBuilder = new MethodBuilder([
                     SyntaxKind.PublicKeyword,
@@ -121,17 +126,17 @@ internal class GetByIdQueryCrudGenerator
             .WithXmlInheritdoc();
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("query");
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitArrayVariable("object", "entityIds", findParameters)
-            .InitVariableFromGenericAsyncMethodCall("entity", "_db", "FindAsync",
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("entity", CallGenericAsyncMethod(
+                "_db",
+                "FindAsync",
                 [EntityScheme.EntityName.ToString()],
-                ["entityIds", "cancellation"])
-            .ThrowIfEntityNotFound("entity", EntityScheme.EntityName.ToString())
-            .InitVariableFromGenericMethodCall("result", "entity", "Adapt", [_dtoName], [])
-            .ReturnVariable("result");
+                [NewArray("object", findParameters), Variable("cancellation")])
+            )
+            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
+            .Return(CallGenericMethod("entity", "Adapt", [_dtoName], []));
 
-
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
         handlerClass.WithMethod(methodBuilder.Build());
 
@@ -162,19 +167,25 @@ internal class GetByIdQueryCrudGenerator
                 .Append(new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"))
                 .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
                 .ToList())
-            .WithProducesResponseTypeAttribute(_dtoName)
+            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
             .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle} by id",
                 200,
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
-        var methodBodyBuilder = new MethodBodyBuilder()
-            .InitVariableFromConstructorCall("query", _queryName, EntityScheme.PrimaryKeys)
-            .InitVariableFromGenericAsyncMethodCall("result", "queryDispatcher", "DispatchAsync",
+        var methodBodyBuilder = new BlockBuilder()
+            .InitVariable("query",
+                CallConstructor(_queryName, EntityScheme.PrimaryKeys
+                    .Select(x => Variable(x.PropertyNameAsMethodParameterName))
+                    .ToList<ExpressionSyntax>()))
+            .InitVariable("result", CallGenericAsyncMethod(
+                "queryDispatcher",
+                "DispatchAsync",
                 [_queryName, _dtoName],
-                ["query", "cancellation"])
-            .ReturnTypedResultOk("result");
+                [Variable("query"), Variable("cancellation")])
+            )
+            .Return(CallMethod("TypedResults", "Ok", [Variable("result")]));
 
-        methodBuilder.WithBody(methodBodyBuilder.Build());
+        methodBuilder.WithBody(methodBodyBuilder);
         endpointClass.WithMethod(methodBuilder.Build());
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
