@@ -6,6 +6,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -172,8 +173,10 @@ internal class GetByIdQueryCrudGenerator
                 $"Returns full {Scheme.EntityScheme.EntityTitle} data");
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("query", CallConstructor(_queryName,
-                EntityScheme.PrimaryKeys.Select(x => x.PropertyNameAsMethodParameterName).ToList()))
+            .InitVariable("query",
+                CallConstructor(_queryName, EntityScheme.PrimaryKeys
+                    .Select(x => Variable(x.PropertyNameAsMethodParameterName))
+                    .ToList<ExpressionSyntax>()))
             .InitVariable("result", CallGenericAsyncMethod(
                 "queryDispatcher",
                 "DispatchAsync",

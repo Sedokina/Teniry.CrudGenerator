@@ -10,18 +10,16 @@ public static class SimpleSyntaxFactory
 {
     public static ObjectCreationExpressionSyntax CallConstructor(
         string className,
-        List<string> constructorArguments)
+        List<ExpressionSyntax> constructorArguments)
     {
         return ObjectCreationExpression(
             Token(SyntaxKind.NewKeyword),
             ParseTypeName(className),
-            ArgumentList(SeparatedList(
-                constructorArguments.Select(x => Argument(IdentifierName(x))).ToArray()
-            )),
+            ArgumentList(SeparatedList(constructorArguments.Select(Argument).ToArray())),
             null
         );
     }
-    
+
     public static InvocationExpressionSyntax CallMethod(
         string objectWithMethod,
         string methodNameToCall,
@@ -86,6 +84,14 @@ public static class SimpleSyntaxFactory
     public static IdentifierNameSyntax Variable(string variableName)
     {
         return IdentifierName(variableName);
+    }
+
+    public static MemberAccessExpressionSyntax Property(string objectName, string propertyName)
+    {
+        return MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            IdentifierName(objectName),
+            IdentifierName(propertyName));
     }
 
     public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)

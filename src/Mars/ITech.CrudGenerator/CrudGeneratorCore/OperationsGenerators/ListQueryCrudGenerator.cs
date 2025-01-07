@@ -324,7 +324,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
             .AssignVariable("filter.Sorts", "query.Sort")
             .InitVariable("items", linqBuilder.BuildAsyncCall())
-            .Return(CallConstructor(_dtoName, ["items.ToList()", "items.GetPage()"]));
+            .Return(CallConstructor(_dtoName, [CallMethod("items", "ToList", []), CallMethod("items", "GetPage", [])]));
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());

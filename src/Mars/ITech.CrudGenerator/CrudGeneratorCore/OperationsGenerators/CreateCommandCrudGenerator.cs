@@ -7,6 +7,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFact
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.SimpleSyntaxFactory;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -123,7 +124,10 @@ internal class CreateCommandCrudGenerator
             ])
             .WithXmlInheritdoc();
 
-        var constructorParams = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("entity");
+        var constructorParams = EntityScheme.PrimaryKeys
+            .Select(x => Property("entity", x.PropertyName))
+            .ToList<ExpressionSyntax>();
+        
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
             .CallAsyncMethod("_db", "AddAsync", [Variable("entity"), Variable("cancellation")])
