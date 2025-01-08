@@ -21,10 +21,12 @@ public class GetListQueryDefaultFactoryTests
         _sut = new GetListQueryDefaultConfigurationBulderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
+        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration
+        {
+            ClassMetadata = new InternalEntityClassMetadata("TestEntity", "", "", [])
+        };
         var entitySchemeFactory = new EntitySchemeFactory();
-        var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
-        _entityScheme = entitySchemeFactory.Construct(symbol, new InternalEntityGeneratorConfiguration(),
-            new DbContextSchemeStub());
+        _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]

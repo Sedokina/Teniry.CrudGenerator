@@ -6,6 +6,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using ITech.CrudGenerator.Tests.Helpers;
+using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
@@ -21,10 +22,14 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         _sut = new UpdateCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
+        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration
+        {
+            ClassMetadata = new InternalEntityClassMetadata("TestEntity", "", "", [
+                new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
+            ])
+        };
         var entitySchemeFactory = new EntitySchemeFactory();
-        var symbol = DynamicClassBuilder.GenerateEntity("TestEntity", "public Guid Id {{ get; set; }}");
-        _entityScheme = entitySchemeFactory.Construct(symbol, new InternalEntityGeneratorConfiguration(),
-            new DbContextSchemeStub());
+        _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
