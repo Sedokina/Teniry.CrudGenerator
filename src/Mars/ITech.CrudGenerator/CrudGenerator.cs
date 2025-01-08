@@ -19,6 +19,9 @@ public sealed class CrudGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // var diagnostics = context.CompilationProvider.Select((compilation, token) => Diagnostic.Create());
+        // context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
+        
         var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
