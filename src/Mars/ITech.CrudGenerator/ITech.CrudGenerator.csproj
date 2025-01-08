@@ -63,4 +63,8 @@
     <ItemGroup>
         <InternalsVisibleTo Include="ITech.CrudGenerator.Tests"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="CrudGeneratorCore\ConfigurationsReceiver\" />
+    </ItemGroup>
 </Project>
