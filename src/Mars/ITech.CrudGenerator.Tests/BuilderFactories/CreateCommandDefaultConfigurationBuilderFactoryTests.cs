@@ -21,10 +21,8 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         _sut = new CreateCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
-        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration
-        {
-            ClassMetadata = new InternalEntityClassMetadata("TestEntity", "", "", [])
-        };
+        var internalEntityGeneratorConfiguration =
+            new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }

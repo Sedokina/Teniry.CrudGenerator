@@ -10,7 +10,6 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Extensions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,13 +17,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace ITech.CrudGenerator;
 
 [Generator]
-public class CrudGenerator : IIncrementalGenerator
+public sealed class CrudGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var generatorConfigurationsProviders = context.SyntaxProvider.CreateSyntaxProvider(
-            predicate: (node, _) => IsInheritedFrom(node, "EntityGeneratorConfiguration"),
-            transform: (syntaxContext, _) => Transform(syntaxContext)
+            predicate: (node, _) => CheckIfNodeIsInheritedFromClass(node, "EntityGeneratorConfiguration"),
+            transform: (syntaxContext, _) => TransformFoundGeneratorConfigurationsToInternalScheme(syntaxContext)
         );
 
         var dbContextSchemeProviders = context.SyntaxProvider.ForAttributeWithMetadataName(
@@ -65,7 +64,7 @@ public class CrudGenerator : IIncrementalGenerator
         });
     }
 
-    private static bool IsInheritedFrom(SyntaxNode node, string className)
+    private static bool CheckIfNodeIsInheritedFromClass(SyntaxNode node, string className)
     {
         return node is ClassDeclarationSyntax classDeclarationSyntax &&
                classDeclarationSyntax is { BaseList.Types.Count: > 0 } &&
@@ -74,34 +73,15 @@ public class CrudGenerator : IIncrementalGenerator
                              baseClass.Identifier.ToString().Equals(className));
     }
 
-    private InternalEntityGeneratorConfiguration Transform(GeneratorSyntaxContext syntaxContext)
+    private InternalEntityGeneratorConfiguration TransformFoundGeneratorConfigurationsToInternalScheme(
+        GeneratorSyntaxContext syntaxContext
+    )
     {
-        var factory = new InternalEntityGeneratorConfigurationFactory();
         var symbol = syntaxContext.SemanticModel.GetDeclaredSymbol(syntaxContext.Node) as INamedTypeSymbol;
-        var result = factory.Construct(symbol, syntaxContext.SemanticModel.Compilation);
-        // TODO: parse result.ClassMetadata
-
-        var entityClassTypeSymbol = symbol.BaseType.TypeArguments.First();
-        var properties = entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
-            .Select(x => new InternalEntityClassPropertyMetadata(
-                x.Name,
-                x.Type.ToString(),
-                x.Type.MetadataName,
-                x.Type.SpecialType, x.Type.IsSimple(),
-                x.Type.NullableAnnotation == NullableAnnotation.Annotated)
-            );
-        var internalEntityClassMetadata = new InternalEntityClassMetadata(
-            entityClassTypeSymbol.Name,
-            entityClassTypeSymbol.ContainingNamespace.ToString(),
-            entityClassTypeSymbol.ContainingAssembly.Name,
-            new EquatableList<InternalEntityClassPropertyMetadata>(properties)
-        );
-
-        result.ClassMetadata = internalEntityClassMetadata;
-
+        var result = InternalEntityGeneratorConfigurationFactory
+            .Construct(symbol, syntaxContext.SemanticModel.Compilation);
         return result;
     }
-
 
     internal static void Execute(
         SourceProductionContext context,

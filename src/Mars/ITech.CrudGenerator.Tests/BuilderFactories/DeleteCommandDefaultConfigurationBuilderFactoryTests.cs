@@ -22,12 +22,11 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         _sut = new DeleteCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
-        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration
-        {
-            ClassMetadata = new InternalEntityClassMetadata("TestEntity", "", "", [
+        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
+            new InternalEntityClassMetadata("TestEntity", "", "", [
                 new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
             ])
-        };
+        );
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }

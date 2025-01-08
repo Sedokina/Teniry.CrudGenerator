@@ -10,13 +10,6 @@ namespace ITech.CrudGenerator.Tests.Schemes;
 
 public class InternalEntityGeneratorConfigurationFactoryTests
 {
-    private readonly InternalEntityGeneratorConfigurationFactory _sut;
-
-    public InternalEntityGeneratorConfigurationFactoryTests()
-    {
-        _sut = new();
-    }
-
     [Fact]
     public void Should_GetEntityTitleFromSymbol()
     {
@@ -24,7 +17,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         var generator = CreateEntityGeneratorClass("Title = \"My custom title\";");
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.Title.Should().Be("My custom title");
@@ -37,7 +30,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         var generator = CreateEntityGeneratorClass("TitlePlural = \"My custom title plural\";");
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.TitlePlural.Should().Be("My custom title plural");
@@ -53,7 +46,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
             $"DefaultSort = new EntityGeneratorDefaultSort<MyCustomClass>(\"{direction}\", x => x.{propertyName});");
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.DefaultSort.Should().NotBeNull();
@@ -82,7 +75,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.CreateOperation.Should().NotBeNull();
@@ -119,7 +112,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.CreateOperation.Should().NotBeNull();
@@ -156,7 +149,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.UpdateOperation.Should().NotBeNull();
@@ -192,7 +185,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.DeleteOperation.Should().NotBeNull();
@@ -228,7 +221,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.GetByIdOperation.Should().NotBeNull();
@@ -266,7 +259,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         );
 
         // Act
-        var actual = _sut.Construct(generator.Symbol, generator.Compilation);
+        var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
 
         // Assert
         actual.GetListOperation.Should().NotBeNull();

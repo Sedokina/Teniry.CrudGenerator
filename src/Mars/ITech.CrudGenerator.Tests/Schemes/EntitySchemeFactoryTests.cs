@@ -17,10 +17,7 @@ public class EntitySchemeFactoryTests
     public EntitySchemeFactoryTests()
     {
         _sut = new();
-        _internalEntityGeneratorConfiguration = new()
-        {
-            ClassMetadata = new InternalEntityClassMetadata("MyEntityName", "", "", [])
-        };
+        _internalEntityGeneratorConfiguration = new(new InternalEntityClassMetadata("MyEntityName", "", "", []));
         _dbContextScheme = new DbContextSchemeStub();
     }
 

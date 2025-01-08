@@ -7,9 +7,9 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
-internal class InternalEntityGeneratorConfiguration
+internal record InternalEntityGeneratorConfiguration(InternalEntityClassMetadata ClassMetadata)
 {
-    public InternalEntityClassMetadata ClassMetadata { get; set; }
+    public InternalEntityClassMetadata ClassMetadata { get; set; } = ClassMetadata;
     public string? Title { get; set; }
     public string? TitlePlural { get; set; }
     public EntityDefaultSort? DefaultSort { get; set; }
@@ -73,8 +73,13 @@ internal record InternalEntityClassPropertyMetadata(
 
 public class EquatableList<T> : List<T>, IEquatable<EquatableList<T>>
 {
-    public EquatableList() : base() { }
-    public EquatableList(IEnumerable<T> collection) : base(collection) { }
+    public EquatableList() : base()
+    {
+    }
+
+    public EquatableList(IEnumerable<T> collection) : base(collection)
+    {
+    }
 
     public bool Equals(EquatableList<T>? other)
     {

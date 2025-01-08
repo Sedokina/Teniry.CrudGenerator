@@ -21,14 +21,13 @@ public class CreateCommandCrudGeneratorTests
             GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var cqrsOperationsSharedConfigurationBuilder =
             new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
-        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration
-        {
-            ClassMetadata = new InternalEntityClassMetadata("TestEntity", "", "",
+        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
+            new InternalEntityClassMetadata("TestEntity", "", "",
             [
                 new("Id", "Guid", "Guid", SpecialType.None, true, false),
                 new("Name", "string", "Guid", SpecialType.System_String, true, false)
             ])
-        };
+        );
         var entitySchemeFactory = new EntitySchemeFactory();
         var entityScheme =
             entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());

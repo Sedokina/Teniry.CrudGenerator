@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.Configuration;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Extensions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.ExpressionSyntaxParsers;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using Microsoft.CodeAnalysis;
@@ -11,11 +12,11 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 
 internal class InternalEntityGeneratorConfigurationFactory
 {
-    internal InternalEntityGeneratorConfiguration Construct(
+    internal static InternalEntityGeneratorConfiguration Construct(
         INamedTypeSymbol? generatorSymbol,
         Compilation compilation)
     {
-        var generatorScheme = new InternalEntityGeneratorConfiguration();
+        var generatorScheme = new InternalEntityGeneratorConfiguration(GetEntityClassMetadata(generatorSymbol));
         if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration))
         {
             return generatorScheme;
@@ -25,7 +26,6 @@ internal class InternalEntityGeneratorConfigurationFactory
         {
             return generatorScheme;
         }
-
 
         var assignmentExpressionParer = ConstructAvailableParsers();
 
@@ -45,6 +45,29 @@ internal class InternalEntityGeneratorConfigurationFactory
         }
 
         return generatorScheme;
+    }
+
+    private static InternalEntityClassMetadata GetEntityClassMetadata(INamedTypeSymbol? generatorSymbol)
+    {
+        var entityClassTypeSymbol = generatorSymbol?.BaseType?.TypeArguments.FirstOrDefault();
+        if (entityClassTypeSymbol == null) return new InternalEntityClassMetadata("", "", "", []);
+        var properties = entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
+            .Select(x => new InternalEntityClassPropertyMetadata(
+                x.Name,
+                x.Type.ToString(),
+                x.Type.MetadataName,
+                x.Type.SpecialType,
+                x.Type.IsSimple(),
+                x.Type.NullableAnnotation == NullableAnnotation.Annotated)
+            );
+        var internalEntityClassMetadata = new InternalEntityClassMetadata(
+            entityClassTypeSymbol.Name,
+            entityClassTypeSymbol.ContainingNamespace.ToString(),
+            entityClassTypeSymbol.ContainingAssembly.Name,
+            new EquatableList<InternalEntityClassPropertyMetadata>(properties)
+        );
+
+        return internalEntityClassMetadata;
     }
 
     private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers()
