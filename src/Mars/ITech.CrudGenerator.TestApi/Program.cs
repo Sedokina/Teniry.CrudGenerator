@@ -5,6 +5,8 @@ using ITech.Cqrs.Cqrs.ApplicationEvents;
 using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +22,7 @@ var connectionStringDbName = builder.Configuration.GetConnectionString("DefaultC
                        );
 
 // For Guid to work with mongo db
-#pragma warning disable CS0618 // Type or member is obsolete
-BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
-#pragma warning restore CS0618 // Type or member is obsolete
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
 builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, connectionStringDbName));
 
