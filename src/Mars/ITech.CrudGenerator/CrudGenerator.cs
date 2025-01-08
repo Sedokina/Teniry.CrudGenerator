@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
@@ -11,8 +9,8 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator;
 
@@ -21,19 +19,10 @@ public sealed class CrudGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var generatorConfigurationsProviders = context.SyntaxProvider.CreateSyntaxProvider(
-            predicate: (node, _) => CheckIfNodeIsInheritedFromClass(node, "EntityGeneratorConfiguration"),
-            transform: (syntaxContext, _) => TransformFoundGeneratorConfigurationsToInternalScheme(syntaxContext)
-        );
+        var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
+        var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
-        var dbContextSchemeProviders = context.SyntaxProvider
-            .ForAttributeWithMetadataName(
-                typeof(UseDbContextAttribute).FullName ?? "",
-                predicate: (_, _) => true,
-                transform: (syntaxContext, _) => DbContextSchemeFactory.Construct(syntaxContext)
-            );
-
-        List<EndpointMap> endpointsMaps = new();
+        List<EndpointMap> endpointsMaps = [];
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
 
@@ -59,25 +48,6 @@ public sealed class CrudGenerator : IIncrementalGenerator
             mapEndpointsGenerator.RunGenerator();
             WriteFiles(productionContext, mapEndpointsGenerator.GeneratedFiles);
         });
-    }
-
-    private static bool CheckIfNodeIsInheritedFromClass(SyntaxNode node, string className)
-    {
-        return node is ClassDeclarationSyntax classDeclarationSyntax &&
-               classDeclarationSyntax is { BaseList.Types.Count: > 0 } &&
-               classDeclarationSyntax.BaseList.Types
-                   .Any(x => x.Type is GenericNameSyntax baseClass &&
-                             baseClass.Identifier.ToString().Equals(className));
-    }
-
-    private InternalEntityGeneratorConfiguration TransformFoundGeneratorConfigurationsToInternalScheme(
-        GeneratorSyntaxContext syntaxContext
-    )
-    {
-        var symbol = syntaxContext.SemanticModel.GetDeclaredSymbol(syntaxContext.Node) as INamedTypeSymbol;
-        var result = InternalEntityGeneratorConfigurationFactory
-            .Construct(symbol, syntaxContext.SemanticModel.Compilation);
-        return result;
     }
 
     private static void Execute(
