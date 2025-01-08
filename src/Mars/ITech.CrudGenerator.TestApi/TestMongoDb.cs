@@ -32,7 +32,7 @@ public class TestMongoDb : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
         modelBuilder.Entity<Currency>().ToCollection("currencies");
         modelBuilder.Entity<Country>().ToCollection("countries");
         modelBuilder.Entity<Currency>().HasOne(x => x.Country)

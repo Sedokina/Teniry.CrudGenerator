@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
@@ -50,11 +52,6 @@ public class TestApiFixture : IAsyncLifetime
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         var connectionStringDbName = _configuration.GetConnectionString("DefaultConnectionDbName");
-        
-#pragma warning disable CS0618 // Type or member is obsolete
-        BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V2;
-        BsonDefaults.GuidRepresentation = GuidRepresentation.Standard;
-#pragma warning restore CS0618 // Type or member is obsolete
         
         var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>()
             .UseMongoDB(connectionString!, connectionStringDbName!)
