@@ -139,7 +139,7 @@ internal class EntitySchemeFactory
             return [];
         }
 
-        if (propertyMetadata.IsNullable)
+        if (!propertyMetadata.IsNullable)
         {
             propertyTypeName += "?";
         }

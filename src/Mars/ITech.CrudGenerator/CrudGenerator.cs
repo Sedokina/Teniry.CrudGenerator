@@ -89,11 +89,11 @@ public class CrudGenerator : IIncrementalGenerator
             ContainingAssembly = entityClassTypeSymbol.ContainingAssembly.Name,
             Properties =
             [
-                ..symbol.GetMembers().OfType<IPropertySymbol>()
+                ..entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
                     .Select(x => new InternalEntityClassPropertyMetadata
                     {
                         PropertyName = x.Name,
-                        TypeName = x.Type.Name,
+                        TypeName = x.Type.ToString(),
                         TypeMetadataName = x.Type.MetadataName,
                         SpecialType = x.Type.SpecialType,
                         IsSimpleType = x.Type.IsSimple(),
