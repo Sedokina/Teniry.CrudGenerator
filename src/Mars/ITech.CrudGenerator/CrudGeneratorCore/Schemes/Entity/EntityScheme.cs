@@ -61,8 +61,8 @@ internal class EntityTitle(string title, string pluralTitle)
     }
 }
 
-internal class EntityDefaultSort(string direction, string propertyName)
+internal record EntityDefaultSort(string Direction, string PropertyName)
 {
-    public string Direction { get; set; } = direction;
-    public string PropertyName { get; set; } = propertyName;
+    public string Direction { get; set; } = Direction;
+    public string PropertyName { get; set; } = PropertyName;
 }

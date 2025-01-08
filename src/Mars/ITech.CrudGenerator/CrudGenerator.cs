@@ -39,7 +39,7 @@ public class CrudGenerator : IIncrementalGenerator
             .Select((configuration, token) => new EndpointMap(configuration.ClassMetadata.ClassName, "some", "things",
                 "gotta", "give", "well"))
             .Collect();
-        
+
         List<EndpointMap> endpointsMaps = new();
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
@@ -56,7 +56,7 @@ public class CrudGenerator : IIncrementalGenerator
                     endpointsMaps
                 )
         );
-        
+
         context.RegisterSourceOutput(r, (productionContext, maps) =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfigurationBuilder);
@@ -82,26 +82,20 @@ public class CrudGenerator : IIncrementalGenerator
         // TODO: parse result.ClassMetadata
 
         var entityClassTypeSymbol = symbol.BaseType.TypeArguments.First();
-        var internalEntityClassMetadata = new InternalEntityClassMetadata
-        {
-            ClassName = entityClassTypeSymbol.Name,
-            ContainingNamespance = entityClassTypeSymbol.ContainingNamespace.ToString(),
-            ContainingAssembly = entityClassTypeSymbol.ContainingAssembly.Name,
-            Properties =
-            [
-                ..entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
-                    .Select(x => new InternalEntityClassPropertyMetadata
-                    {
-                        PropertyName = x.Name,
-                        TypeName = x.Type.ToString(),
-                        TypeMetadataName = x.Type.MetadataName,
-                        SpecialType = x.Type.SpecialType,
-                        IsSimpleType = x.Type.IsSimple(),
-                        IsNullable = x.NullableAnnotation == NullableAnnotation.Annotated,
-                        IsRangeType = x.Type.IsRangeType(),
-                    })
-            ]
-        };
+        var properties = entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
+            .Select(x => new InternalEntityClassPropertyMetadata(
+                x.Name,
+                x.Type.ToString(),
+                x.Type.MetadataName,
+                x.Type.SpecialType, x.Type.IsSimple(),
+                x.Type.NullableAnnotation == NullableAnnotation.Annotated)
+            );
+        var internalEntityClassMetadata = new InternalEntityClassMetadata(
+            entityClassTypeSymbol.Name,
+            entityClassTypeSymbol.ContainingNamespace.ToString(),
+            entityClassTypeSymbol.ContainingAssembly.Name,
+            new EquatableList<InternalEntityClassPropertyMetadata>(properties)
+        );
 
         result.ClassMetadata = internalEntityClassMetadata;
 

@@ -1,6 +1,6 @@
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
-internal class InternalEntityGeneratorDeleteOperationConfiguration
+internal record InternalEntityGeneratorDeleteOperationConfiguration
 {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }

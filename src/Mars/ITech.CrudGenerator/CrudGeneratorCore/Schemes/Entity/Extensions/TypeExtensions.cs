@@ -60,17 +60,4 @@ public static class TypeExtensions
                 return false;
         }
     }
-
-    public static bool IsRangeType(this ITypeSymbol type)
-    {
-        if (type.SpecialType == SpecialType.System_Boolean ||
-            type.SpecialType == SpecialType.System_Char ||
-            type.SpecialType == SpecialType.System_String ||
-            type.MetadataName == "Guid")
-        {
-            return false;
-        }
-
-        return IsSimple(type);
-    }
 }

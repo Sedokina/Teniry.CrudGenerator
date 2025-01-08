@@ -33,7 +33,7 @@ internal class EntitySchemeFactory
         return new EntityScheme(
             entityName,
             entityTitle,
-            classMetadata.ContainingNamespance,
+            classMetadata.ContainingNamespace,
             classMetadata.ContainingAssembly,
             internalEntityGeneratorConfiguration.DefaultSort,
             properties,
@@ -78,7 +78,7 @@ internal class EntitySchemeFactory
 
     private List<EntityProperty> GetEntityProperties(
         string className,
-        ImmutableArray<InternalEntityClassPropertyMetadata> propertiesMetadata,
+        EquatableList<InternalEntityClassPropertyMetadata> propertiesMetadata,
         DbContextScheme dbContextScheme
     )
     {
@@ -144,7 +144,7 @@ internal class EntitySchemeFactory
             propertyTypeName += "?";
         }
 
-        if (propertyMetadata.IsRangeType)
+        if (propertyMetadata.IsRangeType())
         {
             if (dbContextScheme.ContainsFilter(FilterType.GreaterThanOrEqual) &&
                 dbContextScheme.ContainsFilter(FilterType.LessThan))
