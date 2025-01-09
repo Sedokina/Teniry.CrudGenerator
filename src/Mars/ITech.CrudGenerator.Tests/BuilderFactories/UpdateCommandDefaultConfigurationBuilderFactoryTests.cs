@@ -35,7 +35,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
         // Act
-        var actual = _sut.Construct(
+        var actual = _sut.ConstructBuilder(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             new InternalEntityGeneratorUpdateOperationConfiguration());
@@ -50,7 +50,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
     {
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 new InternalEntityGeneratorUpdateOperationConfiguration())
@@ -81,7 +81,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)
@@ -120,7 +120,7 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)

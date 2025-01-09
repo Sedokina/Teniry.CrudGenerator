@@ -12,11 +12,23 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private CqrsOperationWithoutReturnValueConfigurationBuilder _builder;
-    private EntityScheme _entityScheme;
-    private DbContextScheme _dbContextScheme;
+    private readonly CqrsOperationWithoutReturnValueConfigurationBuilder _builder;
+    private readonly EntityScheme _entityScheme;
+    private readonly DbContextScheme _dbContextScheme;
 
-    public CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
+    public DeleteCommandDefaultConfigurationBuilderFactory(
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme)
+    {
+        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        _entityScheme = entityScheme;
+        _dbContextScheme = dbContextScheme;
+    }
+
+    public CqrsOperationWithoutReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration)

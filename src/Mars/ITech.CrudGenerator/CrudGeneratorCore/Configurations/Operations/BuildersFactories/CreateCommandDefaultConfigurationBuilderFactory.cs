@@ -12,13 +12,25 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private CqrsOperationWithReturnValueConfigurationBuilder _builder;
-    private EntityScheme _entityScheme;
-    private DbContextScheme _dbContextScheme;
+    private readonly CqrsOperationWithReturnValueConfigurationBuilder _builder;
+    private readonly EntityScheme _entityScheme;
+    private readonly DbContextScheme _dbContextScheme;
     private CqrsOperationWithReturnValueGeneratorConfiguration _getByIdQueryConfiguration;
     private CqrsOperationWithReturnValueConfigurationBuilder _getByIdQueryConfigurationBuilder;
 
-    public CqrsOperationWithReturnValueConfigurationBuilder Construct(
+    public CreateCommandDefaultConfigurationBuilderFactory(
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme)
+    {
+        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        _entityScheme = entityScheme;
+        _dbContextScheme = dbContextScheme;
+    }
+    
+    public CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration)

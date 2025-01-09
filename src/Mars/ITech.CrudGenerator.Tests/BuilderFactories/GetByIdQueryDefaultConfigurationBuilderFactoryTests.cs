@@ -35,7 +35,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
         // Act
-        var actual = _sut.Construct(
+        var actual = _sut.ConstructBuilder(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             new InternalEntityGeneratorGetByIdOperationConfiguration());
@@ -50,7 +50,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     {
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 new InternalEntityGeneratorGetByIdOperationConfiguration())
@@ -81,7 +81,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)
@@ -121,7 +121,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)

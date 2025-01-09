@@ -33,7 +33,7 @@ public class CreateCommandCrudGeneratorTests
             entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
         var configuration = new CreateCommandDefaultConfigurationBuilderFactory()
-            .Construct(
+            .ConstructBuilder(
                 globalCqrsGeneratorConfigurationBuilder,
                 cqrsOperationsSharedConfigurationBuilder,
                 new InternalEntityGeneratorCreateOperationConfiguration())

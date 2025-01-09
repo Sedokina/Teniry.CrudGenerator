@@ -11,14 +11,14 @@ namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
 public class GetListQueryDefaultFactoryTests
 {
-    private readonly GetListQueryDefaultConfigurationBulderFactory _sut;
+    private readonly GetListQueryDefaultConfigurationBuilderFactory _sut;
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
     public GetListQueryDefaultFactoryTests()
     {
-        _sut = new GetListQueryDefaultConfigurationBulderFactory();
+        _sut = new GetListQueryDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration =
@@ -31,7 +31,7 @@ public class GetListQueryDefaultFactoryTests
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
         // Act
-        var actual = _sut.Construct(
+        var actual = _sut.ConstructBuilder(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             new InternalEntityGeneratorGetListOperationConfiguration());
@@ -46,7 +46,7 @@ public class GetListQueryDefaultFactoryTests
     {
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 new InternalEntityGeneratorGetListOperationConfiguration())
@@ -77,7 +77,7 @@ public class GetListQueryDefaultFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)
@@ -116,7 +116,7 @@ public class GetListQueryDefaultFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)

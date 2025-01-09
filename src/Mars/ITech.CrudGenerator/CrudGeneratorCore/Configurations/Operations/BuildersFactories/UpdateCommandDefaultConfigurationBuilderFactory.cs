@@ -6,18 +6,29 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder _builder;
-    private EntityScheme _entityScheme;
-    private DbContextScheme _dbContextScheme;
+    private readonly CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder _builder;
+    private readonly EntityScheme _entityScheme;
+    private readonly DbContextScheme _dbContextScheme;
 
-    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Construct(
+    public UpdateCommandDefaultConfigurationBuilderFactory(
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme)
+    {
+        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        _entityScheme = entityScheme;
+        _dbContextScheme = dbContextScheme;
+    }
+
+    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)

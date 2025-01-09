@@ -10,13 +10,25 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Oper
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
-internal class GetListQueryDefaultConfigurationBulderFactory : IConfigurationBuilderFactory
+internal class GetListQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private CqrsListOperationConfigurationBuilder _builder;
-    private EntityScheme _entityScheme;
-    private DbContextScheme _dbContextScheme;
+    private readonly CqrsListOperationConfigurationBuilder _builder;
+    private readonly EntityScheme _entityScheme;
+    private readonly DbContextScheme _dbContextScheme;
 
-    public CqrsListOperationConfigurationBuilder Construct(
+    public GetListQueryDefaultConfigurationBuilderFactory(
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme)
+    {
+        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        _entityScheme = entityScheme;
+        _dbContextScheme = dbContextScheme;
+    }
+
+    public CqrsListOperationConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration)

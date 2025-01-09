@@ -35,7 +35,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
         // Act
-        var actual = _sut.Construct(
+        var actual = _sut.ConstructBuilder(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             new InternalEntityGeneratorDeleteOperationConfiguration());
@@ -50,7 +50,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     {
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 new InternalEntityGeneratorDeleteOperationConfiguration())
@@ -80,7 +80,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)
@@ -118,7 +118,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 
         // Act
         var actual = _sut
-            .Construct(
+            .ConstructBuilder(
                 _globalCqrsGeneratorConfigurationBuilder,
                 _cqrsOperationsSharedConfigurationBuilder,
                 operationConfiguration)

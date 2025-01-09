@@ -6,18 +6,29 @@ using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private CqrsOperationWithReturnValueConfigurationBuilder _builder;
-    private EntityScheme _entityScheme;
-    private DbContextScheme _dbContextScheme;
+    private readonly CqrsOperationWithReturnValueConfigurationBuilder _builder;
+    private readonly EntityScheme _entityScheme;
+    private readonly DbContextScheme _dbContextScheme;
 
-    public CqrsOperationWithReturnValueConfigurationBuilder Construct(
+    public GetByIdQueryDefaultConfigurationBuilderFactory(
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme,
+        DbContextScheme dbContextScheme)
+    {
+        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        _entityScheme = entityScheme;
+        _dbContextScheme = dbContextScheme;
+    }
+
+    public CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration)
@@ -51,11 +62,11 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
     {
         var getByIdQueryConfiguration = _builder.Build(_entityScheme);
         if (!getByIdQueryConfiguration.Generate) return [];
-        var getByIdQueryScheme =
-            new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
-                _entityScheme,
-                _dbContextScheme,
-                getByIdQueryConfiguration);
+        var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+            _entityScheme,
+            _dbContextScheme,
+            getByIdQueryConfiguration
+        );
         var generateGetByIdQuery = new GetByIdQueryCrudGenerator(getByIdQueryScheme);
         generateGetByIdQuery.RunGenerator();
         if (generateGetByIdQuery.EndpointMap is not null)
