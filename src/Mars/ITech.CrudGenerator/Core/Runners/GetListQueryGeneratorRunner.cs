@@ -12,7 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal class GetListQueryGeneratorRunner : IGeneratorRunner
+internal record GetListQueryGeneratorRunner : IGeneratorRunner
 {
     public CqrsListOperationGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;

@@ -10,8 +10,9 @@ public class IncrementalGeneratorTests
     [
         "GeneratorConfigurationsProviders",
         "DbContextSchemeProviders",
-        "generatorConfigurationsWithDbContextProviders",
-        "entitySchemeFactoryWithDbContextProviders"
+        "GeneratorConfigurationWithDbContextProviders",
+        "EntitySchemeFactoryWithDbContextProviders",
+        "GeneratorRunnerProviders"
     ];
 
     [Fact]

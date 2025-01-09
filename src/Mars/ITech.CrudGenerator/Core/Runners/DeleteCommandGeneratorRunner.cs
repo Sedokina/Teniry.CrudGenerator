@@ -12,7 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal class DeleteCommandGeneratorRunner : IGeneratorRunner
+internal record DeleteCommandGeneratorRunner : IGeneratorRunner
 {
     public CqrsOperationWithoutReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;

@@ -12,7 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal class UpdateCommandGeneratorRunner : IGeneratorRunner
+internal record UpdateCommandGeneratorRunner : IGeneratorRunner
 {
     public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
@@ -59,7 +59,7 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurator = new(operationConfiguration?.RouteName ??
-                                                "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
+                                        "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             },
             entityScheme
         );
