@@ -129,7 +129,7 @@ public class GetByIdQueryGeneratorRunnerTests
     {
         return new GetByIdQueryGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
-            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
+            new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()

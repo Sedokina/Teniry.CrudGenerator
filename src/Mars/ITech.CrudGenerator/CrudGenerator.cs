@@ -22,7 +22,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
 
         List<EndpointMap> endpointsMaps = [];
         var globalConfiguration = GlobalCrudGeneratorConfigurationFactory.Construct();
-        var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
+        var sharedConfigurationBuilder = new CqrsOperationsSharedConfiguratorFactory().Construct();
 
         var generatorRunnerProviders =
             generatorConfigurationsProviders

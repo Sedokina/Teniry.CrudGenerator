@@ -1,8 +1,8 @@
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 
-internal class CqrsOperationsSharedConfigurationBuilderFactory
+internal class CqrsOperationsSharedConfiguratorFactory
 {
-    public CqrsOperationsSharedConfigurationBuilder Construct()
+    public CqrsOperationsSharedConfigurator Construct()
     {
         return new()
         {

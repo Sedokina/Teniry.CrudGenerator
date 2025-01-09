@@ -125,7 +125,7 @@ public class GetListQueryGeneratorRunnerTests
     {
         return new GetListQueryGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
-            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
+            new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()

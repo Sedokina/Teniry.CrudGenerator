@@ -22,7 +22,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
 
     public CreateCommandGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme,
@@ -42,7 +42,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
 
     private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructBuilder(
         GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)
     {

@@ -13,7 +13,7 @@ internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturn
 
     public CqrsListOperationGeneratorConfiguration(bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,
         NameConfigurator operationGroup,

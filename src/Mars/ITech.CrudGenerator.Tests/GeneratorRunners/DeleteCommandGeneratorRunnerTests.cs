@@ -125,7 +125,7 @@ public class DeleteCommandGeneratorRunnerTests
     {
         return new DeleteCommandGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
-            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
+            new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()

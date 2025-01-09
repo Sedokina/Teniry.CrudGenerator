@@ -21,7 +21,7 @@ public class CreateCommandCrudGeneratorTests
         var globalCqrsGeneratorConfigurationBuilder =
             GlobalCrudGeneratorConfigurationFactory.Construct();
         var cqrsOperationsSharedConfigurationBuilder =
-            new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
+            new CqrsOperationsSharedConfiguratorFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
             new InternalEntityClassMetadata("TestEntity", "", "",
             [

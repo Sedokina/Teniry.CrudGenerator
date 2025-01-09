@@ -20,7 +20,7 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
 
     public UpdateCommandGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
@@ -36,7 +36,7 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
 
     private static CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration ConstructConfiguration(
         GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme
     )
