@@ -1,3 +1,4 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
@@ -128,7 +129,7 @@ public class UpdateCommandGeneratorRunnerTests
         InternalEntityGeneratorUpdateOperationConfiguration configuration)
     {
         return new UpdateCommandGeneratorRunner(
-            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,

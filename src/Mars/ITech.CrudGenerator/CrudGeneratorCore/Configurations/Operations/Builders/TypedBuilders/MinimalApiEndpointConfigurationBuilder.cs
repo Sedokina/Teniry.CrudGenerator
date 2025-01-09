@@ -1,4 +1,4 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 

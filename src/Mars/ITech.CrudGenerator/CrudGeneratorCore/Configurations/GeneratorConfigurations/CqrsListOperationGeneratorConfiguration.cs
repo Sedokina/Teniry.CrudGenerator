@@ -1,26 +1,30 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
 
-internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
-    : CqrsOperationWithoutReturnValueGeneratorConfiguration
+internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
 {
-    public string ViewModel { get; set; } = null!;
+    public string Filter { get; set; } = null!;
+    public string DtoListItem { get; set; } = null!;
 
-    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(bool generate,
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+    public CqrsListOperationGeneratorConfiguration(bool generate,
+        GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,
         NameConfigurationBuilder operationGroup,
         NameConfigurationBuilder operation,
+        NameConfigurationBuilder dto,
+        NameConfigurationBuilder filter,
+        NameConfigurationBuilder dtoListItem,
         NameConfigurationBuilder handler,
-        NameConfigurationBuilder viewModel,
         MinimalApiEndpointConfigurationBuilder endpoint,
-        EntityScheme entityScheme)
+        EntityScheme entityScheme
+    )
         : base(generate,
             globalConfiguration,
             operationsSharedConfiguration,
@@ -28,10 +32,12 @@ internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfigur
             operationName,
             operationGroup,
             operation,
+            dto,
             handler,
             endpoint,
             entityScheme)
     {
-        ViewModel = viewModel.GetName(entityScheme.EntityName, OperationName);
+        Filter = filter.GetName(entityScheme.EntityName, OperationName);
+        DtoListItem = dtoListItem.GetName(entityScheme.EntityName, OperationName);
     }
 }

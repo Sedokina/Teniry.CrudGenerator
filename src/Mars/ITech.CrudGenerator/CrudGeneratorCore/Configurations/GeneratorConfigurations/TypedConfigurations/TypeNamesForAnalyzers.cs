@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 
 internal static class TypeNamesForAnalyzers
 {

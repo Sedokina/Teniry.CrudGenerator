@@ -1,4 +1,4 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 

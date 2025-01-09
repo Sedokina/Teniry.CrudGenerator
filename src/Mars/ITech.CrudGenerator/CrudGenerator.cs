@@ -21,7 +21,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
         List<EndpointMap> endpointsMaps = [];
-        var globalConfiguration = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+        var globalConfiguration = GlobalCrudGeneratorConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
 
         var generatorRunnerProviders =

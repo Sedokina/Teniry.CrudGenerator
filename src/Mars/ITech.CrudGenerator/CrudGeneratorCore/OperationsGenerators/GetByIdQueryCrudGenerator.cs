@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;

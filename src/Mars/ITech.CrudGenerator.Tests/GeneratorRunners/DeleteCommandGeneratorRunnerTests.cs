@@ -1,3 +1,4 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
@@ -126,7 +127,7 @@ public class DeleteCommandGeneratorRunnerTests
         InternalEntityGeneratorDeleteOperationConfiguration configuration)
     {
         return new DeleteCommandGeneratorRunner(
-            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,

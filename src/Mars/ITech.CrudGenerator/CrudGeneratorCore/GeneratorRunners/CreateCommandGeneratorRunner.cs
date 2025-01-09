@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
@@ -21,7 +22,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
     private readonly string _getByIdOperationName;
 
     public CreateCommandGeneratorRunner(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
@@ -41,7 +42,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
     }
 
     private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructBuilder(
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)

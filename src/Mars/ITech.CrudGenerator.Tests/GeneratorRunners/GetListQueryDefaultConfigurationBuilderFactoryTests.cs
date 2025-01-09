@@ -1,3 +1,4 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
@@ -124,7 +125,7 @@ public class GetListQueryGeneratorRunnerTests
         InternalEntityGeneratorGetListOperationConfiguration configuration)
     {
         return new GetListQueryGeneratorRunner(
-            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,

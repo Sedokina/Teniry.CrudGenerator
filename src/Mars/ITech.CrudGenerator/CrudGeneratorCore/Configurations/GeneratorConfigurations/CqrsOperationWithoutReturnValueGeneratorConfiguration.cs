@@ -1,15 +1,15 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
 
 internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     public bool Generate { get; set; } = true;
-    public GlobalCqrsGeneratorConfiguration GlobalConfiguration { get; set; } = null!;
+    public GlobalCrudGeneratorConfiguration GlobalConfiguration { get; set; } = null!;
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; set; } = null!;
     public CqrsOperationType OperationType { get; set; }
     public string OperationGroup { get; set; } = "";
@@ -20,7 +20,7 @@ internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
 
     public CqrsOperationWithoutReturnValueGeneratorConfiguration(
         bool generate,
-        GlobalCqrsGeneratorConfiguration globalConfiguration,
+        GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,

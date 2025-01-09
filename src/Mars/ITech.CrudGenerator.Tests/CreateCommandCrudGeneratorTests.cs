@@ -1,7 +1,7 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -19,7 +19,7 @@ public class CreateCommandCrudGeneratorTests
     public CreateCommandCrudGeneratorTests()
     {
         var globalCqrsGeneratorConfigurationBuilder =
-            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+            GlobalCrudGeneratorConfigurationFactory.Construct();
         var cqrsOperationsSharedConfigurationBuilder =
             new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
