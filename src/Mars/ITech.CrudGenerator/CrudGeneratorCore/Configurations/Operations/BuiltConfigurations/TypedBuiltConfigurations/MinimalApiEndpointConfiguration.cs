@@ -1,6 +1,6 @@
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
 
-internal class MinimalApiEndpointConfiguration
+internal record MinimalApiEndpointConfiguration
 {
     public string Name { get; set; } = "";
     public bool Generate { get; set; } = true;
