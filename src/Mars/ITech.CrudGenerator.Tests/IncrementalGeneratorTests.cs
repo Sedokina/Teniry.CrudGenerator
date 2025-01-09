@@ -6,7 +6,13 @@ namespace ITech.CrudGenerator.Tests;
 public class IncrementalGeneratorTests
 {
     // A collection of all the tracking names. I'll show how to simplify this later
-    private static string[] AllTrackingNames = ["GeneratorConfigurationsProviders", "DbContextSchemeProviders"];
+    private static string[] AllTrackingNames =
+    [
+        "GeneratorConfigurationsProviders",
+        "DbContextSchemeProviders",
+        "generatorConfigurationsWithDbContextProviders",
+        "entitySchemeFactoryWithDbContextProviders"
+    ];
 
     [Fact]
     public void CanGenerate()

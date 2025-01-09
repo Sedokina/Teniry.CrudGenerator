@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Properties;
-using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 internal class EntityScheme
 {
-    public EntityName EntityName { get; set; }
-    public EntityTitle EntityTitle { get; set; }
-    public string EntityNamespace { get; set; }
-    public string ContainingAssembly { get; set; }
-    public EntityDefaultSort? DefaultSort { get; set; }
-    public List<EntityProperty> Properties { get; set; }
+    public EntityName EntityName { get; }
+    public EntityTitle EntityTitle { get; }
+    public string EntityNamespace { get; }
+    public string ContainingAssembly { get; }
+    public EntityDefaultSort? DefaultSort { get; }
+    public EquatableList<EntityProperty> Properties { get; }
     public List<EntityProperty> PrimaryKeys { get; }
     public List<EntityProperty> NotPrimaryKeys { get; }
     public List<EntityProperty> SortableProperties { get; }
@@ -22,7 +21,7 @@ internal class EntityScheme
         string entityNamespace,
         string containingAssembly,
         EntityDefaultSort? defaultSort,
-        List<EntityProperty> properties,
+        EquatableList<EntityProperty> properties,
         List<EntityProperty> primaryKeys,
         List<EntityProperty> notPrimaryKeys,
         List<EntityProperty> sortableProperties)
@@ -37,12 +36,44 @@ internal class EntityScheme
         NotPrimaryKeys = notPrimaryKeys;
         SortableProperties = sortableProperties;
     }
+
+    protected bool Equals(EntityScheme other)
+    {
+        return EntityName.Equals(other.EntityName) &&
+               EntityTitle.Equals(other.EntityTitle) &&
+               EntityNamespace == other.EntityNamespace &&
+               ContainingAssembly == other.ContainingAssembly &&
+               Equals(DefaultSort, other.DefaultSort) &&
+               Properties.Equals(other.Properties);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is null) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != GetType()) return false;
+        return Equals((EntityScheme)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = EntityName.GetHashCode();
+            hashCode = (hashCode * 397) ^ EntityTitle.GetHashCode();
+            hashCode = (hashCode * 397) ^ EntityNamespace.GetHashCode();
+            hashCode = (hashCode * 397) ^ ContainingAssembly.GetHashCode();
+            hashCode = (hashCode * 397) ^ (DefaultSort != null ? DefaultSort.GetHashCode() : 0);
+            hashCode = (hashCode * 397) ^ Properties.GetHashCode();
+            return hashCode;
+        }
+    }
 }
 
-internal class EntityName(string name, string pluralName)
+internal record EntityName(string Name, string PluralName)
 {
-    public string Name { get; set; } = name;
-    public string PluralName { get; set; } = pluralName;
+    public string Name { get; } = Name;
+    public string PluralName { get; } = PluralName;
 
     public override string ToString()
     {
@@ -50,10 +81,10 @@ internal class EntityName(string name, string pluralName)
     }
 }
 
-internal class EntityTitle(string title, string pluralTitle)
+internal record EntityTitle(string Title, string PluralTitle)
 {
-    public string Title { get; set; } = title;
-    public string PluralTitle { get; set; } = pluralTitle;
+    public string Title { get; } = Title;
+    public string PluralTitle { get; } = PluralTitle;
 
     public override string ToString()
     {
@@ -63,6 +94,6 @@ internal class EntityTitle(string title, string pluralTitle)
 
 internal record EntityDefaultSort(string Direction, string PropertyName)
 {
-    public string Direction { get; set; } = Direction;
-    public string PropertyName { get; set; } = PropertyName;
+    public string Direction { get; } = Direction;
+    public string PropertyName { get; } = PropertyName;
 }

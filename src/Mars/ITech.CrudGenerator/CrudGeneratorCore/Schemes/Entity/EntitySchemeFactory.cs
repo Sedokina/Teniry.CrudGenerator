@@ -76,13 +76,13 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private List<EntityProperty> GetEntityProperties(
+    private EquatableList<EntityProperty> GetEntityProperties(
         string className,
         EquatableList<InternalEntityClassPropertyMetadata> propertiesMetadata,
         DbContextScheme dbContextScheme
     )
     {
-        var result = new List<EntityProperty>();
+        var result = new EquatableList<EntityProperty>();
         foreach (var propertyMetadata in propertiesMetadata)
         {
             if (!propertyMetadata.IsSimpleType) continue;
