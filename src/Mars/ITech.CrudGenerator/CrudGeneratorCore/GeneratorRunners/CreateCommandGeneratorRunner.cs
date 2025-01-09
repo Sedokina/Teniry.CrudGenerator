@@ -17,7 +17,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
     public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
-    private readonly EndpointRouteConfigurationBuilder _getByIdEndpointRouteConfigurationBuilder;
+    private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string _getByIdOperationName;
 
     public CreateCommandGeneratorRunner(
@@ -26,7 +26,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme,
-        EndpointRouteConfigurationBuilder getByIdEndpointRouteConfigurationBuilder,
+        EndpointRouteConfigurationBuilder? getByIdEndpointRouteConfigurationBuilder,
         string getByIdOperationName)
     {
         Configuration = ConstructBuilder(
