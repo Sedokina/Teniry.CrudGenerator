@@ -1,7 +1,6 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
@@ -17,11 +16,11 @@ internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfigur
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,
-        NameConfigurationBuilder operationGroup,
-        NameConfigurationBuilder operation,
-        NameConfigurationBuilder handler,
-        NameConfigurationBuilder viewModel,
-        MinimalApiEndpointConfigurationBuilder endpoint,
+        NameConfigurator operationGroup,
+        NameConfigurator operation,
+        NameConfigurator handler,
+        NameConfigurator viewModel,
+        MinimalApiEndpointConfigurator endpoint,
         EntityScheme entityScheme)
         : base(generate,
             globalConfiguration,

@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
@@ -15,7 +15,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 internal class CreateCommandCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
 {
-    private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
+    private readonly EndpointRouteConfigurator? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string? _getByIdOperationName;
     private readonly string _commandName;
     private readonly string _handlerName;
@@ -24,7 +24,7 @@ internal class CreateCommandCrudGenerator
 
     public CreateCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
-        EndpointRouteConfigurationBuilder? getByIdEndpointRouteConfigurationBuilder,
+        EndpointRouteConfigurator? getByIdEndpointRouteConfigurationBuilder,
         string? getByIdOperationName) : base(scheme)
     {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;

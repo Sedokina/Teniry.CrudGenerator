@@ -1,10 +1,8 @@
 using System.Collections.Generic;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -19,7 +17,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
     public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
-    private readonly EndpointRouteConfigurationBuilder? _getByIdEndpointRouteConfigurationBuilder;
+    private readonly EndpointRouteConfigurator? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string _getByIdOperationName;
 
     public CreateCommandGeneratorRunner(
@@ -28,7 +26,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme,
-        EndpointRouteConfigurationBuilder? getByIdEndpointRouteConfigurationBuilder,
+        EndpointRouteConfigurator? getByIdEndpointRouteConfigurationBuilder,
         string getByIdOperationName)
     {
         Configuration = ConstructBuilder(
@@ -58,7 +56,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             dto: new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurationBuilder
+            endpoint: new MinimalApiEndpointConfigurator
             {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
@@ -66,7 +64,7 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
+                RouteConfigurator = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{operation_name | string.downcase}}")
             },
             entityScheme

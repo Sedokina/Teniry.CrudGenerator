@@ -1,6 +1,6 @@
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -50,7 +50,7 @@ public class CreateCommandCrudGeneratorTests
     {
         // Arrange
         var getByIdEndpointRouteConfigurationBuilder =
-            new EndpointRouteConfigurationBuilder("mygetroute/{{id_param_name}}");
+            new EndpointRouteConfigurator("mygetroute/{{id_param_name}}");
         var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, getByIdEndpointRouteConfigurationBuilder,
             "getbyid");
 

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -52,20 +50,20 @@ internal class GetByIdQueryGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
             dto: new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurationBuilder
+            endpoint: new MinimalApiEndpointConfigurator
             {
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder = GetRouteConfigurationBuilder(operationConfiguration)
+                RouteConfigurator = GetRouteConfigurationBuilder(operationConfiguration)
             },
             entityScheme
         );
     }
 
-    public static EndpointRouteConfigurationBuilder GetRouteConfigurationBuilder(
+    public static EndpointRouteConfigurator GetRouteConfigurationBuilder(
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration)
     {
         return new(operationConfiguration?.RouteName ?? "/{{entity_name}}/{{id_param_name}}");

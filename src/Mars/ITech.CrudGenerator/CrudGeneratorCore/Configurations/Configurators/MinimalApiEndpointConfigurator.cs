@@ -2,14 +2,14 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurati
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.Formatters;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 
-internal class MinimalApiEndpointConfigurationBuilder
+internal class MinimalApiEndpointConfigurator
 {
     public bool Generate { get; set; } = true;
-    public NameConfigurationBuilder ClassName { get; set; } = null!;
-    public NameConfigurationBuilder FunctionName { get; set; } = null!;
-    public EndpointRouteConfigurationBuilder RouteConfigurationBuilder { get; set; } = null!;
+    public NameConfigurator ClassName { get; set; } = null!;
+    public NameConfigurator FunctionName { get; set; } = null!;
+    public EndpointRouteConfigurator RouteConfigurator { get; set; } = null!;
 
     public MinimalApiEndpointConfiguration Build(
         EntityScheme entityScheme,
@@ -21,7 +21,7 @@ internal class MinimalApiEndpointConfigurationBuilder
             Generate = Generate,
             Name = ClassName.GetName(entityScheme.EntityName, operationName),
             FunctionName = FunctionName.GetName(entityScheme.EntityName, operationName),
-            Route = RouteConfigurationBuilder
+            Route = RouteConfigurator
                 .GetRoute(entityScheme.EntityName.Name, operationName, constructorParametersForRoute)
         };
     }

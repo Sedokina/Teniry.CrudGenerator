@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using Scriban;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 
 /// <summary>
 ///     Available string keys in namespace path:<br />
@@ -11,7 +11,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-internal class PutBusinessLogicIntoNamespaceConfigurationBuilder(string namespacePath)
+internal class PutBusinessLogicIntoNamespaceConfigurator(string namespacePath)
 {
     public string GetNamespacePath(
         string entityAssemblyName,

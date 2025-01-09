@@ -1,10 +1,8 @@
 using System.Collections.Generic;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -53,14 +51,14 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
             viewModel: new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
-            endpoint: new MinimalApiEndpointConfigurationBuilder
+            endpoint: new MinimalApiEndpointConfigurator
             {
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
+                RouteConfigurator = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             },
             entityScheme

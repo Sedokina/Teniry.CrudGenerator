@@ -1,10 +1,10 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 
 internal class CqrsOperationsSharedConfigurationBuilder
 {
-    public NameConfigurationBuilder BusinessLogicFeatureName { get; set; } = null!;
-    public PutBusinessLogicIntoNamespaceConfigurationBuilder BusinessLogicNamespaceForOperation { get; set; } = null!;
-    public PutEndpointsIntoNamespaceConfigurationBuilder EndpointsNamespaceForFeature { get; set; } = null!;
+    public NameConfigurator BusinessLogicFeatureName { get; set; } = null!;
+    public PutBusinessLogicIntoNamespaceConfigurator BusinessLogicNamespaceForOperation { get; set; } = null!;
+    public PutEndpointsIntoNamespaceConfigurator EndpointsNamespaceForFeature { get; set; } = null!;
 }

@@ -1,14 +1,14 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using Scriban;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 
 /// <summary>
 ///     Available string in name:
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-internal class NameConfigurationBuilder(string name)
+internal class NameConfigurator(string name)
 {
     public string GetName(EntityName entityName, string operationName)
     {

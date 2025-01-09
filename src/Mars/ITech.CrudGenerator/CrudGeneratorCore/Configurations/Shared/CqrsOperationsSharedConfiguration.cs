@@ -1,4 +1,4 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
@@ -9,9 +9,9 @@ internal record CqrsOperationsSharedConfiguration
     public string BusinessLogicNamespaceForOperation { get; set; } = null!;
     public string EndpointsNamespaceForFeature { get; set; } = null!;
 
-    public CqrsOperationsSharedConfiguration(NameConfigurationBuilder businessLogicFeatureName,
-        PutBusinessLogicIntoNamespaceConfigurationBuilder businessLogicNamespaceForOperation,
-        PutEndpointsIntoNamespaceConfigurationBuilder endpointsNamespaceForFeature,
+    public CqrsOperationsSharedConfiguration(NameConfigurator businessLogicFeatureName,
+        PutBusinessLogicIntoNamespaceConfigurator businessLogicNamespaceForOperation,
+        PutEndpointsIntoNamespaceConfigurator endpointsNamespaceForFeature,
         EntityScheme entityScheme,
         string operationName,
         string operationGroup)
