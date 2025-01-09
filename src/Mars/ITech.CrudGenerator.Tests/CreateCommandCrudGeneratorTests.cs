@@ -39,8 +39,7 @@ public class CreateCommandCrudGeneratorTests
                 new DbContextSchemeStub(),
                 null!,
                 null!)
-            .Builder
-            .Build(entityScheme);
+            .Configuration;
         _crudGeneratorScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(entityScheme,
             new DbContextSchemeStub(),
             configuration);

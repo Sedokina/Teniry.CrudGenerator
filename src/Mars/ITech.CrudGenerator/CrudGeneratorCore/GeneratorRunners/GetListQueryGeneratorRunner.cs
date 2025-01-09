@@ -13,7 +13,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
 internal class GetListQueryGeneratorRunner : IGeneratorRunner
 {
-    public CqrsListOperationConfigurationBuilder Builder { get; }
+    public CqrsListOperationGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
@@ -24,15 +24,21 @@ internal class GetListQueryGeneratorRunner : IGeneratorRunner
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Configuration = ConstructConfiguration(
+            globalConfiguration,
+            operationsSharedConfiguration,
+            operationConfiguration,
+            entityScheme
+        );
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    private static CqrsListOperationConfigurationBuilder ConstructBuilder(
+    private static CqrsListOperationGeneratorConfiguration ConstructConfiguration(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration)
+        InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme)
     {
         return new CqrsListOperationConfigurationBuilder
         {
@@ -57,18 +63,17 @@ internal class GetListQueryGeneratorRunner : IGeneratorRunner
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ?? "/{{entity_name}}")
             }
-        };
+        }.Build(entityScheme);
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var getListConfiguration = Builder.Build(_entityScheme);
-        if (getListConfiguration.Generate)
+        if (Configuration.Generate)
         {
             var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                getListConfiguration);
+                Configuration);
             var generateListQuery = new ListQueryCrudGenerator(getListQueryScheme);
             generateListQuery.RunGenerator();
             if (generateListQuery.EndpointMap is not null)

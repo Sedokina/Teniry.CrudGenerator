@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -29,24 +30,28 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 .Combine(dbContextSchemeProviders.Collect())
                 .WithTrackingName("GeneratorConfigurationWithDbContextProviders")
                 .Select((tuple, _) => (
-                    EntityGeneratorConfiguration: tuple.Left,
-                    EntityScheme: EntitySchemeFactory.Construct(tuple.Left, tuple.Right[0]),
-                    DbContextScheme: tuple.Right[0])
+                        EntityGeneratorConfiguration: tuple.Left,
+                        EntityScheme: EntitySchemeFactory.Construct(tuple.Left, tuple.Right[0]),
+                        DbContextScheme: tuple.Right[0]
+                    )
                 )
                 .WithTrackingName("EntitySchemeFactoryWithDbContextProviders")
                 .SelectMany((tuple, _) =>
                 {
-                    var getByIdQueryDefaultConfigurationBuilderFactory = new GetByIdQueryGeneratorRunner(
+                    var getByIdQueryGeneratorRunner = new GetByIdQueryGeneratorRunner(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
                         tuple.EntityGeneratorConfiguration.GetByIdOperation,
                         tuple.EntityScheme,
                         tuple.DbContextScheme
                     );
-
+                    var getByIdRouteBuilder = getByIdQueryGeneratorRunner.Configuration.Endpoint.Generate
+                        ? GetByIdQueryGeneratorRunner
+                            .GetRouteConfigurationBuilder(tuple.EntityGeneratorConfiguration.GetByIdOperation)
+                        : null;
                     return new IGeneratorRunner[]
                     {
-                        getByIdQueryDefaultConfigurationBuilderFactory,
+                        getByIdQueryGeneratorRunner,
 
                         new GetListQueryGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,
@@ -59,8 +64,8 @@ public sealed class CrudGenerator : IIncrementalGenerator
                             tuple.EntityGeneratorConfiguration.CreateOperation,
                             tuple.EntityScheme,
                             tuple.DbContextScheme,
-                            getByIdQueryDefaultConfigurationBuilderFactory.Builder.Build(tuple.Item2),
-                            getByIdQueryDefaultConfigurationBuilderFactory.Builder
+                            getByIdRouteBuilder,
+                            getByIdQueryGeneratorRunner.Configuration.OperationName
                         ),
                         new UpdateCommandGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,

@@ -13,7 +13,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
 internal class UpdateCommandGeneratorRunner : IGeneratorRunner
 {
-    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Builder { get; }
+    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
@@ -24,15 +24,21 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Configuration = ConstructConfiguration(
+            globalConfiguration,
+            operationsSharedConfiguration,
+            operationConfiguration,
+            entityScheme);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    private static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration ConstructConfiguration(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme
+    )
     {
         return new CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
         {
@@ -56,18 +62,17 @@ internal class UpdateCommandGeneratorRunner : IGeneratorRunner
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
-        };
+        }.Build(entityScheme);
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var updateOperationConfiguration = Builder.Build(_entityScheme);
-        if (!updateOperationConfiguration.Generate) return [];
+        if (!Configuration.Generate) return [];
         var updateCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                updateOperationConfiguration);
+                Configuration);
         var generateUpdateCommand = new UpdateCommandCrudGenerator(updateCommandScheme);
         generateUpdateCommand.RunGenerator();
         if (generateUpdateCommand.EndpointMap is not null)
