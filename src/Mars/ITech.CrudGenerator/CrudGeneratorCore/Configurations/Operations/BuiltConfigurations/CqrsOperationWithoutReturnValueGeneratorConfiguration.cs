@@ -35,8 +35,14 @@ internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
         OperationType = operationType;
         OperationName = operationName;
         OperationGroup = operationGroup.GetName(entityScheme.EntityName, OperationName);
-        OperationsSharedConfiguration = operationsSharedConfiguration
-            .Build(entityScheme, OperationName, OperationGroup);
+        OperationsSharedConfiguration = new CqrsOperationsSharedConfiguration(
+            businessLogicFeatureName: operationsSharedConfiguration.BusinessLogicFeatureName,
+            businessLogicNamespaceForOperation: operationsSharedConfiguration.BusinessLogicNamespaceForOperation,
+            endpointsNamespaceForFeature: operationsSharedConfiguration.EndpointsNamespaceForFeature,
+            entityScheme: entityScheme,
+            operationName: OperationName,
+            operationGroup: OperationGroup
+        );
         Operation = operation.GetName(entityScheme.EntityName, OperationName);
         Handler = handler.GetName(entityScheme.EntityName, OperationName);
         Endpoint = endpoint.Build(entityScheme, OperationName);
