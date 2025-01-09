@@ -1,10 +1,11 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
-internal class GetListQueryDefaultConfigurationBulderFactory
+internal class GetListQueryDefaultConfigurationBulderFactory  : IConfigurationBuilderFactory
 {
     public CqrsListOperationConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
@@ -35,5 +36,15 @@ internal class GetListQueryDefaultConfigurationBulderFactory
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ?? "/{{entity_name}}")
             }
         };
+    }
+    
+    public object Construct(GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration)
+    {
+        return Construct(globalConfiguration,
+            operationsSharedConfiguration,
+            internalEntityGeneratorConfiguration.GetListOperation
+        );
     }
 }

@@ -1,10 +1,11 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
-internal class GetByIdQueryDefaultConfigurationBuilderFactory
+internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
     public CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
@@ -28,11 +29,21 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(operationConfiguration?.EndpointClassName ??
-                                               "{{operation_name}}{{entity_name}}Endpoint"),
+                                "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder =
                     new(operationConfiguration?.RouteName ?? "/{{entity_name}}/{{id_param_name}}")
             }
         };
+    }
+
+    public object Construct(GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration)
+    {
+        return Construct(globalConfiguration,
+            operationsSharedConfiguration,
+            internalEntityGeneratorConfiguration.GetByIdOperation
+        );
     }
 }

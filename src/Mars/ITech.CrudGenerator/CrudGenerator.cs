@@ -77,7 +77,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 globalConfigurationBuilder,
                 sharedConfigurationBuilder,
                 internalEntityGeneratorConfiguration.GetByIdOperation);
-
+        
         var getByIdQueryConfiguration = getByIdQueryConfigurationBuilder.Build(entityScheme);
         if (getByIdQueryConfiguration.Generate)
         {
