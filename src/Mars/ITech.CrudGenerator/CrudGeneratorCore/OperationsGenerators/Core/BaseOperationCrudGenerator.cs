@@ -1,4 +1,5 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -16,6 +17,21 @@ internal abstract class BaseOperationCrudGenerator<TConfiguration> : BaseGenerat
     {
         Scheme = scheme;
         EntityScheme = scheme.EntityScheme;
+    }
+}
+
+internal class CrudGeneratorScheme<TConfiguration>
+    where TConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration
+{
+    public EntityScheme EntityScheme { get; set; }
+    public DbContextScheme DbContextScheme { get; set; }
+    public TConfiguration Configuration { get; set; }
+
+    public CrudGeneratorScheme(EntityScheme entityScheme, DbContextScheme dbContextScheme, TConfiguration configuration)
+    {
+        EntityScheme = entityScheme;
+        DbContextScheme = dbContextScheme;
+        Configuration = configuration;
     }
 }
 
