@@ -10,13 +10,11 @@ namespace ITech.CrudGenerator.Tests.Schemes;
 
 public class EntitySchemeFactoryTests
 {
-    private readonly EntitySchemeFactory _sut;
     private readonly InternalEntityGeneratorConfiguration _internalEntityGeneratorConfiguration;
     private readonly DbContextScheme _dbContextScheme;
 
     public EntitySchemeFactoryTests()
     {
-        _sut = new();
         _internalEntityGeneratorConfiguration = new(new InternalEntityClassMetadata("MyEntityName", "", "", []));
         _dbContextScheme = new DbContextSchemeStub();
     }
@@ -28,7 +26,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = "MyEntityName";
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.Name.Should().Be("MyEntityName");
@@ -45,7 +43,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = singular;
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.PluralName.Should().Be(plural);
@@ -64,7 +62,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = singular;
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityName.PluralName.Should().Be(plural);
@@ -77,7 +75,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = "MyEntityName";
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityTitle.Title.Should().Be("My entity name");
@@ -94,7 +92,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = entityName;
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityTitle.PluralTitle.Should().Be(pluralTitle);
@@ -109,7 +107,7 @@ public class EntitySchemeFactoryTests
             Assembly.GetExecutingAssembly().FullName ?? "";
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.EntityNamespace.Should().Be("ITech.CrudGenerator.Tests");
@@ -123,7 +121,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.DefaultSort = null;
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.DefaultSort.Should().BeNull();
@@ -136,7 +134,7 @@ public class EntitySchemeFactoryTests
         _internalEntityGeneratorConfiguration.DefaultSort = new EntityDefaultSort("asc", "MyProp");
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.DefaultSort.Should().NotBeNull();
@@ -154,7 +152,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().NotContain(x => x.PropertyName == "ReferenceProp");
@@ -170,7 +168,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "SimpleProp");
@@ -186,7 +184,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -203,7 +201,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "StringProp" &&
@@ -226,7 +224,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == propertyName &&
@@ -259,7 +257,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should().Contain(x => x.PropertyName == "SortableProperty" && x.CanBeSorted == true);
@@ -275,7 +273,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -306,7 +304,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -349,7 +347,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()
@@ -386,7 +384,7 @@ public class EntitySchemeFactoryTests
         ];
 
         // Act
-        var actual = _sut.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
+        var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
         actual.Properties.Should()

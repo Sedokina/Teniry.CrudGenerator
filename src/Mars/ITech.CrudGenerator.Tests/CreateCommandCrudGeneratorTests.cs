@@ -29,9 +29,8 @@ public class CreateCommandCrudGeneratorTests
                 new("Name", "string", "Guid", SpecialType.System_String, true, false)
             ])
         );
-        var entitySchemeFactory = new EntitySchemeFactory();
-        var entityScheme =
-            entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        var entityScheme = EntitySchemeFactory
+            .Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
         var configuration = new CreateCommandGeneratorRunner(globalCqrsGeneratorConfigurationBuilder,
                 cqrsOperationsSharedConfigurationBuilder,

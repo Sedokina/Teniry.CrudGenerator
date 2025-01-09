@@ -26,8 +26,7 @@ public class UpdateCommandGeneratorRunnerTests
                 new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
             ])
         );
-        var entitySchemeFactory = new EntitySchemeFactory();
-        _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]

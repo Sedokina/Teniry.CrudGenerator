@@ -30,7 +30,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 .WithTrackingName("GeneratorConfigurationWithDbContextProviders")
                 .Select((tuple, _) => (
                     EntityGeneratorConfiguration: tuple.Left,
-                    EntityScheme: new EntitySchemeFactory().Construct(tuple.Left, tuple.Right[0]),
+                    EntityScheme: EntitySchemeFactory.Construct(tuple.Left, tuple.Right[0]),
                     DbContextScheme: tuple.Right[0])
                 )
                 .WithTrackingName("EntitySchemeFactoryWithDbContextProviders")

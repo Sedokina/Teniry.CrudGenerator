@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
@@ -13,16 +11,11 @@ using Pluralize.NET;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-internal class EntitySchemeFactory
+internal static class EntitySchemeFactory
 {
-    private readonly Pluralizer _pluralizer;
+    private static readonly Pluralizer NamePluralizer = new();
 
-    public EntitySchemeFactory()
-    {
-        _pluralizer = new();
-    }
-
-    internal EntityScheme Construct(
+    internal static EntityScheme Construct(
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
         DbContextScheme dbContextScheme)
     {
@@ -43,7 +36,7 @@ internal class EntitySchemeFactory
         );
     }
 
-    private EntityTitle CreateEntityTitle(
+    private static EntityTitle CreateEntityTitle(
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
         EntityName entityName)
     {
@@ -54,9 +47,9 @@ internal class EntitySchemeFactory
         return title;
     }
 
-    private string GetPluralEntityName(string entityName)
+    private static string GetPluralEntityName(string entityName)
     {
-        var pluralEntityName = _pluralizer.Pluralize(entityName);
+        var pluralEntityName = NamePluralizer.Pluralize(entityName);
         if (entityName.Equals(pluralEntityName))
         {
             return $"{entityName}List";
@@ -65,9 +58,9 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private string GetPluralEntityTitle(string entityTitle)
+    private static string GetPluralEntityTitle(string entityTitle)
     {
-        var pluralEntityName = _pluralizer.Pluralize(entityTitle);
+        var pluralEntityName = NamePluralizer.Pluralize(entityTitle);
         if (entityTitle.Equals(pluralEntityName))
         {
             return $"{entityTitle} list";
@@ -76,7 +69,7 @@ internal class EntitySchemeFactory
         return pluralEntityName;
     }
 
-    private EquatableList<EntityProperty> GetEntityProperties(
+    private static EquatableList<EntityProperty> GetEntityProperties(
         string className,
         EquatableList<InternalEntityClassPropertyMetadata> propertiesMetadata,
         DbContextScheme dbContextScheme
@@ -116,7 +109,7 @@ internal class EntitySchemeFactory
         return result;
     }
 
-    private EntityFilterProperty[] ConstructFilterProperties(
+    private static EntityFilterProperty[] ConstructFilterProperties(
         bool isForeignOrPrimaryKey,
         string propertyTypeName,
         InternalEntityClassPropertyMetadata propertyMetadata,
@@ -124,7 +117,7 @@ internal class EntitySchemeFactory
     {
         if (isForeignOrPrimaryKey)
         {
-            var pluralPropertyName = _pluralizer.Pluralize(propertyMetadata.PropertyName);
+            var pluralPropertyName = NamePluralizer.Pluralize(propertyMetadata.PropertyName);
             if (dbContextScheme.ContainsFilter(FilterType.Contains))
             {
                 return
