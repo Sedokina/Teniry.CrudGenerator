@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 
 internal record CqrsOperationsSharedConfiguration
 {

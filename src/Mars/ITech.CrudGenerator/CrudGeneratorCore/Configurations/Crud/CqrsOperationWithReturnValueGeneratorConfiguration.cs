@@ -2,6 +2,7 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurati
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;

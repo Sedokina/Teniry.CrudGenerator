@@ -66,5 +66,6 @@
 
     <ItemGroup>
       <Folder Include="CrudGeneratorCore\ConfigurationsReceiver\" />
+      <Folder Include="CrudGeneratorCore\Configurations\Operations\BuildersFactories\" />
     </ItemGroup>
 </Project>

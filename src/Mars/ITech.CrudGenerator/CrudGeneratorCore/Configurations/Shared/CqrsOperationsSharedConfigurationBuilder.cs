@@ -1,6 +1,6 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
 
 internal class CqrsOperationsSharedConfigurationBuilder
 {

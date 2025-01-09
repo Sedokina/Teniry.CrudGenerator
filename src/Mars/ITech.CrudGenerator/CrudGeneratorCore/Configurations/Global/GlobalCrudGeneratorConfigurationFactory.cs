@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 
 internal class GlobalCrudGeneratorConfigurationFactory
 {
