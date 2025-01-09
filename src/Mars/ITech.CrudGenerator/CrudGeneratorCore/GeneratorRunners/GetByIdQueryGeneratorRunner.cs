@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;

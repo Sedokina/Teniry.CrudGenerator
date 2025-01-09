@@ -1,4 +1,4 @@
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 
 internal record MinimalApiEndpointConfiguration
 {

@@ -1,25 +1,25 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations.TypedConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
+namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 
-internal class CqrsOperationWithReturnValueGeneratorConfiguration
+internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
     : CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
-    public string Dto { get; set; } = null!;
+    public string ViewModel { get; set; } = null!;
 
-    public CqrsOperationWithReturnValueGeneratorConfiguration(bool generate,
+    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,
         NameConfigurationBuilder operationGroup,
         NameConfigurationBuilder operation,
-        NameConfigurationBuilder dto,
         NameConfigurationBuilder handler,
+        NameConfigurationBuilder viewModel,
         MinimalApiEndpointConfigurationBuilder endpoint,
         EntityScheme entityScheme)
         : base(generate,
@@ -33,6 +33,6 @@ internal class CqrsOperationWithReturnValueGeneratorConfiguration
             endpoint,
             entityScheme)
     {
-        Dto = dto.GetName(entityScheme.EntityName, OperationName);
+        ViewModel = viewModel.GetName(entityScheme.EntityName, OperationName);
     }
 }

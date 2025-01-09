@@ -1,4 +1,4 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.GeneratorConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
