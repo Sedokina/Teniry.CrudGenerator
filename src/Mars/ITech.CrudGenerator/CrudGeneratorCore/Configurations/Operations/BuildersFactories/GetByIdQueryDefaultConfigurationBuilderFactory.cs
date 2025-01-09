@@ -16,6 +16,8 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
+    public CqrsOperationWithReturnValueConfigurationBuilder Builder => _builder;
+
     public GetByIdQueryDefaultConfigurationBuilderFactory(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,

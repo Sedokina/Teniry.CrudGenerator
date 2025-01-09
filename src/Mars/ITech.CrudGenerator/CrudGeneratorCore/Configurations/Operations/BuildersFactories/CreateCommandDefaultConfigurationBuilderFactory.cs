@@ -23,13 +23,17 @@ internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationB
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
+        DbContextScheme dbContextScheme,
+        CqrsOperationWithReturnValueGeneratorConfiguration getByIdQueryConfiguration,
+        CqrsOperationWithReturnValueConfigurationBuilder getByIdQueryConfigurationBuilder)
     {
         _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
+        _getByIdQueryConfiguration = getByIdQueryConfiguration;
+        _getByIdQueryConfigurationBuilder = getByIdQueryConfigurationBuilder;
     }
-    
+
     public CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
