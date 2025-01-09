@@ -33,7 +33,7 @@ public class TestHelpers
         // Create a Compilation object
         // You may want to specify other results here
         CSharpCompilation compilation = CSharpCompilation.Create(
-            Assembly.GetExecutingAssembly().FullName,
+            Assembly.GetExecutingAssembly().GetName().Name,
             syntaxTrees,
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));

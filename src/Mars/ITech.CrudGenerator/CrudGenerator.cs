@@ -14,12 +14,6 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator;
 
-// internal class TrackingNames
-// {
-//     public const string GeneratorConfigurationsProviders = nameof(GeneratorConfigurationsProviders);
-//     public const string DbContextSchemeProviders = nameof(DbContextSchemeProviders);
-// }
-
 [Generator]
 public sealed class CrudGenerator : IIncrementalGenerator
 {
