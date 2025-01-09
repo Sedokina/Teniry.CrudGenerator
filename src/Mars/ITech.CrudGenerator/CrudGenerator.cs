@@ -14,6 +14,12 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator;
 
+// internal class TrackingNames
+// {
+//     public const string GeneratorConfigurationsProviders = nameof(GeneratorConfigurationsProviders);
+//     public const string DbContextSchemeProviders = nameof(DbContextSchemeProviders);
+// }
+
 [Generator]
 public sealed class CrudGenerator : IIncrementalGenerator
 {
@@ -22,8 +28,10 @@ public sealed class CrudGenerator : IIncrementalGenerator
         // var diagnostics = context.CompilationProvider.Select((compilation, token) => Diagnostic.Create());
         // context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
         
-        var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
-        var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
+        var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider()
+            .WithTrackingName("GeneratorConfigurationsProviders");
+        var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider()
+            .WithTrackingName("DbContextSchemeProviders");
 
         List<EndpointMap> endpointsMaps = [];
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();

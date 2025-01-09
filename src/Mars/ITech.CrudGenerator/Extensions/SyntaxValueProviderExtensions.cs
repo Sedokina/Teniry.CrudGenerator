@@ -23,12 +23,13 @@ internal static class SyntaxValueProviderExtensions
     internal static IncrementalValuesProvider<DbContextScheme>
         CreateDbContextConfigurationsProvider(this SyntaxValueProvider syntaxProvider)
     {
-        return syntaxProvider
+        var result = syntaxProvider
             .ForAttributeWithMetadataName(
                 DbContextAttributeName,
                 predicate: (_, _) => true,
                 transform: (syntaxContext, _) => DbContextSchemeFactory.Construct(syntaxContext)
             );
+        return result;
     }
 
     private static bool CheckIfNodeIsInheritedFromClass(SyntaxNode node, string className)
