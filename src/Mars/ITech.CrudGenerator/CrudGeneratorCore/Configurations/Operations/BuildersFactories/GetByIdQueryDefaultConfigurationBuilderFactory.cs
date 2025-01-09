@@ -12,11 +12,9 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private readonly CqrsOperationWithReturnValueConfigurationBuilder _builder;
+    public CqrsOperationWithReturnValueConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
-
-    public CqrsOperationWithReturnValueConfigurationBuilder Builder => _builder;
 
     public GetByIdQueryDefaultConfigurationBuilderFactory(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
@@ -25,12 +23,12 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    public CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration)
@@ -62,7 +60,7 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var getByIdQueryConfiguration = _builder.Build(_entityScheme);
+        var getByIdQueryConfiguration = Builder.Build(_entityScheme);
         if (!getByIdQueryConfiguration.Generate) return [];
         var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
             _entityScheme,

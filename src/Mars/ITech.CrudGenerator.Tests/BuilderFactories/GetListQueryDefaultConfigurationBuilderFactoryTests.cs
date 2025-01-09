@@ -34,11 +34,11 @@ public class GetListQueryDefaultFactoryTests
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
+
         // Act
-        var actual = _sut.ConstructBuilder(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            new InternalEntityGeneratorGetListOperationConfiguration());
+        var actual = sut.Builder;
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -48,13 +48,11 @@ public class GetListQueryDefaultFactoryTests
     [Fact]
     public void Should_SetCorrectDefaultValues()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
+
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                new InternalEntityGeneratorGetListOperationConfiguration())
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -74,18 +72,13 @@ public class GetListQueryDefaultFactoryTests
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorGetListOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
         {
             Operation = "Obtain"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -105,7 +98,7 @@ public class GetListQueryDefaultFactoryTests
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorGetListOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -116,15 +109,10 @@ public class GetListQueryDefaultFactoryTests
             EndpointFunctionName = "CustomEndpointFunctionName",
             GenerateEndpoint = false,
             RouteName = "CustomEndpointRoute"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
@@ -138,5 +126,17 @@ public class GetListQueryDefaultFactoryTests
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
+    }
+    
+    private GetListQueryDefaultConfigurationBuilderFactory CreateFactory(
+        InternalEntityGeneratorGetListOperationConfiguration configuration)
+    {
+        return new GetListQueryDefaultConfigurationBuilderFactory(
+            _globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            configuration,
+            _entityScheme,
+            new DbContextSchemeStub()
+        );
     }
 }

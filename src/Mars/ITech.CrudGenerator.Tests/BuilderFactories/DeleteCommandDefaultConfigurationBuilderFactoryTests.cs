@@ -12,7 +12,6 @@ namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
 public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 {
-    private readonly DeleteCommandDefaultConfigurationBuilderFactory _sut;
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
@@ -28,21 +27,16 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         );
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
-        _sut = new DeleteCommandDefaultConfigurationBuilderFactory(_globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            internalEntityGeneratorConfiguration.DeleteOperation,
-            _entityScheme,
-            new DbContextSchemeStub());
     }
 
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+
         // Act
-        var actual = _sut.ConstructBuilder(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            new InternalEntityGeneratorDeleteOperationConfiguration());
+        var actual = sut.Builder;
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -52,13 +46,11 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     [Fact]
     public void Should_SetCorrectDefaultValues()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                new InternalEntityGeneratorDeleteOperationConfiguration())
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -77,19 +69,13 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorDeleteOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration
         {
             Operation = "Del"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
-
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -108,7 +94,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorDeleteOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -118,16 +104,10 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
             EndpointFunctionName = "CustomEndpointFunctionName",
             GenerateEndpoint = false,
             RouteName = "CustomEndpointRoute"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
-
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
@@ -140,5 +120,17 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
+    }
+
+    private DeleteCommandDefaultConfigurationBuilderFactory CreateFactory(
+        InternalEntityGeneratorDeleteOperationConfiguration configuration)
+    {
+        return new DeleteCommandDefaultConfigurationBuilderFactory(
+            _globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            configuration,
+            _entityScheme,
+            new DbContextSchemeStub()
+        );
     }
 }

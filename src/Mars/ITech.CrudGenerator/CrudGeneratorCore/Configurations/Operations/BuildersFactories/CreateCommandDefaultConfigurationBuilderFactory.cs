@@ -12,11 +12,11 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private readonly CqrsOperationWithReturnValueConfigurationBuilder _builder;
+    public CqrsOperationWithReturnValueConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
-    private CqrsOperationWithReturnValueGeneratorConfiguration _getByIdQueryConfiguration;
-    private CqrsOperationWithReturnValueConfigurationBuilder _getByIdQueryConfigurationBuilder;
+    private readonly CqrsOperationWithReturnValueGeneratorConfiguration _getByIdQueryConfiguration;
+    private readonly CqrsOperationWithReturnValueConfigurationBuilder _getByIdQueryConfigurationBuilder;
 
     public CreateCommandDefaultConfigurationBuilderFactory(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
@@ -27,14 +27,14 @@ internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationB
         CqrsOperationWithReturnValueGeneratorConfiguration getByIdQueryConfiguration,
         CqrsOperationWithReturnValueConfigurationBuilder getByIdQueryConfigurationBuilder)
     {
-        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
         _getByIdQueryConfiguration = getByIdQueryConfiguration;
         _getByIdQueryConfigurationBuilder = getByIdQueryConfigurationBuilder;
     }
 
-    public CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration)
@@ -66,7 +66,7 @@ internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationB
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var createCommandConfiguration = _builder.Build(_entityScheme);
+        var createCommandConfiguration = Builder.Build(_entityScheme);
         if (!createCommandConfiguration.Generate) return [];
         var createCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(

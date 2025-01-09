@@ -12,7 +12,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private readonly CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder _builder;
+    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
@@ -23,12 +23,12 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationB
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)
@@ -60,7 +60,7 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationB
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var updateOperationConfiguration = _builder.Build(_entityScheme);
+        var updateOperationConfiguration = Builder.Build(_entityScheme);
         if (!updateOperationConfiguration.Generate) return [];
         var updateCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(

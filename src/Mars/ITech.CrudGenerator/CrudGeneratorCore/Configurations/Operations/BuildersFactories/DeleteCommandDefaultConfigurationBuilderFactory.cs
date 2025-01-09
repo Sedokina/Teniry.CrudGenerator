@@ -12,7 +12,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private readonly CqrsOperationWithoutReturnValueConfigurationBuilder _builder;
+    public CqrsOperationWithoutReturnValueConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
@@ -23,12 +23,12 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationB
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    public CqrsOperationWithoutReturnValueConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithoutReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration)
@@ -59,7 +59,7 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationB
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var deleteCommandConfiguration = _builder.Build(_entityScheme);
+        var deleteCommandConfiguration = Builder.Build(_entityScheme);
         if (!deleteCommandConfiguration.Generate) return [];
         var deleteCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(

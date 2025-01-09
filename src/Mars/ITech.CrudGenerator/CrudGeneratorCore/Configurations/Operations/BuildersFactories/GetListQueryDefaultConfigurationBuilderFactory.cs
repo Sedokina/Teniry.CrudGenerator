@@ -12,7 +12,7 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal class GetListQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
-    private readonly CqrsListOperationConfigurationBuilder _builder;
+    public CqrsListOperationConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
@@ -23,12 +23,12 @@ internal class GetListQueryDefaultConfigurationBuilderFactory : IConfigurationBu
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
-        _builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
+        Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
 
-    public CqrsListOperationConfigurationBuilder ConstructBuilder(
+    private static CqrsListOperationConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration)
@@ -61,7 +61,7 @@ internal class GetListQueryDefaultConfigurationBuilderFactory : IConfigurationBu
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var getListConfiguration = _builder.Build(_entityScheme);
+        var getListConfiguration = Builder.Build(_entityScheme);
         if (getListConfiguration.Generate)
         {
             var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(

@@ -38,11 +38,11 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration());
+
         // Act
-        var actual = _sut.ConstructBuilder(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            new InternalEntityGeneratorGetByIdOperationConfiguration());
+        var actual = sut.Builder;
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -52,13 +52,11 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     [Fact]
     public void Should_SetCorrectDefaultValues()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration());
+
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                new InternalEntityGeneratorGetByIdOperationConfiguration())
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -78,19 +76,13 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorGetByIdOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration
         {
             Operation = "Obtain"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
-
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -110,7 +102,7 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorGetByIdOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -121,16 +113,10 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
             EndpointFunctionName = "CustomEndpointFunctionName",
             GenerateEndpoint = false,
             RouteName = "CustomEndpointRoute"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
-
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
@@ -144,5 +130,17 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
+    }
+
+    private GetByIdQueryDefaultConfigurationBuilderFactory CreateFactory(
+        InternalEntityGeneratorGetByIdOperationConfiguration configuration)
+    {
+        return new GetByIdQueryDefaultConfigurationBuilderFactory(
+            _globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            configuration,
+            _entityScheme,
+            new DbContextSchemeStub()
+        );
     }
 }

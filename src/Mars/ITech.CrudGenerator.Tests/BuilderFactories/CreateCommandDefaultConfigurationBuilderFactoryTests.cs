@@ -11,7 +11,6 @@ namespace ITech.CrudGenerator.Tests.BuilderFactories;
 
 public class CreateCommandDefaultConfigurationBuilderFactoryTests
 {
-    private readonly CreateCommandDefaultConfigurationBuilderFactory _sut;
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
@@ -24,25 +23,16 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
-        _sut = new CreateCommandDefaultConfigurationBuilderFactory(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            internalEntityGeneratorConfiguration.CreateOperation,
-            _entityScheme,
-            new DbContextSchemeStub(),
-            null!,
-            null!
-        );
     }
 
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
+
         // Act
-        var actual = _sut.ConstructBuilder(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            new InternalEntityGeneratorCreateOperationConfiguration());
+        var actual = sut.Builder;
 
         // Assert
         actual.GlobalConfiguration.Should().Be(_globalCqrsGeneratorConfigurationBuilder);
@@ -52,13 +42,11 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     [Fact]
     public void Should_SetCorrectDefaultValues()
     {
+        // Arrange
+        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
+
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                new InternalEntityGeneratorCreateOperationConfiguration())
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -78,18 +66,13 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration
         {
             Operation = "Add"
-        };
+        });
 
         // Act
-        var actual = _sut
-            .ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
@@ -109,7 +92,7 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var operationConfiguration = new InternalEntityGeneratorCreateOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
@@ -120,14 +103,10 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
             EndpointFunctionName = "CustomEndpointFunctionName",
             GenerateEndpoint = false,
             RouteName = "CustomEndpointRoute"
-        };
+        });
 
         // Act
-        var actual = _sut.ConstructBuilder(
-                _globalCqrsGeneratorConfigurationBuilder,
-                _cqrsOperationsSharedConfigurationBuilder,
-                operationConfiguration)
-            .Build(_entityScheme);
+        var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeFalse();
@@ -141,5 +120,20 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
+    }
+
+
+    private CreateCommandDefaultConfigurationBuilderFactory CreateFactory(
+        InternalEntityGeneratorCreateOperationConfiguration configuration)
+    {
+        return new CreateCommandDefaultConfigurationBuilderFactory(
+            _globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            configuration,
+            _entityScheme,
+            new DbContextSchemeStub(),
+            null!,
+            null!
+        );
     }
 }
