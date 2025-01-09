@@ -1,12 +1,12 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Configurators;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Crud;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Shared;
-using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Core.Configurations.Configurators;
+using ITech.CrudGenerator.Core.Configurations.Crud;
+using ITech.CrudGenerator.Core.Configurations.Global;
+using ITech.CrudGenerator.Core.Configurations.Shared;
+using ITech.CrudGenerator.Core.Generators;
+using ITech.CrudGenerator.Core.Generators.Core;
+using ITech.CrudGenerator.Core.Runners;
+using ITech.CrudGenerator.Core.Schemes.Entity;
+using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 

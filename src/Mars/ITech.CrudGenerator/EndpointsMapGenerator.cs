@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core.SyntaxFactoryBuilders.Models;
+using ITech.CrudGenerator.Core.Configurations.Global;
+using ITech.CrudGenerator.Core.Generators.Core;
+using ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders;
+using ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

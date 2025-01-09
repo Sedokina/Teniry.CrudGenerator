@@ -1,7 +1,7 @@
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Core.Schemes.DbContext;
+using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

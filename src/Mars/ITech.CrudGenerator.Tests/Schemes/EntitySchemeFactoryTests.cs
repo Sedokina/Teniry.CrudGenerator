@@ -1,8 +1,8 @@
 using System.Reflection;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Core.Schemes.DbContext;
+using ITech.CrudGenerator.Core.Schemes.Entity;
+using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
+using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 
