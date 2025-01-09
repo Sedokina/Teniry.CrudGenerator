@@ -35,14 +35,4 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationB
             }
         };
     }
-
-    public object Construct(GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration)
-    {
-        return Construct(globalConfiguration,
-            operationsSharedConfiguration,
-            internalEntityGeneratorConfiguration.DeleteOperation
-        );
-    }
 }

@@ -6,9 +6,4 @@ namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builde
 
 internal interface IConfigurationBuilderFactory
 {
-    public object Construct(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration
-    );
 }

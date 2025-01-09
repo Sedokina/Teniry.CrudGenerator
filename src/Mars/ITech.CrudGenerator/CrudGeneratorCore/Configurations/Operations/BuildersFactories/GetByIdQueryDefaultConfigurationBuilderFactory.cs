@@ -36,14 +36,4 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
             }
         };
     }
-
-    public object Construct(GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
-        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration)
-    {
-        return Construct(globalConfiguration,
-            operationsSharedConfiguration,
-            internalEntityGeneratorConfiguration.GetByIdOperation
-        );
-    }
 }

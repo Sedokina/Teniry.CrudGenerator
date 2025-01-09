@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
@@ -33,11 +34,49 @@ public sealed class CrudGenerator : IIncrementalGenerator
             generatorConfigurationsProviders.Combine(dbContextSchemeProviders.Collect())
                 .WithTrackingName("generatorConfigurationsWithDbContextProviders");
 
+        IConfigurationBuilderFactory[] factories =
+        [
+            new GetByIdQueryDefaultConfigurationBuilderFactory(),
+            new GetListQueryDefaultConfigurationBulderFactory(),
+            new CreateCommandDefaultConfigurationBuilderFactory(),
+            new UpdateCommandDefaultConfigurationBuilderFactory(),
+            new DeleteCommandDefaultConfigurationBuilderFactory()
+        ];
         var entitySchemeFactoryWithDbContextProviders = generatorConfigurationsWithDbContextProviders
             .Select((tuple, token) => (tuple.Left, new EntitySchemeFactory().Construct(
                     tuple.Left,
                     tuple.Right[0]), tuple.Right[0])
             ).WithTrackingName("entitySchemeFactoryWithDbContextProviders");
+        var temp = entitySchemeFactoryWithDbContextProviders.SelectMany((tuple, token) =>
+        {
+            var result = new object[]
+            {
+                new CreateCommandDefaultConfigurationBuilderFactory().Construct(globalConfigurationBuilder,
+                    sharedConfigurationBuilder,
+                    tuple.Left.CreateOperation
+                ),
+
+                new DeleteCommandDefaultConfigurationBuilderFactory().Construct(globalConfigurationBuilder,
+                    sharedConfigurationBuilder,
+                    tuple.Left.DeleteOperation
+                ),
+
+                new GetByIdQueryDefaultConfigurationBuilderFactory().Construct(globalConfigurationBuilder,
+                    sharedConfigurationBuilder,
+                    tuple.Left.GetByIdOperation
+                ),
+                new GetListQueryDefaultConfigurationBulderFactory().Construct(globalConfigurationBuilder,
+                    sharedConfigurationBuilder,
+                    tuple.Left.GetListOperation
+                ),
+
+                new UpdateCommandDefaultConfigurationBuilderFactory().Construct(globalConfigurationBuilder,
+                    sharedConfigurationBuilder,
+                    tuple.Left.UpdateOperation
+                )
+            };
+            return result;
+        });
 
         // TODO: check if there are dbContextSchemes at all
         // TODO: add errors log
@@ -77,7 +116,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 globalConfigurationBuilder,
                 sharedConfigurationBuilder,
                 internalEntityGeneratorConfiguration.GetByIdOperation);
-        
+
         var getByIdQueryConfiguration = getByIdQueryConfigurationBuilder.Build(entityScheme);
         if (getByIdQueryConfiguration.Generate)
         {
