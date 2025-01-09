@@ -28,10 +28,8 @@ public sealed class CrudGenerator : IIncrementalGenerator
         // var diagnostics = context.CompilationProvider.Select((compilation, token) => Diagnostic.Create());
         // context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
         
-        var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider()
-            .WithTrackingName("GeneratorConfigurationsProviders");
-        var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider()
-            .WithTrackingName("DbContextSchemeProviders");
+        var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
+        var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
         List<EndpointMap> endpointsMaps = [];
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
