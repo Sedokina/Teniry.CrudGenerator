@@ -1,9 +1,9 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using System.Collections.Generic;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal interface IConfigurationBuilderFactory
 {
+    List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps);
 }

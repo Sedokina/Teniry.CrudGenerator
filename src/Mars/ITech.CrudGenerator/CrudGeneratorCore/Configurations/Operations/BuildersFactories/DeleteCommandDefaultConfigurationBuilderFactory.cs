@@ -1,12 +1,21 @@
+using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
+    private CqrsOperationWithoutReturnValueConfigurationBuilder _builder;
+    private EntityScheme _entityScheme;
+    private DbContextScheme _dbContextScheme;
+
     public CqrsOperationWithoutReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
@@ -34,5 +43,24 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationB
                                                 "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
         };
+    }
+
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
+    {
+        var deleteCommandConfiguration = _builder.Build(_entityScheme);
+        if (!deleteCommandConfiguration.Generate) return [];
+        var deleteCommandScheme =
+            new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+                _entityScheme,
+                _dbContextScheme,
+                deleteCommandConfiguration);
+        var generateDeleteCommand = new DeleteCommandCrudGenerator(deleteCommandScheme);
+        generateDeleteCommand.RunGenerator();
+        if (generateDeleteCommand.EndpointMap is not null)
+        {
+            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+        }
+
+        return generateDeleteCommand.GeneratedFiles;
     }
 }

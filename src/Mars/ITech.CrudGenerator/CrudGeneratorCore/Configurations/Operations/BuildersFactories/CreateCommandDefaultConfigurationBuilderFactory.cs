@@ -1,12 +1,23 @@
+using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
+using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 
 internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
 {
+    private CqrsOperationWithReturnValueConfigurationBuilder _builder;
+    private EntityScheme _entityScheme;
+    private DbContextScheme _dbContextScheme;
+    private CqrsOperationWithReturnValueGeneratorConfiguration _getByIdQueryConfiguration;
+    private CqrsOperationWithReturnValueConfigurationBuilder _getByIdQueryConfigurationBuilder;
+
     public CqrsOperationWithReturnValueConfigurationBuilder Construct(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
@@ -35,5 +46,32 @@ internal class CreateCommandDefaultConfigurationBuilderFactory : IConfigurationB
                                                 "/{{entity_name}}/{{operation_name | string.downcase}}")
             }
         };
+    }
+
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
+    {
+        var createCommandConfiguration = _builder.Build(_entityScheme);
+        if (!createCommandConfiguration.Generate) return [];
+        var createCommandScheme =
+            new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+                _entityScheme,
+                _dbContextScheme,
+                createCommandConfiguration
+            );
+        var generateCreateCommand = new CreateCommandCrudGenerator(
+            createCommandScheme,
+            _getByIdQueryConfiguration.Endpoint.Generate
+                ? _getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder
+                : null,
+            _getByIdQueryConfiguration.Endpoint.Generate
+                ? _getByIdQueryConfigurationBuilder.OperationName
+                : null);
+        generateCreateCommand.RunGenerator();
+        if (generateCreateCommand.EndpointMap is not null)
+        {
+            endpointsMaps.Add(generateCreateCommand.EndpointMap);
+        }
+
+        return generateCreateCommand.GeneratedFiles;
     }
 }
