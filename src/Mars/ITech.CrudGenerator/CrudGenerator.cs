@@ -21,7 +21,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
     {
         // var diagnostics = context.CompilationProvider.Select((compilation, token) => Diagnostic.Create());
         // context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
-        
+
         var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
@@ -29,16 +29,26 @@ public sealed class CrudGenerator : IIncrementalGenerator
         var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
 
+        var generatorConfigurationsWithDbContextProviders =
+            generatorConfigurationsProviders.Combine(dbContextSchemeProviders.Collect())
+                .WithTrackingName("generatorConfigurationsWithDbContextProviders");
+
+        var entitySchemeFactoryWithDbContextProviders = generatorConfigurationsWithDbContextProviders
+            .Select((tuple, token) => (tuple.Left, new EntitySchemeFactory().Construct(
+                    tuple.Left,
+                    tuple.Right[0]), tuple.Right[0])
+            ).WithTrackingName("entitySchemeFactoryWithDbContextProviders");
+
         // TODO: check if there are dbContextSchemes at all
         // TODO: add errors log
-        var generatorConfigurationsWithDbContextProviders =
-            generatorConfigurationsProviders.Combine(dbContextSchemeProviders.Collect());
-        context.RegisterSourceOutput(generatorConfigurationsWithDbContextProviders,
+
+        context.RegisterSourceOutput(entitySchemeFactoryWithDbContextProviders,
             (productionContext, generatorConfigurationWithDbContext) =>
                 Execute(
                     productionContext,
-                    generatorConfigurationWithDbContext.Left,
-                    generatorConfigurationWithDbContext.Right[0],
+                    generatorConfigurationWithDbContext.Item1,
+                    generatorConfigurationWithDbContext.Item2,
+                    generatorConfigurationWithDbContext.Item3,
                     globalConfigurationBuilder,
                     sharedConfigurationBuilder,
                     endpointsMaps
@@ -56,15 +66,12 @@ public sealed class CrudGenerator : IIncrementalGenerator
     private static void Execute(
         SourceProductionContext context,
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
+        EntityScheme entityScheme,
         DbContextScheme dbContextScheme,
         GlobalCqrsGeneratorConfigurationBuilder globalConfigurationBuilder,
         CqrsOperationsSharedConfigurationBuilder sharedConfigurationBuilder,
         List<EndpointMap> endpointsMaps)
     {
-        var entityScheme = new EntitySchemeFactory().Construct(
-            internalEntityGeneratorConfiguration,
-            dbContextScheme);
-
         var getByIdQueryConfigurationBuilder = new GetByIdQueryDefaultConfigurationBuilderFactory()
             .Construct(
                 globalConfigurationBuilder,
