@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace ITech.CrudGenerator;
+namespace ITech.CrudGenerator.Core.Generators;
 
 internal class EndpointsMapGenerator : BaseGenerator
 {

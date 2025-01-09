@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.Core.Configurations.Global;
 using ITech.CrudGenerator.Core.Configurations.Shared;
+using ITech.CrudGenerator.Core.Generators;
 using ITech.CrudGenerator.Core.Generators.Core;
 using ITech.CrudGenerator.Core.Runners;
 using ITech.CrudGenerator.Core.Schemes.Entity;
