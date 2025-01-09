@@ -2,20 +2,21 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using ITech.CrudGenerator.Tests.Helpers;
 
-namespace ITech.CrudGenerator.Tests.BuilderFactories;
+namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class CreateCommandDefaultConfigurationBuilderFactoryTests
+public class CreateCommandGeneratorRunnerTests
 {
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
-    public CreateCommandDefaultConfigurationBuilderFactoryTests()
+    public CreateCommandGeneratorRunnerTests()
     {
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
@@ -123,10 +124,10 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
     }
 
 
-    private CreateCommandDefaultConfigurationBuilderFactory CreateFactory(
+    private CreateCommandGeneratorRunner CreateFactory(
         InternalEntityGeneratorCreateOperationConfiguration configuration)
     {
-        return new CreateCommandDefaultConfigurationBuilderFactory(
+        return new CreateCommandGeneratorRunner(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             configuration,

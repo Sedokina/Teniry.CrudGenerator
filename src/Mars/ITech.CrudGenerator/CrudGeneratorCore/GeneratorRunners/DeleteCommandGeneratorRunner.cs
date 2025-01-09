@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -8,18 +9,18 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
-internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
+internal class DeleteCommandGeneratorRunner : IGeneratorRunner
 {
-    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Builder { get; }
+    public CqrsOperationWithoutReturnValueConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
-    public UpdateCommandDefaultConfigurationBuilderFactory(
+    public DeleteCommandGeneratorRunner(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
@@ -28,22 +29,21 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationB
         _dbContextScheme = dbContextScheme;
     }
 
-    private static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithoutReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)
+        InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration)
     {
-        return new CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
+        return new CqrsOperationWithoutReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = operationConfiguration?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = operationConfiguration?.Operation ?? "Update",
+            OperationName = operationConfiguration?.Operation ?? "Delete",
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            ViewModel = new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
             Endpoint = new()
             {
                 // If general generate is false, than endpoint generate is also false
@@ -60,20 +60,20 @@ internal class UpdateCommandDefaultConfigurationBuilderFactory : IConfigurationB
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var updateOperationConfiguration = Builder.Build(_entityScheme);
-        if (!updateOperationConfiguration.Generate) return [];
-        var updateCommandScheme =
-            new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(
+        var deleteCommandConfiguration = Builder.Build(_entityScheme);
+        if (!deleteCommandConfiguration.Generate) return [];
+        var deleteCommandScheme =
+            new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                updateOperationConfiguration);
-        var generateUpdateCommand = new UpdateCommandCrudGenerator(updateCommandScheme);
-        generateUpdateCommand.RunGenerator();
-        if (generateUpdateCommand.EndpointMap is not null)
+                deleteCommandConfiguration);
+        var generateDeleteCommand = new DeleteCommandCrudGenerator(deleteCommandScheme);
+        generateDeleteCommand.RunGenerator();
+        if (generateDeleteCommand.EndpointMap is not null)
         {
-            endpointsMaps.Add(generateUpdateCommand.EndpointMap);
+            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
         }
 
-        return generateUpdateCommand.GeneratedFiles;
+        return generateDeleteCommand.GeneratedFiles;
     }
 }

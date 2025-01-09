@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -8,18 +9,18 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
-internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
+internal class UpdateCommandGeneratorRunner : IGeneratorRunner
 {
-    public CqrsOperationWithReturnValueConfigurationBuilder Builder { get; }
+    public CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
-    public GetByIdQueryDefaultConfigurationBuilderFactory(
+    public UpdateCommandGeneratorRunner(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme)
     {
@@ -28,22 +29,22 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
         _dbContextScheme = dbContextScheme;
     }
 
-    private static CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration)
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration)
     {
-        return new CqrsOperationWithReturnValueConfigurationBuilder
+        return new CqrsOperationWithoutReturnValueWithReceiveViewModelConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = operationConfiguration?.Generate ?? true,
-            OperationType = CqrsOperationType.Query,
-            OperationName = operationConfiguration?.Operation ?? "Get",
+            OperationType = CqrsOperationType.Command,
+            OperationName = operationConfiguration?.Operation ?? "Update",
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            Operation = new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
-            Dto = new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
+            Operation = new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            ViewModel = new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
             Endpoint = new()
             {
                 // If general generate is false, than endpoint generate is also false
@@ -52,28 +53,28 @@ internal class GetByIdQueryDefaultConfigurationBuilderFactory : IConfigurationBu
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurationBuilder =
-                    new(operationConfiguration?.RouteName ?? "/{{entity_name}}/{{id_param_name}}")
+                RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
+                                                "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
             }
         };
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var getByIdQueryConfiguration = Builder.Build(_entityScheme);
-        if (!getByIdQueryConfiguration.Generate) return [];
-        var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
-            _entityScheme,
-            _dbContextScheme,
-            getByIdQueryConfiguration
-        );
-        var generateGetByIdQuery = new GetByIdQueryCrudGenerator(getByIdQueryScheme);
-        generateGetByIdQuery.RunGenerator();
-        if (generateGetByIdQuery.EndpointMap is not null)
+        var updateOperationConfiguration = Builder.Build(_entityScheme);
+        if (!updateOperationConfiguration.Generate) return [];
+        var updateCommandScheme =
+            new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(
+                _entityScheme,
+                _dbContextScheme,
+                updateOperationConfiguration);
+        var generateUpdateCommand = new UpdateCommandCrudGenerator(updateCommandScheme);
+        generateUpdateCommand.RunGenerator();
+        if (generateUpdateCommand.EndpointMap is not null)
         {
-            endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
+            endpointsMaps.Add(generateUpdateCommand.EndpointMap);
         }
 
-        return generateGetByIdQuery.GeneratedFiles;
+        return generateUpdateCommand.GeneratedFiles;
     }
 }

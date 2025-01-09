@@ -2,29 +2,26 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using ITech.CrudGenerator.Tests.Helpers;
-using Microsoft.CodeAnalysis;
 
-namespace ITech.CrudGenerator.Tests.BuilderFactories;
+namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class DeleteCommandDefaultConfigurationBuilderFactoryTests
+public class GetListQueryGeneratorRunnerTests
 {
     private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
     private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
-    public DeleteCommandDefaultConfigurationBuilderFactoryTests()
+    public GetListQueryGeneratorRunnerTests()
     {
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
-        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata("TestEntity", "", "", [
-                new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
-            ])
-        );
+        var internalEntityGeneratorConfiguration =
+            new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
@@ -33,7 +30,7 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
     {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
 
         // Act
         var actual = sut.Builder;
@@ -47,31 +44,32 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
     public void Should_SetCorrectDefaultValues()
     {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
 
         // Act
         var actual = sut.Builder.Build(_entityScheme);
 
         // Assert
         actual.Generate.Should().BeTrue();
-        actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be("Delete");
-        actual.OperationGroup.Should().Be("DeleteTestEntity");
-        actual.Operation.Should().Be("DeleteTestEntityCommand");
-        actual.Handler.Should().Be("DeleteTestEntityHandler");
-        actual.Endpoint.Name.Should().Be("DeleteTestEntityEndpoint");
+        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationName.Should().Be("Get");
+        actual.OperationGroup.Should().Be("GetTestEntities");
+        actual.Operation.Should().Be("GetTestEntitiesQuery");
+        actual.Dto.Should().Be("TestEntitiesDto");
+        actual.Handler.Should().Be("GetTestEntitiesHandler");
+        actual.Endpoint.Name.Should().Be("GetTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.Should().Be("DeleteAsync");
-        actual.Endpoint.Route.Should().Be("/testEntity/{id}/delete");
+        actual.Endpoint.FunctionName.Should().Be("GetAsync");
+        actual.Endpoint.Route.Should().Be("/testEntity");
     }
 
     [Fact]
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
     {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
         {
-            Operation = "Del"
+            Operation = "Obtain"
         });
 
         // Act
@@ -79,26 +77,28 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 
         // Assert
         actual.Generate.Should().BeTrue();
-        actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be("Del");
-        actual.OperationGroup.Should().Be("DelTestEntity");
-        actual.Operation.Should().Be("DelTestEntityCommand");
-        actual.Handler.Should().Be("DelTestEntityHandler");
-        actual.Endpoint.Name.Should().Be("DelTestEntityEndpoint");
+        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationName.Should().Be("Obtain");
+        actual.OperationGroup.Should().Be("ObtainTestEntities");
+        actual.Operation.Should().Be("ObtainTestEntitiesQuery");
+        actual.Dto.Should().Be("TestEntitiesDto");
+        actual.Handler.Should().Be("ObtainTestEntitiesHandler");
+        actual.Endpoint.Name.Should().Be("ObtainTestEntitiesEndpoint");
         actual.Endpoint.Generate.Should().BeTrue();
-        actual.Endpoint.FunctionName.Should().Be("DelAsync");
-        actual.Endpoint.Route.Should().Be("/testEntity/{id}/del");
+        actual.Endpoint.FunctionName.Should().Be("ObtainAsync");
+        actual.Endpoint.Route.Should().Be("/testEntity");
     }
 
     [Fact]
     public void Should_CustomizeAllAvailableConfiguration()
     {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration
+        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
         {
             Generate = false,
             OperationGroup = "CustomOperationGroupName",
-            CommandName = "CustomCommandName",
+            QueryName = "CustomQueryName",
+            DtoName = "CustomDtoName",
             HandlerName = "CustomHandlerName",
             EndpointClassName = "CustomEndpointClassName",
             EndpointFunctionName = "CustomEndpointFunctionName",
@@ -111,21 +111,22 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 
         // Assert
         actual.Generate.Should().BeFalse();
-        actual.OperationType.Should().Be(CqrsOperationType.Command);
-        actual.OperationName.Should().Be("Delete");
+        actual.OperationType.Should().Be(CqrsOperationType.Query);
+        actual.OperationName.Should().Be("Get");
         actual.OperationGroup.Should().Be("CustomOperationGroupName");
-        actual.Operation.Should().Be("CustomCommandName");
+        actual.Operation.Should().Be("CustomQueryName");
+        actual.Dto.Should().Be("CustomDtoName");
         actual.Handler.Should().Be("CustomHandlerName");
         actual.Endpoint.Name.Should().Be("CustomEndpointClassName");
         actual.Endpoint.Generate.Should().BeFalse();
         actual.Endpoint.FunctionName.Should().Be("CustomEndpointFunctionName");
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
     }
-
-    private DeleteCommandDefaultConfigurationBuilderFactory CreateFactory(
-        InternalEntityGeneratorDeleteOperationConfiguration configuration)
+    
+    private GetListQueryGeneratorRunner CreateFactory(
+        InternalEntityGeneratorGetListOperationConfiguration configuration)
     {
-        return new DeleteCommandDefaultConfigurationBuilderFactory(
+        return new GetListQueryGeneratorRunner(
             _globalCqrsGeneratorConfigurationBuilder,
             _cqrsOperationsSharedConfigurationBuilder,
             configuration,

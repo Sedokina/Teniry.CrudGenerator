@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
@@ -36,7 +37,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
             ).WithTrackingName("entitySchemeFactoryWithDbContextProviders");
         var temp = entitySchemeFactoryWithDbContextProviders.SelectMany((tuple, token) =>
         {
-            var getByIdQueryDefaultConfigurationBuilderFactory = new GetByIdQueryDefaultConfigurationBuilderFactory(
+            var getByIdQueryDefaultConfigurationBuilderFactory = new GetByIdQueryGeneratorRunner(
                 globalConfigurationBuilder,
                 sharedConfigurationBuilder,
                 tuple.Left.GetByIdOperation,
@@ -44,17 +45,17 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 tuple.Item3
             );
 
-            var result = new IConfigurationBuilderFactory[]
+            var result = new IGeneratorRunner[]
             {
                 getByIdQueryDefaultConfigurationBuilderFactory,
 
-                new GetListQueryDefaultConfigurationBuilderFactory(globalConfigurationBuilder,
+                new GetListQueryGeneratorRunner(globalConfigurationBuilder,
                     sharedConfigurationBuilder,
                     tuple.Left.GetListOperation,
                     tuple.Item2,
                     tuple.Item3
                 ),
-                new CreateCommandDefaultConfigurationBuilderFactory(globalConfigurationBuilder,
+                new CreateCommandGeneratorRunner(globalConfigurationBuilder,
                     sharedConfigurationBuilder,
                     tuple.Left.CreateOperation,
                     tuple.Item2,
@@ -62,13 +63,13 @@ public sealed class CrudGenerator : IIncrementalGenerator
                     getByIdQueryDefaultConfigurationBuilderFactory.Builder.Build(tuple.Item2),
                     getByIdQueryDefaultConfigurationBuilderFactory.Builder
                 ),
-                new UpdateCommandDefaultConfigurationBuilderFactory(globalConfigurationBuilder,
+                new UpdateCommandGeneratorRunner(globalConfigurationBuilder,
                     sharedConfigurationBuilder,
                     tuple.Left.UpdateOperation,
                     tuple.Item2,
                     tuple.Item3
                 ),
-                new DeleteCommandDefaultConfigurationBuilderFactory(globalConfigurationBuilder,
+                new DeleteCommandGeneratorRunner(globalConfigurationBuilder,
                     sharedConfigurationBuilder,
                     tuple.Left.DeleteOperation,
                     tuple.Item2,
@@ -95,10 +96,10 @@ public sealed class CrudGenerator : IIncrementalGenerator
 
     private static void Execute(
         SourceProductionContext context,
-        IConfigurationBuilderFactory configurationBuilderFactory,
+        IGeneratorRunner generatorRunner,
         List<EndpointMap> endpointsMaps)
     {
-        var generatedFiles = configurationBuilderFactory.RunGenerator(endpointsMaps);
+        var generatedFiles = generatorRunner.RunGenerator(endpointsMaps);
         WriteFiles(context, generatedFiles);
     }
 

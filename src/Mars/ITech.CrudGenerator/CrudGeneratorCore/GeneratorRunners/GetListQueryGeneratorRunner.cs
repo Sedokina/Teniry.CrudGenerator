@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -8,15 +9,15 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
-internal class GetListQueryDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
+internal class GetListQueryGeneratorRunner : IGeneratorRunner
 {
     public CqrsListOperationConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
 
-    public GetListQueryDefaultConfigurationBuilderFactory(
+    public GetListQueryGeneratorRunner(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,

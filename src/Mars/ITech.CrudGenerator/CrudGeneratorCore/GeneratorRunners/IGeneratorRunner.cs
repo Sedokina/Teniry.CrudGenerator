@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
-internal interface IConfigurationBuilderFactory
+internal interface IGeneratorRunner
 {
     List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps);
 }

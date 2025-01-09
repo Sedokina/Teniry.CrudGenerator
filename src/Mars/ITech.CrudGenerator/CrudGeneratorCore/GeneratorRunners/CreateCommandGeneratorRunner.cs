@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
@@ -8,40 +9,47 @@ using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 
-namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
+namespace ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 
-internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationBuilderFactory
+internal class CreateCommandGeneratorRunner : IGeneratorRunner
 {
-    public CqrsOperationWithoutReturnValueConfigurationBuilder Builder { get; }
+    public CqrsOperationWithReturnValueConfigurationBuilder Builder { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
+    private readonly CqrsOperationWithReturnValueGeneratorConfiguration _getByIdQueryConfiguration;
+    private readonly CqrsOperationWithReturnValueConfigurationBuilder _getByIdQueryConfigurationBuilder;
 
-    public DeleteCommandDefaultConfigurationBuilderFactory(
+    public CreateCommandGeneratorRunner(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
+        InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
+        DbContextScheme dbContextScheme,
+        CqrsOperationWithReturnValueGeneratorConfiguration getByIdQueryConfiguration,
+        CqrsOperationWithReturnValueConfigurationBuilder getByIdQueryConfigurationBuilder)
     {
         Builder = ConstructBuilder(globalConfiguration, operationsSharedConfiguration, operationConfiguration);
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
+        _getByIdQueryConfiguration = getByIdQueryConfiguration;
+        _getByIdQueryConfigurationBuilder = getByIdQueryConfigurationBuilder;
     }
 
-    private static CqrsOperationWithoutReturnValueConfigurationBuilder ConstructBuilder(
+    private static CqrsOperationWithReturnValueConfigurationBuilder ConstructBuilder(
         GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
-        InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration)
+        InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration)
     {
-        return new CqrsOperationWithoutReturnValueConfigurationBuilder
+        return new CqrsOperationWithReturnValueConfigurationBuilder
         {
             GlobalConfiguration = globalConfiguration,
             OperationsSharedConfiguration = operationsSharedConfiguration,
             Generate = operationConfiguration?.Generate ?? true,
             OperationType = CqrsOperationType.Command,
-            OperationName = operationConfiguration?.Operation ?? "Delete",
+            OperationName = operationConfiguration?.Operation ?? "Create",
             OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             Operation = new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            Dto = new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
             Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
             Endpoint = new()
             {
@@ -52,27 +60,35 @@ internal class DeleteCommandDefaultConfigurationBuilderFactory : IConfigurationB
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
-                                                "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
+                                                "/{{entity_name}}/{{operation_name | string.downcase}}")
             }
         };
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
     {
-        var deleteCommandConfiguration = Builder.Build(_entityScheme);
-        if (!deleteCommandConfiguration.Generate) return [];
-        var deleteCommandScheme =
-            new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
+        var createCommandConfiguration = Builder.Build(_entityScheme);
+        if (!createCommandConfiguration.Generate) return [];
+        var createCommandScheme =
+            new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                deleteCommandConfiguration);
-        var generateDeleteCommand = new DeleteCommandCrudGenerator(deleteCommandScheme);
-        generateDeleteCommand.RunGenerator();
-        if (generateDeleteCommand.EndpointMap is not null)
+                createCommandConfiguration
+            );
+        var generateCreateCommand = new CreateCommandCrudGenerator(
+            createCommandScheme,
+            _getByIdQueryConfiguration.Endpoint.Generate
+                ? _getByIdQueryConfigurationBuilder.Endpoint.RouteConfigurationBuilder
+                : null,
+            _getByIdQueryConfiguration.Endpoint.Generate
+                ? _getByIdQueryConfigurationBuilder.OperationName
+                : null);
+        generateCreateCommand.RunGenerator();
+        if (generateCreateCommand.EndpointMap is not null)
         {
-            endpointsMaps.Add(generateDeleteCommand.EndpointMap);
+            endpointsMaps.Add(generateCreateCommand.EndpointMap);
         }
 
-        return generateDeleteCommand.GeneratedFiles;
+        return generateCreateCommand.GeneratedFiles;
     }
 }

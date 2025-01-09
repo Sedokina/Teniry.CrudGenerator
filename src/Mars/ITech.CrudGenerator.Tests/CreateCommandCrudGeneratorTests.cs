@@ -2,10 +2,10 @@ using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
 using ITech.CrudGenerator.Tests.Helpers;
 using Microsoft.CodeAnalysis;
 
@@ -32,7 +32,7 @@ public class CreateCommandCrudGeneratorTests
         var entityScheme =
             entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
-        var configuration = new CreateCommandDefaultConfigurationBuilderFactory(globalCqrsGeneratorConfigurationBuilder,
+        var configuration = new CreateCommandGeneratorRunner(globalCqrsGeneratorConfigurationBuilder,
                 cqrsOperationsSharedConfigurationBuilder,
                 internalEntityGeneratorConfiguration.CreateOperation,
                 entityScheme,
