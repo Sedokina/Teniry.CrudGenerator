@@ -11,7 +11,7 @@ internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfigur
     public string ViewModel { get; set; } = null!;
 
     public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(bool generate,
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,

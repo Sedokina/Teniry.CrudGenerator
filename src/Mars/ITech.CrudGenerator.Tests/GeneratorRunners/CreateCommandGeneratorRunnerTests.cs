@@ -1,6 +1,5 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
@@ -12,14 +11,10 @@ namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
 public class CreateCommandGeneratorRunnerTests
 {
-    private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
-    private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
     public CreateCommandGeneratorRunnerTests()
     {
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
-        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration =
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
@@ -130,8 +125,8 @@ public class CreateCommandGeneratorRunnerTests
         InternalEntityGeneratorCreateOperationConfiguration configuration)
     {
         return new CreateCommandGeneratorRunner(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
+            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub(),

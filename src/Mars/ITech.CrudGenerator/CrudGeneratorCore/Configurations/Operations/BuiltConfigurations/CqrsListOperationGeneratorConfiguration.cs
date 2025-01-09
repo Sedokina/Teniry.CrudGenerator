@@ -11,7 +11,7 @@ internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturn
     public string DtoListItem { get; set; } = null!;
 
     public CqrsListOperationGeneratorConfiguration(bool generate,
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,

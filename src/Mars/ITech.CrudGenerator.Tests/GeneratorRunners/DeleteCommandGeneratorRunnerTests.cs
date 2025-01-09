@@ -1,4 +1,5 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
@@ -13,14 +14,10 @@ namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
 public class DeleteCommandGeneratorRunnerTests
 {
-    private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
-    private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
     public DeleteCommandGeneratorRunnerTests()
     {
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
-        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
             new InternalEntityClassMetadata("TestEntity", "", "", [
                 new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
@@ -129,8 +126,8 @@ public class DeleteCommandGeneratorRunnerTests
         InternalEntityGeneratorDeleteOperationConfiguration configuration)
     {
         return new DeleteCommandGeneratorRunner(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
+            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()

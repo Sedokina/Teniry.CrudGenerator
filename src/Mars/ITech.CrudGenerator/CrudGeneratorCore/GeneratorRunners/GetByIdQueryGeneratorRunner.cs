@@ -19,7 +19,7 @@ internal class GetByIdQueryGeneratorRunner : IGeneratorRunner
     private readonly DbContextScheme _dbContextScheme;
 
     public GetByIdQueryGeneratorRunner(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
@@ -35,7 +35,7 @@ internal class GetByIdQueryGeneratorRunner : IGeneratorRunner
     }
 
     private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructConfiguration(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)

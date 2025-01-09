@@ -11,7 +11,7 @@ internal class CqrsOperationWithReturnValueGeneratorConfiguration
     public string Dto { get; set; } = null!;
 
     public CqrsOperationWithReturnValueGeneratorConfiguration(bool generate,
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         CqrsOperationType operationType,
         string operationName,

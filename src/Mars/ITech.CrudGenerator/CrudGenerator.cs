@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -22,7 +21,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
 
         List<EndpointMap> endpointsMaps = [];
-        var globalConfigurationBuilder = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+        var globalConfiguration = GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
 
         var generatorRunnerProviders =
@@ -39,7 +38,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 .SelectMany((tuple, _) =>
                 {
                     var getByIdQueryGeneratorRunner = new GetByIdQueryGeneratorRunner(
-                        globalConfigurationBuilder,
+                        globalConfiguration,
                         sharedConfigurationBuilder,
                         tuple.EntityGeneratorConfiguration.GetByIdOperation,
                         tuple.EntityScheme,
@@ -53,13 +52,13 @@ public sealed class CrudGenerator : IIncrementalGenerator
                     {
                         getByIdQueryGeneratorRunner,
 
-                        new GetListQueryGeneratorRunner(globalConfigurationBuilder,
+                        new GetListQueryGeneratorRunner(globalConfiguration,
                             sharedConfigurationBuilder,
                             tuple.EntityGeneratorConfiguration.GetListOperation,
                             tuple.EntityScheme,
                             tuple.DbContextScheme
                         ),
-                        new CreateCommandGeneratorRunner(globalConfigurationBuilder,
+                        new CreateCommandGeneratorRunner(globalConfiguration,
                             sharedConfigurationBuilder,
                             tuple.EntityGeneratorConfiguration.CreateOperation,
                             tuple.EntityScheme,
@@ -67,13 +66,13 @@ public sealed class CrudGenerator : IIncrementalGenerator
                             getByIdRouteBuilder,
                             getByIdQueryGeneratorRunner.Configuration.OperationName
                         ),
-                        new UpdateCommandGeneratorRunner(globalConfigurationBuilder,
+                        new UpdateCommandGeneratorRunner(globalConfiguration,
                             sharedConfigurationBuilder,
                             tuple.EntityGeneratorConfiguration.UpdateOperation,
                             tuple.EntityScheme,
                             tuple.DbContextScheme
                         ),
-                        new DeleteCommandGeneratorRunner(globalConfigurationBuilder,
+                        new DeleteCommandGeneratorRunner(globalConfiguration,
                             sharedConfigurationBuilder,
                             tuple.EntityGeneratorConfiguration.DeleteOperation,
                             tuple.EntityScheme,
@@ -92,7 +91,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
 
         context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, _) =>
         {
-            var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfigurationBuilder);
+            var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfiguration);
             mapEndpointsGenerator.RunGenerator();
             WriteFiles(productionContext, mapEndpointsGenerator.GeneratedFiles);
         });

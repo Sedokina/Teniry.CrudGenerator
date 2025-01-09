@@ -1,4 +1,5 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
@@ -13,26 +14,16 @@ namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
 public class GetByIdQueryGeneratorRunnerTests
 {
-    private readonly GetByIdQueryGeneratorRunner _sut;
-    private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
-    private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
     public GetByIdQueryGeneratorRunnerTests()
     {
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
-        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
             new InternalEntityClassMetadata("TestEntity", "", "", [
                 new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
             ])
         );
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
-        _sut = new GetByIdQueryGeneratorRunner(_globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
-            internalEntityGeneratorConfiguration.GetByIdOperation,
-            _entityScheme,
-            new DbContextSchemeStub());
     }
 
     [Fact]
@@ -139,8 +130,8 @@ public class GetByIdQueryGeneratorRunnerTests
         InternalEntityGeneratorGetByIdOperationConfiguration configuration)
     {
         return new GetByIdQueryGeneratorRunner(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
+            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()

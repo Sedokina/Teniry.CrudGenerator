@@ -19,7 +19,7 @@ internal class GetListQueryGeneratorRunner : IGeneratorRunner
     private readonly DbContextScheme _dbContextScheme;
 
     public GetListQueryGeneratorRunner(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
@@ -36,7 +36,7 @@ internal class GetListQueryGeneratorRunner : IGeneratorRunner
     }
 
     private static CqrsListOperationGeneratorConfiguration ConstructConfiguration(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)

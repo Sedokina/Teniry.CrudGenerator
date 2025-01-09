@@ -19,7 +19,7 @@ internal class DeleteCommandGeneratorRunner : IGeneratorRunner
     private readonly DbContextScheme _dbContextScheme;
 
     public DeleteCommandGeneratorRunner(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
@@ -35,7 +35,7 @@ internal class DeleteCommandGeneratorRunner : IGeneratorRunner
     }
 
     private static CqrsOperationWithoutReturnValueGeneratorConfiguration ConstructConfiguration(
-        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        GlobalCqrsGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)

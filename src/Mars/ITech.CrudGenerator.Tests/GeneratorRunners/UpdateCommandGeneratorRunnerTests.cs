@@ -1,6 +1,5 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
 using ITech.CrudGenerator.CrudGeneratorCore.GeneratorRunners;
 using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
@@ -13,14 +12,10 @@ namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
 public class UpdateCommandGeneratorRunnerTests
 {
-    private readonly GlobalCqrsGeneratorConfigurationBuilder _globalCqrsGeneratorConfigurationBuilder;
-    private readonly CqrsOperationsSharedConfigurationBuilder _cqrsOperationsSharedConfigurationBuilder;
     private readonly EntityScheme _entityScheme;
 
     public UpdateCommandGeneratorRunnerTests()
     {
-        _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
-        _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
             new InternalEntityClassMetadata("TestEntity", "", "", [
                 new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
@@ -133,8 +128,8 @@ public class UpdateCommandGeneratorRunnerTests
         InternalEntityGeneratorUpdateOperationConfiguration configuration)
     {
         return new UpdateCommandGeneratorRunner(
-            _globalCqrsGeneratorConfigurationBuilder,
-            _cqrsOperationsSharedConfigurationBuilder,
+            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct(),
+            new CqrsOperationsSharedConfigurationBuilderFactory().Construct(),
             configuration,
             _entityScheme,
             new DbContextSchemeStub()
