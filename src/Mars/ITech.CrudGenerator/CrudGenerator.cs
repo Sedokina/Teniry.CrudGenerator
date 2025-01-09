@@ -28,9 +28,10 @@ public sealed class CrudGenerator : IIncrementalGenerator
             generatorConfigurationsProviders
                 .Combine(dbContextSchemeProviders.Collect())
                 .WithTrackingName("GeneratorConfigurationWithDbContextProviders")
-                .Select((tuple, _) => (tuple.Left, new EntitySchemeFactory().Construct(
-                        tuple.Left,
-                        tuple.Right[0]), tuple.Right[0])
+                .Select((tuple, _) => (
+                    EntityGeneratorConfiguration: tuple.Left,
+                    EntityScheme: new EntitySchemeFactory().Construct(tuple.Left, tuple.Right[0]),
+                    DbContextScheme: tuple.Right[0])
                 )
                 .WithTrackingName("EntitySchemeFactoryWithDbContextProviders")
                 .SelectMany((tuple, _) =>
@@ -38,43 +39,42 @@ public sealed class CrudGenerator : IIncrementalGenerator
                     var getByIdQueryDefaultConfigurationBuilderFactory = new GetByIdQueryGeneratorRunner(
                         globalConfigurationBuilder,
                         sharedConfigurationBuilder,
-                        tuple.Left.GetByIdOperation,
-                        tuple.Item2,
-                        tuple.Item3
+                        tuple.EntityGeneratorConfiguration.GetByIdOperation,
+                        tuple.EntityScheme,
+                        tuple.DbContextScheme
                     );
 
-                    var result = new IGeneratorRunner[]
+                    return new IGeneratorRunner[]
                     {
                         getByIdQueryDefaultConfigurationBuilderFactory,
 
                         new GetListQueryGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,
-                            tuple.Left.GetListOperation,
-                            tuple.Item2,
-                            tuple.Item3
+                            tuple.EntityGeneratorConfiguration.GetListOperation,
+                            tuple.EntityScheme,
+                            tuple.DbContextScheme
                         ),
                         new CreateCommandGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,
-                            tuple.Left.CreateOperation,
-                            tuple.Item2,
-                            tuple.Item3,
+                            tuple.EntityGeneratorConfiguration.CreateOperation,
+                            tuple.EntityScheme,
+                            tuple.DbContextScheme,
                             getByIdQueryDefaultConfigurationBuilderFactory.Builder.Build(tuple.Item2),
                             getByIdQueryDefaultConfigurationBuilderFactory.Builder
                         ),
                         new UpdateCommandGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,
-                            tuple.Left.UpdateOperation,
-                            tuple.Item2,
-                            tuple.Item3
+                            tuple.EntityGeneratorConfiguration.UpdateOperation,
+                            tuple.EntityScheme,
+                            tuple.DbContextScheme
                         ),
                         new DeleteCommandGeneratorRunner(globalConfigurationBuilder,
                             sharedConfigurationBuilder,
-                            tuple.Left.DeleteOperation,
-                            tuple.Item2,
-                            tuple.Item3
+                            tuple.EntityGeneratorConfiguration.DeleteOperation,
+                            tuple.EntityScheme,
+                            tuple.DbContextScheme
                         )
                     };
-                    return result;
                 })
                 .WithTrackingName("GeneratorRunnerProviders");
 
