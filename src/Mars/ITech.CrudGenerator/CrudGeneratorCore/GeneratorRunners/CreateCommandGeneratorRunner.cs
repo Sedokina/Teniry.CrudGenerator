@@ -46,18 +46,17 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)
     {
-        return new CqrsOperationWithReturnValueConfigurationBuilder
-        {
-            GlobalConfiguration = globalConfiguration,
-            OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = operationConfiguration?.Generate ?? true,
-            OperationType = CqrsOperationType.Command,
-            OperationName = operationConfiguration?.Operation ?? "Create",
-            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            Operation = new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
-            Dto = new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
-            Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            Endpoint = new()
+        return new CqrsOperationWithReturnValueGeneratorConfiguration(
+            generate: operationConfiguration?.Generate ?? true,
+            globalConfiguration: globalConfiguration,
+            operationsSharedConfiguration: operationsSharedConfiguration,
+            operationType: CqrsOperationType.Command,
+            operationName: operationConfiguration?.Operation ?? "Create",
+            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            dto: new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
+            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            endpoint: new MinimalApiEndpointConfigurationBuilder
             {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
@@ -67,8 +66,9 @@ internal class CreateCommandGeneratorRunner : IGeneratorRunner
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{operation_name | string.downcase}}")
-            }
-        }.Build(entityScheme);
+            },
+            entityScheme
+        );
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)

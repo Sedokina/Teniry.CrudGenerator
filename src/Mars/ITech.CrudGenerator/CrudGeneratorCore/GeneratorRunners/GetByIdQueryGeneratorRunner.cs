@@ -40,28 +40,27 @@ internal class GetByIdQueryGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)
     {
-        return new CqrsOperationWithReturnValueConfigurationBuilder
-        {
-            GlobalConfiguration = globalConfiguration,
-            OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = operationConfiguration?.Generate ?? true,
-            OperationType = CqrsOperationType.Query,
-            OperationName = operationConfiguration?.Operation ?? "Get",
-            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            Operation = new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
-            Dto = new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
-            Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            Endpoint = new()
+        return new CqrsOperationWithReturnValueGeneratorConfiguration(
+            generate: operationConfiguration?.Generate ?? true,
+            globalConfiguration: globalConfiguration,
+            operationsSharedConfiguration: operationsSharedConfiguration,
+            operationType: CqrsOperationType.Query,
+            operationName: operationConfiguration?.Operation ?? "Get",
+            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            operation: new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
+            dto: new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
+            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            endpoint: new MinimalApiEndpointConfigurationBuilder
             {
-                // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = GetRouteConfigurationBuilder(operationConfiguration)
-            }
-        }.Build(entityScheme);
+            },
+            entityScheme
+        );
     }
 
     public static EndpointRouteConfigurationBuilder GetRouteConfigurationBuilder(

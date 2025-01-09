@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -39,17 +40,16 @@ internal class DeleteCommandGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)
     {
-        return new CqrsOperationWithoutReturnValueConfigurationBuilder
-        {
-            GlobalConfiguration = globalConfiguration,
-            OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = operationConfiguration?.Generate ?? true,
-            OperationType = CqrsOperationType.Command,
-            OperationName = operationConfiguration?.Operation ?? "Delete",
-            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            Operation = new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
-            Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            Endpoint = new()
+        return new CqrsOperationWithoutReturnValueGeneratorConfiguration(
+            generate: operationConfiguration?.Generate ?? true,
+            globalConfiguration: globalConfiguration,
+            operationsSharedConfiguration: operationsSharedConfiguration,
+            operationType: CqrsOperationType.Command,
+            operationName: operationConfiguration?.Operation ?? "Delete",
+            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            endpoint: new MinimalApiEndpointConfigurationBuilder
             {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
@@ -59,8 +59,9 @@ internal class DeleteCommandGeneratorRunner : IGeneratorRunner
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ??
                                                 "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
-            }
-        }.Build(entityScheme);
+            },
+            entityScheme
+        );
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)

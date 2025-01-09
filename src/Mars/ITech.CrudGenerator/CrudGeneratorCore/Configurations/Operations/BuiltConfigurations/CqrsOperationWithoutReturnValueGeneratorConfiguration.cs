@@ -1,5 +1,8 @@
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations.TypedBuiltConfigurations;
+using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
 
 namespace ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 
@@ -14,6 +17,30 @@ internal class CqrsOperationWithoutReturnValueGeneratorConfiguration
     public string Operation { get; set; } = null!;
     public string Handler { get; set; } = null!;
     public MinimalApiEndpointConfiguration Endpoint { get; set; } = null!;
+
+    public CqrsOperationWithoutReturnValueGeneratorConfiguration(
+        bool generate,
+        GlobalCqrsGeneratorConfigurationBuilder globalConfiguration,
+        CqrsOperationsSharedConfigurationBuilder operationsSharedConfiguration,
+        CqrsOperationType operationType,
+        string operationName,
+        NameConfigurationBuilder operationGroup,
+        NameConfigurationBuilder operation,
+        NameConfigurationBuilder handler,
+        MinimalApiEndpointConfigurationBuilder endpoint,
+        EntityScheme entityScheme)
+    {
+        GlobalConfiguration = globalConfiguration.Build();
+        Generate = generate;
+        OperationType = operationType;
+        OperationName = operationName;
+        OperationGroup = operationGroup.GetName(entityScheme.EntityName, OperationName);
+        OperationsSharedConfiguration = operationsSharedConfiguration
+            .Build(entityScheme, OperationName, OperationGroup);
+        Operation = operation.GetName(entityScheme.EntityName, OperationName);
+        Handler = handler.GetName(entityScheme.EntityName, OperationName);
+        Endpoint = endpoint.Build(entityScheme, OperationName);
+    }
 
     protected bool Equals(CqrsOperationWithoutReturnValueGeneratorConfiguration other)
     {

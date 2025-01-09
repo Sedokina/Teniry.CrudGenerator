@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders;
+using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
 using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
 using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators.Core;
@@ -40,30 +41,28 @@ internal class GetListQueryGeneratorRunner : IGeneratorRunner
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme)
     {
-        return new CqrsListOperationConfigurationBuilder
-        {
-            GlobalConfiguration = globalConfiguration,
-            OperationsSharedConfiguration = operationsSharedConfiguration,
-            Generate = operationConfiguration?.Generate ?? true,
-            OperationType = CqrsOperationType.Query,
-            OperationName = operationConfiguration?.Operation ?? "Get",
-            OperationGroup = new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
-            Operation = new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name_plural}}Query"),
-            Dto = new(operationConfiguration?.DtoName ?? "{{entity_name_plural}}Dto"),
-            DtoListItem = new(operationConfiguration?.ListItemDtoName ?? "{{entity_name_plural}}ListItemDto"),
-            Filter = new(operationConfiguration?.FilterName ?? "{{operation_name}}{{entity_name_plural}}Filter"),
-            Handler = new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name_plural}}Handler"),
-            Endpoint = new()
+        return new CqrsListOperationGeneratorConfiguration(generate: operationConfiguration?.Generate ?? true,
+            globalConfiguration: globalConfiguration,
+            operationsSharedConfiguration: operationsSharedConfiguration,
+            operationType: CqrsOperationType.Query,
+            operationName: operationConfiguration?.Operation ?? "Get",
+            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name_plural}}"),
+            operation: new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name_plural}}Query"),
+            dto: new(operationConfiguration?.DtoName ?? "{{entity_name_plural}}Dto"),
+            dtoListItem: new(operationConfiguration?.ListItemDtoName ?? "{{entity_name_plural}}ListItemDto"),
+            filter: new(operationConfiguration?.FilterName ?? "{{operation_name}}{{entity_name_plural}}Filter"),
+            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name_plural}}Handler"),
+            endpoint: new MinimalApiEndpointConfigurationBuilder
             {
-                // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                            (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(operationConfiguration?.EndpointClassName ??
                                 "{{operation_name}}{{entity_name_plural}}Endpoint"),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurationBuilder = new(operationConfiguration?.RouteName ?? "/{{entity_name}}")
-            }
-        }.Build(entityScheme);
+            },
+            entityScheme: entityScheme
+        );
     }
 
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
