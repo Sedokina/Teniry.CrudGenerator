@@ -19,7 +19,6 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
 
     public UpdateCommandDefaultConfigurationBuilderFactoryTests()
     {
-        _sut = new UpdateCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
@@ -29,6 +28,11 @@ public class UpdateCommandDefaultConfigurationBuilderFactoryTests
         );
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _sut = new UpdateCommandDefaultConfigurationBuilderFactory(_globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.UpdateOperation,
+            _entityScheme,
+            new DbContextSchemeStub());
     }
 
     [Fact]

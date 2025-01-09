@@ -18,13 +18,21 @@ public class CreateCommandDefaultConfigurationBuilderFactoryTests
 
     public CreateCommandDefaultConfigurationBuilderFactoryTests()
     {
-        _sut = new CreateCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration =
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _sut = new CreateCommandDefaultConfigurationBuilderFactory(
+            _globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.CreateOperation,
+            _entityScheme,
+            new DbContextSchemeStub(),
+            null!,
+            null!
+        );
     }
 
     [Fact]

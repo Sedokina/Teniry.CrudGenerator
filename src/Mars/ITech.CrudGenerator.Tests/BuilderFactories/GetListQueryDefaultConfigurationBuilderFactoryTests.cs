@@ -18,13 +18,17 @@ public class GetListQueryDefaultFactoryTests
 
     public GetListQueryDefaultFactoryTests()
     {
-        _sut = new GetListQueryDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration =
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _sut = new GetListQueryDefaultConfigurationBuilderFactory(_globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.GetListOperation,
+            _entityScheme,
+            new DbContextSchemeStub());
     }
 
     [Fact]

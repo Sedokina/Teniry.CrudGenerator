@@ -19,7 +19,6 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
 
     public DeleteCommandDefaultConfigurationBuilderFactoryTests()
     {
-        _sut = new DeleteCommandDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
@@ -29,6 +28,11 @@ public class DeleteCommandDefaultConfigurationBuilderFactoryTests
         );
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _sut = new DeleteCommandDefaultConfigurationBuilderFactory(_globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.DeleteOperation,
+            _entityScheme,
+            new DbContextSchemeStub());
     }
 
     [Fact]

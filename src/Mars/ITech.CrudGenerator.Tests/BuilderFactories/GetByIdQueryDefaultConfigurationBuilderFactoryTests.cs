@@ -19,7 +19,6 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
 
     public GetByIdQueryDefaultConfigurationBuilderFactoryTests()
     {
-        _sut = new GetByIdQueryDefaultConfigurationBuilderFactory();
         _globalCqrsGeneratorConfigurationBuilder = new GlobalCqrsGeneratorConfigurationBuilder();
         _cqrsOperationsSharedConfigurationBuilder = new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
@@ -29,6 +28,11 @@ public class GetByIdQueryDefaultConfigurationBuilderFactoryTests
         );
         var entitySchemeFactory = new EntitySchemeFactory();
         _entityScheme = entitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
+        _sut = new GetByIdQueryDefaultConfigurationBuilderFactory(_globalCqrsGeneratorConfigurationBuilder,
+            _cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.GetByIdOperation,
+            _entityScheme,
+            new DbContextSchemeStub());
     }
 
     [Fact]
