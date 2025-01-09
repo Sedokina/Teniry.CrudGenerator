@@ -1,9 +1,9 @@
 namespace ITech.CrudGenerator.Core.Configurations.Crud.TypedConfigurations;
 
-internal record MinimalApiEndpointConfiguration
+internal record MinimalApiEndpointConfiguration(string Name, bool Generate, string FunctionName, string Route)
 {
-    public string Name { get; set; } = "";
-    public bool Generate { get; set; } = true;
-    public string FunctionName { get; set; } = "";
-    public string Route { get; set; } = "";
+    public string Name { get; } = Name;
+    public bool Generate { get; } = Generate;
+    public string FunctionName { get; } = FunctionName;
+    public string Route { get; } = Route;
 }

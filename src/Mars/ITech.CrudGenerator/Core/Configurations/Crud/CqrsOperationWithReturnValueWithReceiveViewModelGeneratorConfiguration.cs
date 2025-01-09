@@ -6,7 +6,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal class CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
+internal record CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
     : CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     public string ViewModel { get; set; } = null!;

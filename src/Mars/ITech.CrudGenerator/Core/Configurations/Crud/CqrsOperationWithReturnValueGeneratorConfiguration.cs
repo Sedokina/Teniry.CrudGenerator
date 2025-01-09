@@ -6,7 +6,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal class CqrsOperationWithReturnValueGeneratorConfiguration
+internal record CqrsOperationWithReturnValueGeneratorConfiguration
     : CqrsOperationWithoutReturnValueGeneratorConfiguration
 {
     public string Dto { get; set; } = null!;

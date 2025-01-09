@@ -6,7 +6,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal class CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
+internal record CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
 {
     public string Filter { get; set; } = null!;
     public string DtoListItem { get; set; } = null!;
