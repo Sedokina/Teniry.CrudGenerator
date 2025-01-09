@@ -5,7 +5,6 @@ namespace ITech.CrudGenerator.Tests;
 
 public class IncrementalGeneratorTests
 {
-    // A collection of all the tracking names. I'll show how to simplify this later
     private static string[] AllTrackingNames =
     [
         "GeneratorConfigurationsProviders",
@@ -16,7 +15,7 @@ public class IncrementalGeneratorTests
     ];
 
     [Fact]
-    public void CanGenerate()
+    public void Should_TakeCachedSources_OnSecondRun()
     {
         // Temporary, to ensure ITech.CrudGenerator.Abstractions are loaded for GetGeneratedTrees
         var d = DbContextDbProvider.Mongo;
