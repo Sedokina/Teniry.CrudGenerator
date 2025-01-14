@@ -2,6 +2,7 @@ using System.Linq;
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.Core.Schemes.DbContext;
 using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
+using ITech.CrudGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,7 +12,7 @@ internal static class SyntaxValueProviderExtensions
 {
     private static readonly string DbContextAttributeName = typeof(UseDbContextAttribute).FullName ?? "";
 
-    internal static IncrementalValuesProvider<InternalEntityGeneratorConfiguration>
+    internal static IncrementalValuesProvider<Result<InternalEntityGeneratorConfiguration?>>
         CreateGeneratorConfigurationsProvider(this SyntaxValueProvider syntaxProvider)
     {
         return syntaxProvider.CreateSyntaxProvider(
@@ -40,13 +41,20 @@ internal static class SyntaxValueProviderExtensions
                              baseClass.Identifier.ToString().Equals(className));
     }
 
-    private static InternalEntityGeneratorConfiguration TransformFoundGeneratorConfigurationsToInternalScheme(
+    private static Result<InternalEntityGeneratorConfiguration?> TransformFoundGeneratorConfigurationsToInternalScheme(
         GeneratorSyntaxContext syntaxContext
     )
     {
-        var symbol = syntaxContext.SemanticModel.GetDeclaredSymbol(syntaxContext.Node) as INamedTypeSymbol;
+        var declaredSymbol = syntaxContext.SemanticModel.GetDeclaredSymbol(syntaxContext.Node);
+        if (declaredSymbol is not INamedTypeSymbol namedTypeSymbol)
+        {
+            var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.WrongEntityGeneratorConfigurationSymbol,
+                syntaxContext.Node.GetLocation());
+            return new(null, [diagnosticInfo]);
+        }
+
         var result = InternalEntityGeneratorConfigurationFactory
-            .Construct(symbol, syntaxContext.SemanticModel.Compilation);
-        return result;
+            .Construct(namedTypeSymbol, syntaxContext.SemanticModel.Compilation);
+        return new(result, []);
     }
 }

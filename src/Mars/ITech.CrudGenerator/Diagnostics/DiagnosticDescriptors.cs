@@ -15,4 +15,13 @@ public class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true
     );
+
+    public static readonly DiagnosticDescriptor WrongEntityGeneratorConfigurationSymbol = new(
+        "CDG002",
+        "Wrong entity generator configuration symbol",
+        "Failed to read Entity Generator Configuration in {0}",
+        "CRUD",
+        DiagnosticSeverity.Error,
+        true
+    );
 }

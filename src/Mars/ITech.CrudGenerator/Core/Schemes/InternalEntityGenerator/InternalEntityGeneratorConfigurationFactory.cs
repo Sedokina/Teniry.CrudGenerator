@@ -13,7 +13,7 @@ namespace ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 internal class InternalEntityGeneratorConfigurationFactory
 {
     internal static InternalEntityGeneratorConfiguration Construct(
-        INamedTypeSymbol? generatorSymbol,
+        INamedTypeSymbol generatorSymbol,
         Compilation compilation)
     {
         var generatorScheme = new InternalEntityGeneratorConfiguration(GetEntityClassMetadata(generatorSymbol));
@@ -145,14 +145,9 @@ internal class InternalEntityGeneratorConfigurationFactory
     ///         as <see cref="ConstructorDeclarationSyntax"/> <br/>
     /// </exception>
     private static bool TryExtractValidConstructorDeclaration(
-        INamedTypeSymbol? generatorSymbol,
+        INamedTypeSymbol generatorSymbol,
         out ConstructorDeclarationSyntax? constructorDeclarationSyntax)
     {
-        if (generatorSymbol is null)
-        {
-            throw new Exception("Failed to read one of declared Entity Generator Configuration");
-        }
-
         constructorDeclarationSyntax = null;
         // Get first parameterless constructor
         var generatorConstructorMethodSymbol = generatorSymbol
