@@ -24,18 +24,9 @@ internal class DbContextSchemeFactory
         }
 
         var dbProviderArgument = syntaxContext.Attributes.First().ConstructorArguments.First();
-        DbContextDbProvider dbProviderArgumentValue = default;
-        if (dbProviderArgument.Value is null)
-        {
-            var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.DbContextDbProviderNotSpecified,
-                dbContextClassSymbol.BaseType.Locations.FirstOrDefault());
-            diagnostics.Add(diagnosticInfo);
-        }
-        else
-        {
-            dbProviderArgumentValue = (DbContextDbProvider)dbProviderArgument.Value;
-        }
-
+        var dbProviderArgumentValue =
+            dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
+  
         return new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
             dbContextClassSymbol.Name,
