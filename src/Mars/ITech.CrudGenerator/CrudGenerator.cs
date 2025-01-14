@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ITech.CrudGenerator.Core.Configurations.Global;
 using ITech.CrudGenerator.Core.Configurations.Shared;
 using ITech.CrudGenerator.Core.Generators;
@@ -83,6 +84,17 @@ public sealed class CrudGenerator : IIncrementalGenerator
                 })
                 .WithTrackingName("GeneratorRunnerProviders");
 
+        context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, p) =>
+        {
+            var diagnostics = p.SelectMany(x =>
+                x.Diagnostics.Select(c => Diagnostic.Create(c.Descriptor, null, c.Location!.FilePath)));
+            foreach (var diagnostic in diagnostics)
+            {
+                productionContext.ReportDiagnostic(diagnostic);
+            }
+        });
+
+
         // TODO: check if there are dbContextSchemes at all
         // TODO: add errors log
 
@@ -90,7 +102,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
             Execute(productionContext, generatorRunner, endpointsMaps)
         );
 
-        context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, _) =>
+        context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, p) =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfiguration);
             mapEndpointsGenerator.RunGenerator();

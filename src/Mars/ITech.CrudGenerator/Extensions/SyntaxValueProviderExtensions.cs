@@ -9,7 +9,7 @@ namespace ITech.CrudGenerator.Extensions;
 
 internal static class SyntaxValueProviderExtensions
 {
-    private static string DbContextAttributeName = typeof(UseDbContextAttribute).FullName ?? "";
+    private static readonly string DbContextAttributeName = typeof(UseDbContextAttribute).FullName ?? "";
 
     internal static IncrementalValuesProvider<InternalEntityGeneratorConfiguration>
         CreateGeneratorConfigurationsProvider(this SyntaxValueProvider syntaxProvider)

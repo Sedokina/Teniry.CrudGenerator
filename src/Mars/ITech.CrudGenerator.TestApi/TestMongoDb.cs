@@ -15,8 +15,19 @@ using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ITech.CrudGenerator.TestApi;
 
+public class Mmb : DbContext
+{
+    public Mmb()
+    {
+    }
+
+    public Mmb(DbContextOptions<TestMongoDb> options) : base(options)
+    {
+    }
+}
+
 [UseDbContext(DbContextDbProvider.Mongo)]
-public class TestMongoDb : DbContext
+public class TestMongoDb : Mmb
 {
     public TestMongoDb()
     {
@@ -32,7 +43,7 @@ public class TestMongoDb : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<Currency>().ToCollection("currencies");
         modelBuilder.Entity<Country>().ToCollection("countries");
         modelBuilder.Entity<Currency>().HasOne(x => x.Country)

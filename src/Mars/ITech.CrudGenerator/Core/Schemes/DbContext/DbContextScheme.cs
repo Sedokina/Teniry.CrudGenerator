@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Core;
+using ITech.CrudGenerator.Diagnostics;
 
 namespace ITech.CrudGenerator.Core.Schemes.DbContext;
 
@@ -10,17 +11,20 @@ internal class DbContextScheme
     public string DbContextNamespace { get; }
     public string DbContextName { get; }
     public DbContextDbProvider Provider { get; }
+    public EquatableList<DiagnosticInfo> Diagnostics { get; }
 
     public DbContextScheme(
         string dbContextNamespace,
         string dbContextName,
         DbContextDbProvider provider,
-        Dictionary<FilterType, FilterExpression> filterExpressions)
+        Dictionary<FilterType, FilterExpression> filterExpressions,
+        EquatableList<DiagnosticInfo> diagnostics)
     {
         _filterExpressions = filterExpressions;
         DbContextNamespace = dbContextNamespace;
         DbContextName = dbContextName;
         Provider = provider;
+        Diagnostics = diagnostics;
     }
 
     public FilterExpression GetFilterExpression(FilterType filterType)

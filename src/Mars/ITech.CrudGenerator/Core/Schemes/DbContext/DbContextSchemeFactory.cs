@@ -4,6 +4,7 @@ using System.Linq;
 using ITech.CrudGenerator.Abstractions.DbContext;
 using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Core;
 using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
+using ITech.CrudGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Core.Schemes.DbContext;
@@ -15,10 +16,12 @@ internal class DbContextSchemeFactory
         var dbContextClassSymbol = (INamedTypeSymbol)syntaxContext.TargetSymbol;
         var baseName = dbContextClassSymbol.BaseType!.Name;
 
+        var diagnostics = new EquatableList<DiagnosticInfo>();
         if (!baseName.ToLower().EndsWith("dbcontext"))
         {
-            throw new Exception(
-                $"{nameof(UseDbContextAttribute)} used on class {baseName}, but it is not DbContext class. If it is DbContext class add postfix DbContext to class name");
+            var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.NotInheritedFromDbContext,
+                dbContextClassSymbol.BaseType.Locations.FirstOrDefault());
+            diagnostics.Add(diagnosticInfo);
         }
 
         var dbProviderArgument = syntaxContext.Attributes.First().ConstructorArguments.First();
@@ -29,7 +32,9 @@ internal class DbContextSchemeFactory
             dbContextClassSymbol.ContainingNamespace.ToString(),
             dbContextClassSymbol.Name,
             dbProviderArgumentValue,
-            GetFilterExpressionsFor(dbProviderArgumentValue));
+            GetFilterExpressionsFor(dbProviderArgumentValue),
+            diagnostics
+        );
     }
 
     private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider)
