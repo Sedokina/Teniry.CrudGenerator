@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.DbContext;
@@ -25,8 +24,17 @@ internal class DbContextSchemeFactory
         }
 
         var dbProviderArgument = syntaxContext.Attributes.First().ConstructorArguments.First();
-        var dbProviderArgumentValue =
-            dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
+        DbContextDbProvider dbProviderArgumentValue = default;
+        if (dbProviderArgument.Value is null)
+        {
+            var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.DbContextDbProviderNotSpecified,
+                dbContextClassSymbol.BaseType.Locations.FirstOrDefault());
+            diagnostics.Add(diagnosticInfo);
+        }
+        else
+        {
+            dbProviderArgumentValue = (DbContextDbProvider)dbProviderArgument.Value;
+        }
 
         return new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
@@ -46,7 +54,7 @@ internal class DbContextSchemeFactory
             case DbContextDbProvider.Postgres:
                 return GetFilterExpressionsForPostgres();
             default:
-                throw new ArgumentOutOfRangeException(nameof(provider), provider, null);
+                return [];
         }
     }
 

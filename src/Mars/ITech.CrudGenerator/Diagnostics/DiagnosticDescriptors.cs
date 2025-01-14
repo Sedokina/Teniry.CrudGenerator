@@ -15,4 +15,13 @@ public class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true
     );
+
+    public static DiagnosticDescriptor DbContextDbProviderNotSpecified = new(
+        "CDG002",
+        "Db context does not specify used db provider",
+        $"The {nameof(UseDbContextAttribute)} used on class {{0}}, but does not define a database provider of type {nameof(DbContextDbProvider)}",
+        "CRUD",
+        DiagnosticSeverity.Error,
+        true
+    );
 }
