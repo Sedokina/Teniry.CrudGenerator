@@ -25,7 +25,7 @@ internal class DbContextSchemeStub : DbContextScheme
             {
                 FilterType.Like, new LikeFilterExpression()
             }
-        }, [])
+        })
     {
     }
 }

@@ -10,7 +10,7 @@ namespace ITech.CrudGenerator.Core.Schemes.DbContext;
 
 internal class DbContextSchemeFactory
 {
-    public static DbContextScheme Construct(GeneratorAttributeSyntaxContext syntaxContext)
+    public static Result<DbContextScheme> Construct(GeneratorAttributeSyntaxContext syntaxContext)
     {
         var dbContextClassSymbol = (INamedTypeSymbol)syntaxContext.TargetSymbol;
         var baseName = dbContextClassSymbol.BaseType!.Name;
@@ -26,14 +26,13 @@ internal class DbContextSchemeFactory
         var dbProviderArgument = syntaxContext.Attributes.First().ConstructorArguments.First();
         var dbProviderArgumentValue =
             dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
-  
-        return new DbContextScheme(
+
+        return new(new DbContextScheme(
             dbContextClassSymbol.ContainingNamespace.ToString(),
             dbContextClassSymbol.Name,
             dbProviderArgumentValue,
-            GetFilterExpressionsFor(dbProviderArgumentValue),
-            diagnostics
-        );
+            GetFilterExpressionsFor(dbProviderArgumentValue)
+        ), diagnostics);
     }
 
     private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider)

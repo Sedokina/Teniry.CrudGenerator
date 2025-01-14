@@ -21,7 +21,7 @@ internal static class SyntaxValueProviderExtensions
         ).WithTrackingName("GeneratorConfigurationsProviders");
     }
 
-    internal static IncrementalValuesProvider<DbContextScheme>
+    internal static IncrementalValuesProvider<Result<DbContextScheme>>
         CreateDbContextConfigurationsProvider(this SyntaxValueProvider syntaxProvider)
     {
         return syntaxProvider
