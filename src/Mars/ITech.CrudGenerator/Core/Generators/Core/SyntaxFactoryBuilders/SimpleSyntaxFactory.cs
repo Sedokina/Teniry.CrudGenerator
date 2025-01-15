@@ -94,14 +94,19 @@ public static class SimpleSyntaxFactory
             IdentifierName(propertyName));
     }
 
-    public static SimpleLambdaExpressionSyntax Expression(string variableName)
+    public static SimpleLambdaExpressionSyntax Expression(string variableName, bool suppressNullableWarning = false)
     {
+        var memberAccess = MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            IdentifierName("x"),
+            IdentifierName(variableName)
+        );
+
+        ExpressionSyntax expressionBody = suppressNullableWarning
+            ? PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, memberAccess)
+            : memberAccess;
         return SimpleLambdaExpression(Parameter(Identifier("x")))
-            .WithExpressionBody(MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName("x"),
-                IdentifierName(variableName))
-            );
+            .WithExpressionBody(expressionBody);
     }
 
     public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)

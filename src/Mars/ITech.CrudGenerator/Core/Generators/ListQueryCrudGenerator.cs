@@ -199,7 +199,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                             SyntaxKind.StringLiteralExpression,
                             SyntaxFactory.Literal(sortableProperty.SortKey)),
                         SyntaxFactory.Token(SyntaxKind.CommaToken),
-                        Expression(sortableProperty.PropertyName)
+                        Expression(sortableProperty.PropertyName, sortableProperty.IsNullable)
                     })));
             dictionaryInitializationArguments.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
         }

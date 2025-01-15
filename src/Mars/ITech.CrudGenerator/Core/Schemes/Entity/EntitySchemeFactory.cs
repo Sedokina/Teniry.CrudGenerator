@@ -98,6 +98,7 @@ internal static class EntitySchemeFactory
                 propertyTypeName,
                 propertyMetadata.PropertyName,
                 propertyMetadata.PropertyName.ToLowerFirstChar(),
+                propertyMetadata.IsNullable,
                 defaultValue,
                 isPrimaryKey,
                 filterProperties,
