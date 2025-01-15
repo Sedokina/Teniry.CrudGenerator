@@ -21,10 +21,11 @@ public class IncrementalGeneratorTests
         var d = DbContextDbProvider.Mongo;
 
         const string input = """
+                             using Microsoft.EntityFrameworkCore;
                              using ITech.CrudGenerator.Abstractions.DbContext;
                              using ITech.CrudGenerator.Abstractions.Configuration;
-
-                             namespace ITech.CrudGenerator.Tests;
+                             
+                             namespace ITech.CrudGenerator.Tests {
 
                              public class TestEntity {
                                     public int Id { get; set; }
@@ -33,8 +34,20 @@ public class IncrementalGeneratorTests
 
                              public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> {}
 
+                             }
+                             public class Mmb : DbContext
+                             {
+                                 public Mmb()
+                                 {
+                                 }
+                             
+                                 public Mmb(DbContextOptions<TestMongoDb> options) : base(options)
+                                 {
+                                 }
+                             }
+                             
                              [UseDbContext(DbContextDbProvider.Mongo)]
-                             public class TestDb : DbContext {}
+                             public class TestDb : Mmb {}
                              """;
 
         // run the generator, passing in the inputs and the tracking names

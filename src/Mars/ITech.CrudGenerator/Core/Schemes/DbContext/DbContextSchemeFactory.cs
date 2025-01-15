@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ITech.CrudGenerator.Abstractions.DbContext;
@@ -13,13 +14,12 @@ internal class DbContextSchemeFactory
     public static Result<DbContextScheme> Construct(GeneratorAttributeSyntaxContext syntaxContext)
     {
         var dbContextClassSymbol = (INamedTypeSymbol)syntaxContext.TargetSymbol;
-        var baseName = dbContextClassSymbol.BaseType!.Name;
 
         var diagnostics = new EquatableList<DiagnosticInfo>();
-        if (!baseName.ToLower().EndsWith("dbcontext"))
+        if (!IsDbContextClass(dbContextClassSymbol))
         {
             var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.NotInheritedFromDbContext,
-                dbContextClassSymbol.BaseType.Locations.FirstOrDefault());
+                dbContextClassSymbol.BaseType?.Locations.FirstOrDefault());
             diagnostics.Add(diagnosticInfo);
         }
 
@@ -33,6 +33,19 @@ internal class DbContextSchemeFactory
             dbProviderArgumentValue,
             GetFilterExpressionsFor(dbProviderArgumentValue)
         ), diagnostics);
+    }
+
+    private static bool IsDbContextClass(INamedTypeSymbol dbContextClassSymbol)
+    {
+        var isDbContextClass = false;
+        var baseType = dbContextClassSymbol.BaseType;
+        while (!isDbContextClass && baseType != null)
+        {
+            isDbContextClass = baseType.Name.EndsWith("dbcontext", StringComparison.InvariantCultureIgnoreCase);
+            baseType = baseType.BaseType;
+        }
+
+        return isDbContextClass;
     }
 
     private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider)

@@ -9,10 +9,10 @@ public class DiagnosticDescriptors
 {
     public static readonly DiagnosticDescriptor NotInheritedFromDbContext = new(
         "CDG001",
-        "Has an unsupported mapping method signature",
-        $"The {nameof(UseDbContextAttribute)} used on class {{0}}, but class is not inherited from DbContext class, or if it is inherited from DbContext class add postfix 'DbContext' to a class name",
+        "Is not EntityFramework's DbContext class",
+        $"The {nameof(UseDbContextAttribute)} used on class {{0}}, but class is not inherited from DbContext class",
         "CRUD",
-        DiagnosticSeverity.Error,
+        DiagnosticSeverity.Warning,
         true
     );
 

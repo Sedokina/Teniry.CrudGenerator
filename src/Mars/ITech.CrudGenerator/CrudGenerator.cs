@@ -27,8 +27,8 @@ public sealed class CrudGenerator : IIncrementalGenerator
         var generatorRunnerProviders =
             generatorConfigurationsProviders
                 .Combine(dbContextSchemeProviders.Collect())
-                .Where(x => x.Left.Value is not null && x.Right.Length > 0)
                 .WithTrackingName("GeneratorConfigurationWithDbContextProviders")
+                .Where(x => x.Left.Value is not null && x.Right.Length > 0)
                 .Select((tuple, _) => (
                         EntityGeneratorConfiguration: tuple.Left.Value!,
                         EntityScheme: EntitySchemeFactory.Construct(tuple.Left.Value!, tuple.Right[0].Value),

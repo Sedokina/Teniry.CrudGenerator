@@ -27,7 +27,7 @@ public class Mmb : DbContext
 }
 
 [UseDbContext(DbContextDbProvider.Mongo)]
-public class TestMongoDb : DbContext
+public class TestMongoDb : Mmb
 {
     public TestMongoDb()
     {
