@@ -79,9 +79,22 @@ internal class BlockBuilder
 
     public BlockBuilder AssignVariable(string assignTo, string from)
     {
+        ExpressionSyntax expressionSyntax;
+        if (!assignTo.Equals(from))
+        {
+            expressionSyntax = IdentifierName(assignTo);
+        }
+        else
+        {
+            expressionSyntax = MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                ThisExpression(),
+                IdentifierName(assignTo));
+        }
+
         var assignmentExpression = AssignmentExpression(
             SyntaxKind.SimpleAssignmentExpression,
-            IdentifierName(assignTo),
+            expressionSyntax,
             IdentifierName(from)
         );
         _body = _body.AddStatements(ExpressionStatement(assignmentExpression));
