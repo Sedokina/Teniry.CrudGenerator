@@ -39,7 +39,7 @@ public class EquatableList<T> : List<T>, IEquatable<EquatableList<T>>
 
     public override int GetHashCode()
     {
-        return this.Select(item => item?.GetHashCode() ?? 0).Aggregate((x, y) => x ^ y);
+        return Count == 0 ? 0 : this.Select(item => item?.GetHashCode() ?? 0).Aggregate((x, y) => x ^ y);
     }
 
     public static bool operator ==(EquatableList<T> list1, EquatableList<T> list2)
