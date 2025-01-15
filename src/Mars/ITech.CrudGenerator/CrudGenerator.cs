@@ -6,6 +6,7 @@ using ITech.CrudGenerator.Core.Generators;
 using ITech.CrudGenerator.Core.Generators.Core;
 using ITech.CrudGenerator.Core.Runners;
 using ITech.CrudGenerator.Core.Schemes.Entity;
+using ITech.CrudGenerator.Diagnostics;
 using ITech.CrudGenerator.Extensions;
 using Microsoft.CodeAnalysis;
 
@@ -16,20 +17,17 @@ public sealed class CrudGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // var diagnostics = context.CompilationProvider.Select((compilation, token) => Diagnostic.Create());
-        // context.RegisterSourceOutput(diagnostics, static (context, diagnostic) => context.ReportDiagnostic(diagnostic));
-
         var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
-
+        
         List<EndpointMap> endpointsMaps = [];
         var globalConfiguration = GlobalCrudGeneratorConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfiguratorFactory().Construct();
-
+        
         var generatorRunnerProviders =
             generatorConfigurationsProviders
-                .Where(x => x.Value != null)
                 .Combine(dbContextSchemeProviders.Collect())
+                .Where(x => x.Left.Value is not null && x.Right.Length > 0)
                 .WithTrackingName("GeneratorConfigurationWithDbContextProviders")
                 .Select((tuple, _) => (
                         EntityGeneratorConfiguration: tuple.Left.Value!,
@@ -84,30 +82,37 @@ public sealed class CrudGenerator : IIncrementalGenerator
                     };
                 })
                 .WithTrackingName("GeneratorRunnerProviders");
+        
 
-        context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, p) =>
-        {
-            var diagnostics = p.SelectMany(x =>
-                x.Diagnostics.Select(c => Diagnostic.Create(c.Descriptor, null, c.Location!.FilePath)));
-            foreach (var diagnostic in diagnostics)
-            {
-                productionContext.ReportDiagnostic(diagnostic);
-            }
-        });
-
-
-        // TODO: check if there are dbContextSchemes at all
         // TODO: add errors log
 
         context.RegisterSourceOutput(generatorRunnerProviders, (productionContext, generatorRunner) =>
             Execute(productionContext, generatorRunner, endpointsMaps)
         );
 
-        context.RegisterSourceOutput(dbContextSchemeProviders.Collect(), (productionContext, p) =>
+        var singleDbContextSchemesProvider = dbContextSchemeProviders.Collect();
+        
+        context.RegisterSourceOutput(singleDbContextSchemesProvider, (productionContext, p) =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfiguration);
             mapEndpointsGenerator.RunGenerator();
             WriteFiles(productionContext, mapEndpointsGenerator.GeneratedFiles);
+        });
+        
+        context.RegisterSourceOutput(singleDbContextSchemesProvider, (productionContext, dbContextSchemesResult) =>
+        {
+            if (dbContextSchemesResult.Length == 0)
+            {
+                var dbContextNotFoundDiagnostics = Diagnostic.Create(DiagnosticDescriptors.DbContextNotFound, null);
+                productionContext.ReportDiagnostic(dbContextNotFoundDiagnostics);
+            }
+            
+            var diagnostics = dbContextSchemesResult.SelectMany(x =>
+                x.Diagnostics.Select(c => Diagnostic.Create(c.Descriptor, null, c.Location!.FilePath)));
+            foreach (var diagnostic in diagnostics)
+            {
+                productionContext.ReportDiagnostic(diagnostic);
+            }
         });
     }
 

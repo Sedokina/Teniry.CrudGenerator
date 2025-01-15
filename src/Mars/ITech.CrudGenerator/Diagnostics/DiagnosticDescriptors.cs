@@ -24,4 +24,13 @@ public class DiagnosticDescriptors
         DiagnosticSeverity.Error,
         true
     );
+
+    public static readonly DiagnosticDescriptor DbContextNotFound = new(
+        "CDG003",
+        "Db context not found",
+        $"There is no class with {nameof(UseDbContextAttribute)} attribute in the project",
+        "CRUD",
+        DiagnosticSeverity.Error,
+        true
+    );
 }
