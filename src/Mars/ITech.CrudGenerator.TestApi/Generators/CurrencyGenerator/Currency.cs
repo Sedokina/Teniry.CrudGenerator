@@ -22,6 +22,6 @@ public class Currency
 public class Country
 {
     public ObjectId Id { get; set; }
-    public string Name { get; set; }
-    public ICollection<Currency> Currencies { get; set; }
+    public string Name { get; set; } = "";
+    public ICollection<Currency> Currencies { get; set; } = [];
 }
