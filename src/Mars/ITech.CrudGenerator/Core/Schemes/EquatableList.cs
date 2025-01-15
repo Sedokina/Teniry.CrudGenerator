@@ -6,7 +6,7 @@ namespace ITech.CrudGenerator.Core.Schemes;
 
 public class EquatableList<T> : List<T>, IEquatable<EquatableList<T>>
 {
-    public EquatableList() : base()
+    public EquatableList()
     {
     }
 
@@ -42,7 +42,7 @@ public class EquatableList<T> : List<T>, IEquatable<EquatableList<T>>
         return Count == 0 ? 0 : this.Select(item => item?.GetHashCode() ?? 0).Aggregate((x, y) => x ^ y);
     }
 
-    public static bool operator ==(EquatableList<T> list1, EquatableList<T> list2)
+    public static bool operator ==(EquatableList<T>? list1, EquatableList<T>? list2)
     {
         return ReferenceEquals(list1, list2) || (list1 is not null && list2 is not null && list1.Equals(list2));
     }

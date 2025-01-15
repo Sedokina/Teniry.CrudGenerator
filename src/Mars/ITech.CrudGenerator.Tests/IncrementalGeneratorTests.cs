@@ -35,19 +35,9 @@ public class IncrementalGeneratorTests
                              public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> {}
 
                              }
-                             public class Mmb : DbContext
-                             {
-                                 public Mmb()
-                                 {
-                                 }
-                             
-                                 public Mmb(DbContextOptions<TestMongoDb> options) : base(options)
-                                 {
-                                 }
-                             }
                              
                              [UseDbContext(DbContextDbProvider.Mongo)]
-                             public class TestDb : Mmb {}
+                             public class TestDb : DbContext {}
                              """;
 
         // run the generator, passing in the inputs and the tracking names

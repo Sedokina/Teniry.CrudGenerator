@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using ITech.CrudGenerator.Core.Configurations.Global;
 using ITech.CrudGenerator.Core.Configurations.Shared;
 using ITech.CrudGenerator.Core.Generators;
 using ITech.CrudGenerator.Core.Generators.Core;
 using ITech.CrudGenerator.Core.Runners;
+using ITech.CrudGenerator.Core.Schemes.DbContext;
 using ITech.CrudGenerator.Core.Schemes.Entity;
 using ITech.CrudGenerator.Diagnostics;
 using ITech.CrudGenerator.Extensions;
@@ -19,11 +21,11 @@ public sealed class CrudGenerator : IIncrementalGenerator
     {
         var generatorConfigurationsProviders = context.SyntaxProvider.CreateGeneratorConfigurationsProvider();
         var dbContextSchemeProviders = context.SyntaxProvider.CreateDbContextConfigurationsProvider();
-        
+
         List<EndpointMap> endpointsMaps = [];
         var globalConfiguration = GlobalCrudGeneratorConfigurationFactory.Construct();
         var sharedConfigurationBuilder = new CqrsOperationsSharedConfiguratorFactory().Construct();
-        
+
         var generatorRunnerProviders =
             generatorConfigurationsProviders
                 .Combine(dbContextSchemeProviders.Collect())
@@ -82,7 +84,7 @@ public sealed class CrudGenerator : IIncrementalGenerator
                     };
                 })
                 .WithTrackingName("GeneratorRunnerProviders");
-        
+
 
         // TODO: add errors log
 
@@ -91,29 +93,17 @@ public sealed class CrudGenerator : IIncrementalGenerator
         );
 
         var singleDbContextSchemesProvider = dbContextSchemeProviders.Collect();
-        
-        context.RegisterSourceOutput(singleDbContextSchemesProvider, (productionContext, p) =>
+
+        context.RegisterSourceOutput(singleDbContextSchemesProvider, (productionContext, _) =>
         {
             var mapEndpointsGenerator = new EndpointsMapGenerator(endpointsMaps, globalConfiguration);
             mapEndpointsGenerator.RunGenerator();
             WriteFiles(productionContext, mapEndpointsGenerator.GeneratedFiles);
         });
-        
+
         context.RegisterSourceOutput(singleDbContextSchemesProvider, (productionContext, dbContextSchemesResult) =>
-        {
-            if (dbContextSchemesResult.Length == 0)
-            {
-                var dbContextNotFoundDiagnostics = Diagnostic.Create(DiagnosticDescriptors.DbContextNotFound, null);
-                productionContext.ReportDiagnostic(dbContextNotFoundDiagnostics);
-            }
-            
-            var diagnostics = dbContextSchemesResult.SelectMany(x =>
-                x.Diagnostics.Select(c => Diagnostic.Create(c.Descriptor, null, c.Location!.FilePath)));
-            foreach (var diagnostic in diagnostics)
-            {
-                productionContext.ReportDiagnostic(diagnostic);
-            }
-        });
+            ReportDiagnostics(dbContextSchemesResult, productionContext)
+        );
     }
 
     private static void Execute(
@@ -130,6 +120,23 @@ public sealed class CrudGenerator : IIncrementalGenerator
         foreach (var file in files)
         {
             context.AddSource(file.FileName, file.Source);
+        }
+    }
+
+    private static void ReportDiagnostics(ImmutableArray<Result<DbContextScheme>> dbContextSchemesResult,
+        SourceProductionContext productionContext)
+    {
+        if (dbContextSchemesResult.Length == 0)
+        {
+            var dbContextNotFoundDiagnostics = Diagnostic.Create(DiagnosticDescriptors.DbContextNotFound, null);
+            productionContext.ReportDiagnostic(dbContextNotFoundDiagnostics);
+        }
+
+        var diagnostics = dbContextSchemesResult.SelectMany(x =>
+            x.Diagnostics.Select(c => Diagnostic.Create(c.Descriptor, null, c.Location!.FilePath)));
+        foreach (var diagnostic in diagnostics)
+        {
+            productionContext.ReportDiagnostic(diagnostic);
         }
     }
 }
