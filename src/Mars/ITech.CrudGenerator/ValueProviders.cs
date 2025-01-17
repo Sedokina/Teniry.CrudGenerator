@@ -6,30 +6,30 @@ using ITech.CrudGenerator.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace ITech.CrudGenerator.Extensions;
+namespace ITech.CrudGenerator;
 
-internal static class SyntaxValueProviderExtensions
+internal static class ValueProviders
 {
     private static readonly string DbContextAttributeName = typeof(UseDbContextAttribute).FullName ?? "";
 
     internal static IncrementalValuesProvider<Result<InternalEntityGeneratorConfiguration?>>
-        CreateGeneratorConfigurationsProvider(this SyntaxValueProvider syntaxProvider)
+        GetGeneratorConfigurations(IncrementalGeneratorInitializationContext context)
     {
-        return syntaxProvider.CreateSyntaxProvider(
+        return context.SyntaxProvider.CreateSyntaxProvider(
             predicate: (node, _) => CheckIfNodeIsInheritedFromClass(node, "EntityGeneratorConfiguration"),
             transform: (syntaxContext, _) => TransformFoundGeneratorConfigurationsToInternalScheme(syntaxContext)
-        ).WithTrackingName("GeneratorConfigurationsProviders");
+        ).WithTrackingName(CrudGeneratorTrackingNames.GetGeneratorConfigurations);
     }
 
     internal static IncrementalValuesProvider<Result<DbContextScheme>>
-        CreateDbContextConfigurationsProvider(this SyntaxValueProvider syntaxProvider)
+        GetDbContexts(IncrementalGeneratorInitializationContext context)
     {
-        return syntaxProvider
+        return context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 DbContextAttributeName,
                 predicate: (_, _) => true,
                 transform: (syntaxContext, _) => DbContextSchemeFactory.Construct(syntaxContext)
-            ).WithTrackingName("DbContextSchemeProviders");
+            ).WithTrackingName(CrudGeneratorTrackingNames.GetDbContexts);
     }
 
     private static bool CheckIfNodeIsInheritedFromClass(SyntaxNode node, string className)

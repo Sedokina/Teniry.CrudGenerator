@@ -212,4 +212,14 @@ public class TestHelpers
             }
         }
     }
+
+    public static string[] GetTrackingNamesOf(Type type)
+    {
+        return type
+            .GetFields()
+            .Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(string))
+            .Select(x => (string)x.GetRawConstantValue()!)
+            .Where(x => !string.IsNullOrEmpty(x))
+            .ToArray();
+    }
 }
