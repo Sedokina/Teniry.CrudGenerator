@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <Nullable>enable</Nullable>
+
+        <!-- 
+            Starting with Scriban 3.2.1+, the package includes a source so you can internalize your 
+            usage of Scriban into your project. This can be useful in an environment where you can't easily consume 
+            NuGet references (e.g., Roslyn Source Generators).
+            see: https://github.com/scriban/scriban#source-embedding
+        -->
+        <PackageScribanIncludeSource>true</PackageScribanIncludeSource>
+
+        <!-- SOURCE GENERATOR IMPORTANT SETTINGS -->
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <IsRoslynComponent>true</IsRoslynComponent>
+
+        <!-- NUGET PACKAGE SETTINGS -->
+        <IsPackable>true</IsPackable>
+        <PackageId>Teniry.CrudGenerator</PackageId>
+        <Title>CRUD generator based on Source Generators to speed up development process</Title>
+        <Version>0.1.2</Version>
+        <Description>
+            Generate CRUD CQRS operations and Minimal API enpoints for CRUD operations based on Entity
+            using Entity Framework for DB access
+        </Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0"/>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0"/>
+        <PackageReference Include="Pluralize.NET" Version="1.0.2" PrivateAssets="all" GeneratePathProperty="true"/>
+        <PackageReference Include="Scriban" Version="5.12.1" IncludeAssets="build" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" GeneratePathProperty="true" PrivateAssets="all"/>
+    </ItemGroup>
+    <PropertyGroup>
+        <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    </PropertyGroup>
+
+    <Target Name="GetDependencyTargetPaths">
+        <ItemGroup>
+            <TargetPathWithTargetPlatformMoniker Include="$(PKGpluralize_net)\lib\netstandard2.0\Pluralize.NET.dll" IncludeRuntimeDependency="false"/>
+            <!-- This ensures the library will be packaged as a source generator when we use `dotnet pack` -->
+            <!-- Pack both our DLL and the Dependency DLL into a Generated Nuget Package -->
+            <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+            <None Include="$(OutputPath)\Teniry.CrudGenerator.Abstractions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+            <None Include="$(OutputPath)\Teniry.CrudGenerator.Abstractions.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
+            <None Include="$(OutputPath)\Teniry.CrudGenerator.Abstractions.xml" Pack="true" PackagePath="lib\netstandard2.0" Visible="true"/>
+            <None Include="$(PKGpluralize_net)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        </ItemGroup>
+    </Target>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Teniry.CrudGenerator.Tests"/>
+    </ItemGroup>
+</Project>
