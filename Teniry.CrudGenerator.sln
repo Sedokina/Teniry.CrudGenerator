@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.SampleApi", "src\Mars\Teniry.CrudGenerator.SampleApi\Teniry.CrudGenerator.SampleApi.csproj", "{5240276D-E299-4464-9CCB-4164B6B0EDE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.SampleApi", "samples\Teniry.CrudGenerator.SampleApi\Teniry.CrudGenerator.SampleApi.csproj", "{5240276D-E299-4464-9CCB-4164B6B0EDE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator", "src\Mars\Teniry.CrudGenerator\Teniry.CrudGenerator.csproj", "{6F802ABF-8245-432D-9286-77BA4026688D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator", "src\Teniry.CrudGenerator\Teniry.CrudGenerator.csproj", "{6F802ABF-8245-432D-9286-77BA4026688D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Abstractions", "src\Mars\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj", "{65B13097-C2A0-4977-82F5-7CBF5A6B8E9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Abstractions", "src\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj", "{65B13097-C2A0-4977-82F5-7CBF5A6B8E9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.TestApiTests", "src\Mars\Teniry.CrudGenerator.TestApiTests\Teniry.CrudGenerator.TestApiTests.csproj", "{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.TestApiTests", "samples\Teniry.CrudGenerator.TestApiTests\Teniry.CrudGenerator.TestApiTests.csproj", "{FEFA5816-539E-41B6-B4CD-50FF6FFB933E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Tests", "src\Mars\Teniry.CrudGenerator.Tests\Teniry.CrudGenerator.Tests.csproj", "{C6392F3E-2D36-49A4-90EA-8DD59A65981B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Tests", "tests\Teniry.CrudGenerator.Tests\Teniry.CrudGenerator.Tests.csproj", "{C6392F3E-2D36-49A4-90EA-8DD59A65981B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
