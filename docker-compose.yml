@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mongo:
-    container_name: 'mars-mongo'
+    container_name: 'teniry-crud-mongo'
     image: mongo:latest
     ports:
       - '27017:27017'
@@ -13,7 +13,7 @@ services:
     logging:
       driver: none
 #  postgres:
-#    container_name: 'mars-postgres'
+#    container_name: 'teniry-crud-postgres'
 #    image: postgres:16.4-alpine
 #    ports:
 #      - 5432:5432
