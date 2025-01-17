@@ -23,7 +23,7 @@
         <!-- NUGET PACKAGE SETTINGS -->
         <IsPackable>true</IsPackable>
         <PackageId>Teniry.CrudGenerator</PackageId>
-        <Title>CRUD generator based on ITech.Cqrs template</Title>
+        <Title>CRUD generator based on Source Generators to speed up development process</Title>
         <Version>0.1.2</Version>
         <Description>
             Generate CRUD CQRS operations and Minimal API enpoints for CRUD operations based on Entity
@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" GeneratePathProperty="true" PrivateAssets="all" />
+        <ProjectReference Include="..\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" GeneratePathProperty="true" PrivateAssets="all"/>
     </ItemGroup>
     <PropertyGroup>
         <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>

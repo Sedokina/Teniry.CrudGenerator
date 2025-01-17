@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DocumentationFile>bin\Debug\net8.0\ITech.CrudGenerator.TestApi.xml</DocumentationFile>
+        <DocumentationFile>bin\Debug\net8.0\Teniry.CrudGenerator.SampleApi.xml</DocumentationFile>
         <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DocumentationFile>bin\Release\net8.0\ITech.CrudGenerator.TestApi.xml</DocumentationFile>
+        <DocumentationFile>bin\Release\net8.0\Teniry.CrudGenerator.SampleApi.xml</DocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
