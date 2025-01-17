@@ -1,12 +1,14 @@
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Global.Factories;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.Builders.TypedBuilders;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuildersFactories;
-using ITech.CrudGenerator.CrudGeneratorCore.Configurations.Operations.BuiltConfigurations;
-using ITech.CrudGenerator.CrudGeneratorCore.OperationsGenerators;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.InternalEntityGenerator.Operations;
+using ITech.CrudGenerator.Core.Configurations.Configurators;
+using ITech.CrudGenerator.Core.Configurations.Crud;
+using ITech.CrudGenerator.Core.Configurations.Global;
+using ITech.CrudGenerator.Core.Configurations.Shared;
+using ITech.CrudGenerator.Core.Generators;
+using ITech.CrudGenerator.Core.Generators.Core;
+using ITech.CrudGenerator.Core.Runners;
+using ITech.CrudGenerator.Core.Schemes.Entity;
+using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 using ITech.CrudGenerator.Tests.Helpers;
+using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests;
 
@@ -17,21 +19,27 @@ public class CreateCommandCrudGeneratorTests
     public CreateCommandCrudGeneratorTests()
     {
         var globalCqrsGeneratorConfigurationBuilder =
-            GlobalCrudGeneratorConfigurationDefaultConfigurationFactory.Construct();
+            GlobalCrudGeneratorConfigurationFactory.Construct();
         var cqrsOperationsSharedConfigurationBuilder =
-            new CqrsOperationsSharedConfigurationBuilderFactory().Construct();
-        var entitySchemeFactory = new EntitySchemeFactory();
-        var symbol = DynamicClassBuilder.GenerateEntity("TestEntity",
-            "public Guid Id {{ get; set; }}\npublic string Name {{ get; set; }}");
-        var entityScheme = entitySchemeFactory.Construct(symbol, new InternalEntityGeneratorConfiguration(),
-            new DbContextSchemeStub());
+            new CqrsOperationsSharedConfiguratorFactory().Construct();
+        var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
+            new InternalEntityClassMetadata("TestEntity", "", "",
+            [
+                new("Id", "Guid", "Guid", SpecialType.None, true, false),
+                new("Name", "string", "Guid", SpecialType.System_String, true, false)
+            ])
+        );
+        var entityScheme = EntitySchemeFactory
+            .Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
-        var configuration = new CreateCommandDefaultConfigurationBuilderFactory()
-            .Construct(
-                globalCqrsGeneratorConfigurationBuilder,
+        var configuration = new CreateCommandGeneratorRunner(globalCqrsGeneratorConfigurationBuilder,
                 cqrsOperationsSharedConfigurationBuilder,
-                new InternalEntityGeneratorCreateOperationConfiguration())
-            .Build(entityScheme);
+                internalEntityGeneratorConfiguration.CreateOperation,
+                entityScheme,
+                new DbContextSchemeStub(),
+                null!,
+                null!)
+            .Configuration;
         _crudGeneratorScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(entityScheme,
             new DbContextSchemeStub(),
             configuration);
@@ -42,7 +50,7 @@ public class CreateCommandCrudGeneratorTests
     {
         // Arrange
         var getByIdEndpointRouteConfigurationBuilder =
-            new EndpointRouteConfigurationBuilder("mygetroute/{{id_param_name}}");
+            new EndpointRouteConfigurator("mygetroute/{{id_param_name}}");
         var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, getByIdEndpointRouteConfigurationBuilder,
             "getbyid");
 

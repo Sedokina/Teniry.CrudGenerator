@@ -9,5 +9,5 @@ public class EntityIdNameGeneratorConfiguration : EntityGeneratorConfiguration<E
 public class EntityIdName
 {
     public Guid EntityIdNameId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 }

@@ -1,7 +1,7 @@
 using ITech.CrudGenerator.Abstractions.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.DbContext;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Core;
-using ITech.CrudGenerator.CrudGeneratorCore.Schemes.Entity.FilterExpressions.Expressions;
+using ITech.CrudGenerator.Core.Schemes.DbContext;
+using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Core;
+using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
 
 namespace ITech.CrudGenerator.Tests.Helpers;
 

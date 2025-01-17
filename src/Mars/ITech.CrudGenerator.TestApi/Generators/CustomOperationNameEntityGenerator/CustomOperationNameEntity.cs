@@ -3,5 +3,5 @@ namespace ITech.CrudGenerator.TestApi.Generators.CustomOperationNameEntityGenera
 public class CustomOperationNameEntity
 {
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = "";
 }
