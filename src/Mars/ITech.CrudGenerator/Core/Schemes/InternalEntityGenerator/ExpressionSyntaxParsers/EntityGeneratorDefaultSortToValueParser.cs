@@ -15,7 +15,8 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
     }
 
     public bool CanParse(Compilation compilation, ExpressionSyntax expression) {
-        if (expression is not ObjectCreationExpressionSyntax) {
+        if (expression is not ObjectCreationExpressionSyntax &&
+            expression is not ImplicitObjectCreationExpressionSyntax) {
             return false;
         }
 
@@ -34,7 +35,7 @@ internal class EntityGeneratorDefaultSortToValueParser : IExpressionSyntaxToValu
     }
 
     public object Parse(Compilation compilation, ExpressionSyntax expression) {
-        var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
+        var objectCreationExpression = (BaseObjectCreationExpressionSyntax)expression;
         if (objectCreationExpression.ArgumentList is null ||
             objectCreationExpression.ArgumentList.Arguments.Count != 2) {
             return false;

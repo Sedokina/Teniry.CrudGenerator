@@ -4,7 +4,7 @@ namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 
 public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity> {
     public CustomGottenGeneratorConfiguration() {
-        DefaultSort = new EntityGeneratorDefaultSort<CustomGottenEntity>("desc", x => x.Name);
+        DefaultSort = new("desc", x => x.Name);
 
         CreateOperation = new() {
             Generate = false

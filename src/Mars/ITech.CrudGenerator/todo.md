@@ -11,14 +11,15 @@
 * Сделать nullable enable в сгенерированном коде
 * Сделать включение отключение определенных генераторов
 * Critical: Id сущности не находит, если перед Id стоит название сущности
-* Bug: Название endpoint'ов (сам роут) должен использовать CamelCase, сейчас нет - ("
-  /customoperationnameentity/{id}/customopupdate")
+* Bug: Название endpoint'ов (сам роут) должен использовать CamelCase, сейчас нет - 
+  ("/customoperationnameentity/{id}/customopupdate")
 * Bug: В CreateCustomizedManageEntityEndpoint, endpoint не возвращает Get Route. Это не баг, так как в
   CustomizedManageEntity не существует Get endpoint, он не генерируется
 * Bug: Конфигурация не считывается если указывать new() вместо полного названия типа new
   EntityGeneratorGetListOperationConfiguration()
 * Bug: Что если существительное в единственном и множественном числе пишется одинаково?
 * генерация int id, и потому что иногда для избавления от дубликации запросов Guid создают с фронта)
+* Bug: Implicit constructor does not work for EntityGeneratorDefaultSort
 
 Сделать:
 
