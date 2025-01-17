@@ -7,26 +7,25 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.EndpointsTests.CustomGottenEntityEndpointTests;
 
-public class GetCustomGottenEntitiesListEndpointTests
-{
+public class GetCustomGottenEntitiesListEndpointTests {
     private readonly Mock<IQueryDispatcher> _queryDispatcher = new();
 
     [Theory]
     [InlineData("CustomizedNameGetCustomEntitiesListEndpoint")]
-    public void Should_CustomizeClassNames(string typeName)
-    {
+    public void Should_CustomizeClassNames(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().ContainType(typeName);
     }
-    
+
     [Fact]
-    public async Task Should_ReturnCorrectResult()
-    {
+    public async Task Should_ReturnCorrectResult() {
         // Act
         var actual = await CustomizedNameGetCustomEntitiesListEndpoint
-            .RunGetListAsync(new CustomizedNameGetCustomEntitiesListQuery(),
+            .RunGetListAsync(
+                new CustomizedNameGetCustomEntitiesListQuery(),
                 _queryDispatcher.Object,
-                new CancellationToken());
+                new CancellationToken()
+            );
 
         // Assert
         actual.Should().BeOfType<Ok<CustomizedNameGetCustomEntitiesListDto>>();

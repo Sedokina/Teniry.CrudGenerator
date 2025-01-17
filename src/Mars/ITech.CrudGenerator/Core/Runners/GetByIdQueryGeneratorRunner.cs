@@ -12,8 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
-{
+internal record GetByIdQueryGeneratorRunner : IGeneratorRunner {
     public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
@@ -23,13 +22,14 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
-    {
+        DbContextScheme dbContextScheme
+    ) {
         Configuration = ConstructConfiguration(
             globalConfiguration,
             operationsSharedConfiguration,
             operationConfiguration,
-            entityScheme);
+            entityScheme
+        );
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
@@ -38,8 +38,8 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme)
-    {
+        EntityScheme entityScheme
+    ) {
         return new CqrsOperationWithReturnValueGeneratorConfiguration(
             generate: operationConfiguration?.Generate ?? true,
             globalConfiguration: globalConfiguration,
@@ -50,12 +50,13 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
             dto: new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator
-            {
+            endpoint: new MinimalApiEndpointConfigurator {
                 Generate = operationConfiguration?.Generate != false &&
-                           (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(operationConfiguration?.EndpointClassName ??
-                                "{{operation_name}}{{entity_name}}Endpoint"),
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurator = GetRouteConfigurationBuilder(operationConfiguration)
             },
@@ -64,14 +65,14 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
     }
 
     public static EndpointRouteConfigurator GetRouteConfigurationBuilder(
-        InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration)
-    {
+        InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration
+    ) {
         return new(operationConfiguration?.RouteName ?? "/{{entity_name}}/{{id_param_name}}");
     }
 
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
-    {
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
+
         var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
             _entityScheme,
             _dbContextScheme,
@@ -79,8 +80,7 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner
         );
         var generateGetByIdQuery = new GetByIdQueryCrudGenerator(getByIdQueryScheme);
         generateGetByIdQuery.RunGenerator();
-        if (generateGetByIdQuery.EndpointMap is not null)
-        {
+        if (generateGetByIdQuery.EndpointMap is not null) {
             endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
         }
 

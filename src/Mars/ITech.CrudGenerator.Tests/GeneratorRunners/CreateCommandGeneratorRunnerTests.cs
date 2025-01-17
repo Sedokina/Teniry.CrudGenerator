@@ -9,20 +9,17 @@ using ITech.CrudGenerator.Tests.Helpers;
 
 namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class CreateCommandGeneratorRunnerTests
-{
+public class CreateCommandGeneratorRunnerTests {
     private readonly EntityScheme _entityScheme;
 
-    public CreateCommandGeneratorRunnerTests()
-    {
+    public CreateCommandGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration =
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
-    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
-    {
+    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
 
@@ -38,8 +35,7 @@ public class CreateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_SetCorrectDefaultValues()
-    {
+    public void Should_SetCorrectDefaultValues() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
 
@@ -61,13 +57,13 @@ public class CreateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
-    {
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration
-        {
-            Operation = "Add"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorCreateOperationConfiguration {
+                Operation = "Add"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -87,21 +83,21 @@ public class CreateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllAvailableConfiguration()
-    {
+    public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration
-        {
-            Generate = false,
-            OperationGroup = "CustomOperationGroupName",
-            CommandName = "CustomCommandName",
-            DtoName = "CustomDtoName",
-            HandlerName = "CustomHandlerName",
-            EndpointClassName = "CustomEndpointClassName",
-            EndpointFunctionName = "CustomEndpointFunctionName",
-            GenerateEndpoint = false,
-            RouteName = "CustomEndpointRoute"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorCreateOperationConfiguration {
+                Generate = false,
+                OperationGroup = "CustomOperationGroupName",
+                CommandName = "CustomCommandName",
+                DtoName = "CustomDtoName",
+                HandlerName = "CustomHandlerName",
+                EndpointClassName = "CustomEndpointClassName",
+                EndpointFunctionName = "CustomEndpointFunctionName",
+                GenerateEndpoint = false,
+                RouteName = "CustomEndpointRoute"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -120,10 +116,9 @@ public class CreateCommandGeneratorRunnerTests
         actual.Endpoint.Route.Should().Be("CustomEndpointRoute");
     }
 
-
     private CreateCommandGeneratorRunner CreateFactory(
-        InternalEntityGeneratorCreateOperationConfiguration configuration)
-    {
+        InternalEntityGeneratorCreateOperationConfiguration configuration
+    ) {
         return new CreateCommandGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),

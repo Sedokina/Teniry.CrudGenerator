@@ -12,47 +12,55 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests;
 
-public class CreateCommandCrudGeneratorTests
-{
+public class CreateCommandCrudGeneratorTests {
     private readonly CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> _crudGeneratorScheme;
 
-    public CreateCommandCrudGeneratorTests()
-    {
+    public CreateCommandCrudGeneratorTests() {
         var globalCqrsGeneratorConfigurationBuilder =
             GlobalCrudGeneratorConfigurationFactory.Construct();
         var cqrsOperationsSharedConfigurationBuilder =
             new CqrsOperationsSharedConfiguratorFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata("TestEntity", "", "",
-            [
-                new("Id", "Guid", "Guid", SpecialType.None, true, false),
-                new("Name", "string", "Guid", SpecialType.System_String, true, false)
-            ])
+            new InternalEntityClassMetadata(
+                "TestEntity",
+                "",
+                "",
+                [
+                    new("Id", "Guid", "Guid", SpecialType.None, true, false),
+                    new("Name", "string", "Guid", SpecialType.System_String, true, false)
+                ]
+            )
         );
         var entityScheme = EntitySchemeFactory
             .Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
-        var configuration = new CreateCommandGeneratorRunner(globalCqrsGeneratorConfigurationBuilder,
+        var configuration = new CreateCommandGeneratorRunner(
+                globalCqrsGeneratorConfigurationBuilder,
                 cqrsOperationsSharedConfigurationBuilder,
                 internalEntityGeneratorConfiguration.CreateOperation,
                 entityScheme,
                 new DbContextSchemeStub(),
                 null!,
-                null!)
+                null!
+            )
             .Configuration;
-        _crudGeneratorScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(entityScheme,
+        _crudGeneratorScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+            entityScheme,
             new DbContextSchemeStub(),
-            configuration);
+            configuration
+        );
     }
 
     [Fact]
-    public void Should_ReturnGetRouteFromCreateEndpoint()
-    {
+    public void Should_ReturnGetRouteFromCreateEndpoint() {
         // Arrange
         var getByIdEndpointRouteConfigurationBuilder =
             new EndpointRouteConfigurator("mygetroute/{{id_param_name}}");
-        var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, getByIdEndpointRouteConfigurationBuilder,
-            "getbyid");
+        var sut = new CreateCommandCrudGenerator(
+            _crudGeneratorScheme,
+            getByIdEndpointRouteConfigurationBuilder,
+            "getbyid"
+        );
 
         // Act
         sut.RunGenerator();
@@ -66,8 +74,7 @@ public class CreateCommandCrudGeneratorTests
 
     [Fact]
     public void
-        Should_NotReturnGetRouteFromCreateEndpoint_When_GetRouteConfigurationNotProvided_Or_GetEndpointNotGenerated()
-    {
+        Should_NotReturnGetRouteFromCreateEndpoint_When_GetRouteConfigurationNotProvided_Or_GetEndpointNotGenerated() {
         // Arrange
         var sut = new CreateCommandCrudGenerator(_crudGeneratorScheme, null, null);
 

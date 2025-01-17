@@ -6,25 +6,24 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
-public class DeleteCustomOperationNameEntityHandlerTests
-{
+public class DeleteCustomOperationNameEntityHandlerTests {
     private readonly CustomOpDeleteCustomOperationNameEntityCommand _command;
     private readonly CustomOpDeleteCustomOperationNameEntityHandler _sut;
     private readonly Mock<TestMongoDb> _db;
 
-    public DeleteCustomOperationNameEntityHandlerTests()
-    {
+    public DeleteCustomOperationNameEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
     }
 
     [Fact]
-    public async Task Should_DoNothingWhenEntityDoesNotExist()
-    {
+    public async Task Should_DoNothingWhenEntityDoesNotExist() {
         // Arrange
-        _db.Setup(x =>
-                x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+        _db.Setup(
+                x =>
+                    x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync((CustomOperationNameEntity?)null);
 
         // Act
@@ -34,16 +33,18 @@ public class DeleteCustomOperationNameEntityHandlerTests
         await act.Should().NotThrowAsync();
         _db.Verify(
             x => x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task Should_RemoveFromDbSetAndSave()
-    {
+    public async Task Should_RemoveFromDbSetAndSave() {
         // Arrange
-        _db.Setup(x =>
-                x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+        _db.Setup(
+                x =>
+                    x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(new CustomOperationNameEntity { Id = _command.Id, Name = "Test entity" });
 
         // Act
@@ -54,15 +55,15 @@ public class DeleteCustomOperationNameEntityHandlerTests
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
             x => x.FindAsync<CustomOperationNameEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomOpDeleteCustomOperationNameEntityCommand")]
     [InlineData("CustomOpDeleteCustomOperationNameEntityHandler")]
-    public void Should_BeInOperationNamespace(string typeName)
-    {
+    public void Should_BeInOperationNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomOpDeleteCustomOperationNameEntity");

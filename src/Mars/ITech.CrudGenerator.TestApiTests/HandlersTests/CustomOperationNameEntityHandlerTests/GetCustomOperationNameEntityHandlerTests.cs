@@ -7,25 +7,23 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
-public class GetCustomOperationNameEntityHandlerTests
-{
+public class GetCustomOperationNameEntityHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomOpGetByIdCustomOperationNameEntityQuery _query;
     private readonly CustomOpGetByIdCustomOperationNameEntityHandler _sut;
 
-    public GetCustomOperationNameEntityHandlerTests()
-    {
+    public GetCustomOperationNameEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(
-                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync((CustomOperationNameEntity?)null);
 
         // Act
@@ -37,11 +35,11 @@ public class GetCustomOperationNameEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(
-                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(new CustomOperationNameEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
@@ -52,16 +50,16 @@ public class GetCustomOperationNameEntityHandlerTests
         entity.Name.Should().Be("My test entity");
         _db.Verify(
             x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomOpGetByIdCustomOperationNameEntityQuery")]
     [InlineData("CustomOpGetByIdCustomOperationNameEntityHandler")]
     [InlineData("CustomOperationNameEntityDto")]
-    public void Should_BeInOperationNamespace(string typeName)
-    {
+    public void Should_BeInOperationNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomOpGetByIdCustomOperationNameEntity");

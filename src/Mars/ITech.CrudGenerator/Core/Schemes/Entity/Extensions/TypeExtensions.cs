@@ -2,8 +2,7 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.Extensions;
 
-public static class TypeExtensions
-{
+public static class TypeExtensions {
     /// <summary>
     ///     Returns true if type is primitive, nullable primitive or has type converter from and to primitive type
     /// </summary>
@@ -28,10 +27,8 @@ public static class TypeExtensions
     /// <remarks>
     ///     From: https://stackoverflow.com/a/65079923/10837606
     /// </remarks>
-    public static bool IsSimple(this ITypeSymbol type)
-    {
-        switch (type.SpecialType)
-        {
+    public static bool IsSimple(this ITypeSymbol type) {
+        switch (type.SpecialType) {
             case SpecialType.System_Boolean:
             case SpecialType.System_SByte:
             case SpecialType.System_Int16:
@@ -50,8 +47,7 @@ public static class TypeExtensions
                 return true;
             default:
                 if (type.NullableAnnotation == NullableAnnotation.Annotated &&
-                    type is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol)
-                {
+                    type is INamedTypeSymbol { TypeArguments.Length: > 0 } namedTypeSymbol) {
                     return IsSimple(namedTypeSymbol.TypeArguments[0]);
                 }
 

@@ -5,32 +5,30 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
 
-internal class ContainsFilterExpression : FilterExpression
-{
-    public ContainsFilterExpression() : base(FilterType.Contains)
-    {
-    }
+internal class ContainsFilterExpression : FilterExpression {
+    public ContainsFilterExpression() : base(FilterType.Contains) { }
 
-    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
-    {
+    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter) {
         var result = IfStatement(
             BinaryExpression(
                 SyntaxKind.LogicalAndExpression,
                 IsPatternExpression(
                     IdentifierName(filterPropertyName),
-                    UnaryPattern(
-                        ConstantPattern(
-                            LiteralExpression(
-                                SyntaxKind.NullLiteralExpression)))),
+                    UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+                ),
                 BinaryExpression(
                     SyntaxKind.GreaterThanExpression,
                     MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
                         IdentifierName(filterPropertyName),
-                        IdentifierName("Length")),
+                        IdentifierName("Length")
+                    ),
                     LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
-                        Literal(0)))),
+                        Literal(0)
+                    )
+                )
+            ),
             Block(
                 SingletonList<StatementSyntax>(
                     ExpressionStatement(
@@ -41,20 +39,22 @@ internal class ContainsFilterExpression : FilterExpression
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         IdentifierName("query"),
-                                        IdentifierName("Where")))
+                                        IdentifierName("Where")
+                                    )
+                                )
                                 .WithArgumentList(
                                     ArgumentList(
                                         SingletonSeparatedList(
                                             Argument(
-                                                SimpleLambdaExpression(
-                                                        Parameter(
-                                                            Identifier("x")))
+                                                SimpleLambdaExpression(Parameter(Identifier("x")))
                                                     .WithExpressionBody(
                                                         InvocationExpression(
                                                                 MemberAccessExpression(
                                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                                     IdentifierName(filterPropertyName),
-                                                                    IdentifierName("Contains")))
+                                                                    IdentifierName("Contains")
+                                                                )
+                                                            )
                                                             .WithArgumentList(
                                                                 ArgumentList(
                                                                     SingletonSeparatedList(
@@ -62,8 +62,23 @@ internal class ContainsFilterExpression : FilterExpression
                                                                             MemberAccessExpression(
                                                                                 SyntaxKind.SimpleMemberAccessExpression,
                                                                                 IdentifierName("x"),
-                                                                                IdentifierName(
-                                                                                    entityPropertyToFilter))))))))))))))));
+                                                                                IdentifierName(entityPropertyToFilter)
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                    )
+                                            )
+                                        )
+                                    )
+                                )
+                        )
+                    )
+                )
+            )
+        );
+
         return result;
     }
 }

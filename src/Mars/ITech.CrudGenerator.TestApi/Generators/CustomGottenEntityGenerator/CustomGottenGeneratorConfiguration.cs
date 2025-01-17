@@ -2,29 +2,23 @@ using ITech.CrudGenerator.Abstractions.Configuration;
 
 namespace ITech.CrudGenerator.TestApi.Generators.CustomGottenEntityGenerator;
 
-public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity>
-{
-    public CustomGottenGeneratorConfiguration()
-    {
+public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity> {
+    public CustomGottenGeneratorConfiguration() {
         DefaultSort = new EntityGeneratorDefaultSort<CustomGottenEntity>("desc", x => x.Name);
 
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration
-        {
+        CreateOperation = new EntityGeneratorCreateOperationConfiguration {
             Generate = false
         };
 
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
-        {
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration {
             Generate = false
         };
 
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
-        {
+        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
             Generate = false
         };
 
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
-        {
+        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
             OperationGroup = "CustomGottenEntityGetOperationCustomNs",
             QueryName = "CustomizedNameGetCustomEntityQuery",
             HandlerName = "CustomizedNameGetCustomEntityHandler",
@@ -33,8 +27,7 @@ public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<C
             EndpointFunctionName = "RunGetAsync",
             RouteName = "/getCustomGottenEntityById/{{id_param_name}}",
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration
-        {
+        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
             OperationGroup = "CustomGottenEntityGetListOperationCustomNs",
             QueryName = "CustomizedNameGetCustomEntitiesListQuery",
             HandlerName = "CustomizedNameGetCustomEntitiesListHandler",

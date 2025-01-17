@@ -5,20 +5,14 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
 
-internal class LikeMongoFilterExpression : FilterExpression
-{
-    public LikeMongoFilterExpression() : base(FilterType.Like)
-    {
-    }
+internal class LikeMongoFilterExpression : FilterExpression {
+    public LikeMongoFilterExpression() : base(FilterType.Like) { }
 
-    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
-    {
+    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter) {
         var whereArguments = ArgumentList(
             SingletonSeparatedList(
                 Argument(
-                    SimpleLambdaExpression(
-                            Parameter(
-                                Identifier("x")))
+                    SimpleLambdaExpression(Parameter(Identifier("x")))
                         .WithExpressionBody(
                             InvocationExpression(
                                     MemberAccessExpression(
@@ -29,9 +23,14 @@ internal class LikeMongoFilterExpression : FilterExpression
                                                 MemberAccessExpression(
                                                     SyntaxKind.SimpleMemberAccessExpression,
                                                     IdentifierName("x"),
-                                                    IdentifierName(entityPropertyToFilter)),
-                                                IdentifierName("ToLower"))),
-                                        IdentifierName("Contains")))
+                                                    IdentifierName(entityPropertyToFilter)
+                                                ),
+                                                IdentifierName("ToLower")
+                                            )
+                                        ),
+                                        IdentifierName("Contains")
+                                    )
+                                )
                                 .WithArgumentList(
                                     ArgumentList(
                                         SingletonSeparatedList(
@@ -40,14 +39,22 @@ internal class LikeMongoFilterExpression : FilterExpression
                                                     MemberAccessExpression(
                                                         SyntaxKind.SimpleMemberAccessExpression,
                                                         IdentifierName(filterPropertyName),
-                                                        IdentifierName("ToLower")))))))))));
+                                                        IdentifierName("ToLower")
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                        )
+                )
+            )
+        );
         var result = IfStatement(
             IsPatternExpression(
                 IdentifierName(filterPropertyName),
-                UnaryPattern(
-                    ConstantPattern(
-                        LiteralExpression(
-                            SyntaxKind.NullLiteralExpression)))),
+                UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+            ),
             Block(
                 SingletonList<StatementSyntax>(
                     ExpressionStatement(
@@ -58,8 +65,15 @@ internal class LikeMongoFilterExpression : FilterExpression
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         IdentifierName("query"),
-                                        IdentifierName("Where")))
-                                .WithArgumentList(whereArguments))))));
+                                        IdentifierName("Where")
+                                    )
+                                )
+                                .WithArgumentList(whereArguments)
+                        )
+                    )
+                )
+            )
+        );
 
         return result;
     }

@@ -8,11 +8,9 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace ITech.CrudGenerator.Tests.Schemes;
 
-public class InternalEntityGeneratorConfigurationFactoryTests
-{
+public class InternalEntityGeneratorConfigurationFactoryTests {
     [Fact]
-    public void Should_GetEntityTitleFromSymbol()
-    {
+    public void Should_GetEntityTitleFromSymbol() {
         // Arrange
         var generator = CreateEntityGeneratorClass("Title = \"My custom title\";");
 
@@ -24,8 +22,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_GetEntityPluralTitleFromSymbol()
-    {
+    public void Should_GetEntityPluralTitleFromSymbol() {
         // Arrange
         var generator = CreateEntityGeneratorClass("TitlePlural = \"My custom title plural\";");
 
@@ -39,11 +36,11 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     [Theory]
     [InlineData("asc", "Prop")]
     [InlineData("desc", "Prop")]
-    public void Should_GetDefaultSortFromSymbol(string direction, string propertyName)
-    {
+    public void Should_GetDefaultSortFromSymbol(string direction, string propertyName) {
         // Arrange
         var generator = CreateEntityGeneratorClass(
-            $"DefaultSort = new EntityGeneratorDefaultSort<MyCustomClass>(\"{direction}\", x => x.{propertyName});");
+            $"DefaultSort = new EntityGeneratorDefaultSort<MyCustomClass>(\"{direction}\", x => x.{propertyName});"
+        );
 
         // Act
         var actual = InternalEntityGeneratorConfigurationFactory.Construct(generator.Symbol, generator.Compilation);
@@ -55,8 +52,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_ConstructCreateOperationConfigurationWithAllProperties()
-    {
+    public void Should_ConstructCreateOperationConfigurationWithAllProperties() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"CreateOperation = new EntityGeneratorCreateOperationConfiguration
@@ -90,10 +86,9 @@ public class InternalEntityGeneratorConfigurationFactoryTests
         actual.CreateOperation.EndpointFunctionName.Should().Be("RunCreateAsync");
         actual.CreateOperation.RouteName.Should().Be("/customizedManagedEntityCreate");
     }
-    
+
     [Fact]
-    public void Should_ConstructCreateOperationConfigurationWithAllProperties_When_TypeOfConfigurationIsImplicit()
-    {
+    public void Should_ConstructCreateOperationConfigurationWithAllProperties_When_TypeOfConfigurationIsImplicit() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"CreateOperation = new()
@@ -129,8 +124,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_ConstructUpdateOperationConfigurationWithAllProperties()
-    {
+    public void Should_ConstructUpdateOperationConfigurationWithAllProperties() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
@@ -166,8 +160,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_ConstructDeleteOperationConfigurationWithAllProperties()
-    {
+    public void Should_ConstructDeleteOperationConfigurationWithAllProperties() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
@@ -201,8 +194,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_ConstructGetByIdOperationConfigurationWithAllProperties()
-    {
+    public void Should_ConstructGetByIdOperationConfigurationWithAllProperties() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
@@ -238,8 +230,7 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     [Fact]
-    public void Should_ConstructGetListOperationConfigurationWithAllProperties()
-    {
+    public void Should_ConstructGetListOperationConfigurationWithAllProperties() {
         // Arrange
         var generator = CreateEntityGeneratorClass(
             @"GetListOperation = new EntityGeneratorGetListOperationConfiguration
@@ -277,8 +268,8 @@ public class InternalEntityGeneratorConfigurationFactoryTests
     }
 
     public (INamedTypeSymbol Symbol, CSharpCompilation Compilation) CreateEntityGeneratorClass(
-        string ctorBody = "")
-    {
+        string ctorBody = ""
+    ) {
         var className = "MyCustomClass";
         var entityClass = $@"using System;
 using ITech.CrudGenerator.Abstractions.Configuration;
@@ -300,23 +291,27 @@ namespace ITech.CrudGenerator.Tests {{
         var abstractions = MetadataReference.CreateFromFile(typeof(EntityGeneratorConfiguration<>).Assembly.Location);
         var linqExpression = MetadataReference.CreateFromFile(typeof(Expression<>).Assembly.Location);
 
-        var references = GetMetadataReferencesFromDllNames([
-            "System.Private.CoreLib.dll",
-            "netstandard.dll",
-            "System.Runtime.dll"
-        ]);
+        var references = GetMetadataReferencesFromDllNames(
+            [
+                "System.Private.CoreLib.dll",
+                "netstandard.dll",
+                "System.Runtime.dll"
+            ]
+        );
         var compilation = CSharpCompilation.Create(
             Assembly.GetExecutingAssembly().FullName,
             [syntaxTree],
             references: [..references, abstractions, linqExpression],
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        );
         var symbol = compilation.GetSymbolsWithName($"{className}Generator").First();
+
         return ((INamedTypeSymbol)symbol, compilation);
     }
 
-    private PortableExecutableReference[] GetMetadataReferencesFromDllNames(string[] dllNames)
-    {
+    private PortableExecutableReference[] GetMetadataReferencesFromDllNames(string[] dllNames) {
         var runtimeDirectory = RuntimeEnvironment.GetRuntimeDirectory();
+
         return dllNames
             .Select(x => MetadataReference.CreateFromFile(Path.Combine(runtimeDirectory, x)))
             .ToArray();

@@ -7,8 +7,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity.Formatters;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal record CqrsOperationWithoutReturnValueGeneratorConfiguration
-{
+internal record CqrsOperationWithoutReturnValueGeneratorConfiguration {
     public bool Generate { get; }
     public GlobalCrudGeneratorConfiguration GlobalConfiguration { get; }
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; }
@@ -29,8 +28,8 @@ internal record CqrsOperationWithoutReturnValueGeneratorConfiguration
         NameConfigurator operation,
         NameConfigurator handler,
         MinimalApiEndpointConfigurator endpoint,
-        EntityScheme entityScheme)
-    {
+        EntityScheme entityScheme
+    ) {
         GlobalConfiguration = globalConfiguration;
         Generate = generate;
         OperationType = operationType;
@@ -51,7 +50,11 @@ internal record CqrsOperationWithoutReturnValueGeneratorConfiguration
             Generate: endpoint.Generate,
             Name: endpoint.ClassName.GetName(entityScheme.EntityName, OperationName),
             FunctionName: endpoint.FunctionName.GetName(entityScheme.EntityName, OperationName),
-            Route: endpoint.RouteConfigurator.GetRoute(entityScheme.EntityName.Name, OperationName,
-                constructorParametersForRoute));
+            Route: endpoint.RouteConfigurator.GetRoute(
+                entityScheme.EntityName.Name,
+                OperationName,
+                constructorParametersForRoute
+            )
+        );
     }
 }

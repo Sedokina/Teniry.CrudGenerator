@@ -6,23 +6,19 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.SimpleEntityHandlersTests;
 
-public class GetSimpleEntityHandlerTests
-{
+public class GetSimpleEntityHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly GetSimpleEntityQuery _query;
     private readonly GetSimpleEntityHandler _sut;
 
-    public GetSimpleEntityHandlerTests()
-    {
+    public GetSimpleEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
-
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((SimpleEntity?)null);
@@ -36,8 +32,7 @@ public class GetSimpleEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SimpleEntity { Id = _query.Id, Name = "My test entity" });
@@ -48,8 +43,10 @@ public class GetSimpleEntityHandlerTests
         // Assert
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
-        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<SimpleEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

@@ -9,17 +9,16 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Core.Schemes.DbContext;
 
-internal class DbContextSchemeFactory
-{
-    public static Result<DbContextScheme> Construct(GeneratorAttributeSyntaxContext syntaxContext)
-    {
+internal class DbContextSchemeFactory {
+    public static Result<DbContextScheme> Construct(GeneratorAttributeSyntaxContext syntaxContext) {
         var dbContextClassSymbol = (INamedTypeSymbol)syntaxContext.TargetSymbol;
 
         var diagnostics = new EquatableList<DiagnosticInfo>();
-        if (!IsDbContextClass(dbContextClassSymbol))
-        {
-            var diagnosticInfo = new DiagnosticInfo(DiagnosticDescriptors.NotInheritedFromDbContext,
-                dbContextClassSymbol.BaseType?.Locations.FirstOrDefault());
+        if (!IsDbContextClass(dbContextClassSymbol)) {
+            var diagnosticInfo = new DiagnosticInfo(
+                DiagnosticDescriptors.NotInheritedFromDbContext,
+                dbContextClassSymbol.BaseType?.Locations.FirstOrDefault()
+            );
             diagnostics.Add(diagnosticInfo);
         }
 
@@ -27,20 +26,21 @@ internal class DbContextSchemeFactory
         var dbProviderArgumentValue =
             dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
 
-        return new(new DbContextScheme(
-            dbContextClassSymbol.ContainingNamespace.ToString(),
-            dbContextClassSymbol.Name,
-            dbProviderArgumentValue,
-            GetFilterExpressionsFor(dbProviderArgumentValue)
-        ), diagnostics);
+        return new(
+            new DbContextScheme(
+                dbContextClassSymbol.ContainingNamespace.ToString(),
+                dbContextClassSymbol.Name,
+                dbProviderArgumentValue,
+                GetFilterExpressionsFor(dbProviderArgumentValue)
+            ),
+            diagnostics
+        );
     }
 
-    private static bool IsDbContextClass(INamedTypeSymbol dbContextClassSymbol)
-    {
+    private static bool IsDbContextClass(INamedTypeSymbol dbContextClassSymbol) {
         var isDbContextClass = false;
         var baseType = dbContextClassSymbol.BaseType;
-        while (!isDbContextClass && baseType != null)
-        {
+        while (!isDbContextClass && baseType != null) {
             isDbContextClass = baseType.Name.EndsWith("dbcontext", StringComparison.InvariantCultureIgnoreCase);
             baseType = baseType.BaseType;
         }
@@ -48,10 +48,8 @@ internal class DbContextSchemeFactory
         return isDbContextClass;
     }
 
-    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider)
-    {
-        switch (provider)
-        {
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsFor(DbContextDbProvider provider) {
+        switch (provider) {
             case DbContextDbProvider.Mongo:
                 return GetFilterExpressionsForMongo();
             case DbContextDbProvider.Postgres:
@@ -61,10 +59,8 @@ internal class DbContextSchemeFactory
         }
     }
 
-    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForPostgres()
-    {
-        return new Dictionary<FilterType, FilterExpression>
-        {
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForPostgres() {
+        return new Dictionary<FilterType, FilterExpression> {
             { FilterType.Contains, new ContainsFilterExpression() },
             { FilterType.Equals, new EqualsFilterExpression() },
             { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
@@ -73,10 +69,8 @@ internal class DbContextSchemeFactory
         };
     }
 
-    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForMongo()
-    {
-        return new Dictionary<FilterType, FilterExpression>
-        {
+    private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForMongo() {
+        return new Dictionary<FilterType, FilterExpression> {
             { FilterType.Contains, new ContainsFilterExpression() },
             { FilterType.Equals, new EqualsFilterExpression() },
             { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },

@@ -12,8 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal record UpdateCommandGeneratorRunner : IGeneratorRunner
-{
+internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
     public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
@@ -23,13 +22,14 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
-    {
+        DbContextScheme dbContextScheme
+    ) {
         Configuration = ConstructConfiguration(
             globalConfiguration,
             operationsSharedConfiguration,
             operationConfiguration,
-            entityScheme);
+            entityScheme
+        );
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
@@ -39,8 +39,7 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme
-    )
-    {
+    ) {
         return new CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(
             generate: operationConfiguration?.Generate ?? true,
             globalConfiguration: globalConfiguration,
@@ -51,32 +50,35 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
             viewModel: new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
-            endpoint: new MinimalApiEndpointConfigurator
-            {
+            endpoint: new MinimalApiEndpointConfigurator {
                 Generate = operationConfiguration?.Generate != false &&
-                           (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(operationConfiguration?.EndpointClassName ??
-                                "{{operation_name}}{{entity_name}}Endpoint"),
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurator = new(operationConfiguration?.RouteName ??
-                                        "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
+                RouteConfigurator = new(
+                    operationConfiguration?.RouteName ??
+                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
+                )
             },
             entityScheme
         );
     }
 
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
-    {
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
+
         var updateCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                Configuration);
+                Configuration
+            );
         var generateUpdateCommand = new UpdateCommandCrudGenerator(updateCommandScheme);
         generateUpdateCommand.RunGenerator();
-        if (generateUpdateCommand.EndpointMap is not null)
-        {
+        if (generateUpdateCommand.EndpointMap is not null) {
             endpointsMaps.Add(generateUpdateCommand.EndpointMap);
         }
 

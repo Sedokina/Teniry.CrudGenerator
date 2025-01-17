@@ -12,8 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal record GetListQueryGeneratorRunner : IGeneratorRunner
-{
+internal record GetListQueryGeneratorRunner : IGeneratorRunner {
     public CqrsListOperationGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
@@ -23,8 +22,8 @@ internal record GetListQueryGeneratorRunner : IGeneratorRunner
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
-    {
+        DbContextScheme dbContextScheme
+    ) {
         Configuration = ConstructConfiguration(
             globalConfiguration,
             operationsSharedConfiguration,
@@ -39,9 +38,10 @@ internal record GetListQueryGeneratorRunner : IGeneratorRunner
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorGetListOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme)
-    {
-        return new CqrsListOperationGeneratorConfiguration(generate: operationConfiguration?.Generate ?? true,
+        EntityScheme entityScheme
+    ) {
+        return new CqrsListOperationGeneratorConfiguration(
+            generate: operationConfiguration?.Generate ?? true,
             globalConfiguration: globalConfiguration,
             operationsSharedConfiguration: operationsSharedConfiguration,
             operationType: CqrsOperationType.Query,
@@ -52,12 +52,13 @@ internal record GetListQueryGeneratorRunner : IGeneratorRunner
             dtoListItem: new(operationConfiguration?.ListItemDtoName ?? "{{entity_name_plural}}ListItemDto"),
             filter: new(operationConfiguration?.FilterName ?? "{{operation_name}}{{entity_name_plural}}Filter"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name_plural}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator
-            {
+            endpoint: new MinimalApiEndpointConfigurator {
                 Generate = operationConfiguration?.Generate != false &&
-                           (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(operationConfiguration?.EndpointClassName ??
-                                "{{operation_name}}{{entity_name_plural}}Endpoint"),
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name_plural}}Endpoint"
+                ),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurator = new(operationConfiguration?.RouteName ?? "/{{entity_name}}")
             },
@@ -65,18 +66,16 @@ internal record GetListQueryGeneratorRunner : IGeneratorRunner
         );
     }
 
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
-    {
-        if (Configuration.Generate)
-        {
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
+        if (Configuration.Generate) {
             var getListQueryScheme = new CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
-                Configuration);
+                Configuration
+            );
             var generateListQuery = new ListQueryCrudGenerator(getListQueryScheme);
             generateListQuery.RunGenerator();
-            if (generateListQuery.EndpointMap is not null)
-            {
+            if (generateListQuery.EndpointMap is not null) {
                 endpointsMaps.Add(generateListQuery.EndpointMap);
             }
 

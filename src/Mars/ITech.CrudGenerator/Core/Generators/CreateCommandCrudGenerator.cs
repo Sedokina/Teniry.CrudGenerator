@@ -13,8 +13,7 @@ using static ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Simp
 namespace ITech.CrudGenerator.Core.Generators;
 
 internal class CreateCommandCrudGenerator
-    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration>
-{
+    : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration> {
     private readonly EndpointRouteConfigurator? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string? _getByIdOperationName;
     private readonly string _commandName;
@@ -25,8 +24,8 @@ internal class CreateCommandCrudGenerator
     public CreateCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
         EndpointRouteConfigurator? getByIdEndpointRouteConfigurationBuilder,
-        string? getByIdOperationName) : base(scheme)
-    {
+        string? getByIdOperationName
+    ) : base(scheme) {
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
         _getByIdOperationName = getByIdOperationName;
         _commandName = scheme.Configuration.Operation;
@@ -35,29 +34,30 @@ internal class CreateCommandCrudGenerator
         _endpointClassName = scheme.Configuration.Endpoint.Name;
     }
 
-    public override void RunGenerator()
-    {
+    public override void RunGenerator() {
         GenerateCommand();
         GenerateHandler();
         GenerateDto();
-        if (Scheme.Configuration.Endpoint.Generate)
-        {
+        if (Scheme.Configuration.Endpoint.Generate) {
             GenerateEndpoint();
         }
     }
 
-    private void GenerateCommand()
-    {
-        var command = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _commandName)
+    private void GenerateCommand() {
+        var command = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _commandName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithXmlDoc($"Create {Scheme.EntityScheme.EntityTitle}",
-                $"Returns id of created entity of type <see cref=\"{_dtoName}\" />");
+            .WithXmlDoc(
+                $"Create {Scheme.EntityScheme.EntityTitle}",
+                $"Returns id of created entity of type <see cref=\"{_dtoName}\" />"
+            );
 
-        foreach (var property in EntityScheme.NotPrimaryKeys)
-        {
+        foreach (var property in EntityScheme.NotPrimaryKeys) {
             command.WithProperty(property.TypeName, property.PropertyName)
                 .WithDefaultValue(property.DefaultValue);
         }
@@ -65,12 +65,14 @@ internal class CreateCommandCrudGenerator
         WriteFile(_commandName, command.BuildAsString());
     }
 
-    private void GenerateDto()
-    {
-        var dtoClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _dtoName)
+    private void GenerateDto() {
+        var dtoClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _dtoName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
 
         var constructorParameters = EntityScheme.PrimaryKeys
@@ -78,8 +80,7 @@ internal class CreateCommandCrudGenerator
         var constructor = new ConstructorBuilder(_dtoName)
             .WithParameters(constructorParameters);
         var constructorBody = new BlockBuilder();
-        foreach (var primaryKey in EntityScheme.PrimaryKeys)
-        {
+        foreach (var primaryKey in EntityScheme.PrimaryKeys) {
             dtoClass.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
@@ -90,22 +91,29 @@ internal class CreateCommandCrudGenerator
         WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateHandler()
-    {
-        var handlerClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _handlerName)
-            .WithUsings([
-                "ITech.Cqrs.Cqrs.Commands",
-                Scheme.DbContextScheme.DbContextNamespace,
-                EntityScheme.EntityNamespace,
-                "Mapster",
-            ])
+    private void GenerateHandler() {
+        var handlerClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _handlerName
+            )
+            .WithUsings(
+                [
+                    "ITech.Cqrs.Cqrs.Commands",
+                    Scheme.DbContextScheme.DbContextNamespace,
+                    EntityScheme.EntityNamespace,
+                    "Mapster",
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("ICommandHandler", _commandName, _dtoName)
-            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
-                Scheme.DbContextScheme.DbContextName, "_db");
+            .WithPrivateField(
+                [SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName,
+                "_db"
+            );
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
@@ -114,20 +122,26 @@ internal class CreateCommandCrudGenerator
 
         constructor.WithBody(constructorBody);
 
-        var methodBuilder = new MethodBuilder([
+        var methodBuilder = new MethodBuilder(
+                [
                     SyntaxKind.PublicKeyword,
                     SyntaxKind.AsyncKeyword
-                ], $"Task<{_dtoName}>", "HandleAsync")
-            .WithParameters([
-                new ParameterOfMethodBuilder(_commandName, "command"),
-                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
-            ])
+                ],
+                $"Task<{_dtoName}>",
+                "HandleAsync"
+            )
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder(_commandName, "command"),
+                    new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+                ]
+            )
             .WithXmlInheritdoc();
 
         var constructorParams = EntityScheme.PrimaryKeys
             .Select(x => Property("entity", x.PropertyName))
             .ToList<ExpressionSyntax>();
-        
+
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("entity", CallGenericMethod("command", "Adapt", [EntityScheme.EntityName.ToString()], []))
             .CallAsyncMethod("_db", "AddAsync", [Variable("entity"), Variable("cancellation")])
@@ -141,41 +155,57 @@ internal class CreateCommandCrudGenerator
         WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
-    private void GenerateEndpoint()
-    {
-        var endpointClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.PartialKeyword
-            ], _endpointClassName)
-            .WithUsings([
-                "Microsoft.AspNetCore.Mvc",
-                "ITech.Cqrs.Cqrs.Commands",
-                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
-            ])
+    private void GenerateEndpoint() {
+        var endpointClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _endpointClassName
+            )
+            .WithUsings(
+                [
+                    "Microsoft.AspNetCore.Mvc",
+                    "ITech.Cqrs.Cqrs.Commands",
+                    Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodBuilder = new MethodBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.AsyncKeyword
-            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
-            .WithParameters([
-                new ParameterOfMethodBuilder(_commandName, "command"),
-                new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
-                new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
-            ])
+        var methodBuilder = new MethodBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.AsyncKeyword
+                ],
+                "Task<IResult>",
+                Scheme.Configuration.Endpoint.FunctionName
+            )
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder(_commandName, "command"),
+                    new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
+                    new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+                ]
+            )
             .WithAttribute(new ProducesResponseTypeAttributeBuilder(201))
             .WithXmlDoc(
                 $"Create {Scheme.EntityScheme.EntityTitle}",
                 201,
-                $"New {Scheme.EntityScheme.EntityTitle} created");
+                $"New {Scheme.EntityScheme.EntityTitle} created"
+            );
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("result", CallGenericAsyncMethod("commandDispatcher",
-                "DispatchAsync",
-                [_commandName, _dtoName],
-                [Variable("command"), Variable("cancellation")]))
+            .InitVariable(
+                "result",
+                CallGenericAsyncMethod(
+                    "commandDispatcher",
+                    "DispatchAsync",
+                    [_commandName, _dtoName],
+                    [Variable("command"), Variable("cancellation")]
+                )
+            )
             .Return(CallMethod("TypedResults", "Created", [InterpolatedString(GetByIdRoute()), Variable("result")]));
 
         methodBuilder.WithBody(methodBodyBuilder);
@@ -183,21 +213,22 @@ internal class CreateCommandCrudGenerator
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
+        EndpointMap = new EndpointMap(
+            EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Post",
             Scheme.Configuration.Endpoint.Route,
             _endpointClassName,
-            Scheme.Configuration.Endpoint.FunctionName);
+            Scheme.Configuration.Endpoint.FunctionName
+        );
     }
 
-    private string GetByIdRoute()
-    {
+    private string GetByIdRoute() {
         var parameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("result.");
-        if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null)
-        {
+        if (_getByIdEndpointRouteConfigurationBuilder != null && _getByIdOperationName != null) {
             var getEntityRoute = _getByIdEndpointRouteConfigurationBuilder
                 .GetRoute(EntityScheme.EntityName.ToString(), _getByIdOperationName, parameters);
+
             return getEntityRoute;
         }
 

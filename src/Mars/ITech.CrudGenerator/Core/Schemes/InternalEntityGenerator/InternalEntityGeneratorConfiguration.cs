@@ -4,8 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 
-internal record InternalEntityGeneratorConfiguration(InternalEntityClassMetadata ClassMetadata)
-{
+internal record InternalEntityGeneratorConfiguration(InternalEntityClassMetadata ClassMetadata) {
     public InternalEntityClassMetadata ClassMetadata { get; set; } = ClassMetadata;
     public string? Title { get; set; }
     public string? TitlePlural { get; set; }
@@ -17,8 +16,7 @@ internal record InternalEntityGeneratorConfiguration(InternalEntityClassMetadata
     public InternalEntityGeneratorGetListOperationConfiguration? GetListOperation { get; set; }
 }
 
-internal record InternalEntityClassMetadata
-{
+internal record InternalEntityClassMetadata {
     public string ClassName { get; set; }
     public string ContainingNamespace { get; set; }
 
@@ -30,8 +28,8 @@ internal record InternalEntityClassMetadata
         string className,
         string containingNamespace,
         string containingAssembly,
-        EquatableList<InternalEntityClassPropertyMetadata> properties)
-    {
+        EquatableList<InternalEntityClassPropertyMetadata> properties
+    ) {
         ClassName = className;
         ContainingNamespace = containingNamespace;
         ContainingAssembly = containingAssembly;
@@ -45,8 +43,8 @@ internal record InternalEntityClassPropertyMetadata(
     string TypeMetadataName,
     SpecialType SpecialType,
     bool IsSimpleType,
-    bool IsNullable)
-{
+    bool IsNullable
+) {
     public string PropertyName { get; set; } = PropertyName;
     public string TypeName { get; set; } = TypeName;
     public string TypeMetadataName { get; set; } = TypeMetadataName;
@@ -54,13 +52,11 @@ internal record InternalEntityClassPropertyMetadata(
     public bool IsSimpleType { get; set; } = IsSimpleType;
     public bool IsNullable { get; set; } = IsNullable;
 
-    public bool IsRangeType()
-    {
+    public bool IsRangeType() {
         if (SpecialType == SpecialType.System_Boolean ||
             SpecialType == SpecialType.System_Char ||
             SpecialType == SpecialType.System_String ||
-            TypeMetadataName == "Guid")
-        {
+            TypeMetadataName == "Guid") {
             return false;
         }
 

@@ -12,8 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal record CreateCommandGeneratorRunner : IGeneratorRunner
-{
+internal record CreateCommandGeneratorRunner : IGeneratorRunner {
     public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
@@ -27,13 +26,14 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme,
         EndpointRouteConfigurator? getByIdEndpointRouteConfigurationBuilder,
-        string getByIdOperationName)
-    {
+        string getByIdOperationName
+    ) {
         Configuration = ConstructBuilder(
             globalConfiguration,
             operationsSharedConfiguration,
             operationConfiguration,
-            entityScheme);
+            entityScheme
+        );
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
         _getByIdEndpointRouteConfigurationBuilder = getByIdEndpointRouteConfigurationBuilder;
@@ -44,8 +44,8 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme)
-    {
+        EntityScheme entityScheme
+    ) {
         return new CqrsOperationWithReturnValueGeneratorConfiguration(
             generate: operationConfiguration?.Generate ?? true,
             globalConfiguration: globalConfiguration,
@@ -56,24 +56,27 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner
             operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             dto: new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator
-            {
+            endpoint: new MinimalApiEndpointConfigurator {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
-                           (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(operationConfiguration?.EndpointClassName ??
-                                "{{operation_name}}{{entity_name}}Endpoint"),
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurator = new(operationConfiguration?.RouteName ??
-                                                "/{{entity_name}}/{{operation_name | string.downcase}}")
+                RouteConfigurator = new(
+                    operationConfiguration?.RouteName ??
+                    "/{{entity_name}}/{{operation_name | string.downcase}}"
+                )
             },
             entityScheme
         );
     }
 
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
-    {
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
+
         var createCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
                 _entityScheme,
@@ -86,8 +89,7 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner
             _getByIdOperationName
         );
         generateCreateCommand.RunGenerator();
-        if (generateCreateCommand.EndpointMap is not null)
-        {
+        if (generateCreateCommand.EndpointMap is not null) {
             endpointsMaps.Add(generateCreateCommand.EndpointMap);
         }
 

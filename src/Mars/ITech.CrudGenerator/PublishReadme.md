@@ -1,5 +1,6 @@
 How to publish package:
 Change package version in `.csproj` file, then run
+
 ```
     dotnet pack --configuration Release
     
@@ -10,8 +11,8 @@ Change package version in `.csproj` file, then run
 More information:
 https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry
 
-
 To hide your username and token, move whole section of `nuget.config`
+
 ```
 <packageSourceCredentials>
     <github>
@@ -20,7 +21,8 @@ To hide your username and token, move whole section of `nuget.config`
     </github>
 </packageSourceCredentials>
 ```
-to `.nuget/NuGet/NuGet.Config` to your user directory on your PC, 
+
+to `.nuget/NuGet/NuGet.Config` to your user directory on your PC,
 and put your password and token instead of placeholders
 
 More information:

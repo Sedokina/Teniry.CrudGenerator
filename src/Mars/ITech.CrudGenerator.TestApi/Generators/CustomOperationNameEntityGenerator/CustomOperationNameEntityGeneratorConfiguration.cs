@@ -2,28 +2,21 @@ using ITech.CrudGenerator.Abstractions.Configuration;
 
 namespace ITech.CrudGenerator.TestApi.Generators.CustomOperationNameEntityGenerator;
 
-public class CustomOperationNameEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomOperationNameEntity>
-{
-    public CustomOperationNameEntityGeneratorConfiguration()
-    {
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
-        {
+public class CustomOperationNameEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomOperationNameEntity> {
+    public CustomOperationNameEntityGeneratorConfiguration() {
+        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
             Operation = "CustomOpGetById",
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration
-        {
+        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
             Operation = "CustomOpGetList",
         };
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration
-        {
+        CreateOperation = new EntityGeneratorCreateOperationConfiguration {
             Operation = "CustomOpCreate",
         };
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
-        {
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration() {
             Operation = "CustomOpDelete",
         };
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
-        {
+        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
             Operation = "CustomOpUpdate",
         };
     }

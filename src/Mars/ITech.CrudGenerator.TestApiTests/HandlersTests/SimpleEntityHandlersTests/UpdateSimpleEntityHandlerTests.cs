@@ -6,25 +6,21 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.SimpleEntityHandlersTests;
 
-public class UpdateSimpleEntityHandlerTests
-{
+public class UpdateSimpleEntityHandlerTests {
     private readonly UpdateSimpleEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly UpdateSimpleEntityHandler _sut;
 
-    public UpdateSimpleEntityHandlerTests()
-    {
+    public UpdateSimpleEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
-        _command = new(Guid.NewGuid())
-        {
+        _command = new(Guid.NewGuid()) {
             Name = "New entity name"
         };
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((SimpleEntity?)null);
@@ -38,8 +34,7 @@ public class UpdateSimpleEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         var entity = new SimpleEntity { Id = _command.Id, Name = "Old entity name" };
         _db.Setup(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
@@ -51,7 +46,10 @@ public class UpdateSimpleEntityHandlerTests
         // Assert
         entity.Name.Should().Be("New entity name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
-        _db.Verify(x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()), Times.Once);
+        _db.Verify(
+            x => x.FindAsync<SimpleEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

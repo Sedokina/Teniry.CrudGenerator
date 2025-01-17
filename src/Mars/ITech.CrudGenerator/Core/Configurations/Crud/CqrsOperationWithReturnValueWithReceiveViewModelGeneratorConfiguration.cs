@@ -7,11 +7,11 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
 internal record CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
-    : CqrsOperationWithoutReturnValueGeneratorConfiguration
-{
+    : CqrsOperationWithoutReturnValueGeneratorConfiguration {
     public string ViewModel { get; set; } = null!;
 
-    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(bool generate,
+    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(
+        bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         CqrsOperationType operationType,
@@ -21,8 +21,10 @@ internal record CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfigu
         NameConfigurator handler,
         NameConfigurator viewModel,
         MinimalApiEndpointConfigurator endpoint,
-        EntityScheme entityScheme)
-        : base(generate,
+        EntityScheme entityScheme
+    )
+        : base(
+            generate,
             globalConfiguration,
             operationsSharedConfiguration,
             operationType,
@@ -31,8 +33,8 @@ internal record CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfigu
             operation,
             handler,
             endpoint,
-            entityScheme)
-    {
+            entityScheme
+        ) {
         ViewModel = viewModel.GetName(entityScheme.EntityName, OperationName);
     }
 }

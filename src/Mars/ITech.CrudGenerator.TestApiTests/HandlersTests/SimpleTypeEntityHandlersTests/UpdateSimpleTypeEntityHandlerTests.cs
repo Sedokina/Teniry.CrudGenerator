@@ -6,18 +6,15 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.SimpleTypeEntityHandlersTests;
 
-public class UpdateSimpleTypeEntityHandlerTests
-{
+public class UpdateSimpleTypeEntityHandlerTests {
     private readonly UpdateSimpleTypeEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly UpdateSimpleTypeEntityHandler _sut;
 
-    public UpdateSimpleTypeEntityHandlerTests()
-    {
+    public UpdateSimpleTypeEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
-        _command = new(Guid.NewGuid())
-        {
+        _command = new(Guid.NewGuid()) {
             Name = "New Test Entity",
             Code = 'a',
             IsActive = true,
@@ -39,8 +36,7 @@ public class UpdateSimpleTypeEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((SimpleTypeEntity?)null);
@@ -54,11 +50,9 @@ public class UpdateSimpleTypeEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
-        var entity = new SimpleTypeEntity
-        {
+        var entity = new SimpleTypeEntity {
             Id = _command.Id,
             Name = "Old Test Entity",
             Code = 'b',
@@ -104,8 +98,10 @@ public class UpdateSimpleTypeEntityHandlerTests
         entity.DecimalRating.Should().BeGreaterThan(0);
         entity.NotIdGuid.Should().NotBeEmpty();
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
-        _db.Verify(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

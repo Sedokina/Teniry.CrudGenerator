@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator;
 
-internal class CrudGeneratorTrackingNames
-{
+internal class CrudGeneratorTrackingNames {
     public const string GetGeneratorConfigurations = nameof(GetGeneratorConfigurations);
     public const string GetDbContexts = nameof(GetDbContexts);
     public const string CombineConfigurationsAndDbContexts = nameof(CombineConfigurationsAndDbContexts);

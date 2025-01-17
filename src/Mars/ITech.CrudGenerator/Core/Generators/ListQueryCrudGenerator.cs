@@ -12,8 +12,7 @@ using static ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Simp
 
 namespace ITech.CrudGenerator.Core.Generators;
 
-internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOperationGeneratorConfiguration>
-{
+internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOperationGeneratorConfiguration> {
     private readonly string _dtoName;
     private readonly string _handlerName;
     private readonly string _listItemDtoName;
@@ -21,8 +20,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
     private readonly string _endpointClassName;
     private readonly string _filterName;
 
-    public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme)
-    {
+    public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme) {
         _queryName = Scheme.Configuration.Operation;
         _listItemDtoName = Scheme.Configuration.DtoListItem;
         _dtoName = Scheme.Configuration.Dto;
@@ -31,40 +29,43 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
-    public override void RunGenerator()
-    {
+    public override void RunGenerator() {
         GenerateQuery();
         GenerateListItemDto();
         GenerateDto();
         GenerateFilter();
         GenerateHandler();
-        if (Scheme.Configuration.Endpoint.Generate)
-        {
+        if (Scheme.Configuration.Endpoint.Generate) {
             GenerateEndpoint();
         }
     }
 
-    private void GenerateQuery()
-    {
-        var query = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _queryName)
+    private void GenerateQuery() {
+        var query = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _queryName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings([
-                "ITech.Cqrs.Queryables.Page",
-                "ITech.Cqrs.Queryables.Sort"
-            ])
+            .WithUsings(
+                [
+                    "ITech.Cqrs.Queryables.Page",
+                    "ITech.Cqrs.Queryables.Sort"
+                ]
+            )
             .Implements("IDefineSortable")
             .Implements("IPage")
-            .WithXmlDoc($"Get {EntityScheme.EntityTitle.PluralTitle}",
-                $"Returns {EntityScheme.EntityTitle.PluralTitle} of type <see cref=\"{_dtoName}\" />");
+            .WithXmlDoc(
+                $"Get {EntityScheme.EntityTitle.PluralTitle}",
+                $"Returns {EntityScheme.EntityTitle.PluralTitle} of type <see cref=\"{_dtoName}\" />"
+            );
 
-        foreach (var property in EntityScheme.Properties)
-        {
+        foreach (var property in EntityScheme.Properties) {
             if (property.FilterProperties.Length <= 0) continue;
-            foreach (var filterProperty in property.FilterProperties)
-            {
+
+            foreach (var filterProperty in property.FilterProperties) {
                 query.WithProperty(filterProperty.TypeName, filterProperty.PropertyName);
             }
         }
@@ -84,16 +85,17 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_queryName, query.BuildAsString());
     }
 
-    private void GenerateListItemDto()
-    {
-        var dtoClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _listItemDtoName)
+    private void GenerateListItemDto() {
+        var dtoClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _listItemDtoName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation);
 
-        foreach (var property in EntityScheme.Properties)
-        {
+        foreach (var property in EntityScheme.Properties) {
             dtoClass.WithProperty(property.TypeName, property.PropertyName)
                 .WithDefaultValue(property.DefaultValue);
         }
@@ -101,21 +103,25 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_listItemDtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateDto()
-    {
-        var dtoClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _dtoName)
+    private void GenerateDto() {
+        var dtoClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _dtoName
+            )
             .WithUsings(["ITech.Cqrs.Queryables.Page"])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("PagedResult", _listItemDtoName);
 
         var constructor = new ConstructorBuilder(_dtoName)
-            .WithParameters([
-                new ParameterOfMethodBuilder($"List<{_listItemDtoName}>", "items"),
-                new ParameterOfMethodBuilder("PageInfo", "page")
-            ])
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder($"List<{_listItemDtoName}>", "items"),
+                    new ParameterOfMethodBuilder("PageInfo", "page")
+                ]
+            )
             .WithBaseConstructor(["items", "page"]);
 
         constructor.WithBody(new BlockBuilder());
@@ -124,26 +130,29 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_dtoName, dtoClass.BuildAsString());
     }
 
-    private void GenerateFilter()
-    {
-        var query = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _filterName)
+    private void GenerateFilter() {
+        var query = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _filterName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings([
-                "System.Linq.Expressions",
-                "Microsoft.EntityFrameworkCore",
-                "ITech.Cqrs.Queryables.Filter",
-                Scheme.EntityScheme.EntityNamespace
-            ])
+            .WithUsings(
+                [
+                    "System.Linq.Expressions",
+                    "Microsoft.EntityFrameworkCore",
+                    "ITech.Cqrs.Queryables.Filter",
+                    Scheme.EntityScheme.EntityNamespace
+                ]
+            )
             .Implements("QueryableFilter", EntityScheme.EntityName.ToString());
 
-        foreach (var property in EntityScheme.Properties)
-        {
+        foreach (var property in EntityScheme.Properties) {
             if (property.FilterProperties.Length <= 0) continue;
-            foreach (var filterProperty in property.FilterProperties)
-            {
+
+            foreach (var filterProperty in property.FilterProperties) {
                 query.WithProperty(filterProperty.TypeName, filterProperty.PropertyName);
             }
         }
@@ -155,19 +164,19 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_filterName, query.BuildAsString());
     }
 
-    private MethodBuilder CreateFilterMethod()
-    {
-        var filterMethod = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
-                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "Filter")
+    private MethodBuilder CreateFilterMethod() {
+        var filterMethod = new MethodBuilder(
+                [SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
+                $"IQueryable<{Scheme.EntityScheme.EntityName}>",
+                "Filter"
+            )
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
         var filterBody = new BlockBuilder();
 
-        foreach (var property in EntityScheme.Properties)
-        {
-            foreach (var filterProperty in property.FilterProperties)
-            {
+        foreach (var property in EntityScheme.Properties) {
+            foreach (var filterProperty in property.FilterProperties) {
                 var expression = filterProperty.FilterExpression
                     .BuildExpression(filterProperty.PropertyName, property.PropertyName);
                 filterBody.AddExpression(expression);
@@ -177,92 +186,108 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         filterBody.Return(Variable("query"));
 
         filterMethod.WithBody(filterBody);
+
         return filterMethod;
     }
 
-    private MethodBuilder CreateSortMethodForFilter()
-    {
-        var method = new MethodBuilder([SyntaxKind.PublicKeyword, SyntaxKind.OverrideKeyword],
-                $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>", "Sort")
+    private MethodBuilder CreateSortMethodForFilter() {
+        var method = new MethodBuilder(
+                [SyntaxKind.PublicKeyword, SyntaxKind.OverrideKeyword],
+                $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>",
+                "Sort"
+            )
             .WithXmlInheritdoc();
 
         var dictionaryInitializationArguments = new List<SyntaxNodeOrToken>();
 
-        foreach (var sortableProperty in EntityScheme.SortableProperties)
-        {
-            dictionaryInitializationArguments.Add(SyntaxFactory.InitializerExpression(
-                SyntaxKind.ComplexElementInitializerExpression,
-                SyntaxFactory.SeparatedList<ExpressionSyntax>(
-                    new SyntaxNodeOrToken[]
-                    {
-                        SyntaxFactory.LiteralExpression(
-                            SyntaxKind.StringLiteralExpression,
-                            SyntaxFactory.Literal(sortableProperty.SortKey)),
-                        SyntaxFactory.Token(SyntaxKind.CommaToken),
-                        Expression(sortableProperty.PropertyName, sortableProperty.IsNullable)
-                    })));
+        foreach (var sortableProperty in EntityScheme.SortableProperties) {
+            dictionaryInitializationArguments.Add(
+                SyntaxFactory.InitializerExpression(
+                    SyntaxKind.ComplexElementInitializerExpression,
+                    SyntaxFactory.SeparatedList<ExpressionSyntax>(
+                        new SyntaxNodeOrToken[] {
+                            SyntaxFactory.LiteralExpression(
+                                SyntaxKind.StringLiteralExpression,
+                                SyntaxFactory.Literal(sortableProperty.SortKey)
+                            ),
+                            SyntaxFactory.Token(SyntaxKind.CommaToken),
+                            Expression(sortableProperty.PropertyName, sortableProperty.IsNullable)
+                        }
+                    )
+                )
+            );
             dictionaryInitializationArguments.Add(SyntaxFactory.Token(SyntaxKind.CommaToken));
         }
 
         var resultDictionary = SyntaxFactory.ObjectCreationExpression(
                 SyntaxFactory.ParseTypeName(
-                    $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>"))
+                    $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>"
+                )
+            )
             .WithInitializer(
                 SyntaxFactory.InitializerExpression(
                     SyntaxKind.CollectionInitializerExpression,
-                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArguments.ToArray())));
+                    SyntaxFactory.SeparatedList<ExpressionSyntax>(dictionaryInitializationArguments.ToArray())
+                )
+            );
 
-        var sortMethodBody = SyntaxFactory.Block(
-            SyntaxFactory.ReturnStatement(resultDictionary)
-        );
+        var sortMethodBody = SyntaxFactory.Block(SyntaxFactory.ReturnStatement(resultDictionary));
 
         method.WithBody(sortMethodBody);
+
         return method;
     }
 
-    private MethodBuilder CreateDefaultSortMethod()
-    {
-        var method = new MethodBuilder([SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
-                $"IQueryable<{Scheme.EntityScheme.EntityName}>", "DefaultSort")
+    private MethodBuilder CreateDefaultSortMethod() {
+        var method = new MethodBuilder(
+                [SyntaxKind.ProtectedKeyword, SyntaxKind.OverrideKeyword],
+                $"IQueryable<{Scheme.EntityScheme.EntityName}>",
+                "DefaultSort"
+            )
             .WithParameters([new ParameterOfMethodBuilder($"IQueryable<{Scheme.EntityScheme.EntityName}>", "query")])
             .WithXmlInheritdoc();
 
         var methodBody = new BlockBuilder();
-        
-        if (EntityScheme.DefaultSort is null)
-        {
+
+        if (EntityScheme.DefaultSort is null) {
             methodBody.Return(CallMethod("base", "DefaultSort", [Variable("query")]));
-        }
-        else
-        {
+        } else {
             var methodName = EntityScheme.DefaultSort.Direction.Equals("asc") ? "OrderBy" : "OrderByDescending";
             methodBody.Return(CallMethod("query", methodName, [Expression(EntityScheme.DefaultSort.PropertyName)]));
         }
 
         method.WithBody(methodBody);
+
         return method;
     }
 
-    private void GenerateHandler()
-    {
-        var handlerClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _handlerName)
-            .WithUsings([
-                "Microsoft.EntityFrameworkCore",
-                "ITech.Cqrs.Cqrs.Queries",
-                "ITech.Cqrs.Domain.Exceptions",
-                "ITech.Cqrs.Queryables.Page",
-                "ITech.Cqrs.Queryables.Filter",
-                Scheme.DbContextScheme.DbContextNamespace,
-                EntityScheme.EntityNamespace,
-                "Mapster"
-            ])
+    private void GenerateHandler() {
+        var handlerClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _handlerName
+            )
+            .WithUsings(
+                [
+                    "Microsoft.EntityFrameworkCore",
+                    "ITech.Cqrs.Cqrs.Queries",
+                    "ITech.Cqrs.Domain.Exceptions",
+                    "ITech.Cqrs.Queryables.Page",
+                    "ITech.Cqrs.Queryables.Filter",
+                    Scheme.DbContextScheme.DbContextNamespace,
+                    EntityScheme.EntityNamespace,
+                    "Mapster"
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("IQueryHandler", _queryName, _dtoName)
-            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
-                Scheme.DbContextScheme.DbContextName, "_db");
+            .WithPrivateField(
+                [SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName,
+                "_db"
+            );
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
@@ -271,14 +296,20 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         constructor.WithBody(constructorBody);
 
-        var methodBuilder = new MethodBuilder([
+        var methodBuilder = new MethodBuilder(
+                [
                     SyntaxKind.PublicKeyword,
                     SyntaxKind.AsyncKeyword
-                ], $"Task<{_dtoName}>", "HandleAsync")
-            .WithParameters([
-                new ParameterOfMethodBuilder(_queryName, "query"),
-                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
-            ])
+                ],
+                $"Task<{_dtoName}>",
+                "HandleAsync"
+            )
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder(_queryName, "query"),
+                    new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+                ]
+            )
             .WithXmlInheritdoc();
 
         var linqBuilder = new FluentCallBuilder()
@@ -300,41 +331,56 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
-    private void GenerateEndpoint()
-    {
-        var endpointClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.PartialKeyword
-            ], _endpointClassName)
-            .WithUsings([
-                "Microsoft.AspNetCore.Mvc",
-                "ITech.Cqrs.Cqrs.Queries",
-                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
-            ])
+    private void GenerateEndpoint() {
+        var endpointClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _endpointClassName
+            )
+            .WithUsings(
+                [
+                    "Microsoft.AspNetCore.Mvc",
+                    "ITech.Cqrs.Cqrs.Queries",
+                    Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodBuilder = new MethodBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.AsyncKeyword
-            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
-            .WithParameters([
-                new ParameterOfMethodBuilder($"[AsParameters]{_queryName}", "query"),
-                new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
-                new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
-            ])
+        var methodBuilder = new MethodBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.AsyncKeyword
+                ],
+                "Task<IResult>",
+                Scheme.Configuration.Endpoint.FunctionName
+            )
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder($"[AsParameters]{_queryName}", "query"),
+                    new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
+                    new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+                ]
+            )
             .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
-            .WithXmlDoc($"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
+            .WithXmlDoc(
+                $"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
                 200,
-                $"Returns {Scheme.EntityScheme.EntityTitle} list");
+                $"Returns {Scheme.EntityScheme.EntityTitle} list"
+            );
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("result", CallGenericAsyncMethod(
-                "queryDispatcher",
-                "DispatchAsync",
-                [_queryName, _dtoName],
-                [Variable("query"), Variable("cancellation")])
+            .InitVariable(
+                "result",
+                CallGenericAsyncMethod(
+                    "queryDispatcher",
+                    "DispatchAsync",
+                    [_queryName, _dtoName],
+                    [Variable("query"), Variable("cancellation")]
+                )
             )
             .Return(CallMethod("TypedResults", "Ok", [Variable("result")]));
 
@@ -343,11 +389,13 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
+        EndpointMap = new EndpointMap(
+            EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",
             Scheme.Configuration.Endpoint.Route,
             _endpointClassName,
-            Scheme.Configuration.Endpoint.FunctionName);
+            Scheme.Configuration.Endpoint.FunctionName
+        );
     }
 }

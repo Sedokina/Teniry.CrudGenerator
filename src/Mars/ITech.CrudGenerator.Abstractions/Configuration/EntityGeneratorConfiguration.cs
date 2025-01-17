@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator.Abstractions.Configuration;
 
-public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : class
-{
+public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : class {
     public string? Title { get; set; }
     public string? TitlePlural { get; set; }
     public EntityGeneratorDefaultSort<TEntity>? DefaultSort { get; set; }

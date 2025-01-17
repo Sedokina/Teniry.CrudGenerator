@@ -2,8 +2,7 @@ using MongoDB.Bson;
 
 namespace ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 
-public class Currency
-{
+public class Currency {
     // string with [BsonRepresentation(BsonType.ObjectId)] or ObjectId 
     public ObjectId _id { get; set; }
 
@@ -19,8 +18,7 @@ public class Currency
 }
 
 // [GenerateCrud]
-public class Country
-{
+public class Country {
     public ObjectId Id { get; set; }
     public string Name { get; set; } = "";
     public ICollection<Currency> Currencies { get; set; } = [];

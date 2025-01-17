@@ -11,15 +11,13 @@ using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.CustomIds;
 
 [Collection("E2eTests")]
-public class IntIdEntityEndpointTests(TestApiFixture fixture)
-{
+public class IntIdEntityEndpointTests(TestApiFixture fixture) {
     private readonly TestMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
     [InlineData("intIdEntity/{0}")]
-    public async Task Should_GetEntity(string endpoint)
-    {
+    public async Task Should_GetEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateEntityAsync("Entity to get");
 
@@ -38,8 +36,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("intIdEntity?page=1&pageSize=10")]
-    public async Task Should_GetEntitiesList(string endpoint)
-    {
+    public async Task Should_GetEntitiesList(string endpoint) {
         // Arrange
         await CreateEntityAsync("Entity to get one of list");
 
@@ -55,17 +52,17 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
         actual!.Page.PageSize.Should().BeGreaterThan(0);
         actual.Page.CurrentPageIndex.Should().BeGreaterThan(0);
         actual.Items.Should().HaveCountGreaterThanOrEqualTo(1);
-        actual.Items.Should().AllSatisfy(x =>
-        {
-            x.Id.Should().BeGreaterThan(0);
-            x.Name.Should().NotBeNullOrEmpty();
-        });
+        actual.Items.Should().AllSatisfy(
+            x => {
+                x.Id.Should().BeGreaterThan(0);
+                x.Name.Should().NotBeNullOrEmpty();
+            }
+        );
     }
 
     [Theory]
     [InlineData("intIdEntity/create")]
-    public async Task Should_CreateEntity(string endpoint)
-    {
+    public async Task Should_CreateEntity(string endpoint) {
         // Act
         var response =
             await _httpClient.PostAsJsonAsync(endpoint, new CreateIntIdEntityCommand { Name = "My new entity" });
@@ -90,15 +87,15 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("intIdEntity/{0}/update")]
-    public async Task Should_UpdateEntity(string endpoint)
-    {
+    public async Task Should_UpdateEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateEntityAsync("Entity to update");
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new UpdateIntIdEntityCommand(createdEntity.Id) { Name = "Updated entity name" });
+            new UpdateIntIdEntityCommand(createdEntity.Id) { Name = "Updated entity name" }
+        );
         response.Should().FailIfNotSuccessful();
 
         // Assert correct response
@@ -112,8 +109,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("intIdEntity/{0}/delete")]
-    public async Task Should_DeleteEntity(string endpoint)
-    {
+    public async Task Should_DeleteEntity(string endpoint) {
         // Arrange
         var createdIntIdEntity = await CreateEntityAsync("Entity to delete");
 
@@ -129,12 +125,12 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture)
         entity.Should().BeNull();
     }
 
-    private async Task<IntIdEntity> CreateEntityAsync(string name)
-    {
+    private async Task<IntIdEntity> CreateEntityAsync(string name) {
         var entity = new IntIdEntity { Name = name };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();
+
         return entity;
     }
 }

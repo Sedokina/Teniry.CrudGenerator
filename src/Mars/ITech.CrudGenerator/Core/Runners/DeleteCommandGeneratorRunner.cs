@@ -12,8 +12,7 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace ITech.CrudGenerator.Core.Runners;
 
-internal record DeleteCommandGeneratorRunner : IGeneratorRunner
-{
+internal record DeleteCommandGeneratorRunner : IGeneratorRunner {
     public CqrsOperationWithoutReturnValueGeneratorConfiguration Configuration { get; }
     private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
@@ -23,13 +22,14 @@ internal record DeleteCommandGeneratorRunner : IGeneratorRunner
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
-        DbContextScheme dbContextScheme)
-    {
+        DbContextScheme dbContextScheme
+    ) {
         Configuration = ConstructConfiguration(
             globalConfiguration,
             operationsSharedConfiguration,
             operationConfiguration,
-            entityScheme);
+            entityScheme
+        );
         _entityScheme = entityScheme;
         _dbContextScheme = dbContextScheme;
     }
@@ -38,8 +38,8 @@ internal record DeleteCommandGeneratorRunner : IGeneratorRunner
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorDeleteOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme)
-    {
+        EntityScheme entityScheme
+    ) {
         return new CqrsOperationWithoutReturnValueGeneratorConfiguration(
             generate: operationConfiguration?.Generate ?? true,
             globalConfiguration: globalConfiguration,
@@ -49,24 +49,27 @@ internal record DeleteCommandGeneratorRunner : IGeneratorRunner
             operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator
-            {
+            endpoint: new MinimalApiEndpointConfigurator {
                 // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
-                           (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(operationConfiguration?.EndpointClassName ??
-                                "{{operation_name}}{{entity_name}}Endpoint"),
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurator = new(operationConfiguration?.RouteName ??
-                                                "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}")
+                RouteConfigurator = new(
+                    operationConfiguration?.RouteName ??
+                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
+                )
             },
             entityScheme
         );
     }
 
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps)
-    {
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
+
         var deleteCommandScheme = new CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration>(
             _entityScheme,
             _dbContextScheme,
@@ -74,8 +77,7 @@ internal record DeleteCommandGeneratorRunner : IGeneratorRunner
         );
         var generateDeleteCommand = new DeleteCommandCrudGenerator(deleteCommandScheme);
         generateDeleteCommand.RunGenerator();
-        if (generateDeleteCommand.EndpointMap is not null)
-        {
+        if (generateDeleteCommand.EndpointMap is not null) {
             endpointsMaps.Add(generateDeleteCommand.EndpointMap);
         }
 

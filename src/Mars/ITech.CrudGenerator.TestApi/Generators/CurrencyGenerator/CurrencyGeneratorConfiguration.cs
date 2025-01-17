@@ -2,10 +2,8 @@ using ITech.CrudGenerator.Abstractions.Configuration;
 
 namespace ITech.CrudGenerator.TestApi.Generators.CurrencyGenerator;
 
-public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency>
-{
-    protected CurrencyGeneratorConfiguration()
-    {
+public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency> {
+    protected CurrencyGeneratorConfiguration() {
         Title = "Curr";
         TitlePlural = "Currsive";
         DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
@@ -22,8 +20,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         //     EndpointFunctionName = "juj",
         //     RouteName = "/cru/cre"
         // };
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration
-        {
+        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration {
             Generate = true,
             Operation = "Del",
             OperationGroup = "DeleLCurrency",
@@ -34,8 +31,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "dkd",
             RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
         };
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
-        {
+        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
             Generate = true,
             Operation = "Upd",
             OperationGroup = "UpddCurcy",
@@ -47,8 +43,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "mmupd",
             RouteName = "/cur/udo"
         };
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration
-        {
+        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
             Generate = true,
             Operation = "GtBy",
             OperationGroup = "IdGetCurcy",
@@ -60,8 +55,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "ggetb",
             RouteName = "/cry/ggbyid"
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration
-        {
+        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
             Generate = true,
             Operation = "GtLi",
             OperationGroup = "ListCuries",
@@ -78,6 +72,4 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
     }
 }
 
-public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country>
-{
-}
+public class CountryGeneratorConfiguration : EntityGeneratorConfiguration<Country> { }

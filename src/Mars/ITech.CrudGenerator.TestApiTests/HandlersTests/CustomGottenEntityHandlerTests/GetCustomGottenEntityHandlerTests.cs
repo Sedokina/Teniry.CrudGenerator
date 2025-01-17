@@ -7,23 +7,19 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomGottenEntityHandlerTests;
 
-public class GetCustomGottenEntityHandlerTests
-{
+public class GetCustomGottenEntityHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomizedNameGetCustomEntityQuery _query;
     private readonly CustomizedNameGetCustomEntityHandler _sut;
 
-    public GetCustomGottenEntityHandlerTests()
-    {
+    public GetCustomGottenEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
-
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((CustomGottenEntity?)null);
@@ -37,8 +33,7 @@ public class GetCustomGottenEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CustomGottenEntity { Id = _query.Id, Name = "My test entity" });
@@ -50,17 +45,18 @@ public class GetCustomGottenEntityHandlerTests
         entity.Should().BeOfType<CustomizedNameGetCustomEntityDto>();
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
-        _db.Verify(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomizedNameGetCustomEntityQuery")]
     [InlineData("CustomizedNameGetCustomEntityHandler")]
     [InlineData("CustomizedNameGetCustomEntityDto")]
-    public void Should_BeInCustomNamespace(string typeName)
-    {
+    public void Should_BeInCustomNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomGottenEntityGetOperationCustomNs");

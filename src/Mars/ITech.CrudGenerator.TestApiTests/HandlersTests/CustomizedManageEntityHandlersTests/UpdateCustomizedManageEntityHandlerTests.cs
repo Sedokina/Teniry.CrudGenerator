@@ -7,25 +7,21 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomizedManageEntityHandlersTests;
 
-public class UpdateCustomizedManageEntityHandlerTests
-{
+public class UpdateCustomizedManageEntityHandlerTests {
     private readonly CustomizedNameUpdateManagedEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomizedNameUpdateManagedEntityHandler _sut;
 
-    public UpdateCustomizedManageEntityHandlerTests()
-    {
+    public UpdateCustomizedManageEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
-        _command = new(Guid.NewGuid())
-        {
+        _command = new(Guid.NewGuid()) {
             Name = "New entity name"
         };
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((CustomManagedEntity?)null);
@@ -39,8 +35,7 @@ public class UpdateCustomizedManageEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         var entity = new CustomManagedEntity { Id = _command.Id, Name = "Old entity name" };
         _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
@@ -54,17 +49,16 @@ public class UpdateCustomizedManageEntityHandlerTests
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
             x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomizedNameUpdateManagedEntityCommand")]
     [InlineData("CustomizedNameUpdateManagedEntityHandler")]
-    public void Should_BeInCustomNamespace(string typeName)
-    {
+    public void Should_BeInCustomNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().BeInNamespaceThatEndsWith(typeName, "ManagedEntityUpdateOperationCustomNs");
-        
     }
 }

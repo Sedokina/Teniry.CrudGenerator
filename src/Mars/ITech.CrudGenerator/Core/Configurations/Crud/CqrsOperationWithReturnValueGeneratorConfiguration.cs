@@ -7,11 +7,11 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
 internal record CqrsOperationWithReturnValueGeneratorConfiguration
-    : CqrsOperationWithoutReturnValueGeneratorConfiguration
-{
+    : CqrsOperationWithoutReturnValueGeneratorConfiguration {
     public string Dto { get; set; } = null!;
 
-    public CqrsOperationWithReturnValueGeneratorConfiguration(bool generate,
+    public CqrsOperationWithReturnValueGeneratorConfiguration(
+        bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         CqrsOperationType operationType,
@@ -21,8 +21,10 @@ internal record CqrsOperationWithReturnValueGeneratorConfiguration
         NameConfigurator dto,
         NameConfigurator handler,
         MinimalApiEndpointConfigurator endpoint,
-        EntityScheme entityScheme)
-        : base(generate,
+        EntityScheme entityScheme
+    )
+        : base(
+            generate,
             globalConfiguration,
             operationsSharedConfiguration,
             operationType,
@@ -31,8 +33,8 @@ internal record CqrsOperationWithReturnValueGeneratorConfiguration
             operation,
             handler,
             endpoint,
-            entityScheme)
-    {
+            entityScheme
+        ) {
         Dto = dto.GetName(entityScheme.EntityName, OperationName);
     }
 }

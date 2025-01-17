@@ -6,12 +6,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders;
 
-public static class SimpleSyntaxFactory
-{
+public static class SimpleSyntaxFactory {
     public static ObjectCreationExpressionSyntax CallConstructor(
         string className,
-        List<ExpressionSyntax> constructorArguments)
-    {
+        List<ExpressionSyntax> constructorArguments
+    ) {
         return ObjectCreationExpression(
             Token(SyntaxKind.NewKeyword),
             ParseTypeName(className),
@@ -23,8 +22,8 @@ public static class SimpleSyntaxFactory
     public static InvocationExpressionSyntax CallMethod(
         string objectWithMethod,
         string methodNameToCall,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         return InvocationExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
@@ -38,8 +37,8 @@ public static class SimpleSyntaxFactory
     public static AwaitExpressionSyntax CallAsyncMethod(
         string objectWithMethod,
         string methodNameToCall,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         return AwaitExpression(CallMethod(objectWithMethod, methodNameToCall, arguments));
     }
 
@@ -47,18 +46,15 @@ public static class SimpleSyntaxFactory
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         return InvocationExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 IdentifierName(objectWithMethod),
                 GenericName(Identifier(methodNameToCall))
                     .WithTypeArgumentList(
-                        TypeArgumentList(SeparatedList<TypeSyntax>(
-                                methodGenericTypeNames.Select(IdentifierName)
-                            )
-                        )
+                        TypeArgumentList(SeparatedList<TypeSyntax>(methodGenericTypeNames.Select(IdentifierName)))
                     )
             ),
             ArgumentList(SeparatedList(arguments.Select(Argument).ToArray()))
@@ -69,8 +65,8 @@ public static class SimpleSyntaxFactory
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         return AwaitExpression(
             CallGenericMethod(
                 objectWithMethod,
@@ -81,38 +77,37 @@ public static class SimpleSyntaxFactory
         );
     }
 
-    public static IdentifierNameSyntax Variable(string variableName)
-    {
+    public static IdentifierNameSyntax Variable(string variableName) {
         return IdentifierName(variableName);
     }
 
-    public static MemberAccessExpressionSyntax Property(string objectName, string propertyName)
-    {
+    public static MemberAccessExpressionSyntax Property(string objectName, string propertyName) {
         return MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
             IdentifierName(objectName),
-            IdentifierName(propertyName));
+            IdentifierName(propertyName)
+        );
     }
 
-    public static SimpleLambdaExpressionSyntax Expression(string variableName, bool suppressNullableWarning = false)
-    {
+    public static SimpleLambdaExpressionSyntax Expression(string variableName, bool suppressNullableWarning = false) {
         var memberAccess = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
             IdentifierName("x"),
             IdentifierName(variableName)
         );
 
-        ExpressionSyntax expressionBody = suppressNullableWarning
-            ? PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, memberAccess)
-            : memberAccess;
+        ExpressionSyntax expressionBody = suppressNullableWarning ?
+            PostfixUnaryExpression(SyntaxKind.SuppressNullableWarningExpression, memberAccess) :
+            memberAccess;
+
         return SimpleLambdaExpression(Parameter(Identifier("x")))
             .WithExpressionBody(expressionBody);
     }
 
-    public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString)
-    {
+    public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString) {
         return InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
-            .WithContents(SingletonList<InterpolatedStringContentSyntax>(
+            .WithContents(
+                SingletonList<InterpolatedStringContentSyntax>(
                     InterpolatedStringText().WithTextToken(
                         Token(
                             TriviaList(),
@@ -126,31 +121,40 @@ public static class SimpleSyntaxFactory
             );
     }
 
-    public static ArrayCreationExpressionSyntax NewArray(string typeName, IEnumerable<string> parameters)
-    {
+    public static ArrayCreationExpressionSyntax NewArray(string typeName, IEnumerable<string> parameters) {
         var arrayType = ArrayType(ParseTypeName(typeName))
-            .WithRankSpecifiers(SingletonList(
-                ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
+            .WithRankSpecifiers(
+                SingletonList(
+                    ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))
+                )
+            );
 
         return ArrayCreationExpression(arrayType)
-            .WithInitializer(InitializerExpression(
-                SyntaxKind.ArrayInitializerExpression, SeparatedList<ExpressionSyntax>(
-                    parameters.Select(IdentifierName).ToArray()
+            .WithInitializer(
+                InitializerExpression(
+                    SyntaxKind.ArrayInitializerExpression,
+                    SeparatedList<ExpressionSyntax>(parameters.Select(IdentifierName).ToArray())
                 )
-            ));
+            );
     }
 
-    public static ArrayCreationExpressionSyntax NewStringLiteralArray(IEnumerable<string> parameters)
-    {
+    public static ArrayCreationExpressionSyntax NewStringLiteralArray(IEnumerable<string> parameters) {
         var arrayType = ArrayType(ParseTypeName("string"))
-            .WithRankSpecifiers(SingletonList(
-                ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))));
+            .WithRankSpecifiers(
+                SingletonList(
+                    ArrayRankSpecifier(SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))
+                )
+            );
 
         return ArrayCreationExpression(arrayType)
-            .WithInitializer(InitializerExpression(
-                SyntaxKind.ArrayInitializerExpression, SeparatedList<ExpressionSyntax>(
-                    parameters.Select(p => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(p))).ToArray()
+            .WithInitializer(
+                InitializerExpression(
+                    SyntaxKind.ArrayInitializerExpression,
+                    SeparatedList<ExpressionSyntax>(
+                        parameters.Select(p => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(p)))
+                            .ToArray()
+                    )
                 )
-            ));
+            );
     }
 }

@@ -8,20 +8,17 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests.Schemes;
 
-public class EntitySchemeFactoryTests
-{
+public class EntitySchemeFactoryTests {
     private readonly InternalEntityGeneratorConfiguration _internalEntityGeneratorConfiguration;
     private readonly DbContextScheme _dbContextScheme;
 
-    public EntitySchemeFactoryTests()
-    {
+    public EntitySchemeFactoryTests() {
         _internalEntityGeneratorConfiguration = new(new InternalEntityClassMetadata("MyEntityName", "", "", []));
         _dbContextScheme = new DbContextSchemeStub();
     }
 
     [Fact]
-    public void Should_GetEntityNameFromSymbol()
-    {
+    public void Should_GetEntityNameFromSymbol() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = "MyEntityName";
 
@@ -37,8 +34,7 @@ public class EntitySchemeFactoryTests
     [InlineData("Job", "Jobs")]
     [InlineData("Box", "Boxes")]
     [InlineData("DepartmentGroup", "DepartmentGroups")]
-    public void Should_GeneratePluralName_From_EntityName(string singular, string plural)
-    {
+    public void Should_GeneratePluralName_From_EntityName(string singular, string plural) {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = singular;
 
@@ -56,8 +52,7 @@ public class EntitySchemeFactoryTests
     [InlineData("Employees", "EmployeesList")]
     [InlineData("Currencies", "CurrenciesList")]
     [InlineData("DepartmentGroups", "DepartmentGroupsList")]
-    public void Should_AddSuffixToEntityPluralName_When_PluralAndSingularFormAreSame(string singular, string plural)
-    {
+    public void Should_AddSuffixToEntityPluralName_When_PluralAndSingularFormAreSame(string singular, string plural) {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = singular;
 
@@ -69,8 +64,7 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_GenerateTitle_From_EntityName()
-    {
+    public void Should_GenerateTitle_From_EntityName() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = "MyEntityName";
 
@@ -86,8 +80,7 @@ public class EntitySchemeFactoryTests
     [InlineData("DepartmentGroup", "Department groups")]
     [InlineData("Currencies", "Currencies list")]
     [InlineData("BooksGroups", "Books groups list")]
-    public void Should_GeneratePluralTitle_From_EntityPluralName(string entityName, string pluralTitle)
-    {
+    public void Should_GeneratePluralTitle_From_EntityPluralName(string entityName, string pluralTitle) {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ClassName = entityName;
 
@@ -99,8 +92,7 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_ExtractEntityNamespaceAndAssembly()
-    {
+    public void Should_ExtractEntityNamespaceAndAssembly() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.ContainingNamespace = "ITech.CrudGenerator.Tests";
         _internalEntityGeneratorConfiguration.ClassMetadata.ContainingAssembly =
@@ -115,8 +107,7 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInInternalEntityGeneratorConfiguration()
-    {
+    public void Should_NotHaveDefaultSort_When_DefaultSortNotSetInInternalEntityGeneratorConfiguration() {
         // Arrange
         _internalEntityGeneratorConfiguration.DefaultSort = null;
 
@@ -128,8 +119,7 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_UseDefaultSort_From_InternalEntityGeneratorConfiguration()
-    {
+    public void Should_UseDefaultSort_From_InternalEntityGeneratorConfiguration() {
         // Arrange
         _internalEntityGeneratorConfiguration.DefaultSort = new EntityDefaultSort("asc", "MyProp");
 
@@ -143,11 +133,9 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_IgnoreReferenceProperties()
-    {
+    public void Should_IgnoreReferenceProperties() {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("ReferenceProp", "EntitySchemeFactoryTests", "", SpecialType.System_TypedReference, false, false),
         ];
 
@@ -159,11 +147,9 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_ExtractSimpleProperty()
-    {
+    public void Should_ExtractSimpleProperty() {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("SimpleProp", "int", "", SpecialType.System_Int32, true, false),
         ];
 
@@ -175,11 +161,9 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_IgnoreSystemPrefixInPropertyTypes()
-    {
+    public void Should_IgnoreSystemPrefixInPropertyTypes() {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("DateTimeProp", "System.DateTimeOffset", "DateTimeOffset", SpecialType.System_DateTime, true, false),
         ];
 
@@ -192,11 +176,9 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_HaveDefaultValueForString()
-    {
+    public void Should_HaveDefaultValueForString() {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("StringProp", "string", "", SpecialType.System_String, true, false),
         ];
 
@@ -204,9 +186,11 @@ public class EntitySchemeFactoryTests
         var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
-        actual.Properties.Should().Contain(x => x.PropertyName == "StringProp" &&
-                                                x.DefaultValue != null &&
-                                                x.DefaultValue.Equals("\"\""));
+        actual.Properties.Should().Contain(
+            x => x.PropertyName == "StringProp" &&
+                x.DefaultValue != null &&
+                x.DefaultValue.Equals("\"\"")
+        );
     }
 
     [Theory]
@@ -215,11 +199,9 @@ public class EntitySchemeFactoryTests
     [InlineData("_id", true)]
     [InlineData("OtherEntityId", false)]
     [InlineData("NotRelatedProperty", false)]
-    public void Should_DetectEntityIdProperty(string propertyName, bool isEntityId)
-    {
+    public void Should_DetectEntityIdProperty(string propertyName, bool isEntityId) {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new(propertyName, "Guid", "Guid", SpecialType.None, true, false),
         ];
 
@@ -227,8 +209,10 @@ public class EntitySchemeFactoryTests
         var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
 
         // Assert
-        actual.Properties.Should().Contain(x => x.PropertyName == propertyName &&
-                                                x.IsEntityId == isEntityId);
+        actual.Properties.Should().Contain(
+            x => x.PropertyName == propertyName &&
+                x.IsEntityId == isEntityId
+        );
     }
 
     [Theory]
@@ -249,10 +233,8 @@ public class EntitySchemeFactoryTests
     [InlineData("DateTime")]
     [InlineData("DateTimeOffset")]
     [InlineData("Guid")]
-    public void Should_DetectSortableProperty(string propertyType)
-    {
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+    public void Should_DetectSortableProperty(string propertyType) {
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("SortableProperty", propertyType, propertyType, SpecialType.None, true, false),
         ];
 
@@ -264,11 +246,9 @@ public class EntitySchemeFactoryTests
     }
 
     [Fact]
-    public void Should_NameSortablePropertyKeyInCamelCase()
-    {
+    public void Should_NameSortablePropertyKeyInCamelCase() {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new("SortableProperty", "int", "int", SpecialType.System_Int32, true, false),
         ];
 
@@ -295,11 +275,10 @@ public class EntitySchemeFactoryTests
         string typeName,
         string propertyName,
         string expectedFilterPropertyName,
-        SpecialType specialType)
-    {
+        SpecialType specialType
+    ) {
         // Arrange
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new(propertyName, typeName, typeName, specialType, true, false),
         ];
 
@@ -308,19 +287,21 @@ public class EntitySchemeFactoryTests
 
         // Assert
         actual.Properties.Should()
-            .SatisfyRespectively(x =>
-            {
-                x.PropertyName.Should().Be(propertyName);
-                x.FilterProperties.Should()
-                    .HaveCount(1)
-                    .And
-                    .AllSatisfy(f =>
-                    {
-                        f.PropertyName.Should().Be(expectedFilterPropertyName);
-                        f.TypeName.Should().Be($"{typeName}[]?");
-                        f.FilterExpression.Should().BeOfType<ContainsFilterExpression>();
-                    });
-            });
+            .SatisfyRespectively(
+                x => {
+                    x.PropertyName.Should().Be(propertyName);
+                    x.FilterProperties.Should()
+                        .HaveCount(1)
+                        .And
+                        .AllSatisfy(
+                            f => {
+                                f.PropertyName.Should().Be(expectedFilterPropertyName);
+                                f.TypeName.Should().Be($"{typeName}[]?");
+                                f.FilterExpression.Should().BeOfType<ContainsFilterExpression>();
+                            }
+                        );
+                }
+            );
     }
 
     [Theory]
@@ -337,12 +318,10 @@ public class EntitySchemeFactoryTests
     [InlineData("decimal", SpecialType.System_Decimal)]
     [InlineData("DateTime", SpecialType.System_DateTime)]
     [InlineData("DateTimeOffset", SpecialType.None)]
-    public void Should_HaveRangeFilter_ForSimpleTypes(string typeName, SpecialType specialType)
-    {
+    public void Should_HaveRangeFilter_ForSimpleTypes(string typeName, SpecialType specialType) {
         // Arrange
         var propertyName = "FilteredProperty";
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new(propertyName, typeName, typeName, specialType, true, false),
         ];
 
@@ -351,35 +330,39 @@ public class EntitySchemeFactoryTests
 
         // Assert
         actual.Properties.Should()
-            .SatisfyRespectively(x =>
-            {
-                x.PropertyName.Should().Be(propertyName);
-                x.FilterProperties.Should()
-                    .HaveCount(2)
-                    .And
-                    .SatisfyRespectively(f =>
-                    {
-                        f.PropertyName.Should().Be($"{propertyName}From");
-                        f.TypeName.Should().Be($"{typeName}?");
-                        f.FilterExpression.Should().BeOfType<GreaterThanOrEqualFilterExpression>();
-                    }, f =>
-                    {
-                        f.PropertyName.Should().Be($"{propertyName}To");
-                        f.TypeName.Should().Be($"{typeName}?");
-                        f.FilterExpression.Should().BeOfType<LessThanFilterExpression>();
-                    });
-            });
+            .SatisfyRespectively(
+                x => {
+                    x.PropertyName.Should().Be(propertyName);
+                    x.FilterProperties.Should()
+                        .HaveCount(2)
+                        .And
+                        .SatisfyRespectively(
+                            f => {
+                                f.PropertyName.Should().Be($"{propertyName}From");
+                                f.TypeName.Should().Be($"{typeName}?");
+                                f.FilterExpression.Should().BeOfType<GreaterThanOrEqualFilterExpression>();
+                            },
+                            f => {
+                                f.PropertyName.Should().Be($"{propertyName}To");
+                                f.TypeName.Should().Be($"{typeName}?");
+                                f.FilterExpression.Should().BeOfType<LessThanFilterExpression>();
+                            }
+                        );
+                }
+            );
     }
 
     [Theory]
     [InlineData("string", SpecialType.System_String, typeof(LikeFilterExpression))]
     [InlineData("char", SpecialType.System_Char, typeof(EqualsFilterExpression))]
-    public void Should_HaveLikeFilter_ForStringType(string typeName, SpecialType specialType, Type filterExpressionType)
-    {
+    public void Should_HaveLikeFilter_ForStringType(
+        string typeName,
+        SpecialType specialType,
+        Type filterExpressionType
+    ) {
         // Arrange
         var propertyName = "FilteredProperty";
-        _internalEntityGeneratorConfiguration.ClassMetadata.Properties =
-        [
+        _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
             new(propertyName, typeName, typeName, specialType, true, false),
         ];
 
@@ -388,18 +371,20 @@ public class EntitySchemeFactoryTests
 
         // Assert
         actual.Properties.Should()
-            .SatisfyRespectively(x =>
-            {
-                x.PropertyName.Should().Be(propertyName);
-                x.FilterProperties.Should()
-                    .HaveCount(1)
-                    .And
-                    .SatisfyRespectively(f =>
-                    {
-                        f.PropertyName.Should().Be(propertyName);
-                        f.TypeName.Should().Be($"{typeName}?");
-                        f.FilterExpression.Should().BeOfType(filterExpressionType);
-                    });
-            });
+            .SatisfyRespectively(
+                x => {
+                    x.PropertyName.Should().Be(propertyName);
+                    x.FilterProperties.Should()
+                        .HaveCount(1)
+                        .And
+                        .SatisfyRespectively(
+                            f => {
+                                f.PropertyName.Should().Be(propertyName);
+                                f.TypeName.Should().Be($"{typeName}?");
+                                f.FilterExpression.Should().BeOfType(filterExpressionType);
+                            }
+                        );
+                }
+            );
     }
 }

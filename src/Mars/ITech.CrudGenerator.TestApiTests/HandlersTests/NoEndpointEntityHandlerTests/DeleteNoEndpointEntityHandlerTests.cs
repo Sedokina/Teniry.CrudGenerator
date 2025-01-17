@@ -5,22 +5,19 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.NoEndpointEntityHandlerTests;
 
-public class DeleteNoEndpointEntityHandlerTests
-{
+public class DeleteNoEndpointEntityHandlerTests {
     private readonly DeleteNoEndpointEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly DeleteNoEndpointEntityHandler _sut;
 
-    public DeleteNoEndpointEntityHandlerTests()
-    {
+    public DeleteNoEndpointEntityHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
     }
 
     [Fact]
-    public async Task Should_DoNothingWhenEntityDoesNotExist()
-    {
+    public async Task Should_DoNothingWhenEntityDoesNotExist() {
         // Arrange
         _db.Setup(x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((NoEndpointEntity?)null);
@@ -30,14 +27,15 @@ public class DeleteNoEndpointEntityHandlerTests
 
         // Assert
         await act.Should().NotThrowAsync();
-        _db.Verify(x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task Should_RemoveFromDbSetAndSave()
-    {
+    public async Task Should_RemoveFromDbSetAndSave() {
         // Arrange
         _db.Setup(x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new NoEndpointEntity { Id = _command.Id, Name = "Test entity" });
@@ -48,8 +46,10 @@ public class DeleteNoEndpointEntityHandlerTests
         // Assert
         _db.Verify(x => x.Remove(It.IsAny<NoEndpointEntity>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
-        _db.Verify(x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<NoEndpointEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

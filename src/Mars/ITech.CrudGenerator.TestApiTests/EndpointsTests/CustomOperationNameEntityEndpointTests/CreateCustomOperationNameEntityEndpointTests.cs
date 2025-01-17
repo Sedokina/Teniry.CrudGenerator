@@ -7,25 +7,27 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.EndpointsTests.CustomOperationNameEntityEndpointTests;
 
-public class CreateCustomOperationNameEntityEndpointTests
-{
+public class CreateCustomOperationNameEntityEndpointTests {
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
     [InlineData("CustomOpCreateCustomOperationNameEntityEndpoint")]
-    public void Should_CustomizeClassNames(string typeName)
-    {
+    public void Should_CustomizeClassNames(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().ContainType(typeName);
     }
 
     [Fact]
-    public async Task Should_ReturnCorrectValue()
-    {
+    public async Task Should_ReturnCorrectValue() {
         // Arrange
-        _commandDispatcher.Setup(x =>
-                x.DispatchAsync<CustomOpCreateCustomOperationNameEntityCommand, CreatedCustomOperationNameEntityDto>(
-                    It.IsAny<CustomOpCreateCustomOperationNameEntityCommand>(), It.IsAny<CancellationToken>()))
+        _commandDispatcher.Setup(
+                x =>
+                    x.DispatchAsync<CustomOpCreateCustomOperationNameEntityCommand,
+                        CreatedCustomOperationNameEntityDto>(
+                        It.IsAny<CustomOpCreateCustomOperationNameEntityCommand>(),
+                        It.IsAny<CancellationToken>()
+                    )
+            )
             .ReturnsAsync(new CreatedCustomOperationNameEntityDto(Guid.NewGuid()));
 
         // Act
@@ -33,7 +35,8 @@ public class CreateCustomOperationNameEntityEndpointTests
             .CustomOpCreateAsync(
                 new CustomOpCreateCustomOperationNameEntityCommand(),
                 _commandDispatcher.Object,
-                new CancellationToken());
+                new CancellationToken()
+            );
 
         // Assert
         actual.Should().BeOfType<Created<CreatedCustomOperationNameEntityDto>>()

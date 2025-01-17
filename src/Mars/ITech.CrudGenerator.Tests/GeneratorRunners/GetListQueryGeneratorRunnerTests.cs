@@ -9,20 +9,17 @@ using ITech.CrudGenerator.Tests.Helpers;
 
 namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class GetListQueryGeneratorRunnerTests
-{
+public class GetListQueryGeneratorRunnerTests {
     private readonly EntityScheme _entityScheme;
 
-    public GetListQueryGeneratorRunnerTests()
-    {
+    public GetListQueryGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration =
             new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
-    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
-    {
+    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
 
@@ -38,8 +35,7 @@ public class GetListQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_SetCorrectDefaultValues()
-    {
+    public void Should_SetCorrectDefaultValues() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
 
@@ -61,13 +57,13 @@ public class GetListQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
-    {
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
-        {
-            Operation = "Obtain"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorGetListOperationConfiguration {
+                Operation = "Obtain"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -87,21 +83,21 @@ public class GetListQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllAvailableConfiguration()
-    {
+    public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration
-        {
-            Generate = false,
-            OperationGroup = "CustomOperationGroupName",
-            QueryName = "CustomQueryName",
-            DtoName = "CustomDtoName",
-            HandlerName = "CustomHandlerName",
-            EndpointClassName = "CustomEndpointClassName",
-            EndpointFunctionName = "CustomEndpointFunctionName",
-            GenerateEndpoint = false,
-            RouteName = "CustomEndpointRoute"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorGetListOperationConfiguration {
+                Generate = false,
+                OperationGroup = "CustomOperationGroupName",
+                QueryName = "CustomQueryName",
+                DtoName = "CustomDtoName",
+                HandlerName = "CustomHandlerName",
+                EndpointClassName = "CustomEndpointClassName",
+                EndpointFunctionName = "CustomEndpointFunctionName",
+                GenerateEndpoint = false,
+                RouteName = "CustomEndpointRoute"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -121,8 +117,8 @@ public class GetListQueryGeneratorRunnerTests
     }
 
     private GetListQueryGeneratorRunner CreateFactory(
-        InternalEntityGeneratorGetListOperationConfiguration configuration)
-    {
+        InternalEntityGeneratorGetListOperationConfiguration configuration
+    ) {
         return new GetListQueryGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),

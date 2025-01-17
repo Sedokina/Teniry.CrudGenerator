@@ -6,23 +6,19 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
 
-public class GetEntityIdNameHandlerTests
-{
+public class GetEntityIdNameHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly GetEntityIdNameQuery _query;
     private readonly GetEntityIdNameHandler _sut;
 
-    public GetEntityIdNameHandlerTests()
-    {
+    public GetEntityIdNameHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
-
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((EntityIdName?)null);
@@ -36,8 +32,7 @@ public class GetEntityIdNameHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EntityIdName { EntityIdNameId = _query.EntityIdNameId, Name = "My test entity" });
@@ -50,7 +45,8 @@ public class GetEntityIdNameHandlerTests
         entity.Name.Should().Be("My test entity");
         _db.Verify(
             x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator.Core.Schemes.Entity.Properties;
 
-internal class EntityProperty
-{
+internal class EntityProperty {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }
 
@@ -23,8 +22,8 @@ internal class EntityProperty
         bool isEntityId,
         EntityFilterProperty[] filterProperties,
         bool canBeSorted,
-        string sortKey)
-    {
+        string sortKey
+    ) {
         TypeName = typeName;
         PropertyName = propertyName;
         PropertyNameAsMethodParameterName = propertyNameAsMethodParameterName;

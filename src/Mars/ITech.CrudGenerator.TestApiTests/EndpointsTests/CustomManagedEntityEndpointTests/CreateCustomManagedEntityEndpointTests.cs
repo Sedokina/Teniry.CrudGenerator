@@ -7,27 +7,25 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.EndpointsTests.CustomManagedEntityEndpointTests;
 
-public class CreateCustomManagedEntityEndpointTests
-{
+public class CreateCustomManagedEntityEndpointTests {
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]
     [InlineData("CustomizedNameCreateManagedEntityEndpoint")]
-    public void Should_CustomizeClassNames(string typeName)
-    {
+    public void Should_CustomizeClassNames(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().ContainType(typeName);
     }
 
     [Fact]
-    public async Task Should_ReturnCorrectValue()
-    {
+    public async Task Should_ReturnCorrectValue() {
         // Act
         var actual = await CustomizedNameCreateManagedEntityEndpoint
             .RunCreateAsync(
                 new CustomizedNameCreateManagedEntityCommand(),
                 _commandDispatcher.Object,
-                new CancellationToken());
+                new CancellationToken()
+            );
 
         // Assert
         actual.Should().BeOfType<Created<CustomizedNameCreatedManagedEntityDto>>()

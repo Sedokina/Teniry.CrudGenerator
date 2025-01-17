@@ -3,14 +3,12 @@ using FluentAssertions.Primitives;
 
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 
-public static class FluentAssertionsExtensions
-{
+public static class FluentAssertionsExtensions {
     public static AndConstraint<HttpResponseMessageAssertions> FailIfNotSuccessful(
         this HttpResponseMessageAssertions httpResponseMessageAssertions,
         string because = "",
         params object[] becauseArgs
-    )
-    {
+    ) {
         var success = Execute.Assertion
             .ForCondition(httpResponseMessageAssertions.Subject is not null)
             .BecauseOf(because, becauseArgs)
@@ -21,8 +19,7 @@ public static class FluentAssertionsExtensions
                 .ForCondition(httpResponseMessageAssertions.Subject!.IsSuccessStatusCode)
                 .BecauseOf(because, becauseArgs)
                 .FailWith(
-                    () =>
-                    {
+                    () => {
                         var content = httpResponseMessageAssertions.Subject
                             .Content
                             .ReadAsStringAsync()

@@ -5,25 +5,24 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
 
-public class DeleteEntityIdNameHandlerTests
-{
+public class DeleteEntityIdNameHandlerTests {
     private readonly DeleteEntityIdNameCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly DeleteEntityIdNameHandler _sut;
 
-    public DeleteEntityIdNameHandlerTests()
-    {
+    public DeleteEntityIdNameHandlerTests() {
         _db = new Mock<TestMongoDb>();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
     }
 
     [Fact]
-    public async Task Should_DoNothingWhenEntityDoesNotExist()
-    {
+    public async Task Should_DoNothingWhenEntityDoesNotExist() {
         // Arrange
-        _db.Setup(x =>
-                x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()))
+        _db.Setup(
+                x =>
+                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync((EntityIdName?)null);
 
         // Act
@@ -33,16 +32,18 @@ public class DeleteEntityIdNameHandlerTests
         await act.Should().NotThrowAsync();
         _db.Verify(
             x => x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 
     [Fact]
-    public async Task Should_RemoveFromDbSetAndSave()
-    {
+    public async Task Should_RemoveFromDbSetAndSave() {
         // Arrange
-        _db.Setup(x =>
-                x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()))
+        _db.Setup(
+                x =>
+                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(new EntityIdName { EntityIdNameId = _command.EntityIdNameId, Name = "Test entity" });
 
         // Act
@@ -53,7 +54,8 @@ public class DeleteEntityIdNameHandlerTests
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
             x => x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

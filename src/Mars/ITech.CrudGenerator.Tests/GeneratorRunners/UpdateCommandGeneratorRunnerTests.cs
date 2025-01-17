@@ -10,23 +10,25 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class UpdateCommandGeneratorRunnerTests
-{
+public class UpdateCommandGeneratorRunnerTests {
     private readonly EntityScheme _entityScheme;
 
-    public UpdateCommandGeneratorRunnerTests()
-    {
+    public UpdateCommandGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata("TestEntity", "", "", [
-                new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
-            ])
+            new InternalEntityClassMetadata(
+                "TestEntity",
+                "",
+                "",
+                [
+                    new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
+                ]
+            )
         );
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
-    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
-    {
+    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration());
 
@@ -42,8 +44,7 @@ public class UpdateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_SetCorrectDefaultValues()
-    {
+    public void Should_SetCorrectDefaultValues() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration());
 
@@ -65,13 +66,13 @@ public class UpdateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
-    {
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration
-        {
-            Operation = "Upd"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorUpdateOperationConfiguration {
+                Operation = "Upd"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -91,21 +92,21 @@ public class UpdateCommandGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllAvailableConfiguration()
-    {
+    public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration
-        {
-            Generate = false,
-            OperationGroup = "CustomOperationGroupName",
-            CommandName = "CustomCommandName",
-            HandlerName = "CustomHandlerName",
-            ViewModelName = "CustomViewModelName",
-            EndpointClassName = "CustomEndpointClassName",
-            EndpointFunctionName = "CustomEndpointFunctionName",
-            GenerateEndpoint = false,
-            RouteName = "CustomEndpointRoute"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorUpdateOperationConfiguration {
+                Generate = false,
+                OperationGroup = "CustomOperationGroupName",
+                CommandName = "CustomCommandName",
+                HandlerName = "CustomHandlerName",
+                ViewModelName = "CustomViewModelName",
+                EndpointClassName = "CustomEndpointClassName",
+                EndpointFunctionName = "CustomEndpointFunctionName",
+                GenerateEndpoint = false,
+                RouteName = "CustomEndpointRoute"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -125,8 +126,8 @@ public class UpdateCommandGeneratorRunnerTests
     }
 
     private UpdateCommandGeneratorRunner CreateFactory(
-        InternalEntityGeneratorUpdateOperationConfiguration configuration)
-    {
+        InternalEntityGeneratorUpdateOperationConfiguration configuration
+    ) {
         return new UpdateCommandGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),

@@ -10,23 +10,25 @@ using Microsoft.CodeAnalysis;
 
 namespace ITech.CrudGenerator.Tests.GeneratorRunners;
 
-public class GetByIdQueryGeneratorRunnerTests
-{
+public class GetByIdQueryGeneratorRunnerTests {
     private readonly EntityScheme _entityScheme;
 
-    public GetByIdQueryGeneratorRunnerTests()
-    {
+    public GetByIdQueryGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata("TestEntity", "", "", [
-                new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
-            ])
+            new InternalEntityClassMetadata(
+                "TestEntity",
+                "",
+                "",
+                [
+                    new InternalEntityClassPropertyMetadata("Id", "Guid", "Guid", SpecialType.None, true, false)
+                ]
+            )
         );
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
-    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration()
-    {
+    public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration());
 
@@ -42,8 +44,7 @@ public class GetByIdQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_SetCorrectDefaultValues()
-    {
+    public void Should_SetCorrectDefaultValues() {
         // Arrange
         var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration());
 
@@ -65,13 +66,13 @@ public class GetByIdQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration()
-    {
+    public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration
-        {
-            Operation = "Obtain"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorGetByIdOperationConfiguration {
+                Operation = "Obtain"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -91,21 +92,21 @@ public class GetByIdQueryGeneratorRunnerTests
     }
 
     [Fact]
-    public void Should_CustomizeAllAvailableConfiguration()
-    {
+    public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetByIdOperationConfiguration
-        {
-            Generate = false,
-            OperationGroup = "CustomOperationGroupName",
-            QueryName = "CustomQueryName",
-            DtoName = "CustomDtoName",
-            HandlerName = "CustomHandlerName",
-            EndpointClassName = "CustomEndpointClassName",
-            EndpointFunctionName = "CustomEndpointFunctionName",
-            GenerateEndpoint = false,
-            RouteName = "CustomEndpointRoute"
-        });
+        var sut = CreateFactory(
+            new InternalEntityGeneratorGetByIdOperationConfiguration {
+                Generate = false,
+                OperationGroup = "CustomOperationGroupName",
+                QueryName = "CustomQueryName",
+                DtoName = "CustomDtoName",
+                HandlerName = "CustomHandlerName",
+                EndpointClassName = "CustomEndpointClassName",
+                EndpointFunctionName = "CustomEndpointFunctionName",
+                GenerateEndpoint = false,
+                RouteName = "CustomEndpointRoute"
+            }
+        );
 
         // Act
         var actual = sut.Configuration;
@@ -125,8 +126,8 @@ public class GetByIdQueryGeneratorRunnerTests
     }
 
     private GetByIdQueryGeneratorRunner CreateFactory(
-        InternalEntityGeneratorGetByIdOperationConfiguration configuration)
-    {
+        InternalEntityGeneratorGetByIdOperationConfiguration configuration
+    ) {
         return new GetByIdQueryGeneratorRunner(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),

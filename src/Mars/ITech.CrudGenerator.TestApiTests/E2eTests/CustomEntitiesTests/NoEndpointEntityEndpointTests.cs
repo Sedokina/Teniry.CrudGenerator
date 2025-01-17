@@ -4,8 +4,7 @@ using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
-public class NoEndpointEntityEndpointTests(TestApiFixture fixture)
-{
+public class NoEndpointEntityEndpointTests(TestApiFixture fixture) {
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
@@ -14,8 +13,7 @@ public class NoEndpointEntityEndpointTests(TestApiFixture fixture)
     [InlineData("noEndpointEntity/create")]
     [InlineData("noEndpointEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/delete")]
     [InlineData("noEndpointEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/update")]
-    public async Task Should_NotGenerateManageEndpoints(string endpoint)
-    {
+    public async Task Should_NotGenerateManageEndpoints(string endpoint) {
         // Act
         var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Options, endpoint));
 

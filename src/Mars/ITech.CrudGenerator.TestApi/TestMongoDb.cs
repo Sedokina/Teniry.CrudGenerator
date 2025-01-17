@@ -15,33 +15,22 @@ using MongoDB.EntityFrameworkCore.Extensions;
 
 namespace ITech.CrudGenerator.TestApi;
 
-public class Mmb : DbContext
-{
-    public Mmb()
-    {
-    }
+public class Mmb : DbContext {
+    public Mmb() { }
 
-    public Mmb(DbContextOptions<TestMongoDb> options) : base(options)
-    {
-    }
+    public Mmb(DbContextOptions<TestMongoDb> options) : base(options) { }
 }
 
 [UseDbContext(DbContextDbProvider.Mongo)]
-public class TestMongoDb : Mmb
-{
-    public TestMongoDb()
-    {
-    }
+public class TestMongoDb : Mmb {
+    public TestMongoDb() { }
 
-    public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options)
-    {
-    }
+    public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options) { }
 
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<Country> Countries { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<Currency>().ToCollection("currencies");
@@ -66,12 +55,10 @@ public class TestMongoDb : Mmb
     }
 }
 
-public class MongoEfIntIdSequenceGenerator<T> : ValueGenerator<int> where T : class
-{
+public class MongoEfIntIdSequenceGenerator<T> : ValueGenerator<int> where T : class {
     public override bool GeneratesTemporaryValues => false;
 
-    public override int Next(EntityEntry entry)
-    {
+    public override int Next(EntityEntry entry) {
         var currInd = entry.Context.Set<T>().Count();
 
         return currInd + 1;

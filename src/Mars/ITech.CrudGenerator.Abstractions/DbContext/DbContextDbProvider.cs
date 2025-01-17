@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator.Abstractions.DbContext;
 
-public enum DbContextDbProvider
-{
+public enum DbContextDbProvider {
     Mongo,
     Postgres
 }

@@ -12,36 +12,35 @@ using static ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Simp
 namespace ITech.CrudGenerator.Core.Generators;
 
 internal class
-    DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration>
-{
+    DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration> {
     private readonly string _commandName;
     private readonly string _handlerName;
     private readonly string _endpointClassName;
 
     public DeleteCommandCrudGenerator(
-        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme) : base(scheme)
-    {
+        CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme
+    ) : base(scheme) {
         _commandName = Scheme.Configuration.Operation;
         _handlerName = Scheme.Configuration.Handler;
         _endpointClassName = Scheme.Configuration.Endpoint.Name;
     }
 
-    public override void RunGenerator()
-    {
+    public override void RunGenerator() {
         GenerateCommand();
         GenerateHandler();
-        if (Scheme.Configuration.Endpoint.Generate)
-        {
+        if (Scheme.Configuration.Endpoint.Generate) {
             GenerateEndpoint();
         }
     }
 
-    private void GenerateCommand()
-    {
-        var command = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _commandName)
+    private void GenerateCommand() {
+        var command = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _commandName
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .WithXmlDoc($"Delete {EntityScheme.EntityTitle}", "Nothing");
 
@@ -50,8 +49,7 @@ internal class
         var constructor = new ConstructorBuilder(_commandName)
             .WithParameters(constructorParameters);
         var constructorBody = new BlockBuilder();
-        foreach (var primaryKey in EntityScheme.PrimaryKeys)
-        {
+        foreach (var primaryKey in EntityScheme.PrimaryKeys) {
             command.WithProperty(primaryKey.TypeName, primaryKey.PropertyName);
             constructorBody.AssignVariable(primaryKey.PropertyName, primaryKey.PropertyNameAsMethodParameterName);
         }
@@ -62,21 +60,28 @@ internal class
         WriteFile(_commandName, command.BuildAsString());
     }
 
-    private void GenerateHandler()
-    {
-        var handlerClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.PartialKeyword
-            ], _handlerName)
-            .WithUsings([
-                "ITech.Cqrs.Cqrs.Commands",
-                Scheme.DbContextScheme.DbContextNamespace,
-                EntityScheme.EntityNamespace,
-            ])
+    private void GenerateHandler() {
+        var handlerClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _handlerName
+            )
+            .WithUsings(
+                [
+                    "ITech.Cqrs.Cqrs.Commands",
+                    Scheme.DbContextScheme.DbContextNamespace,
+                    EntityScheme.EntityNamespace,
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("ICommandHandler", _commandName)
-            .WithPrivateField([SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
-                Scheme.DbContextScheme.DbContextName, "_db");
+            .WithPrivateField(
+                [SyntaxKind.PrivateKeyword, SyntaxKind.ReadOnlyKeyword],
+                Scheme.DbContextScheme.DbContextName,
+                "_db"
+            );
 
         var constructor = new ConstructorBuilder(_handlerName)
             .WithParameters([new ParameterOfMethodBuilder(Scheme.DbContextScheme.DbContextName, "db")]);
@@ -85,28 +90,36 @@ internal class
 
         constructor.WithBody(constructorBody);
 
-        var methodBuilder = new MethodBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.AsyncKeyword
-            ], "Task", "HandleAsync")
-            .WithParameters([
-                new ParameterOfMethodBuilder(_commandName, "command"),
-                new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
-            ])
+        var methodBuilder = new MethodBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.AsyncKeyword
+                ],
+                "Task",
+                "HandleAsync"
+            )
+            .WithParameters(
+                [
+                    new ParameterOfMethodBuilder(_commandName, "command"),
+                    new ParameterOfMethodBuilder(nameof(CancellationToken), "cancellation")
+                ]
+            )
             .WithXmlInheritdoc();
 
         var findParameters = EntityScheme.PrimaryKeys.GetAsMethodCallParameters("command");
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("entity", CallGenericAsyncMethod(
-                "_db",
-                "FindAsync",
-                [EntityScheme.EntityName.ToString()],
-                [NewArray("object", findParameters), Variable("cancellation")])
+            .InitVariable(
+                "entity",
+                CallGenericAsyncMethod(
+                    "_db",
+                    "FindAsync",
+                    [EntityScheme.EntityName.ToString()],
+                    [NewArray("object", findParameters), Variable("cancellation")]
+                )
             )
             .IfNull("entity", builder => builder.Return())
             .CallMethod("_db", "Remove", [Variable("entity")])
             .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
-
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -115,42 +128,63 @@ internal class
         WriteFile(_handlerName, handlerClass.BuildAsString());
     }
 
-    private void GenerateEndpoint()
-    {
-        var endpointClass = new ClassBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.PartialKeyword
-            ], _endpointClassName)
-            .WithUsings([
-                "Microsoft.AspNetCore.Mvc",
-                "ITech.Cqrs.Cqrs.Commands",
-                Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
-            ])
+    private void GenerateEndpoint() {
+        var endpointClass = new ClassBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.PartialKeyword
+                ],
+                _endpointClassName
+            )
+            .WithUsings(
+                [
+                    "Microsoft.AspNetCore.Mvc",
+                    "ITech.Cqrs.Cqrs.Commands",
+                    Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
+                ]
+            )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
-        var methodBuilder = new MethodBuilder([
-                SyntaxKind.PublicKeyword,
-                SyntaxKind.StaticKeyword,
-                SyntaxKind.AsyncKeyword
-            ], "Task<IResult>", Scheme.Configuration.Endpoint.FunctionName)
-            .WithParameters(EntityScheme.PrimaryKeys
-                .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
-                .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
-                .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
-                .ToList())
+        var methodBuilder = new MethodBuilder(
+                [
+                    SyntaxKind.PublicKeyword,
+                    SyntaxKind.StaticKeyword,
+                    SyntaxKind.AsyncKeyword
+                ],
+                "Task<IResult>",
+                Scheme.Configuration.Endpoint.FunctionName
+            )
+            .WithParameters(
+                EntityScheme.PrimaryKeys
+                    .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
+                    .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
+                    .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                    .ToList()
+            )
             .WithAttribute(new ProducesResponseTypeAttributeBuilder(204))
-            .WithXmlDoc($"Delete {Scheme.EntityScheme.EntityTitle}",
+            .WithXmlDoc(
+                $"Delete {Scheme.EntityScheme.EntityTitle}",
                 204,
-                $"{Scheme.EntityScheme.EntityTitle} deleted");
+                $"{Scheme.EntityScheme.EntityTitle} deleted"
+            );
 
         var methodBodyBuilder = new BlockBuilder()
-            .InitVariable("command",
-                CallConstructor(_commandName, EntityScheme.PrimaryKeys
-                    .Select(x => Variable(x.PropertyNameAsMethodParameterName))
-                    .ToList<ExpressionSyntax>()))
-            .CallGenericAsyncMethod("commandDispatcher", "DispatchAsync", [_commandName],
-                [Variable("command"), Variable("cancellation")])
+            .InitVariable(
+                "command",
+                CallConstructor(
+                    _commandName,
+                    EntityScheme.PrimaryKeys
+                        .Select(x => Variable(x.PropertyNameAsMethodParameterName))
+                        .ToList<ExpressionSyntax>()
+                )
+            )
+            .CallGenericAsyncMethod(
+                "commandDispatcher",
+                "DispatchAsync",
+                [_commandName],
+                [Variable("command"), Variable("cancellation")]
+            )
             .Return(CallMethod("TypedResults", "NoContent", []));
 
         methodBuilder.WithBody(methodBodyBuilder);
@@ -158,11 +192,13 @@ internal class
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(EntityScheme.EntityTitle.ToString(),
+        EndpointMap = new EndpointMap(
+            EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",
             Scheme.Configuration.Endpoint.Route,
             _endpointClassName,
-            Scheme.Configuration.Endpoint.FunctionName);
+            Scheme.Configuration.Endpoint.FunctionName
+        );
     }
 }

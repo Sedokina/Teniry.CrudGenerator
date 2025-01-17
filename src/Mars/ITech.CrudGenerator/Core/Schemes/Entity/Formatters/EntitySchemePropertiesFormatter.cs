@@ -4,21 +4,23 @@ using ITech.CrudGenerator.Core.Schemes.Entity.Properties;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.Formatters;
 
-internal static class EntitySchemePropertiesFormatter
-{
-    public static List<string> GetAsMethodCallParameters(this List<EntityProperty> properties, string objectPrefix = "")
-    {
-        objectPrefix = !string.IsNullOrEmpty(objectPrefix) && !objectPrefix.EndsWith(".")
-            ? objectPrefix + "."
-            : objectPrefix;
+internal static class EntitySchemePropertiesFormatter {
+    public static List<string> GetAsMethodCallParameters(
+        this List<EntityProperty> properties,
+        string objectPrefix = ""
+    ) {
+        objectPrefix = !string.IsNullOrEmpty(objectPrefix) && !objectPrefix.EndsWith(".") ?
+            objectPrefix + "." :
+            objectPrefix;
+
         return properties
             .Select(x => $"{objectPrefix}{x.PropertyName}")
             .ToList();
     }
 
-    public static List<string> GetAsMethodCallArguments(this List<EntityProperty> properties)
-    {
+    public static List<string> GetAsMethodCallArguments(this List<EntityProperty> properties) {
         var result = properties.Select(x => x.PropertyNameAsMethodParameterName).ToList();
+
         return result;
     }
 }
