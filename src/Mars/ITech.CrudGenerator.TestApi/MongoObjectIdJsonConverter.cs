@@ -7,31 +7,23 @@ namespace ITech.CrudGenerator.TestApi;
 /// <summary>
 ///     Serialize ObjectId as string and deserialize string as ObjectId
 /// </summary>
-public class MongoObjectIdJsonConverter : JsonConverter<ObjectId>
-{
-    public override ObjectId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
+public class MongoObjectIdJsonConverter : JsonConverter<ObjectId> {
+    public override ObjectId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         var value = reader.GetString();
-        try
-        {
-            return new ObjectId(value);
-        }
-        catch (Exception e)
-        {
+        try {
+            return new(value);
+        } catch (Exception e) {
             Console.WriteLine(e);
+
             throw new FailedToParseMongoObjectIdException($"Value \"{value}\" is not allowed for ObjectId");
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, ObjectId value, JsonSerializerOptions options)
-    {
+    public override void Write(Utf8JsonWriter writer, ObjectId value, JsonSerializerOptions options) {
         writer.WriteStringValue(value.ToString());
     }
 }
 
-public class FailedToParseMongoObjectIdException : Exception
-{
-    public FailedToParseMongoObjectIdException(string message) : base(message)
-    {
-    }
+public class FailedToParseMongoObjectIdException : Exception {
+    public FailedToParseMongoObjectIdException(string message) : base(message) { }
 }

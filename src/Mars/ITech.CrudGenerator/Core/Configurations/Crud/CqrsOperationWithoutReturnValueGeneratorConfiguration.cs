@@ -7,8 +7,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity.Formatters;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal record CqrsOperationWithoutReturnValueGeneratorConfiguration
-{
+internal record CqrsOperationWithoutReturnValueGeneratorConfiguration {
     public bool Generate { get; }
     public GlobalCrudGeneratorConfiguration GlobalConfiguration { get; }
     public CqrsOperationsSharedConfiguration OperationsSharedConfiguration { get; }
@@ -29,29 +28,33 @@ internal record CqrsOperationWithoutReturnValueGeneratorConfiguration
         NameConfigurator operation,
         NameConfigurator handler,
         MinimalApiEndpointConfigurator endpoint,
-        EntityScheme entityScheme)
-    {
+        EntityScheme entityScheme
+    ) {
         GlobalConfiguration = globalConfiguration;
         Generate = generate;
         OperationType = operationType;
         OperationName = operationName;
         OperationGroup = operationGroup.GetName(entityScheme.EntityName, OperationName);
-        OperationsSharedConfiguration = new CqrsOperationsSharedConfiguration(
-            businessLogicFeatureName: operationsSharedConfiguration.BusinessLogicFeatureName,
-            businessLogicNamespaceForOperation: operationsSharedConfiguration.BusinessLogicNamespaceForOperation,
-            endpointsNamespaceForFeature: operationsSharedConfiguration.EndpointsNamespaceForFeature,
-            entityScheme: entityScheme,
-            operationName: OperationName,
-            operationGroup: OperationGroup
+        OperationsSharedConfiguration = new(
+            operationsSharedConfiguration.BusinessLogicFeatureName,
+            operationsSharedConfiguration.BusinessLogicNamespaceForOperation,
+            operationsSharedConfiguration.EndpointsNamespaceForFeature,
+            entityScheme,
+            OperationName,
+            OperationGroup
         );
         Operation = operation.GetName(entityScheme.EntityName, OperationName);
         Handler = handler.GetName(entityScheme.EntityName, OperationName);
         var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallArguments();
-        Endpoint = new MinimalApiEndpointConfiguration(
+        Endpoint = new(
             Generate: endpoint.Generate,
             Name: endpoint.ClassName.GetName(entityScheme.EntityName, OperationName),
             FunctionName: endpoint.FunctionName.GetName(entityScheme.EntityName, OperationName),
-            Route: endpoint.RouteConfigurator.GetRoute(entityScheme.EntityName.Name, OperationName,
-                constructorParametersForRoute));
+            Route: endpoint.RouteConfigurator.GetRoute(
+                entityScheme.EntityName.Name,
+                OperationName,
+                constructorParametersForRoute
+            )
+        );
     }
 }

@@ -11,15 +11,13 @@ using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
-public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
-{
+public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
     private readonly TestMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
     [InlineData("simpleTypeEntity/{0}")]
-    public async Task Should_GetSimpleTypeEntity(string endpoint)
-    {
+    public async Task Should_GetSimpleTypeEntity(string endpoint) {
         // Arrange
         var entity = await CreateSimpleTypeEntityAsync();
 
@@ -54,8 +52,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("simpleTypeEntity?page=1&pageSize=10")]
-    public async Task Should_GetSimpleTypeEntitiesList(string endpoint)
-    {
+    public async Task Should_GetSimpleTypeEntitiesList(string endpoint) {
         // Arrange
         await CreateSimpleTypeEntityAsync();
 
@@ -73,33 +70,33 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
         actual.Items.Should().HaveCountGreaterThanOrEqualTo(1);
         actual.Items
             .Where(x => x.Name.Equals("Test User"))
-            .Should().AllSatisfy(x =>
-            {
-                x.Id.Should().NotBeEmpty();
-                x.Name.Should().Be("Test User");
-                x.Code.Should().Be('a');
-                x.IsActive.Should().Be(true);
-                x.RegistrationDate.Should().NotBeBefore(DateTime.Today.Date.ToUniversalTime());
-                x.LastSignInDate.Should().NotBeBefore(DateTime.Today.Date.ToUniversalTime());
-                x.ByteRating.Should().BeGreaterThan(0);
-                x.ShortRating.Should().BeLessThan(0);
-                x.IntRating.Should().BeLessThan(0);
-                x.LongRating.Should().BeLessThan(0);
-                x.SByteRating.Should().BeLessThan(0);
-                x.UShortRating.Should().BeGreaterThan(0);
-                x.UIntRating.Should().BeGreaterThan(0);
-                x.ULongRating.Should().BeGreaterThan(0);
-                x.FloatRating.Should().BeGreaterThan(0);
-                x.DoubleRating.Should().BeGreaterThan(0);
-                x.DecimalRating.Should().BeGreaterThan(0);
-                x.NotIdGuid.Should().NotBeEmpty();
-            });
+            .Should().AllSatisfy(
+                x => {
+                    x.Id.Should().NotBeEmpty();
+                    x.Name.Should().Be("Test User");
+                    x.Code.Should().Be('a');
+                    x.IsActive.Should().Be(true);
+                    x.RegistrationDate.Should().NotBeBefore(DateTime.Today.Date.ToUniversalTime());
+                    x.LastSignInDate.Should().NotBeBefore(DateTime.Today.Date.ToUniversalTime());
+                    x.ByteRating.Should().BeGreaterThan(0);
+                    x.ShortRating.Should().BeLessThan(0);
+                    x.IntRating.Should().BeLessThan(0);
+                    x.LongRating.Should().BeLessThan(0);
+                    x.SByteRating.Should().BeLessThan(0);
+                    x.UShortRating.Should().BeGreaterThan(0);
+                    x.UIntRating.Should().BeGreaterThan(0);
+                    x.ULongRating.Should().BeGreaterThan(0);
+                    x.FloatRating.Should().BeGreaterThan(0);
+                    x.DoubleRating.Should().BeGreaterThan(0);
+                    x.DecimalRating.Should().BeGreaterThan(0);
+                    x.NotIdGuid.Should().NotBeEmpty();
+                }
+            );
     }
 
     [Theory]
     [InlineData("simpleTypeEntity/create")]
-    public async Task Should_CreateSimpleTypeEntity(string endpoint)
-    {
+    public async Task Should_CreateSimpleTypeEntity(string endpoint) {
         // Act
         var response =
             await _httpClient.PostAsJsonAsync(endpoint, new CreateSimpleTypeEntityCommand { Name = "New User" });
@@ -115,25 +112,23 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
         // Assert get route returned
         response.Headers.Location.Should().NotBeNull()
             .And.Subject.ToString().Should().NotBeNullOrEmpty();
-        
+
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("New User");
     }
 
     [Theory]
     [InlineData("simpleTypeEntity/{0}/update")]
-    public async Task Should_UpdateSimpleTypeEntity(string endpoint)
-    {
+    public async Task Should_UpdateSimpleTypeEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateSimpleTypeEntityAsync();
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new UpdateSimpleTypeEntityCommand(createdEntity.Id)
-            {
+            new UpdateSimpleTypeEntityCommand(createdEntity.Id) {
                 Name = "Updated user name",
                 Code = 'b',
                 IsActive = false,
@@ -150,15 +145,16 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
                 FloatRating = 28.54f,
                 DoubleRating = 87189.86378,
                 DecimalRating = 9813.7641635291m,
-                NotIdGuid = new Guid("8e358827-0a9d-4d02-9d07-a7265a76b5ae"),
-            });
+                NotIdGuid = new("8e358827-0a9d-4d02-9d07-a7265a76b5ae")
+            }
+        );
         response.Should().FailIfNotSuccessful();
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated user name");
         entity.Code.Should().Be('b');
@@ -181,8 +177,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("simpleTypeEntity/{0}/delete")]
-    public async Task Should_DeleteSimpleTypeEntity(string endpoint)
-    {
+    public async Task Should_DeleteSimpleTypeEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateSimpleTypeEntityAsync();
 
@@ -194,15 +189,12 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new());
         entity.Should().BeNull();
     }
 
-
-    private async Task<SimpleTypeEntity> CreateSimpleTypeEntityAsync()
-    {
-        var entity = new SimpleTypeEntity
-        {
+    private async Task<SimpleTypeEntity> CreateSimpleTypeEntityAsync() {
+        var entity = new SimpleTypeEntity {
             Id = Guid.NewGuid(),
             Name = "Test User",
             Code = 'a',
@@ -220,11 +212,12 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture)
             FloatRating = 18.13f,
             DoubleRating = 91873.862378,
             DecimalRating = 867.97716829m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();
+
         return entity;
     }
 }

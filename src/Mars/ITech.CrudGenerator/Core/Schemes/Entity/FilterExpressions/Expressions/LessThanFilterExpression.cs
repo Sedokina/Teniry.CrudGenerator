@@ -5,21 +5,15 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Expressions;
 
-internal class LessThanFilterExpression : FilterExpression
-{
-    public LessThanFilterExpression() : base(FilterType.LessThan)
-    {
-    }
+internal class LessThanFilterExpression : FilterExpression {
+    public LessThanFilterExpression() : base(FilterType.LessThan) { }
 
-    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter)
-    {
+    public override StatementSyntax BuildExpression(string filterPropertyName, string entityPropertyToFilter) {
         var result = IfStatement(
             IsPatternExpression(
                 IdentifierName(filterPropertyName),
-                UnaryPattern(
-                    ConstantPattern(
-                        LiteralExpression(
-                            SyntaxKind.NullLiteralExpression)))),
+                UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression)))
+            ),
             Block(
                 SingletonList<StatementSyntax>(
                     ExpressionStatement(
@@ -30,22 +24,35 @@ internal class LessThanFilterExpression : FilterExpression
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         IdentifierName("query"),
-                                        IdentifierName("Where")))
+                                        IdentifierName("Where")
+                                    )
+                                )
                                 .WithArgumentList(
                                     ArgumentList(
                                         SingletonSeparatedList(
                                             Argument(
-                                                SimpleLambdaExpression(
-                                                        Parameter(
-                                                            Identifier("x")))
+                                                SimpleLambdaExpression(Parameter(Identifier("x")))
                                                     .WithExpressionBody(
                                                         BinaryExpression(
                                                             SyntaxKind.LessThanExpression,
                                                             MemberAccessExpression(
                                                                 SyntaxKind.SimpleMemberAccessExpression,
                                                                 IdentifierName("x"),
-                                                                IdentifierName(entityPropertyToFilter)),
-                                                            IdentifierName(filterPropertyName))))))))))));
+                                                                IdentifierName(entityPropertyToFilter)
+                                                            ),
+                                                            IdentifierName(filterPropertyName)
+                                                        )
+                                                    )
+                                            )
+                                        )
+                                    )
+                                )
+                        )
+                    )
+                )
+            )
+        );
+
         return result;
     }
 }

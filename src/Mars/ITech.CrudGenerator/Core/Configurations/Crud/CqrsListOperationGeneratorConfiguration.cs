@@ -6,12 +6,12 @@ using ITech.CrudGenerator.Core.Schemes.Entity;
 
 namespace ITech.CrudGenerator.Core.Configurations.Crud;
 
-internal record CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration
-{
+internal record CqrsListOperationGeneratorConfiguration : CqrsOperationWithReturnValueGeneratorConfiguration {
     public string Filter { get; set; } = null!;
     public string DtoListItem { get; set; } = null!;
 
-    public CqrsListOperationGeneratorConfiguration(bool generate,
+    public CqrsListOperationGeneratorConfiguration(
+        bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         CqrsOperationType operationType,
@@ -25,7 +25,8 @@ internal record CqrsListOperationGeneratorConfiguration : CqrsOperationWithRetur
         MinimalApiEndpointConfigurator endpoint,
         EntityScheme entityScheme
     )
-        : base(generate,
+        : base(
+            generate,
             globalConfiguration,
             operationsSharedConfiguration,
             operationType,
@@ -35,8 +36,8 @@ internal record CqrsListOperationGeneratorConfiguration : CqrsOperationWithRetur
             dto,
             handler,
             endpoint,
-            entityScheme)
-    {
+            entityScheme
+        ) {
         Filter = filter.GetName(entityScheme.EntityName, OperationName);
         DtoListItem = dtoListItem.GetName(entityScheme.EntityName, OperationName);
     }

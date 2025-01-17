@@ -4,26 +4,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 
-internal class ApiFactory : WebApplicationFactory<Program>
-{
+internal class ApiFactory : WebApplicationFactory<Program> {
     private readonly IConfiguration _configuration;
-
-    public ApiFactory(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
 
     public string BaseApiPath => "http://localhost/";
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        var inMemoryConfiguration = new Dictionary<string, string>
-        {
+    public ApiFactory(IConfiguration configuration) {
+        _configuration = configuration;
+    }
+
+    protected override void ConfigureWebHost(IWebHostBuilder builder) {
+        var inMemoryConfiguration = new Dictionary<string, string> {
             {
                 "ConnectionStrings:DefaultConnection",
                 _configuration.GetConnectionString("DefaultConnection")!
-            },
-            {
+            }, {
                 "ConnectionStrings:DefaultConnectionDbName",
                 _configuration.GetConnectionString("DefaultConnectionDbName")!
             }

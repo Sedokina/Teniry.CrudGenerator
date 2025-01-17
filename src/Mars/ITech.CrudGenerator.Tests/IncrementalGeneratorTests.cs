@@ -3,29 +3,27 @@ using ITech.CrudGenerator.Tests.Helpers;
 
 namespace ITech.CrudGenerator.Tests;
 
-public class IncrementalGeneratorTests
-{
+public class IncrementalGeneratorTests {
     [Fact]
-    public void Should_TakeCachedSources_OnSecondRun()
-    {
+    public void Should_TakeCachedSources_OnSecondRun() {
         // Arrange
         const string source = """
-                              using Microsoft.EntityFrameworkCore;
-                              using ITech.CrudGenerator.Abstractions.DbContext;
-                              using ITech.CrudGenerator.Abstractions.Configuration;
+            using Microsoft.EntityFrameworkCore;
+            using ITech.CrudGenerator.Abstractions.DbContext;
+            using ITech.CrudGenerator.Abstractions.Configuration;
 
-                              namespace ITech.CrudGenerator.Tests;
+            namespace ITech.CrudGenerator.Tests;
 
-                              public class TestEntity {
-                                     public int Id { get; set; }
-                                     public string Name { get; set; }
-                              }
+            public class TestEntity {
+                   public int Id { get; set; }
+                   public string Name { get; set; }
+            }
 
-                              public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> {}
+            public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> {}
 
-                              [UseDbContext(DbContextDbProvider.Mongo)]
-                              public class TestDb : DbContext {}
-                              """;
+            [UseDbContext(DbContextDbProvider.Mongo)]
+            public class TestDb : DbContext {}
+            """;
 
         // Act
         var (diagnostics, output) = CrudHelper.RunGenerator(source);

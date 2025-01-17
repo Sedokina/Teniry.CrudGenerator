@@ -7,29 +7,27 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
-public class GetCustomOperationNameEntityHandlerTests
-{
+public class GetCustomOperationNameEntityHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomOpGetByIdCustomOperationNameEntityQuery _query;
     private readonly CustomOpGetByIdCustomOperationNameEntityHandler _sut;
 
-    public GetCustomOperationNameEntityHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public GetCustomOperationNameEntityHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(
-                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync((CustomOperationNameEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -37,31 +35,31 @@ public class GetCustomOperationNameEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(
-                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+                x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(new CustomOperationNameEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
         _db.Verify(
             x => x.FindAsync<CustomOperationNameEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomOpGetByIdCustomOperationNameEntityQuery")]
     [InlineData("CustomOpGetByIdCustomOperationNameEntityHandler")]
     [InlineData("CustomOperationNameEntityDto")]
-    public void Should_BeInOperationNamespace(string typeName)
-    {
+    public void Should_BeInOperationNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomOpGetByIdCustomOperationNameEntity");

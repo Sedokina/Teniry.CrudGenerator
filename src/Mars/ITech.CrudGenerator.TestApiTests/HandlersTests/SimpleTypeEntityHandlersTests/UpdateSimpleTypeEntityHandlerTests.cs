@@ -6,18 +6,15 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.SimpleTypeEntityHandlersTests;
 
-public class UpdateSimpleTypeEntityHandlerTests
-{
+public class UpdateSimpleTypeEntityHandlerTests {
     private readonly UpdateSimpleTypeEntityCommand _command;
     private readonly Mock<TestMongoDb> _db;
     private readonly UpdateSimpleTypeEntityHandler _sut;
 
-    public UpdateSimpleTypeEntityHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public UpdateSimpleTypeEntityHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
-        _command = new(Guid.NewGuid())
-        {
+        _command = new(Guid.NewGuid()) {
             Name = "New Test Entity",
             Code = 'a',
             IsActive = true,
@@ -34,19 +31,18 @@ public class UpdateSimpleTypeEntityHandlerTests
             FloatRating = 18.13f,
             DoubleRating = 91873.862378,
             DecimalRating = 867.97716829m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
     }
 
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_UpdatingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((SimpleTypeEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -54,11 +50,9 @@ public class UpdateSimpleTypeEntityHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
-        var entity = new SimpleTypeEntity
-        {
+        var entity = new SimpleTypeEntity {
             Id = _command.Id,
             Name = "Old Test Entity",
             Code = 'b',
@@ -76,13 +70,13 @@ public class UpdateSimpleTypeEntityHandlerTests
             FloatRating = 99.91f,
             DoubleRating = 123432.16536,
             DecimalRating = 0871.11137816562m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
         _db.Setup(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         entity.Id.Should().Be(_command.Id);
@@ -104,8 +98,10 @@ public class UpdateSimpleTypeEntityHandlerTests
         entity.DecimalRating.Should().BeGreaterThan(0);
         entity.NotIdGuid.Should().NotBeEmpty();
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
-        _db.Verify(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
-            Times.Once);
+        _db.Verify(
+            x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

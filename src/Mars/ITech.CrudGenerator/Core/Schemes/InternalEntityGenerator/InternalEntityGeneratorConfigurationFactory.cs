@@ -10,30 +10,25 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 
-internal class InternalEntityGeneratorConfigurationFactory
-{
+internal class InternalEntityGeneratorConfigurationFactory {
     internal static InternalEntityGeneratorConfiguration Construct(
         INamedTypeSymbol generatorSymbol,
-        Compilation compilation)
-    {
+        Compilation compilation
+    ) {
         var generatorScheme = new InternalEntityGeneratorConfiguration(GetEntityClassMetadata(generatorSymbol));
-        if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration))
-        {
+        if (!TryExtractValidConstructorDeclaration(generatorSymbol, out var generatorConstructorDeclaration)) {
             return generatorScheme;
         }
 
-        if (!TryGetConstructorStatements(generatorConstructorDeclaration, out var constructorStatements))
-        {
+        if (!TryGetConstructorStatements(generatorConstructorDeclaration, out var constructorStatements)) {
             return generatorScheme;
         }
 
         var assignmentExpressionParer = ConstructAvailableParsers();
 
         var generatorSchemeType = generatorScheme.GetType();
-        foreach (var statementSyntax in constructorStatements)
-        {
-            if (!assignmentExpressionParer.CanParse(compilation, statementSyntax.Expression))
-            {
+        foreach (var statementSyntax in constructorStatements) {
+            if (!assignmentExpressionParer.CanParse(compilation, statementSyntax.Expression)) {
                 continue;
             }
 
@@ -47,72 +42,85 @@ internal class InternalEntityGeneratorConfigurationFactory
         return generatorScheme;
     }
 
-    private static InternalEntityClassMetadata GetEntityClassMetadata(INamedTypeSymbol? generatorSymbol)
-    {
+    private static InternalEntityClassMetadata GetEntityClassMetadata(INamedTypeSymbol? generatorSymbol) {
         var entityClassTypeSymbol = generatorSymbol?.BaseType?.TypeArguments.FirstOrDefault();
-        if (entityClassTypeSymbol == null) return new InternalEntityClassMetadata("", "", "", []);
+
+        if (entityClassTypeSymbol == null) return new("", "", "", []);
+
         var properties = entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
-            .Select(x => new InternalEntityClassPropertyMetadata(
-                x.Name,
-                x.Type.ToString(),
-                x.Type.MetadataName,
-                x.Type.SpecialType,
-                x.Type.IsSimple(),
-                x.Type.NullableAnnotation == NullableAnnotation.Annotated)
+            .Select(
+                x => new InternalEntityClassPropertyMetadata(
+                    x.Name,
+                    x.Type.ToString(),
+                    x.Type.MetadataName,
+                    x.Type.SpecialType,
+                    x.Type.IsSimple(),
+                    x.Type.NullableAnnotation == NullableAnnotation.Annotated
+                )
             );
         var internalEntityClassMetadata = new InternalEntityClassMetadata(
             entityClassTypeSymbol.Name,
             entityClassTypeSymbol.ContainingNamespace.ToString(),
             entityClassTypeSymbol.ContainingAssembly.Name,
-            new EquatableList<InternalEntityClassPropertyMetadata>(properties)
+            new(properties)
         );
 
         return internalEntityClassMetadata;
     }
 
-    private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers()
-    {
-        List<IExpressionSyntaxToValueParser> availableAssignmentExpressionsRightSideParsers =
-        [
+    private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers() {
+        List<IExpressionSyntaxToValueParser> availableAssignmentExpressionsRightSideParsers = [
             new LiteralExpressionToValueParser(),
-            new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+            new EntityGeneratorDefaultSortToValueParser(new())
         ];
 
         var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser(
-            availableAssignmentExpressionsRightSideParsers);
+            availableAssignmentExpressionsRightSideParsers
+        );
 
         // These parsers are added in the end because they depend on assignment parser
         // but assignment parsed depends on the list, where these parsers should be included
         availableAssignmentExpressionsRightSideParsers
-            .Add(new ObjectCreationToObjectParser<
-                EntityGeneratorCreateOperationConfiguration,
-                InternalEntityGeneratorCreateOperationConfiguration>(assignmentExpressionParer));
+            .Add(
+                new ObjectCreationToObjectParser<
+                    EntityGeneratorCreateOperationConfiguration,
+                    InternalEntityGeneratorCreateOperationConfiguration>(assignmentExpressionParer)
+            );
         availableAssignmentExpressionsRightSideParsers
-            .Add(new ObjectCreationToObjectParser<
-                EntityGeneratorDeleteOperationConfiguration,
-                InternalEntityGeneratorDeleteOperationConfiguration>(assignmentExpressionParer));
+            .Add(
+                new ObjectCreationToObjectParser<
+                    EntityGeneratorDeleteOperationConfiguration,
+                    InternalEntityGeneratorDeleteOperationConfiguration>(assignmentExpressionParer)
+            );
         availableAssignmentExpressionsRightSideParsers
-            .Add(new ObjectCreationToObjectParser<
-                EntityGeneratorUpdateOperationConfiguration,
-                InternalEntityGeneratorUpdateOperationConfiguration>(assignmentExpressionParer));
+            .Add(
+                new ObjectCreationToObjectParser<
+                    EntityGeneratorUpdateOperationConfiguration,
+                    InternalEntityGeneratorUpdateOperationConfiguration>(assignmentExpressionParer)
+            );
         availableAssignmentExpressionsRightSideParsers
-            .Add(new ObjectCreationToObjectParser<
-                EntityGeneratorGetByIdOperationConfiguration,
-                InternalEntityGeneratorGetByIdOperationConfiguration>(assignmentExpressionParer));
+            .Add(
+                new ObjectCreationToObjectParser<
+                    EntityGeneratorGetByIdOperationConfiguration,
+                    InternalEntityGeneratorGetByIdOperationConfiguration>(assignmentExpressionParer)
+            );
         availableAssignmentExpressionsRightSideParsers
-            .Add(new ObjectCreationToObjectParser<
-                EntityGeneratorGetListOperationConfiguration,
-                InternalEntityGeneratorGetListOperationConfiguration>(assignmentExpressionParer));
+            .Add(
+                new ObjectCreationToObjectParser<
+                    EntityGeneratorGetListOperationConfiguration,
+                    InternalEntityGeneratorGetListOperationConfiguration>(assignmentExpressionParer)
+            );
+
         return assignmentExpressionParer;
     }
 
     private static bool TryGetConstructorStatements(
         ConstructorDeclarationSyntax? generatorConstructorDeclaration,
-        out List<ExpressionStatementSyntax> constructorStatements)
-    {
+        out List<ExpressionStatementSyntax> constructorStatements
+    ) {
         constructorStatements = [];
-        if (generatorConstructorDeclaration?.Body is null || generatorConstructorDeclaration.Body.Statements.Count == 0)
-        {
+        if (generatorConstructorDeclaration?.Body is null ||
+            generatorConstructorDeclaration.Body.Statements.Count == 0) {
             return false;
         }
 
@@ -120,8 +128,7 @@ internal class InternalEntityGeneratorConfigurationFactory
             .OfType<ExpressionStatementSyntax>()
             .ToList();
 
-        if (constructorStatements.Count == 0)
-        {
+        if (constructorStatements.Count == 0) {
             return false;
         }
 
@@ -146,15 +153,14 @@ internal class InternalEntityGeneratorConfigurationFactory
     /// </exception>
     private static bool TryExtractValidConstructorDeclaration(
         INamedTypeSymbol generatorSymbol,
-        out ConstructorDeclarationSyntax? constructorDeclarationSyntax)
-    {
+        out ConstructorDeclarationSyntax? constructorDeclarationSyntax
+    ) {
         constructorDeclarationSyntax = null;
         // Get first parameterless constructor
         var generatorConstructorMethodSymbol = generatorSymbol
             .Constructors
             .FirstOrDefault(x => x.Parameters.Length == 0);
-        if (generatorConstructorMethodSymbol == null)
-        {
+        if (generatorConstructorMethodSymbol == null) {
             return false;
         }
 
@@ -164,12 +170,12 @@ internal class InternalEntityGeneratorConfigurationFactory
 
         // When this is default parameterless constructor, not defined by user,
         // declaration is null
-        if (generatorConstructorDeclaration == null)
-        {
+        if (generatorConstructorDeclaration == null) {
             return false;
         }
 
         constructorDeclarationSyntax = generatorConstructorDeclaration;
+
         return true;
     }
 }

@@ -7,48 +7,40 @@ namespace ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.ExpressionSyn
 
 internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToValueParser
     where TFrom : class
-    where TTo : class, new()
-{
+    where TTo : class, new() {
     private readonly PropertyAssignmentExpressionToPropertyNameAndValueParser _propertyAssignmentParser;
 
     public ObjectCreationToObjectParser(
-        PropertyAssignmentExpressionToPropertyNameAndValueParser propertyAssignmentParser)
-    {
+        PropertyAssignmentExpressionToPropertyNameAndValueParser propertyAssignmentParser
+    ) {
         _propertyAssignmentParser = propertyAssignmentParser;
     }
 
-    public bool CanParse(Compilation compilation, ExpressionSyntax expression)
-    {
+    public bool CanParse(Compilation compilation, ExpressionSyntax expression) {
         if (expression is not ObjectCreationExpressionSyntax &&
-            expression is not ImplicitObjectCreationExpressionSyntax)
-        {
+            expression is not ImplicitObjectCreationExpressionSyntax) {
             return false;
         }
 
         var model = compilation.GetSemanticModel(expression.SyntaxTree);
         var symbolInfo = model.GetSymbolInfo(expression);
-        if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol)
-        {
+        if (symbolInfo.Symbol is not IMethodSymbol constructorSymbol) {
             return false;
         }
 
         var name = constructorSymbol.ContainingSymbol.Name;
 
-        if (name != typeof(TFrom).Name)
-        {
+        if (name != typeof(TFrom).Name) {
             return false;
         }
-
 
         return true;
     }
 
-    public object Parse(Compilation compilation, ExpressionSyntax expression)
-    {
+    public object Parse(Compilation compilation, ExpressionSyntax expression) {
         var objectCreationExpression = (BaseObjectCreationExpressionSyntax)expression;
         var result = new TTo();
-        if (objectCreationExpression.Initializer == null)
-        {
+        if (objectCreationExpression.Initializer == null) {
             return result;
         }
 
@@ -58,10 +50,8 @@ internal class ObjectCreationToObjectParser<TFrom, TTo> : IExpressionSyntaxToVal
             .ToList();
 
         var resultType = result.GetType();
-        foreach (var assignmentExpression in assignmentExpressions)
-        {
-            if (!_propertyAssignmentParser.CanParse(compilation, assignmentExpression))
-            {
+        foreach (var assignmentExpression in assignmentExpressions) {
+            if (!_propertyAssignmentParser.CanParse(compilation, assignmentExpression)) {
                 continue;
             }
 

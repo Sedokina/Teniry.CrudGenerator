@@ -1,8 +1,10 @@
 # Подключение библиотеки к проекту с Source Generator
+
 см. https://www.youtube.com/watch?v=wp-dxZXRkJ4
 
 Ниже приведена конфигурация `.csproj`, которая нужна для того чтобы использовать подключаемые библиотеки
 в Source Generator'ах. В данном примере подключается библиотека `Inflector.NetStandard`
+
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- ...дефолтная конфигурация проекта... -->
@@ -63,16 +65,16 @@
 В данном случае `DLL` назвывается `Inflector.dll`, т.е. путь к этой `DLL` следующий:
 `\lib\netstandard2.0\Inflector.dll`
 
-
 `<None Include="$(Pkginflector_netstandard)\lib\netstandard2.0\*.dll" Pack="true"
 PackagePath="analyzers/dotnet/cs" Visible="false"/>` указывает на то, что все `DLL` в `lib/netstandard2.0`
 подключаемой библиотеки нужно добавить в билд.
 
 ### При добавлении новых библиотек нужно:
+
 1. В `PackageReference` добавить `PrivateAssets="all" GeneratePathProperty="true"`
-2. В ` <Target Name="GetDependencyTargetPaths">` добавить 
+2. В ` <Target Name="GetDependencyTargetPaths">` добавить
    `<TargetPathWithTargetPlatformMoniker Include="$(PKGinflector_netstandard)\lib\netstandard2.0\Inflector.dll" IncludeRuntimeDependency="false"/>`
-    заменив значение в `Include` на подключаемую библиотеку
-3. В ` <Target Name="GetDependencyTargetPaths">` добавить 
+   заменив значение в `Include` на подключаемую библиотеку
+3. В ` <Target Name="GetDependencyTargetPaths">` добавить
    `<None Include="$(Pkginflector_netstandard)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>`
-    заменив значение в `Include` на подключаемую библиотеку
+   заменив значение в `Include` на подключаемую библиотеку

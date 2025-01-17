@@ -9,7 +9,7 @@ public static class Should {
     }
 
     public static MoqFluentAssertion<T> Assert<T>(
-        Action<T>          fluentAssertionChecks,
+        Action<T> fluentAssertionChecks,
         ITestOutputHelper? testOutputHelper = null
     ) {
         return new(fluentAssertionChecks, testOutputHelper);

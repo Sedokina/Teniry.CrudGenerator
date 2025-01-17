@@ -6,18 +6,15 @@ using Moq.EntityFrameworkCore;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.NoEndpointEntityHandlerTests;
 
-public class GetNoEndpointEntitiesListHandlerTests
-{
+public class GetNoEndpointEntitiesListHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly GetNoEndpointEntitiesQuery _query;
     private readonly GetNoEndpointEntitiesHandler _sut;
 
-    public GetNoEndpointEntitiesListHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public GetNoEndpointEntitiesListHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
-        _query = new()
-        {
+        _query = new() {
             Name = "Test Entity",
             Sort = ["id", "name"],
             Page = 1,
@@ -26,31 +23,30 @@ public class GetNoEndpointEntitiesListHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         _db.Setup(x => x.Set<NoEndpointEntity>())
-            .ReturnsDbSet([new NoEndpointEntity { Id = Guid.NewGuid(), Name = "Test Entity" }]);
+            .ReturnsDbSet([new() { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
-        var entities = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
         entities.Page.Should().NotBeNull();
         entities.Page.CurrentPageIndex.Should().Be(1);
         entities.Page.PageSize.Should().Be(10);
-        entities.Items.Should().SatisfyRespectively(dto =>
-        {
-            dto.Id.Should().NotBeEmpty();
-            dto.Name.Should().NotBeEmpty();
-        });
+        entities.Items.Should().SatisfyRespectively(
+            dto => {
+                dto.Id.Should().NotBeEmpty();
+                dto.Name.Should().NotBeEmpty();
+            }
+        );
     }
 
     [Fact]
-    public void Should_HaveCorrectSortKeys()
-    {
+    public void Should_HaveCorrectSortKeys() {
         // Assert
         _query.GetSortKeys()
-            .Should().ContainInConsecutiveOrder(["id", "name"]);
+            .Should().ContainInConsecutiveOrder("id", "name");
     }
 }

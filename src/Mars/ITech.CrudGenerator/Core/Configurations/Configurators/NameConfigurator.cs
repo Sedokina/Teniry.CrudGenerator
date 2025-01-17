@@ -8,17 +8,15 @@ namespace ITech.CrudGenerator.Core.Configurations.Configurators;
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-internal class NameConfigurator(string name)
-{
-    public string GetName(EntityName entityName, string operationName)
-    {
+internal class NameConfigurator(string name) {
+    public string GetName(EntityName entityName, string operationName) {
         var template = Template.Parse(name);
-        var model = new
-        {
+        var model = new {
             EntityName = entityName.Name,
             EntityNamePlural = entityName.PluralName,
             OperationName = operationName
         };
+
         return template.Render(model);
     }
 }

@@ -9,18 +9,19 @@ namespace ITech.CrudGenerator.Core.Configurations.Configurators;
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-internal class PutEndpointsIntoNamespaceConfigurator(string namespacePath)
-{
+internal class PutEndpointsIntoNamespaceConfigurator(string namespacePath) {
     public string GetNamespacePath(
         EntityName entityName,
-        string entityAssemblyName)
-    {
+        string entityAssemblyName
+    ) {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
-        return putIntoNamespaceTemplate.Render(new
-        {
-            EntityName = entityName.Name,
-            EntityNamePlural = entityName.PluralName,
-            EntityAssemblyName = entityAssemblyName,
-        });
+
+        return putIntoNamespaceTemplate.Render(
+            new {
+                EntityName = entityName.Name,
+                EntityNamePlural = entityName.PluralName,
+                EntityAssemblyName = entityAssemblyName
+            }
+        );
     }
 }

@@ -6,67 +6,62 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
-public class CreateCustomOperationNameEntityHandlerTests
-{
-    private readonly Mock<TestMongoDb> _db;
+public class CreateCustomOperationNameEntityHandlerTests {
     private readonly CustomOpCreateCustomOperationNameEntityCommand _command;
+    private readonly Mock<TestMongoDb> _db;
     private readonly CustomOpCreateCustomOperationNameEntityHandler _sut;
 
-    public CreateCustomOperationNameEntityHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public CreateCustomOperationNameEntityHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
-        _command = new()
-        {
+        _command = new() {
             Name = "My test entity"
         };
     }
 
     [Fact]
-    public async Task Should_ReturnCorrectValue()
-    {
+    public async Task Should_ReturnCorrectValue() {
         // Arrange
         _db.Setup(x => x.AddAsync(It.IsAny<CustomOperationNameEntity>(), It.IsAny<CancellationToken>()))
             .Callback((CustomOperationNameEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         // Assert
         createdEntityDto.Id.Should().NotBeEmpty();
     }
 
     [Fact]
-    public async Task Should_MapCommandToEntityCorrectly()
-    {
+    public async Task Should_MapCommandToEntityCorrectly() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(
-            x => x.AddAsync(It.Is<CustomOperationNameEntity>(c => c.Name.Equals("My test entity")),
-                It.IsAny<CancellationToken>())
+            x => x.AddAsync(
+                It.Is<CustomOperationNameEntity>(c => c.Name.Equals("My test entity")),
+                It.IsAny<CancellationToken>()
+            )
         );
     }
 
     [Fact]
-    public async Task Should_AddToDbSetAndSave()
-    {
+    public async Task Should_AddToDbSetAndSave() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.AddAsync(It.IsAny<CustomOperationNameEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }
-    
+
     [Theory]
     [InlineData("CustomOpCreateCustomOperationNameEntityCommand")]
     [InlineData("CustomOpCreateCustomOperationNameEntityHandler")]
     [InlineData("CreatedCustomOperationNameEntityDto")]
-    public void Should_BeInOperationNamespace(string typeName)
-    {
+    public void Should_BeInOperationNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomOpCreateCustomOperationNameEntity");

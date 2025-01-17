@@ -5,8 +5,7 @@ namespace ITech.CrudGenerator.Diagnostics;
 
 // Diagnostic models were taken from https://andrewlock.net/creating-a-source-generator-part-10-testing-your-incremental-generator-pipeline-outputs-are-cacheable/
 
-public class DiagnosticDescriptors
-{
+public class DiagnosticDescriptors {
     public static readonly DiagnosticDescriptor NotInheritedFromDbContext = new(
         "CDG001",
         "Is not EntityFramework's DbContext class",

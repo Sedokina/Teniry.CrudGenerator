@@ -2,8 +2,7 @@ using ITech.CrudGenerator.Core.Schemes.Entity.FilterExpressions.Core;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity.Properties;
 
-internal class EntityFilterProperty
-{
+internal class EntityFilterProperty {
     public string TypeName { get; set; }
     public string PropertyName { get; set; }
     public FilterExpression FilterExpression { get; }
@@ -11,8 +10,8 @@ internal class EntityFilterProperty
     public EntityFilterProperty(
         string typeName,
         string propertyName,
-        FilterExpression filterExpression)
-    {
+        FilterExpression filterExpression
+    ) {
         TypeName = typeName;
         PropertyName = propertyName;
         FilterExpression = filterExpression;

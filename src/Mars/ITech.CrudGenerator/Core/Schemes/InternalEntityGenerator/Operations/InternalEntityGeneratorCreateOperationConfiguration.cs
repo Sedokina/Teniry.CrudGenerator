@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
-internal record InternalEntityGeneratorCreateOperationConfiguration
-{
+internal record InternalEntityGeneratorCreateOperationConfiguration {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
     public string? OperationGroup { get; set; }

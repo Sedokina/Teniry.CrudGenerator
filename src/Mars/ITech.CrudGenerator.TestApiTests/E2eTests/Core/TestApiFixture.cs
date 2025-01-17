@@ -3,20 +3,15 @@ using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 
-public class TestApiFixture : IAsyncLifetime
-{
+public class TestApiFixture : IAsyncLifetime {
     private readonly ApiFactory _apiFactory;
     private readonly IConfigurationRoot _configuration;
 
-    public TestApiFixture()
-    {
+    public TestApiFixture() {
         _configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetParent(AppContext.BaseDirectory)?.FullName!)
             .AddJsonFile("appsettings.tests.json", false)
@@ -24,11 +19,10 @@ public class TestApiFixture : IAsyncLifetime
             .AddUserSecrets(typeof(ApiFactory).Assembly, true)
             .Build();
 
-        _apiFactory = new ApiFactory(_configuration);
+        _apiFactory = new(_configuration);
     }
 
-    public async Task InitializeAsync()
-    {
+    public async Task InitializeAsync() {
         var db = GetDb();
         await db.Database.EnsureDeletedAsync();
         await db.Database.EnsureCreatedAsync();
@@ -36,10 +30,13 @@ public class TestApiFixture : IAsyncLifetime
         await DbDataInitializer.InitializeAsync(db);
     }
 
-    public HttpClient GetHttpClient()
-    {
+    public async Task DisposeAsync() {
+        await _apiFactory.DisposeAsync();
+    }
+
+    public HttpClient GetHttpClient() {
         var httpClient = _apiFactory.CreateClient();
-        httpClient.BaseAddress = new Uri(_apiFactory.BaseApiPath);
+        httpClient.BaseAddress = new(_apiFactory.BaseApiPath);
 
         return httpClient;
     }
@@ -48,11 +45,10 @@ public class TestApiFixture : IAsyncLifetime
     // потому что, ef core кэширует полученные данные если не был вызван AsNoTracking
     // и этот кэш может привести к тому, что в одном тесте была сделана выборка, результат закэшировался
     // при его вызове в следующем тесте, ef возьмет закэшированный результат и тест не выполнится
-    public TestMongoDb GetDb()
-    {
+    public TestMongoDb GetDb() {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         var connectionStringDbName = _configuration.GetConnectionString("DefaultConnectionDbName");
-        
+
         var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>()
             .UseMongoDB(connectionString!, connectionStringDbName!)
             .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));
@@ -74,11 +70,7 @@ public class TestApiFixture : IAsyncLifetime
         // 'Database.AutoTransactionBehavior = AutoTransactionBehavior.Never' on your DbContext.
         // To fix need to configure mongo
         db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
-        return db;
-    }
 
-    public async Task DisposeAsync()
-    {
-        await _apiFactory.DisposeAsync();
+        return db;
     }
 }

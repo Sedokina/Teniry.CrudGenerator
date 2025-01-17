@@ -7,14 +7,16 @@ using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
-public class SimpleEntityListEndpointTests(TestApiFixture fixture)
-{
+public class SimpleEntityListEndpointTests(TestApiFixture fixture) {
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
-    public static TheoryData<string, string, Expression<Func<SimpleEntitiesListItemDto, object>>> SortData => new()
-    {
+    public static TheoryData<string, string, Expression<Func<SimpleEntitiesListItemDto, object>>> SortData => new() {
         { "simpleEntity?page=1&pageSize=10&sort=asc.name", "asc", x => x.Name },
-        { "simpleEntity?page=1&pageSize=10&sort=desc.name", "desc", x => x.Name },
+        { "simpleEntity?page=1&pageSize=10&sort=desc.name", "desc", x => x.Name }
+    };
+
+    public static TheoryData<string, Expression<Func<SimpleEntitiesListItemDto, bool>>> FilterData => new() {
+        { "simpleEntity?page=1&pageSize=10&name=First", x => x.Name.Contains("First") }
     };
 
     [Theory]
@@ -22,8 +24,8 @@ public class SimpleEntityListEndpointTests(TestApiFixture fixture)
     public async Task Should_SortListResult(
         string endpoint,
         string direction,
-        Expression<Func<SimpleEntitiesListItemDto, object>> property)
-    {
+        Expression<Func<SimpleEntitiesListItemDto, object>> property
+    ) {
         // Act
         var response = await _httpClient.GetAsync(endpoint);
         response.Should().FailIfNotSuccessful();
@@ -32,32 +34,26 @@ public class SimpleEntityListEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var actual = await response.Content.ReadFromJsonAsync<SimpleEntitiesDto>();
-        if (direction.Equals("asc"))
-        {
+        if (direction.Equals("asc")) {
             actual!.Items.Should().BeInAscendingOrder(property);
-        }
-        else
-        {
+        } else {
             actual!.Items.Should().BeInDescendingOrder(property);
         }
     }
 
-    public static TheoryData<string, Expression<Func<SimpleEntitiesListItemDto, bool>>> FilterData => new()
-    {
-        { "simpleEntity?page=1&pageSize=10&name=First", x => x.Name.Contains("First") },
-    };
-    
     [Theory]
     [MemberData(nameof(FilterData))]
-    public async Task Should_FilterResult(string endpoint, Expression<Func<SimpleEntitiesListItemDto, bool>> validation)
-    {
+    public async Task Should_FilterResult(
+        string endpoint,
+        Expression<Func<SimpleEntitiesListItemDto, bool>> validation
+    ) {
         // Act
         var response = await _httpClient.GetAsync(endpoint);
         response.Should().FailIfNotSuccessful();
-    
+
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-    
+
         var actual = await response.Content.ReadFromJsonAsync<SimpleEntitiesDto>();
         actual!.Items.Should().HaveCountGreaterThan(0).And.OnlyContain(validation);
     }

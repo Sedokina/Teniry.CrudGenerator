@@ -11,15 +11,13 @@ using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
-public class SimpleEntityEndpointTests(TestApiFixture fixture)
-{
+public class SimpleEntityEndpointTests(TestApiFixture fixture) {
     private readonly TestMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
     [InlineData("simpleEntity/{0}")]
-    public async Task Should_GetEntity(string endpoint)
-    {
+    public async Task Should_GetEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateEntityAsync("Entity to get");
 
@@ -38,8 +36,7 @@ public class SimpleEntityEndpointTests(TestApiFixture fixture)
 
     [Theory]
     [InlineData("simpleEntity?page=1&pageSize=10")]
-    public async Task Should_GetEntitiesList(string endpoint)
-    {
+    public async Task Should_GetEntitiesList(string endpoint) {
         // Arrange
         await CreateEntityAsync("Entity to get one of list");
 
@@ -55,17 +52,17 @@ public class SimpleEntityEndpointTests(TestApiFixture fixture)
         actual!.Page.PageSize.Should().BeGreaterThan(0);
         actual.Page.CurrentPageIndex.Should().BeGreaterThan(0);
         actual.Items.Should().HaveCountGreaterThanOrEqualTo(1);
-        actual.Items.Should().AllSatisfy(x =>
-        {
-            x.Id.Should().NotBeEmpty();
-            x.Name.Should().NotBeNullOrEmpty();
-        });
+        actual.Items.Should().AllSatisfy(
+            x => {
+                x.Id.Should().NotBeEmpty();
+                x.Name.Should().NotBeNullOrEmpty();
+            }
+        );
     }
 
     [Theory]
     [InlineData("simpleEntity/create")]
-    public async Task Should_CreateEntity(string endpoint)
-    {
+    public async Task Should_CreateEntity(string endpoint) {
         // Act
         var response =
             await _httpClient.PostAsJsonAsync(endpoint, new CreateSimpleEntityCommand { Name = "My new entity" });
@@ -83,37 +80,36 @@ public class SimpleEntityEndpointTests(TestApiFixture fixture)
             .And.Subject.ToString().Should().NotBeNullOrEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
 
     [Theory]
     [InlineData("simpleEntity/{0}/update")]
-    public async Task Should_UpdateEntity(string endpoint)
-    {
+    public async Task Should_UpdateEntity(string endpoint) {
         // Arrange
         var createdEntity = await CreateEntityAsync("Entity to update");
 
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new UpdateSimpleEntityCommand(createdEntity.Id) { Name = "Updated entity name" });
+            new UpdateSimpleEntityCommand(createdEntity.Id) { Name = "Updated entity name" }
+        );
         response.Should().FailIfNotSuccessful();
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
 
     [Theory]
     [InlineData("simpleEntity/{0}/delete")]
-    public async Task Should_DeleteEntity(string endpoint)
-    {
+    public async Task Should_DeleteEntity(string endpoint) {
         // Arrange
         var createdSimpleEntity = await CreateEntityAsync("Entity to delete");
 
@@ -125,16 +121,16 @@ public class SimpleEntityEndpointTests(TestApiFixture fixture)
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<SimpleEntity>([createdSimpleEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleEntity>([createdSimpleEntity.Id], new());
         entity.Should().BeNull();
     }
 
-    private async Task<SimpleEntity> CreateEntityAsync(string name)
-    {
+    private async Task<SimpleEntity> CreateEntityAsync(string name) {
         var entity = new SimpleEntity { Id = Guid.NewGuid(), Name = name };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();
+
         return entity;
     }
 }

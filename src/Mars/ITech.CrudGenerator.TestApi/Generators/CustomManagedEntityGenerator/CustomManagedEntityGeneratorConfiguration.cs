@@ -2,12 +2,9 @@ using ITech.CrudGenerator.Abstractions.Configuration;
 
 namespace ITech.CrudGenerator.TestApi.Generators.CustomManagedEntityGenerator;
 
-public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomManagedEntity>
-{
-    public CustomManagedEntityGeneratorConfiguration()
-    {
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration
-        {
+public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomManagedEntity> {
+    public CustomManagedEntityGeneratorConfiguration() {
+        CreateOperation = new() {
             OperationGroup = "ManagedEntityCreateOperationCustomNs",
             CommandName = "CustomizedNameCreateManagedEntityCommand",
             HandlerName = "CustomizedNameCreateManagedEntityHandler",
@@ -17,8 +14,7 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             RouteName = "/customizedManagedEntityCreate"
         };
 
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration()
-        {
+        DeleteOperation = new() {
             OperationGroup = "ManagedEntityDeleteOperationCustomNs",
             CommandName = "CustomizedNameDeleteManagedEntityCommand",
             HandlerName = "CustomizedNameDeleteManagedEntityHandler",
@@ -27,8 +23,7 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             RouteName = "/customizedManagedEntityDelete/{{entity_name}}/{{id_param_name}}"
         };
 
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration
-        {
+        UpdateOperation = new() {
             OperationGroup = "ManagedEntityUpdateOperationCustomNs",
             CommandName = "CustomizedNameUpdateManagedEntityCommand",
             HandlerName = "CustomizedNameUpdateManagedEntityHandler",
@@ -38,13 +33,11 @@ public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfigur
             RouteName = "/customizedManagedEntityUpdate/{{id_param_name}}"
         };
 
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration()
-        {
+        GetByIdOperation = new() {
             Generate = false
         };
-        
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration()
-        {
+
+        GetListOperation = new() {
             Generate = false
         };
     }

@@ -11,22 +11,23 @@ namespace ITech.CrudGenerator.Core.Configurations.Configurators;
 ///     - {{entity_name}}<br />
 ///     - {{entity_name_plural}}<br />
 /// </summary>
-internal class PutBusinessLogicIntoNamespaceConfigurator(string namespacePath)
-{
+internal class PutBusinessLogicIntoNamespaceConfigurator(string namespacePath) {
     public string GetNamespacePath(
         string entityAssemblyName,
         string businessLogicFeatureName,
         string operationGroup,
-        EntityName entityName)
-    {
+        EntityName entityName
+    ) {
         var putIntoNamespaceTemplate = Template.Parse(namespacePath);
-        return putIntoNamespaceTemplate.Render(new
-        {
-            EntityAssemblyName = entityAssemblyName,
-            BusinessLogicFeatureName = businessLogicFeatureName,
-            OperationGroup = operationGroup,
-            EntityName = entityName.Name,
-            EntityNamePlural = entityName.PluralName,
-        });
+
+        return putIntoNamespaceTemplate.Render(
+            new {
+                EntityAssemblyName = entityAssemblyName,
+                BusinessLogicFeatureName = businessLogicFeatureName,
+                OperationGroup = operationGroup,
+                EntityName = entityName.Name,
+                EntityNamePlural = entityName.PluralName
+            }
+        );
     }
 }

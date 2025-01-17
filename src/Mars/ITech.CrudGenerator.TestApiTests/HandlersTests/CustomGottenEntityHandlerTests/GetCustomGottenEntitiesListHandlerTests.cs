@@ -7,18 +7,15 @@ using Moq.EntityFrameworkCore;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomGottenEntityHandlerTests;
 
-public class GetCustomGottenEntitiesListHandlerTests
-{
+public class GetCustomGottenEntitiesListHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly CustomizedNameGetCustomEntitiesListQuery _query;
     private readonly CustomizedNameGetCustomEntitiesListHandler _sut;
 
-    public GetCustomGottenEntitiesListHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public GetCustomGottenEntitiesListHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
-        _query = new()
-        {
+        _query = new() {
             Name = "Test Entity",
             Sort = ["id", "name"],
             Page = 1,
@@ -27,41 +24,39 @@ public class GetCustomGottenEntitiesListHandlerTests
     }
 
     [Fact]
-    public async Task Should_ChangeEntityDataAndSave()
-    {
+    public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         _db.Setup(x => x.Set<CustomGottenEntity>())
-            .ReturnsDbSet([new CustomGottenEntity { Id = Guid.NewGuid(), Name = "Test Entity" }]);
+            .ReturnsDbSet([new() { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
-        var entities = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
         entities.Should().BeOfType<CustomizedNameGetCustomEntitiesListDto>();
         entities.Page.Should().NotBeNull();
         entities.Page.CurrentPageIndex.Should().Be(1);
         entities.Page.PageSize.Should().Be(10);
-        entities.Items.Should().SatisfyRespectively(dto =>
-        {
-            dto.Id.Should().NotBeEmpty();
-            dto.Name.Should().NotBeEmpty();
-        });
+        entities.Items.Should().SatisfyRespectively(
+            dto => {
+                dto.Id.Should().NotBeEmpty();
+                dto.Name.Should().NotBeEmpty();
+            }
+        );
     }
 
     [Fact]
-    public void Should_HaveCorrectSortKeys()
-    {
+    public void Should_HaveCorrectSortKeys() {
         // Assert
         _query.GetSortKeys()
-            .Should().ContainInConsecutiveOrder(["id", "name"]);
+            .Should().ContainInConsecutiveOrder("id", "name");
     }
-    
+
     [Theory]
     [InlineData("CustomizedNameGetCustomEntitiesListQuery")]
     [InlineData("CustomizedNameGetCustomEntitiesListHandler")]
     [InlineData("CustomizedNameGetCustomEntitiesListDto")]
-    public void Should_BeInCustomNamespace(string typeName)
-    {
+    public void Should_BeInCustomNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
             .BeInNamespaceThatEndsWith(typeName, "CustomGottenEntityGetListOperationCustomNs");

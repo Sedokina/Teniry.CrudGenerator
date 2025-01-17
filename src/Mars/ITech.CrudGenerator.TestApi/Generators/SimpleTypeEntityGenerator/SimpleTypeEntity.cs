@@ -3,8 +3,7 @@ namespace ITech.CrudGenerator.TestApi.Generators.SimpleTypeEntityGenerator;
 /// <summary>
 ///     This entity contains all supported simple types
 /// </summary>
-public class SimpleTypeEntity
-{
+public class SimpleTypeEntity {
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public char Code { get; set; }

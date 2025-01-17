@@ -4,12 +4,12 @@ using Xunit.Abstractions;
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 
 public class MoqFluentAssertion<T> {
-    private readonly Action<T>          _fluentAssertionsChecker;
+    private readonly Action<T> _fluentAssertionsChecker;
     private readonly ITestOutputHelper? _testOutputHelper;
 
     public MoqFluentAssertion(Action<T> fluentAssertionsChecker, ITestOutputHelper? testOutputHelper) {
         _fluentAssertionsChecker = fluentAssertionsChecker;
-        _testOutputHelper        = testOutputHelper;
+        _testOutputHelper = testOutputHelper;
     }
 
     public bool Test(T valueToCheck) {

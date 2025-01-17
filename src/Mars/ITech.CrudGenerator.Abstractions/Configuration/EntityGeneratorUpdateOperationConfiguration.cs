@@ -1,7 +1,6 @@
 namespace ITech.CrudGenerator.Abstractions.Configuration;
 
-public sealed class EntityGeneratorUpdateOperationConfiguration
-{
+public sealed class EntityGeneratorUpdateOperationConfiguration {
     public bool? Generate { get; set; }
     public string? Operation { get; set; }
     public string? OperationGroup { get; set; }

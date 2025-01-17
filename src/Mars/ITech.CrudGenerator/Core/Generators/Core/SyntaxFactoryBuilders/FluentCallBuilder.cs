@@ -6,27 +6,26 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders;
 
-public class FluentCallBuilder
-{
+public class FluentCallBuilder {
     private InvocationExpressionSyntax _call = null!;
 
     public FluentCallBuilder CallGenericMethod(
         string objectWithMethod,
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         _call = SimpleSyntaxFactory.CallGenericMethod(
             objectWithMethod,
             methodNameToCall,
             methodGenericTypeNames,
             arguments
         );
+
         return this;
     }
 
-    public FluentCallBuilder ThenMethod(string methodNameToCall, List<ExpressionSyntax> arguments)
-    {
+    public FluentCallBuilder ThenMethod(string methodNameToCall, List<ExpressionSyntax> arguments) {
         _call = _call.WithExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
@@ -41,18 +40,15 @@ public class FluentCallBuilder
     public FluentCallBuilder ThenGenericMethod(
         string methodNameToCall,
         List<string> methodGenericTypeNames,
-        List<ExpressionSyntax> arguments)
-    {
+        List<ExpressionSyntax> arguments
+    ) {
         _call = _call.WithExpression(
             MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
                 _call,
                 GenericName(Identifier(methodNameToCall))
                     .WithTypeArgumentList(
-                        TypeArgumentList(SeparatedList<TypeSyntax>(
-                                methodGenericTypeNames.Select(IdentifierName)
-                            )
-                        )
+                        TypeArgumentList(SeparatedList<TypeSyntax>(methodGenericTypeNames.Select(IdentifierName)))
                     )
             )
         ).WithArgumentList(ArgumentList(SeparatedList(arguments.Select(Argument).ToArray())));
@@ -60,8 +56,7 @@ public class FluentCallBuilder
         return this;
     }
 
-    public AwaitExpressionSyntax BuildAsyncCall()
-    {
+    public AwaitExpressionSyntax BuildAsyncCall() {
         return AwaitExpression(_call);
     }
 }

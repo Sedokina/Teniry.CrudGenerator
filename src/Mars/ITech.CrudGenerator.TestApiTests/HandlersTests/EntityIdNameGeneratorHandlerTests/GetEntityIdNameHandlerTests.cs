@@ -6,29 +6,25 @@ using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
 
-public class GetEntityIdNameHandlerTests
-{
+public class GetEntityIdNameHandlerTests {
     private readonly Mock<TestMongoDb> _db;
     private readonly GetEntityIdNameQuery _query;
     private readonly GetEntityIdNameHandler _sut;
 
-    public GetEntityIdNameHandlerTests()
-    {
-        _db = new Mock<TestMongoDb>();
+    public GetEntityIdNameHandlerTests() {
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
 
-
     [Fact]
-    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity()
-    {
+    public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
         _db.Setup(x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()))
             .ReturnsAsync((EntityIdName?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -36,21 +32,21 @@ public class GetEntityIdNameHandlerTests
     }
 
     [Fact]
-    public async Task Should_GetEntityWithCorrectData()
-    {
+    public async Task Should_GetEntityWithCorrectData() {
         // Arrange
         _db.Setup(x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new EntityIdName { EntityIdNameId = _query.EntityIdNameId, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.EntityIdNameId.Should().Be(_query.EntityIdNameId);
         entity.Name.Should().Be("My test entity");
         _db.Verify(
             x => x.FindAsync<EntityIdName>(new object[] { _query.EntityIdNameId }, It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Once
+        );
         _db.VerifyNoOtherCalls();
     }
 }

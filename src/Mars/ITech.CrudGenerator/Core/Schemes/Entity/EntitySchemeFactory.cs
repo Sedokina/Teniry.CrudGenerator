@@ -11,19 +11,19 @@ using Pluralize.NET;
 
 namespace ITech.CrudGenerator.Core.Schemes.Entity;
 
-internal static class EntitySchemeFactory
-{
+internal static class EntitySchemeFactory {
     private static readonly Pluralizer NamePluralizer = new();
 
     internal static EntityScheme Construct(
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
-        DbContextScheme dbContextScheme)
-    {
+        DbContextScheme dbContextScheme
+    ) {
         var classMetadata = internalEntityGeneratorConfiguration.ClassMetadata;
         var entityName = new EntityName(classMetadata.ClassName, GetPluralEntityName(classMetadata.ClassName));
         var entityTitle = CreateEntityTitle(internalEntityGeneratorConfiguration, entityName);
         var properties = GetEntityProperties(classMetadata.ClassName, classMetadata.Properties, dbContextScheme);
-        return new EntityScheme(
+
+        return new(
             entityName,
             entityTitle,
             classMetadata.ContainingNamespace,
@@ -38,31 +38,29 @@ internal static class EntitySchemeFactory
 
     private static EntityTitle CreateEntityTitle(
         InternalEntityGeneratorConfiguration internalEntityGeneratorConfiguration,
-        EntityName entityName)
-    {
+        EntityName entityName
+    ) {
         var entityTitle = internalEntityGeneratorConfiguration.Title ?? GetTitleFromEntityName(entityName.ToString());
         var title = new EntityTitle(
             entityTitle,
-            internalEntityGeneratorConfiguration.TitlePlural ?? GetPluralEntityTitle(entityTitle));
+            internalEntityGeneratorConfiguration.TitlePlural ?? GetPluralEntityTitle(entityTitle)
+        );
+
         return title;
     }
 
-    private static string GetPluralEntityName(string entityName)
-    {
+    private static string GetPluralEntityName(string entityName) {
         var pluralEntityName = NamePluralizer.Pluralize(entityName);
-        if (entityName.Equals(pluralEntityName))
-        {
+        if (entityName.Equals(pluralEntityName)) {
             return $"{entityName}List";
         }
 
         return pluralEntityName;
     }
 
-    private static string GetPluralEntityTitle(string entityTitle)
-    {
+    private static string GetPluralEntityTitle(string entityTitle) {
         var pluralEntityName = NamePluralizer.Pluralize(entityTitle);
-        if (entityTitle.Equals(pluralEntityName))
-        {
+        if (entityTitle.Equals(pluralEntityName)) {
             return $"{entityTitle} list";
         }
 
@@ -73,17 +71,15 @@ internal static class EntitySchemeFactory
         string className,
         EquatableList<InternalEntityClassPropertyMetadata> propertiesMetadata,
         DbContextScheme dbContextScheme
-    )
-    {
+    ) {
         var result = new EquatableList<EntityProperty>();
-        foreach (var propertyMetadata in propertiesMetadata)
-        {
+        foreach (var propertyMetadata in propertiesMetadata) {
             if (!propertyMetadata.IsSimpleType) continue;
 
             // For DateTimeOffset and other date variations remove system from the property type declaration
-            var propertyTypeName = propertyMetadata.TypeName.ToLower().StartsWith("system.")
-                ? propertyMetadata.TypeMetadataName
-                : propertyMetadata.TypeName;
+            var propertyTypeName = propertyMetadata.TypeName.ToLower().StartsWith("system.") ?
+                propertyMetadata.TypeMetadataName :
+                propertyMetadata.TypeName;
 
             var defaultValue = propertyMetadata.SpecialType == SpecialType.System_String ? "\"\"" : null;
 
@@ -93,18 +89,21 @@ internal static class EntitySchemeFactory
                 isPrimaryKey || isForeignKey,
                 propertyTypeName,
                 propertyMetadata,
-                dbContextScheme);
-            result.Add(new EntityProperty(
-                propertyTypeName,
-                propertyMetadata.PropertyName,
-                propertyMetadata.PropertyName.ToLowerFirstChar(),
-                propertyMetadata.IsNullable,
-                defaultValue,
-                isPrimaryKey,
-                filterProperties,
-                propertyMetadata.IsSimpleType,
-                propertyMetadata.PropertyName.ToLowerFirstChar()
-            ));
+                dbContextScheme
+            );
+            result.Add(
+                new(
+                    propertyTypeName,
+                    propertyMetadata.PropertyName,
+                    propertyMetadata.PropertyName.ToLowerFirstChar(),
+                    propertyMetadata.IsNullable,
+                    defaultValue,
+                    isPrimaryKey,
+                    filterProperties,
+                    propertyMetadata.IsSimpleType,
+                    propertyMetadata.PropertyName.ToLowerFirstChar()
+                )
+            );
         }
 
         return result;
@@ -114,93 +113,83 @@ internal static class EntitySchemeFactory
         bool isForeignOrPrimaryKey,
         string propertyTypeName,
         InternalEntityClassPropertyMetadata propertyMetadata,
-        DbContextScheme dbContextScheme)
-    {
-        if (isForeignOrPrimaryKey)
-        {
+        DbContextScheme dbContextScheme
+    ) {
+        if (isForeignOrPrimaryKey) {
             var pluralPropertyName = NamePluralizer.Pluralize(propertyMetadata.PropertyName);
-            if (dbContextScheme.ContainsFilter(FilterType.Contains))
-            {
-                return
-                [
-                    new EntityFilterProperty(
+            if (dbContextScheme.ContainsFilter(FilterType.Contains)) {
+                return [
+                    new(
                         $"{propertyTypeName}[]?",
                         pluralPropertyName,
-                        dbContextScheme.GetFilterExpression(FilterType.Contains))
+                        dbContextScheme.GetFilterExpression(FilterType.Contains)
+                    )
                 ];
             }
 
             return [];
         }
 
-        if (!propertyMetadata.IsNullable)
-        {
+        if (!propertyMetadata.IsNullable) {
             propertyTypeName += "?";
         }
 
-        if (propertyMetadata.IsRangeType())
-        {
+        if (propertyMetadata.IsRangeType()) {
             if (dbContextScheme.ContainsFilter(FilterType.GreaterThanOrEqual) &&
-                dbContextScheme.ContainsFilter(FilterType.LessThan))
-            {
-                return
-                [
-                    new EntityFilterProperty(
+                dbContextScheme.ContainsFilter(FilterType.LessThan)) {
+                return [
+                    new(
                         propertyTypeName,
                         $"{propertyMetadata.PropertyName}From",
-                        dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)),
-                    new EntityFilterProperty(
+                        dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)
+                    ),
+                    new(
                         propertyTypeName,
                         $"{propertyMetadata.PropertyName}To",
-                        dbContextScheme.GetFilterExpression(FilterType.LessThan))
+                        dbContextScheme.GetFilterExpression(FilterType.LessThan)
+                    )
                 ];
             }
 
             return [];
         }
 
-        if (propertyMetadata.IsSimpleType)
-        {
-            if (propertyMetadata.SpecialType == SpecialType.System_String)
-            {
-                if (dbContextScheme.ContainsFilter(FilterType.Like))
-                {
-                    return
-                    [
-                        new EntityFilterProperty(
+        if (propertyMetadata.IsSimpleType) {
+            if (propertyMetadata.SpecialType == SpecialType.System_String) {
+                if (dbContextScheme.ContainsFilter(FilterType.Like)) {
+                    return [
+                        new(
                             propertyTypeName,
                             propertyMetadata.PropertyName,
-                            dbContextScheme.GetFilterExpression(FilterType.Like))
+                            dbContextScheme.GetFilterExpression(FilterType.Like)
+                        )
                     ];
                 }
 
                 return [];
             }
 
-            return
-            [
-                new EntityFilterProperty(
+            return [
+                new(
                     propertyTypeName,
                     propertyMetadata.PropertyName,
-                    dbContextScheme.GetFilterExpression(FilterType.Equals))
+                    dbContextScheme.GetFilterExpression(FilterType.Equals)
+                )
             ];
         }
 
         return [];
     }
 
-
-    private static bool IsPrimaryKey(string className, string propertyName)
-    {
+    private static bool IsPrimaryKey(string className, string propertyName) {
         return propertyName.Equals("id", StringComparison.CurrentCultureIgnoreCase) ||
-               propertyName.Equals($"{className}Id", StringComparison.InvariantCultureIgnoreCase) ||
-               propertyName.Equals("_id");
+            propertyName.Equals($"{className}Id", StringComparison.InvariantCultureIgnoreCase) ||
+            propertyName.Equals("_id");
     }
 
-    private static bool IsForeignKey(string propertyName)
-    {
+    private static bool IsForeignKey(string propertyName) {
         return propertyName.EndsWith("id", StringComparison.InvariantCultureIgnoreCase) ||
-               propertyName.EndsWith("_id", StringComparison.CurrentCultureIgnoreCase);
+            propertyName.EndsWith("_id", StringComparison.CurrentCultureIgnoreCase);
     }
 
     /// <summary>
@@ -211,10 +200,12 @@ internal static class EntitySchemeFactory
     /// <example>
     ///     MyProjectClassName returns My project class name
     /// </example>
-    private static string GetTitleFromEntityName(string entityName)
-    {
-        var regex = new Regex("(?<=[A-Z])(?=[A-Z][a-z]) |  (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
-            RegexOptions.IgnorePatternWhitespace);
+    private static string GetTitleFromEntityName(string entityName) {
+        var regex = new Regex(
+            "(?<=[A-Z])(?=[A-Z][a-z]) |  (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
+            RegexOptions.IgnorePatternWhitespace
+        );
+
         return regex.Replace(entityName, " ").ToLowerAllButFirstChart();
     }
 }

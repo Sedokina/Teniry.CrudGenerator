@@ -7,46 +7,46 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders;
 
-internal class ConstructorBuilder
-{
+internal class ConstructorBuilder {
     private ConstructorDeclarationSyntax _constructorDeclaration;
 
-    public ConstructorBuilder(string name)
-    {
+    public ConstructorBuilder(string name) {
         _constructorDeclaration = ConstructorDeclaration(name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword));
     }
 
-    public ConstructorBuilder WithParameters(List<ParameterOfMethodBuilder> properties)
-    {
+    public ConstructorBuilder WithParameters(List<ParameterOfMethodBuilder> properties) {
         _constructorDeclaration = _constructorDeclaration.AddParameterListParameters(
-            properties.Select(
-                x => Parameter(Identifier(x.Name)).WithType(ParseTypeName(x.Type))
-            ).ToArray()
+            properties.Select(x => Parameter(Identifier(x.Name)).WithType(ParseTypeName(x.Type))).ToArray()
         );
+
         return this;
     }
 
-    public ConstructorBuilder WithBody(BlockBuilder body)
-    {
+    public ConstructorBuilder WithBody(BlockBuilder body) {
         _constructorDeclaration = _constructorDeclaration.WithBody(body.Build());
+
         return this;
     }
 
-    public ConstructorBuilder WithBaseConstructor(string[] argumentNames)
-    {
+    public ConstructorBuilder WithBaseConstructor(string[] argumentNames) {
         var baseArguments = ArgumentList(
-            SeparatedList(argumentNames.Select(x =>
-                Argument(IdentifierName(x)))));
+            SeparatedList(
+                argumentNames.Select(
+                    x =>
+                        Argument(IdentifierName(x))
+                )
+            )
+        );
 
         _constructorDeclaration = _constructorDeclaration.WithInitializer(
-            ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseArguments));
+            ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseArguments)
+        );
 
         return this;
     }
 
-    public ConstructorDeclarationSyntax Build()
-    {
+    public ConstructorDeclarationSyntax Build() {
         return _constructorDeclaration;
     }
 }
