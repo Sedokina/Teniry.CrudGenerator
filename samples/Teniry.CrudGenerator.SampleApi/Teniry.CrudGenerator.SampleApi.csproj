@@ -34,7 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="Teniry.CrudGenerator.TestApiTests"/>
+        <InternalsVisibleTo Include="Teniry.CrudGenerator.SampleApiE2eTests"/>
     </ItemGroup>
 
 </Project>
