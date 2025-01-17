@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Immutable;
 using System.Reflection;
+using ITech.CrudGenerator.Abstractions.DbContext;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace ITech.CrudGenerator.Tests;
+namespace ITech.CrudGenerator.Tests.Helpers;
 
 /// <summary>
 /// This test helper allows to run a source generator and verify that the generator steps are cached correctly
 /// </summary>
 /// <remarks>It was taken from https://andrewlock.net/creating-a-source-generator-part-10-testing-your-incremental-generator-pipeline-outputs-are-cacheable/</remarks>
-public class TestHelpers
+public static class TestHelpers
 {
     // You call this method passing in C# sources, and the list of stages you expect
     // It runs the generator, asserts the outputs are ok, 
@@ -26,9 +27,12 @@ public class TestHelpers
         // Configure the assembly references you need
         // This will vary depending on your generator and requirements
         var references = AppDomain.CurrentDomain.GetAssemblies()
-            .Where(_ => !_.IsDynamic && !string.IsNullOrWhiteSpace(_.Location))
-            .Select(_ => MetadataReference.CreateFromFile(_.Location))
-            .Concat(new[] { MetadataReference.CreateFromFile(typeof(T).Assembly.Location) });
+            .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location))
+            .Select(x => MetadataReference.CreateFromFile(x.Location))
+            .Concat([
+                MetadataReference.CreateFromFile(typeof(T).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(DbContextDbProvider).Assembly.Location)
+            ]);
 
         // Create a Compilation object
         // You may want to specify other results here
@@ -211,15 +215,5 @@ public class TestHelpers
                 Visit(fieldValue);
             }
         }
-    }
-
-    public static string[] GetTrackingNamesOf(Type type)
-    {
-        return type
-            .GetFields()
-            .Where(fi => fi.IsLiteral && !fi.IsInitOnly && fi.FieldType == typeof(string))
-            .Select(x => (string)x.GetRawConstantValue()!)
-            .Where(x => !string.IsNullOrEmpty(x))
-            .ToArray();
     }
 }
