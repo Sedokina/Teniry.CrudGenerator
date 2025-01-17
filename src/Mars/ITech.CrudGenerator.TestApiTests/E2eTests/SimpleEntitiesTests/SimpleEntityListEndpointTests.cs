@@ -12,7 +12,11 @@ public class SimpleEntityListEndpointTests(TestApiFixture fixture) {
 
     public static TheoryData<string, string, Expression<Func<SimpleEntitiesListItemDto, object>>> SortData => new() {
         { "simpleEntity?page=1&pageSize=10&sort=asc.name", "asc", x => x.Name },
-        { "simpleEntity?page=1&pageSize=10&sort=desc.name", "desc", x => x.Name },
+        { "simpleEntity?page=1&pageSize=10&sort=desc.name", "desc", x => x.Name }
+    };
+
+    public static TheoryData<string, Expression<Func<SimpleEntitiesListItemDto, bool>>> FilterData => new() {
+        { "simpleEntity?page=1&pageSize=10&name=First", x => x.Name.Contains("First") }
     };
 
     [Theory]
@@ -36,10 +40,6 @@ public class SimpleEntityListEndpointTests(TestApiFixture fixture) {
             actual!.Items.Should().BeInDescendingOrder(property);
         }
     }
-
-    public static TheoryData<string, Expression<Func<SimpleEntitiesListItemDto, bool>>> FilterData => new() {
-        { "simpleEntity?page=1&pageSize=10&name=First", x => x.Name.Contains("First") },
-    };
 
     [Theory]
     [MemberData(nameof(FilterData))]

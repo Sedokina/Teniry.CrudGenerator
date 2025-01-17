@@ -14,8 +14,8 @@ internal static class ValueProviders {
     internal static IncrementalValuesProvider<Result<InternalEntityGeneratorConfiguration?>>
         GetGeneratorConfigurations(IncrementalGeneratorInitializationContext context) {
         return context.SyntaxProvider.CreateSyntaxProvider(
-            predicate: (node, _) => CheckIfNodeIsInheritedFromClass(node, "EntityGeneratorConfiguration"),
-            transform: (syntaxContext, _) => TransformFoundGeneratorConfigurationsToInternalScheme(syntaxContext)
+            (node, _) => CheckIfNodeIsInheritedFromClass(node, "EntityGeneratorConfiguration"),
+            (syntaxContext, _) => TransformFoundGeneratorConfigurationsToInternalScheme(syntaxContext)
         ).WithTrackingName(CrudGeneratorTrackingNames.GetGeneratorConfigurations);
     }
 
@@ -24,8 +24,8 @@ internal static class ValueProviders {
         return context.SyntaxProvider
             .ForAttributeWithMetadataName(
                 DbContextAttributeName,
-                predicate: (_, _) => true,
-                transform: (syntaxContext, _) => DbContextSchemeFactory.Construct(syntaxContext)
+                (_, _) => true,
+                (syntaxContext, _) => DbContextSchemeFactory.Construct(syntaxContext)
             ).WithTrackingName(CrudGeneratorTrackingNames.GetDbContexts);
     }
 

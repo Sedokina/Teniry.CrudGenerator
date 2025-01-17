@@ -11,7 +11,7 @@ public class MongoObjectIdJsonConverter : JsonConverter<ObjectId> {
     public override ObjectId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         var value = reader.GetString();
         try {
-            return new ObjectId(value);
+            return new(value);
         } catch (Exception e) {
             Console.WriteLine(e);
 

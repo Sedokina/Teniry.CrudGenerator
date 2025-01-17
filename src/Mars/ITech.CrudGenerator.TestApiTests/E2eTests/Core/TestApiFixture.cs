@@ -3,9 +3,6 @@ using ITech.CrudGenerator.TestApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
 using Moq;
 
 namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
@@ -22,7 +19,7 @@ public class TestApiFixture : IAsyncLifetime {
             .AddUserSecrets(typeof(ApiFactory).Assembly, true)
             .Build();
 
-        _apiFactory = new ApiFactory(_configuration);
+        _apiFactory = new(_configuration);
     }
 
     public async Task InitializeAsync() {
@@ -33,9 +30,13 @@ public class TestApiFixture : IAsyncLifetime {
         await DbDataInitializer.InitializeAsync(db);
     }
 
+    public async Task DisposeAsync() {
+        await _apiFactory.DisposeAsync();
+    }
+
     public HttpClient GetHttpClient() {
         var httpClient = _apiFactory.CreateClient();
-        httpClient.BaseAddress = new Uri(_apiFactory.BaseApiPath);
+        httpClient.BaseAddress = new(_apiFactory.BaseApiPath);
 
         return httpClient;
     }
@@ -71,9 +72,5 @@ public class TestApiFixture : IAsyncLifetime {
         db.Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
 
         return db;
-    }
-
-    public async Task DisposeAsync() {
-        await _apiFactory.DisposeAsync();
     }
 }

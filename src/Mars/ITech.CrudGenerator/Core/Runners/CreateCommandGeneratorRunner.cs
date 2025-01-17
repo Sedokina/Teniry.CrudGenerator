@@ -13,11 +13,11 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 namespace ITech.CrudGenerator.Core.Runners;
 
 internal record CreateCommandGeneratorRunner : IGeneratorRunner {
-    public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
-    private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
+    private readonly EntityScheme _entityScheme;
     private readonly EndpointRouteConfigurator? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string _getByIdOperationName;
+    public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
 
     public CreateCommandGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
@@ -40,40 +40,6 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner {
         _getByIdOperationName = getByIdOperationName;
     }
 
-    private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructBuilder(
-        GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
-        InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme
-    ) {
-        return new CqrsOperationWithReturnValueGeneratorConfiguration(
-            generate: operationConfiguration?.Generate ?? true,
-            globalConfiguration: globalConfiguration,
-            operationsSharedConfiguration: operationsSharedConfiguration,
-            operationType: CqrsOperationType.Command,
-            operationName: operationConfiguration?.Operation ?? "Create",
-            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
-            dto: new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
-            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator {
-                // If general generate is false, than endpoint generate is also false
-                Generate = operationConfiguration?.Generate != false &&
-                    (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(
-                    operationConfiguration?.EndpointClassName ??
-                    "{{operation_name}}{{entity_name}}Endpoint"
-                ),
-                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurator = new(
-                    operationConfiguration?.RouteName ??
-                    "/{{entity_name}}/{{operation_name | string.downcase}}"
-                )
-            },
-            entityScheme
-        );
-    }
-
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
 
@@ -94,5 +60,39 @@ internal record CreateCommandGeneratorRunner : IGeneratorRunner {
         }
 
         return generateCreateCommand.GeneratedFiles;
+    }
+
+    private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructBuilder(
+        GlobalCrudGeneratorConfiguration globalConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
+        InternalEntityGeneratorCreateOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme
+    ) {
+        return new(
+            operationConfiguration?.Generate ?? true,
+            globalConfiguration,
+            operationsSharedConfiguration,
+            CqrsOperationType.Command,
+            operationConfiguration?.Operation ?? "Create",
+            new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            new(operationConfiguration?.DtoName ?? "Created{{entity_name}}Dto"),
+            new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            new() {
+                // If general generate is false, than endpoint generate is also false
+                Generate = operationConfiguration?.Generate != false &&
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
+                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
+                RouteConfigurator = new(
+                    operationConfiguration?.RouteName ??
+                    "/{{entity_name}}/{{operation_name | string.downcase}}"
+                )
+            },
+            entityScheme
+        );
     }
 }

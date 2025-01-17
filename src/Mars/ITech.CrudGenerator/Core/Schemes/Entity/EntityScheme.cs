@@ -56,11 +56,11 @@ internal class EntityScheme {
     public override int GetHashCode() {
         unchecked {
             var hashCode = EntityName.GetHashCode();
-            hashCode = (hashCode * 397) ^ EntityTitle.GetHashCode();
-            hashCode = (hashCode * 397) ^ EntityNamespace.GetHashCode();
-            hashCode = (hashCode * 397) ^ ContainingAssembly.GetHashCode();
-            hashCode = (hashCode * 397) ^ (DefaultSort != null ? DefaultSort.GetHashCode() : 0);
-            hashCode = (hashCode * 397) ^ Properties.GetHashCode();
+            hashCode = hashCode * 397 ^ EntityTitle.GetHashCode();
+            hashCode = hashCode * 397 ^ EntityNamespace.GetHashCode();
+            hashCode = hashCode * 397 ^ ContainingAssembly.GetHashCode();
+            hashCode = hashCode * 397 ^ (DefaultSort != null ? DefaultSort.GetHashCode() : 0);
+            hashCode = hashCode * 397 ^ Properties.GetHashCode();
 
             return hashCode;
         }

@@ -15,7 +15,7 @@ public class DeleteCommandGeneratorRunnerTests {
 
     public DeleteCommandGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata(
+            new(
                 "TestEntity",
                 "",
                 "",
@@ -30,7 +30,7 @@ public class DeleteCommandGeneratorRunnerTests {
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -46,7 +46,7 @@ public class DeleteCommandGeneratorRunnerTests {
     [Fact]
     public void Should_SetCorrectDefaultValues() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorDeleteOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -68,7 +68,7 @@ public class DeleteCommandGeneratorRunnerTests {
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorDeleteOperationConfiguration {
+            new() {
                 Operation = "Del"
             }
         );
@@ -93,7 +93,7 @@ public class DeleteCommandGeneratorRunnerTests {
     public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorDeleteOperationConfiguration {
+            new() {
                 Generate = false,
                 OperationGroup = "CustomOperationGroupName",
                 CommandName = "CustomCommandName",
@@ -124,7 +124,7 @@ public class DeleteCommandGeneratorRunnerTests {
     private DeleteCommandGeneratorRunner CreateFactory(
         InternalEntityGeneratorDeleteOperationConfiguration configuration
     ) {
-        return new DeleteCommandGeneratorRunner(
+        return new(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,

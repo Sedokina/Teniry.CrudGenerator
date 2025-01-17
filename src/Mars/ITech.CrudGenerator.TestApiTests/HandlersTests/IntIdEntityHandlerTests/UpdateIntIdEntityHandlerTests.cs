@@ -12,7 +12,7 @@ public class UpdateIntIdEntityHandlerTests {
     private readonly UpdateIntIdEntityHandler _sut;
 
     public UpdateIntIdEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(1) {
             Name = "New entity name"
@@ -26,7 +26,7 @@ public class UpdateIntIdEntityHandlerTests {
             .ReturnsAsync((IntIdEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -41,7 +41,7 @@ public class UpdateIntIdEntityHandlerTests {
             .ReturnsAsync(entity);
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         entity.Name.Should().Be("New entity name");

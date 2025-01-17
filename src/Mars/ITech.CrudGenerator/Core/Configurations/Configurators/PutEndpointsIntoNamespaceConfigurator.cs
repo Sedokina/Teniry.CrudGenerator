@@ -20,7 +20,7 @@ internal class PutEndpointsIntoNamespaceConfigurator(string namespacePath) {
             new {
                 EntityName = entityName.Name,
                 EntityNamePlural = entityName.PluralName,
-                EntityAssemblyName = entityAssemblyName,
+                EntityAssemblyName = entityAssemblyName
             }
         );
     }

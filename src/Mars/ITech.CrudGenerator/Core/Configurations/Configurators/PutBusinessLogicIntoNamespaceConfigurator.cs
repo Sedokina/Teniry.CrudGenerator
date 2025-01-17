@@ -26,7 +26,7 @@ internal class PutBusinessLogicIntoNamespaceConfigurator(string namespacePath) {
                 BusinessLogicFeatureName = businessLogicFeatureName,
                 OperationGroup = operationGroup,
                 EntityName = entityName.Name,
-                EntityNamePlural = entityName.PluralName,
+                EntityNamePlural = entityName.PluralName
             }
         );
     }

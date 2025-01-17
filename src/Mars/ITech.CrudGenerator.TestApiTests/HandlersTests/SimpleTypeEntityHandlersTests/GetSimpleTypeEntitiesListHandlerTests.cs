@@ -12,7 +12,7 @@ public class GetSimpleTypeEntitiesListHandlerTests {
     private readonly GetSimpleTypeEntitiesHandler _sut;
 
     public GetSimpleTypeEntitiesListHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new() {
             Ids = [new("2e83ef18-4f90-4b7d-a513-93e413bad39e")],
@@ -45,7 +45,7 @@ public class GetSimpleTypeEntitiesListHandlerTests {
             DoubleRatingTo = 101873.862378,
             DecimalRatingFrom = 667.97716829m,
             DecimalRatingTo = 1067.97716829m,
-            NotIdGuids = [new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
+            NotIdGuids = [new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")],
             Sort = ["name", "code"],
             Page = 1,
             PageSize = 10
@@ -58,8 +58,8 @@ public class GetSimpleTypeEntitiesListHandlerTests {
         _db.Setup(x => x.Set<SimpleTypeEntity>())
             .ReturnsDbSet(
                 [
-                    new SimpleTypeEntity {
-                        Id = new Guid("2e83ef18-4f90-4b7d-a513-93e413bad39e"),
+                    new() {
+                        Id = new("2e83ef18-4f90-4b7d-a513-93e413bad39e"),
                         Name = "Test Entity",
                         Code = 'a',
                         IsActive = true,
@@ -76,13 +76,13 @@ public class GetSimpleTypeEntitiesListHandlerTests {
                         FloatRating = 18.13f,
                         DoubleRating = 91873.862378,
                         DecimalRating = 867.97716829m,
-                        NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+                        NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
                     }
                 ]
             );
 
         // Act
-        var entities = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
         entities.Page.Should().NotBeNull();
@@ -117,12 +117,24 @@ public class GetSimpleTypeEntitiesListHandlerTests {
         // Assert
         _query.GetSortKeys()
             .Should().ContainInConsecutiveOrder(
-                [
-                    "id", "name", "code", "isActive", "registrationDate", "lastSignInDate", "byteRating", "shortRating",
-                    "intRating", "longRating", "sByteRating", "uShortRating", "uIntRating", "uLongRating",
-                    "floatRating",
-                    "doubleRating", "decimalRating", "notIdGuid"
-                ]
+                "id",
+                "name",
+                "code",
+                "isActive",
+                "registrationDate",
+                "lastSignInDate",
+                "byteRating",
+                "shortRating",
+                "intRating",
+                "longRating",
+                "sByteRating",
+                "uShortRating",
+                "uIntRating",
+                "uLongRating",
+                "floatRating",
+                "doubleRating",
+                "decimalRating",
+                "notIdGuid"
             );
     }
 

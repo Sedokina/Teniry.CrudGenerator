@@ -45,7 +45,7 @@ internal class InternalEntityGeneratorConfigurationFactory {
     private static InternalEntityClassMetadata GetEntityClassMetadata(INamedTypeSymbol? generatorSymbol) {
         var entityClassTypeSymbol = generatorSymbol?.BaseType?.TypeArguments.FirstOrDefault();
 
-        if (entityClassTypeSymbol == null) return new InternalEntityClassMetadata("", "", "", []);
+        if (entityClassTypeSymbol == null) return new("", "", "", []);
 
         var properties = entityClassTypeSymbol.OriginalDefinition.GetMembers().OfType<IPropertySymbol>()
             .Select(
@@ -62,7 +62,7 @@ internal class InternalEntityGeneratorConfigurationFactory {
             entityClassTypeSymbol.Name,
             entityClassTypeSymbol.ContainingNamespace.ToString(),
             entityClassTypeSymbol.ContainingAssembly.Name,
-            new EquatableList<InternalEntityClassPropertyMetadata>(properties)
+            new(properties)
         );
 
         return internalEntityClassMetadata;
@@ -71,7 +71,7 @@ internal class InternalEntityGeneratorConfigurationFactory {
     private static PropertyAssignmentExpressionToPropertyNameAndValueParser ConstructAvailableParsers() {
         List<IExpressionSyntaxToValueParser> availableAssignmentExpressionsRightSideParsers = [
             new LiteralExpressionToValueParser(),
-            new EntityGeneratorDefaultSortToValueParser(new LiteralExpressionToValueParser()),
+            new EntityGeneratorDefaultSortToValueParser(new())
         ];
 
         var assignmentExpressionParer = new PropertyAssignmentExpressionToPropertyNameAndValueParser(

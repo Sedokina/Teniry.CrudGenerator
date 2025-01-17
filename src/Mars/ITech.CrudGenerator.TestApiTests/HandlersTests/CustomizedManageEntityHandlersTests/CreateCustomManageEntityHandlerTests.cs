@@ -12,7 +12,7 @@ public class CreateCustomManageEntityHandlerTests {
     private readonly CustomizedNameCreateManagedEntityHandler _sut;
 
     public CreateCustomManageEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new() {
             Name = "My test entity"
@@ -26,7 +26,7 @@ public class CreateCustomManageEntityHandlerTests {
             .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         // Assert
         createdEntityDto.Id.Should().NotBeEmpty();
@@ -39,7 +39,7 @@ public class CreateCustomManageEntityHandlerTests {
             .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         createdEntityDto.GetType().Name.Should().Be("CustomizedNameCreatedManagedEntityDto");
     }
@@ -47,7 +47,7 @@ public class CreateCustomManageEntityHandlerTests {
     [Fact]
     public async Task Should_MapCommandToEntityCorrectly() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(
@@ -61,7 +61,7 @@ public class CreateCustomManageEntityHandlerTests {
     [Fact]
     public async Task Should_AddToDbSetAndSave() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()));

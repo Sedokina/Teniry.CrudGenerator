@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http.Json;
@@ -45,29 +46,6 @@ public class SimpleTypeEntityListEndpointTests(TestApiFixture fixture) {
         { "simpleTypeEntity?page=1&pageSize=10&sort=desc.decimalRating", "desc", x => x.DecimalRating }
     };
 
-    [Theory]
-    [MemberData(nameof(SortData))]
-    public async Task Should_SortListResult(
-        string endpoint,
-        string direction,
-        Expression<Func<SimpleTypeEntitiesListItemDto, object>> property
-    ) {
-        // Act
-        var response = await _httpClient.GetAsync(endpoint);
-        response.Should().FailIfNotSuccessful();
-
-        // Assert correct response
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var actual = await response.Content.ReadFromJsonAsync<SimpleTypeEntitiesDto>();
-
-        if (direction.Equals("asc")) {
-            actual!.Items.Should().BeInAscendingOrder(property);
-        } else {
-            actual!.Items.Should().BeInDescendingOrder(property);
-        }
-    }
-
     public static TheoryData<string, Expression<Func<SimpleTypeEntitiesListItemDto, bool>>> FilterData => new() {
         {
             "simpleTypeEntity?page=1&pageSize=10&ids=44bacea2-1e32-452a-b1f3-28e46924e899",
@@ -77,25 +55,25 @@ public class SimpleTypeEntityListEndpointTests(TestApiFixture fixture) {
         { "simpleTypeEntity?page=1&pageSize=10&code=a", x => x.Code == 'a' }, {
             $"simpleTypeEntity?page=1&pageSize=10&registrationDateFrom={DateTime.UtcNow.ToString(
                 "o",
-                System.Globalization.CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture
             )}",
             x => x.RegistrationDate.Date >= DateTime.Now.Date
         }, {
             $"simpleTypeEntity?page=1&pageSize=10&registrationDateTo={DateTime.UtcNow.ToString(
                 "o",
-                System.Globalization.CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture
             )}",
             x => x.RegistrationDate < DateTime.Now.Date
         }, {
             $"simpleTypeEntity?page=1&pageSize=10&lastSignInDateFrom={DateTime.UtcNow.ToString(
                 "o",
-                System.Globalization.CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture
             )}",
             x => x.LastSignInDate >= DateTime.UtcNow.AddMinutes(-5)
         }, {
             $"simpleTypeEntity?page=1&pageSize=10&lastSignInDateTo={DateTime.UtcNow.ToString(
                 "o",
-                System.Globalization.CultureInfo.InvariantCulture
+                CultureInfo.InvariantCulture
             )}",
             x => x.LastSignInDate < DateTime.UtcNow
         },
@@ -126,6 +104,29 @@ public class SimpleTypeEntityListEndpointTests(TestApiFixture fixture) {
             x => x.NotIdGuid == new Guid("f6c5e2d1-b438-4faf-8521-b775d783f6f3")
         }
     };
+
+    [Theory]
+    [MemberData(nameof(SortData))]
+    public async Task Should_SortListResult(
+        string endpoint,
+        string direction,
+        Expression<Func<SimpleTypeEntitiesListItemDto, object>> property
+    ) {
+        // Act
+        var response = await _httpClient.GetAsync(endpoint);
+        response.Should().FailIfNotSuccessful();
+
+        // Assert correct response
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var actual = await response.Content.ReadFromJsonAsync<SimpleTypeEntitiesDto>();
+
+        if (direction.Equals("asc")) {
+            actual!.Items.Should().BeInAscendingOrder(property);
+        } else {
+            actual!.Items.Should().BeInDescendingOrder(property);
+        }
+    }
 
     [Theory]
     [MemberData(nameof(FilterData))]

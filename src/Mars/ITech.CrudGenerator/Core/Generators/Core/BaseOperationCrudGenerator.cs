@@ -6,8 +6,8 @@ namespace ITech.CrudGenerator.Core.Generators.Core;
 
 internal abstract class BaseOperationCrudGenerator<TConfiguration> : BaseGenerator
     where TConfiguration : CqrsOperationWithoutReturnValueGeneratorConfiguration {
-    protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     protected readonly EntityScheme EntityScheme;
+    protected readonly CrudGeneratorScheme<TConfiguration> Scheme;
     public EndpointMap? EndpointMap { get; set; }
 
     protected BaseOperationCrudGenerator(CrudGeneratorScheme<TConfiguration> scheme)

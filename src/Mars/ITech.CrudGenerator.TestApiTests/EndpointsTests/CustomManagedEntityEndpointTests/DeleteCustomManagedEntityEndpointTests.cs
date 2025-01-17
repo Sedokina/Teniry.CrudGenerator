@@ -23,7 +23,7 @@ public class DeleteCustomManagedEntityEndpointTests {
             .RunDeleteAsync(
                 Guid.NewGuid(),
                 _commandDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

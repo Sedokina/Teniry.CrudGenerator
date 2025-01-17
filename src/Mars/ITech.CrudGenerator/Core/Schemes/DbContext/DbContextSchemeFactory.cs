@@ -27,7 +27,7 @@ internal class DbContextSchemeFactory {
             dbProviderArgument.Value is null ? default : (DbContextDbProvider)dbProviderArgument.Value;
 
         return new(
-            new DbContextScheme(
+            new(
                 dbContextClassSymbol.ContainingNamespace.ToString(),
                 dbContextClassSymbol.Name,
                 dbProviderArgumentValue,
@@ -60,22 +60,22 @@ internal class DbContextSchemeFactory {
     }
 
     private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForPostgres() {
-        return new Dictionary<FilterType, FilterExpression> {
+        return new() {
             { FilterType.Contains, new ContainsFilterExpression() },
             { FilterType.Equals, new EqualsFilterExpression() },
             { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
             { FilterType.LessThan, new LessThanFilterExpression() },
-            { FilterType.Like, new LikeFilterExpression() },
+            { FilterType.Like, new LikeFilterExpression() }
         };
     }
 
     private static Dictionary<FilterType, FilterExpression> GetFilterExpressionsForMongo() {
-        return new Dictionary<FilterType, FilterExpression> {
+        return new() {
             { FilterType.Contains, new ContainsFilterExpression() },
             { FilterType.Equals, new EqualsFilterExpression() },
             { FilterType.GreaterThanOrEqual, new GreaterThanOrEqualFilterExpression() },
             { FilterType.LessThan, new LessThanFilterExpression() },
-            { FilterType.Like, new LikeMongoFilterExpression() },
+            { FilterType.Like, new LikeMongoFilterExpression() }
         };
     }
 }

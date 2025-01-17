@@ -80,7 +80,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture) {
             .And.Subject.ToString().Should().NotBeNullOrEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<IntIdEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<IntIdEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -102,7 +102,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<IntIdEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<IntIdEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
@@ -121,7 +121,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<IntIdEntity>([createdIntIdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<IntIdEntity>([createdIntIdEntity.Id], new());
         entity.Should().BeNull();
     }
 

@@ -14,14 +14,14 @@ public class CreateCommandGeneratorRunnerTests {
 
     public CreateCommandGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration =
-            new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
+            new InternalEntityGeneratorConfiguration(new("TestEntity", "", "", []));
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -37,7 +37,7 @@ public class CreateCommandGeneratorRunnerTests {
     [Fact]
     public void Should_SetCorrectDefaultValues() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorCreateOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -60,7 +60,7 @@ public class CreateCommandGeneratorRunnerTests {
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorCreateOperationConfiguration {
+            new() {
                 Operation = "Add"
             }
         );
@@ -86,7 +86,7 @@ public class CreateCommandGeneratorRunnerTests {
     public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorCreateOperationConfiguration {
+            new() {
                 Generate = false,
                 OperationGroup = "CustomOperationGroupName",
                 CommandName = "CustomCommandName",
@@ -119,7 +119,7 @@ public class CreateCommandGeneratorRunnerTests {
     private CreateCommandGeneratorRunner CreateFactory(
         InternalEntityGeneratorCreateOperationConfiguration configuration
     ) {
-        return new CreateCommandGeneratorRunner(
+        return new(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,

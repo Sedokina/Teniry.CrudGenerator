@@ -5,6 +5,8 @@ using ITech.CrudGenerator.Abstractions.Configuration;
 using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using CSharpCompilation = Microsoft.CodeAnalysis.CSharp.CSharpCompilation;
+using INamedTypeSymbol = Microsoft.CodeAnalysis.INamedTypeSymbol;
 
 namespace ITech.CrudGenerator.Tests.Schemes;
 
@@ -301,8 +303,8 @@ namespace ITech.CrudGenerator.Tests {{
         var compilation = CSharpCompilation.Create(
             Assembly.GetExecutingAssembly().FullName,
             [syntaxTree],
-            references: [..references, abstractions, linqExpression],
-            options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            [..references, abstractions, linqExpression],
+            new(OutputKind.DynamicallyLinkedLibrary)
         );
         var symbol = compilation.GetSymbolsWithName($"{className}Generator").First();
 

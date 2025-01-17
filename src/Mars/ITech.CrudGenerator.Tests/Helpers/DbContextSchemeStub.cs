@@ -10,7 +10,7 @@ internal class DbContextSchemeStub : DbContextScheme {
         "",
         "",
         DbContextDbProvider.Mongo,
-        new Dictionary<FilterType, FilterExpression> {
+        new() {
             {
                 FilterType.Contains, new ContainsFilterExpression()
             }, {

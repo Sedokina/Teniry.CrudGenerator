@@ -9,13 +9,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace ITech.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders;
 
 internal class ClassBuilder {
-    private FileScopedNamespaceDeclarationSyntax? _namespace;
-    private readonly List<string> _usings = [];
-    private readonly List<BaseTypeSyntax> _implementInterfaces = [];
-    private ClassDeclarationSyntax _classDeclaration;
-    private readonly List<MemberDeclarationSyntax> _methods = [];
     private readonly List<MemberDeclarationSyntax> _fields = [];
+    private readonly List<BaseTypeSyntax> _implementInterfaces = [];
+    private readonly List<MemberDeclarationSyntax> _methods = [];
     private readonly List<PropertyBuilder> _propertyBuilders = [];
+    private readonly List<string> _usings = [];
+    private ClassDeclarationSyntax _classDeclaration;
+    private FileScopedNamespaceDeclarationSyntax? _namespace;
     private SyntaxTriviaList _xmlDoc;
 
     public ClassBuilder(SyntaxKind[] modifiers, string className) {

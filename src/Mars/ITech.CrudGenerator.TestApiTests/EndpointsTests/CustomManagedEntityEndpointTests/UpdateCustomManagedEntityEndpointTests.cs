@@ -23,9 +23,9 @@ public class UpdateCustomManagedEntityEndpointTests {
         var actual = await CustomizedNameUpdateManagedEntityEndpoint
             .RunUpdateAsync(
                 Guid.NewGuid(),
-                new CustomizedNameUpdateManagedEntityViewModel(),
+                new(),
                 _commandDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

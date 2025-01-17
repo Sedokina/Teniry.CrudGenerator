@@ -14,12 +14,12 @@ namespace ITech.CrudGenerator.Core.Generators;
 
 internal class CreateCommandCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration> {
+    private readonly string _commandName;
+    private readonly string _dtoName;
+    private readonly string _endpointClassName;
     private readonly EndpointRouteConfigurator? _getByIdEndpointRouteConfigurationBuilder;
     private readonly string? _getByIdOperationName;
-    private readonly string _commandName;
     private readonly string _handlerName;
-    private readonly string _endpointClassName;
-    private readonly string _dtoName;
 
     public CreateCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme,
@@ -104,7 +104,7 @@ internal class CreateCommandCrudGenerator
                     "ITech.Cqrs.Cqrs.Commands",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
-                    "Mapster",
+                    "Mapster"
                 ]
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
@@ -186,10 +186,10 @@ internal class CreateCommandCrudGenerator
                 [
                     new ParameterOfMethodBuilder(_commandName, "command"),
                     new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"),
-                    new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+                    new ParameterOfMethodBuilder("CancellationToken", "cancellation")
                 ]
             )
-            .WithAttribute(new ProducesResponseTypeAttributeBuilder(201))
+            .WithAttribute(new(201))
             .WithXmlDoc(
                 $"Create {Scheme.EntityScheme.EntityTitle}",
                 201,
@@ -213,7 +213,7 @@ internal class CreateCommandCrudGenerator
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(
+        EndpointMap = new(
             EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Post",

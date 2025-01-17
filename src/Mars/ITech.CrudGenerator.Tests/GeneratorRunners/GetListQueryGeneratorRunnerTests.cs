@@ -14,14 +14,14 @@ public class GetListQueryGeneratorRunnerTests {
 
     public GetListQueryGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration =
-            new InternalEntityGeneratorConfiguration(new InternalEntityClassMetadata("TestEntity", "", "", []));
+            new InternalEntityGeneratorConfiguration(new("TestEntity", "", "", []));
         _entityScheme = EntitySchemeFactory.Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
     }
 
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -37,7 +37,7 @@ public class GetListQueryGeneratorRunnerTests {
     [Fact]
     public void Should_SetCorrectDefaultValues() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorGetListOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -60,7 +60,7 @@ public class GetListQueryGeneratorRunnerTests {
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorGetListOperationConfiguration {
+            new() {
                 Operation = "Obtain"
             }
         );
@@ -86,7 +86,7 @@ public class GetListQueryGeneratorRunnerTests {
     public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorGetListOperationConfiguration {
+            new() {
                 Generate = false,
                 OperationGroup = "CustomOperationGroupName",
                 QueryName = "CustomQueryName",
@@ -119,7 +119,7 @@ public class GetListQueryGeneratorRunnerTests {
     private GetListQueryGeneratorRunner CreateFactory(
         InternalEntityGeneratorGetListOperationConfiguration configuration
     ) {
-        return new GetListQueryGeneratorRunner(
+        return new(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,

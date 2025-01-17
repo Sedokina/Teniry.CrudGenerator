@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ITech.CrudGenerator.Core.Configurations.Configurators;
 using ITech.CrudGenerator.Core.Configurations.Crud;
 using ITech.CrudGenerator.Core.Configurations.Crud.TypedConfigurations;
 using ITech.CrudGenerator.Core.Configurations.Global;
@@ -13,9 +12,9 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 namespace ITech.CrudGenerator.Core.Runners;
 
 internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
-    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
-    private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
+    private readonly EntityScheme _entityScheme;
+    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
 
     public UpdateCommandGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
@@ -34,39 +33,6 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
         _dbContextScheme = dbContextScheme;
     }
 
-    private static CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration ConstructConfiguration(
-        GlobalCrudGeneratorConfiguration globalConfiguration,
-        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
-        EntityScheme entityScheme
-    ) {
-        return new CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(
-            generate: operationConfiguration?.Generate ?? true,
-            globalConfiguration: globalConfiguration,
-            operationsSharedConfiguration: operationsSharedConfiguration,
-            operationType: CqrsOperationType.Command,
-            operationName: operationConfiguration?.Operation ?? "Update",
-            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            operation: new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
-            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            viewModel: new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
-            endpoint: new MinimalApiEndpointConfigurator {
-                Generate = operationConfiguration?.Generate != false &&
-                    (operationConfiguration?.GenerateEndpoint ?? true),
-                ClassName = new(
-                    operationConfiguration?.EndpointClassName ??
-                    "{{operation_name}}{{entity_name}}Endpoint"
-                ),
-                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
-                RouteConfigurator = new(
-                    operationConfiguration?.RouteName ??
-                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
-                )
-            },
-            entityScheme
-        );
-    }
-
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
 
@@ -83,5 +49,38 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
         }
 
         return generateUpdateCommand.GeneratedFiles;
+    }
+
+    private static CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration ConstructConfiguration(
+        GlobalCrudGeneratorConfiguration globalConfiguration,
+        CqrsOperationsSharedConfigurator operationsSharedConfiguration,
+        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        EntityScheme entityScheme
+    ) {
+        return new(
+            operationConfiguration?.Generate ?? true,
+            globalConfiguration,
+            operationsSharedConfiguration,
+            CqrsOperationType.Command,
+            operationConfiguration?.Operation ?? "Update",
+            new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
+            new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
+            new() {
+                Generate = operationConfiguration?.Generate != false &&
+                    (operationConfiguration?.GenerateEndpoint ?? true),
+                ClassName = new(
+                    operationConfiguration?.EndpointClassName ??
+                    "{{operation_name}}{{entity_name}}Endpoint"
+                ),
+                FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
+                RouteConfigurator = new(
+                    operationConfiguration?.RouteName ??
+                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
+                )
+            },
+            entityScheme
+        );
     }
 }

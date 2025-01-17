@@ -24,7 +24,7 @@ public class GetCustomGottenEntityEndpointTests {
             .RunGetAsync(
                 Guid.NewGuid(),
                 _queryDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

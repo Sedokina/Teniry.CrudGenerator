@@ -11,7 +11,7 @@ public class DeleteNoEndpointEntityHandlerTests {
     private readonly DeleteNoEndpointEntityHandler _sut;
 
     public DeleteNoEndpointEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
     }
@@ -23,7 +23,7 @@ public class DeleteNoEndpointEntityHandlerTests {
             .ReturnsAsync((NoEndpointEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().NotThrowAsync();
@@ -41,7 +41,7 @@ public class DeleteNoEndpointEntityHandlerTests {
             .ReturnsAsync(new NoEndpointEntity { Id = _command.Id, Name = "Test entity" });
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.Remove(It.IsAny<NoEndpointEntity>()));

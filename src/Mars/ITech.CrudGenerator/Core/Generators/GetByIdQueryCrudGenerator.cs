@@ -14,9 +14,9 @@ namespace ITech.CrudGenerator.Core.Generators;
 internal class GetByIdQueryCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithReturnValueGeneratorConfiguration> {
     private readonly string _dtoName;
+    private readonly string _endpointClassName;
     private readonly string _handlerName;
     private readonly string _queryName;
-    private readonly string _endpointClassName;
 
     public GetByIdQueryCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration> scheme
@@ -50,7 +50,7 @@ internal class GetByIdQueryCrudGenerator
                 $"Get {EntityScheme.EntityTitle} by id",
                 $"Returns full entity data of type <see cref=\"{_dtoName}\" />",
                 [
-                    new XmlDocException(
+                    new(
                         "EfEntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )
@@ -190,11 +190,11 @@ internal class GetByIdQueryCrudGenerator
             .WithParameters(
                 EntityScheme.PrimaryKeys
                     .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
-                    .Append(new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"))
-                    .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                    .Append(new("IQueryDispatcher", "queryDispatcher"))
+                    .Append(new("CancellationToken", "cancellation"))
                     .ToList()
             )
-            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
+            .WithAttribute(new(_dtoName))
             .WithXmlDoc(
                 $"Get {Scheme.EntityScheme.EntityTitle} by id",
                 200,
@@ -227,7 +227,7 @@ internal class GetByIdQueryCrudGenerator
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(
+        EndpointMap = new(
             EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",

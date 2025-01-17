@@ -13,7 +13,7 @@ public class GetCustomGottenEntitiesListHandlerTests {
     private readonly CustomizedNameGetCustomEntitiesListHandler _sut;
 
     public GetCustomGottenEntitiesListHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new() {
             Name = "Test Entity",
@@ -27,10 +27,10 @@ public class GetCustomGottenEntitiesListHandlerTests {
     public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         _db.Setup(x => x.Set<CustomGottenEntity>())
-            .ReturnsDbSet([new CustomGottenEntity { Id = Guid.NewGuid(), Name = "Test Entity" }]);
+            .ReturnsDbSet([new() { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
-        var entities = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
         entities.Should().BeOfType<CustomizedNameGetCustomEntitiesListDto>();
@@ -49,7 +49,7 @@ public class GetCustomGottenEntitiesListHandlerTests {
     public void Should_HaveCorrectSortKeys() {
         // Assert
         _query.GetSortKeys()
-            .Should().ContainInConsecutiveOrder(["id", "name"]);
+            .Should().ContainInConsecutiveOrder("id", "name");
     }
 
     [Theory]

@@ -14,8 +14,8 @@ namespace ITech.CrudGenerator.Core.Generators;
 internal class
     DeleteCommandCrudGenerator : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueGeneratorConfiguration> {
     private readonly string _commandName;
-    private readonly string _handlerName;
     private readonly string _endpointClassName;
+    private readonly string _handlerName;
 
     public DeleteCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueGeneratorConfiguration> scheme
@@ -72,7 +72,7 @@ internal class
                 [
                     "ITech.Cqrs.Cqrs.Commands",
                     Scheme.DbContextScheme.DbContextNamespace,
-                    EntityScheme.EntityNamespace,
+                    EntityScheme.EntityNamespace
                 ]
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
@@ -158,11 +158,11 @@ internal class
             .WithParameters(
                 EntityScheme.PrimaryKeys
                     .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
-                    .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
-                    .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                    .Append(new("ICommandDispatcher", "commandDispatcher"))
+                    .Append(new("CancellationToken", "cancellation"))
                     .ToList()
             )
-            .WithAttribute(new ProducesResponseTypeAttributeBuilder(204))
+            .WithAttribute(new(204))
             .WithXmlDoc(
                 $"Delete {Scheme.EntityScheme.EntityTitle}",
                 204,
@@ -192,7 +192,7 @@ internal class
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(
+        EndpointMap = new(
             EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Delete",

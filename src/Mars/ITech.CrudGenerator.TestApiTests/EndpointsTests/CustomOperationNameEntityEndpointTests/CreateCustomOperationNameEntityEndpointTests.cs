@@ -33,9 +33,9 @@ public class CreateCustomOperationNameEntityEndpointTests {
         // Act
         var actual = await CustomOpCreateCustomOperationNameEntityEndpoint
             .CustomOpCreateAsync(
-                new CustomOpCreateCustomOperationNameEntityCommand(),
+                new(),
                 _commandDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

@@ -32,7 +32,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.Headers.Location.Should().BeNull("because get endpoint is not generated for this entity");
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomManagedEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -54,7 +54,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomManagedEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
@@ -73,7 +73,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<CustomManagedEntity>([createdSimpleEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomManagedEntity>([createdSimpleEntity.Id], new());
         entity.Should().BeNull();
     }
 
@@ -82,7 +82,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
     [InlineData("customManagedEntity/691cd56c-46ee-4151-ae10-029a25e32d1b")]
     public async Task Should_NotGenerateGetEndpoints(string endpoint) {
         // Act
-        var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Options, endpoint));
+        var response = await _httpClient.SendAsync(new(HttpMethod.Options, endpoint));
 
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

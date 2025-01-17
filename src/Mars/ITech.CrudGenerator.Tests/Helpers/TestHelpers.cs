@@ -38,15 +38,15 @@ public static class TestHelpers {
 
         // Create a Compilation object
         // You may want to specify other results here
-        CSharpCompilation compilation = CSharpCompilation.Create(
+        var compilation = CSharpCompilation.Create(
             Assembly.GetExecutingAssembly().GetName().Name,
             syntaxTrees,
             references,
-            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+            new(OutputKind.DynamicallyLinkedLibrary)
         );
 
         // Run the generator, get the results, and assert cacheability if applicable
-        GeneratorDriverRunResult runResult = RunGeneratorAndAssertOutput<T>(compilation, stages, assertOutputs);
+        var runResult = RunGeneratorAndAssertOutput<T>(compilation, stages, assertOutputs);
 
         // Return the generator diagnostics and generated sources
         return (runResult.Diagnostics, runResult.GeneratedTrees.Select(x => x.ToString()).ToArray());
@@ -58,13 +58,13 @@ public static class TestHelpers {
         bool assertOutput = true
     )
         where T : IIncrementalGenerator, new() {
-        ISourceGenerator generator = new T().AsSourceGenerator();
+        var generator = new T().AsSourceGenerator();
 
         // ⚠ Tell the driver to track all the incremental generator outputs
         // without this, you'll have no tracked outputs!
         var opts = new GeneratorDriverOptions(
-            disabledOutputs: IncrementalGeneratorOutputKind.None,
-            trackIncrementalGeneratorSteps: true
+            IncrementalGeneratorOutputKind.None,
+            true
         );
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create([generator], driverOptions: opts);
@@ -75,11 +75,11 @@ public static class TestHelpers {
         // Do the initial run
         // Note that we store the returned driver value, as it contains cached previous outputs
         driver = driver.RunGenerators(compilation);
-        GeneratorDriverRunResult runResult = driver.GetRunResult();
+        var runResult = driver.GetRunResult();
 
         if (assertOutput) {
             // Run again, using the same driver, with a clone of the compilation
-            GeneratorDriverRunResult runResult2 = driver
+            var runResult2 = driver
                 .RunGenerators(clone)
                 .GetRunResult();
 
@@ -128,11 +128,13 @@ public static class TestHelpers {
         static Dictionary<string, ImmutableArray<IncrementalGeneratorRunStep>> GetTrackedSteps(
             GeneratorDriverRunResult runResult,
             string[] trackingNames
-        ) => runResult
-            .Results[0] // We're only running a single generator, so this is safe
-            .TrackedSteps // Get the pipeline outputs
-            .Where(step => trackingNames.Contains(step.Key)) // filter to known steps
-            .ToDictionary(x => x.Key, x => x.Value); // Convert to a dictionary
+        ) {
+            return runResult
+                .Results[0] // We're only running a single generator, so this is safe
+                .TrackedSteps // Get the pipeline outputs
+                .Where(step => trackingNames.Contains(step.Key)) // filter to known steps
+                .ToDictionary(x => x.Key, x => x.Value);
+        } // Convert to a dictionary
     }
 
     private static void AssertEqual(
@@ -168,7 +170,7 @@ public static class TestHelpers {
         }
     }
 
-    static void AssertObjectGraph(IncrementalGeneratorRunStep runStep, string stepName) {
+    private static void AssertObjectGraph(IncrementalGeneratorRunStep runStep, string stepName) {
         // Including the stepName in error messages to make it easy to isolate issues
         var because = $"{stepName} shouldn't contain banned symbols";
         var visited = new HashSet<object>();

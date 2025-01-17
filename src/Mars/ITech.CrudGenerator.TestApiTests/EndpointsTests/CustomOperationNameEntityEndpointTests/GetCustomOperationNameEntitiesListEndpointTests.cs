@@ -23,9 +23,9 @@ public class GetCustomOperationNameEntitiesListEndpointTests {
         // Act`
         var actual = await CustomOpGetListCustomOperationNameEntitiesEndpoint
             .CustomOpGetListAsync(
-                new CustomOpGetListCustomOperationNameEntitiesQuery(),
+                new(),
                 _queryDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

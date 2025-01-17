@@ -12,7 +12,7 @@ public class GetEntityIdNameHandlerTests {
     private readonly GetEntityIdNameHandler _sut;
 
     public GetEntityIdNameHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
@@ -24,7 +24,7 @@ public class GetEntityIdNameHandlerTests {
             .ReturnsAsync((EntityIdName?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -38,7 +38,7 @@ public class GetEntityIdNameHandlerTests {
             .ReturnsAsync(new EntityIdName { EntityIdNameId = _query.EntityIdNameId, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.EntityIdNameId.Should().Be(_query.EntityIdNameId);

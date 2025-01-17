@@ -114,7 +114,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
             .And.Subject.ToString().Should().NotBeNullOrEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("New User");
     }
@@ -145,7 +145,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
                 FloatRating = 28.54f,
                 DoubleRating = 87189.86378,
                 DecimalRating = 9813.7641635291m,
-                NotIdGuid = new Guid("8e358827-0a9d-4d02-9d07-a7265a76b5ae"),
+                NotIdGuid = new("8e358827-0a9d-4d02-9d07-a7265a76b5ae")
             }
         );
         response.Should().FailIfNotSuccessful();
@@ -154,7 +154,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated user name");
         entity.Code.Should().Be('b');
@@ -189,7 +189,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<SimpleTypeEntity>([createdEntity.Id], new());
         entity.Should().BeNull();
     }
 
@@ -212,7 +212,7 @@ public class SimpleTypeEntityEndpointTests(TestApiFixture fixture) {
             FloatRating = 18.13f,
             DoubleRating = 91873.862378,
             DecimalRating = 867.97716829m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();

@@ -14,9 +14,9 @@ namespace ITech.CrudGenerator.Core.Generators;
 internal class UpdateCommandCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> {
     private readonly string _commandName;
+    private readonly string _endpointClassName;
     private readonly string _handlerName;
     private readonly string _vmName;
-    private readonly string _endpointClassName;
 
     public UpdateCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration> scheme
@@ -51,7 +51,7 @@ internal class UpdateCommandCrudGenerator
                 $"Update {EntityScheme.EntityTitle}",
                 "Nothing",
                 [
-                    new XmlDocException(
+                    new(
                         "EfEntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )
@@ -93,7 +93,7 @@ internal class UpdateCommandCrudGenerator
                     "ITech.Cqrs.Domain.Exceptions",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
-                    "Mapster",
+                    "Mapster"
                 ]
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
@@ -198,12 +198,12 @@ internal class UpdateCommandCrudGenerator
             .WithParameters(
                 EntityScheme.PrimaryKeys
                     .Select(x => new ParameterOfMethodBuilder(x.TypeName, x.PropertyNameAsMethodParameterName))
-                    .Append(new ParameterOfMethodBuilder(_vmName, "vm"))
-                    .Append(new ParameterOfMethodBuilder("ICommandDispatcher", "commandDispatcher"))
-                    .Append(new ParameterOfMethodBuilder("CancellationToken", "cancellation"))
+                    .Append(new(_vmName, "vm"))
+                    .Append(new("ICommandDispatcher", "commandDispatcher"))
+                    .Append(new("CancellationToken", "cancellation"))
                     .ToList()
             )
-            .WithAttribute(new ProducesResponseTypeAttributeBuilder(204))
+            .WithAttribute(new(204))
             .WithXmlDoc(
                 $"Update {Scheme.EntityScheme.EntityTitle}",
                 204,
@@ -234,7 +234,7 @@ internal class UpdateCommandCrudGenerator
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(
+        EndpointMap = new(
             EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Put",

@@ -12,7 +12,7 @@ public class GetNoEndpointEntitiesListHandlerTests {
     private readonly GetNoEndpointEntitiesHandler _sut;
 
     public GetNoEndpointEntitiesListHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new() {
             Name = "Test Entity",
@@ -26,10 +26,10 @@ public class GetNoEndpointEntitiesListHandlerTests {
     public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
         _db.Setup(x => x.Set<NoEndpointEntity>())
-            .ReturnsDbSet([new NoEndpointEntity { Id = Guid.NewGuid(), Name = "Test Entity" }]);
+            .ReturnsDbSet([new() { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
-        var entities = await _sut.HandleAsync(_query, new CancellationToken());
+        var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
         entities.Page.Should().NotBeNull();
@@ -47,6 +47,6 @@ public class GetNoEndpointEntitiesListHandlerTests {
     public void Should_HaveCorrectSortKeys() {
         // Assert
         _query.GetSortKeys()
-            .Should().ContainInConsecutiveOrder(["id", "name"]);
+            .Should().ContainInConsecutiveOrder("id", "name");
     }
 }

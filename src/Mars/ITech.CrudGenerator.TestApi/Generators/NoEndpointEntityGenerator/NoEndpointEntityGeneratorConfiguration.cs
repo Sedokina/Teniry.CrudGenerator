@@ -4,19 +4,19 @@ namespace ITech.CrudGenerator.TestApi.Generators.NoEndpointEntityGenerator;
 
 public class NoEndpointEntityGeneratorConfiguration : EntityGeneratorConfiguration<NoEndpointEntity> {
     public NoEndpointEntityGeneratorConfiguration() {
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
+        GetByIdOperation = new() {
             GenerateEndpoint = false
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
+        GetListOperation = new() {
             GenerateEndpoint = false
         };
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration {
+        CreateOperation = new() {
             GenerateEndpoint = false
         };
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration() {
+        DeleteOperation = new() {
             GenerateEndpoint = false
         };
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
+        UpdateOperation = new() {
             GenerateEndpoint = false
         };
     }

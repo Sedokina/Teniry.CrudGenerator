@@ -8,15 +8,19 @@ internal record LocationInfo(string FilePath, TextSpan TextSpan, LinePositionSpa
     public TextSpan TextSpan { get; } = TextSpan;
     public LinePositionSpan LineSpan { get; } = LineSpan;
 
-    public Location ToLocation() => Location.Create(FilePath, TextSpan, LineSpan);
+    public Location ToLocation() {
+        return Location.Create(FilePath, TextSpan, LineSpan);
+    }
 
-    public static LocationInfo? CreateFrom(SyntaxNode node) => CreateFrom(node.GetLocation());
+    public static LocationInfo? CreateFrom(SyntaxNode node) {
+        return CreateFrom(node.GetLocation());
+    }
 
     public static LocationInfo? CreateFrom(Location? location) {
         if (location?.SourceTree is null) {
             return null;
         }
 
-        return new LocationInfo(location.SourceTree.FilePath, location.SourceSpan, location.GetLineSpan().Span);
+        return new(location.SourceTree.FilePath, location.SourceSpan, location.GetLineSpan().Span);
     }
 }

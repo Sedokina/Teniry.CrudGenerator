@@ -13,7 +13,7 @@ public class GetCustomGottenEntityHandlerTests {
     private readonly CustomizedNameGetCustomEntityHandler _sut;
 
     public GetCustomGottenEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
@@ -25,7 +25,7 @@ public class GetCustomGottenEntityHandlerTests {
             .ReturnsAsync((CustomGottenEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -39,7 +39,7 @@ public class GetCustomGottenEntityHandlerTests {
             .ReturnsAsync(new CustomGottenEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.Should().BeOfType<CustomizedNameGetCustomEntityDto>();

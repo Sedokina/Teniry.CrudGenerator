@@ -35,18 +35,18 @@ internal record CqrsOperationWithoutReturnValueGeneratorConfiguration {
         OperationType = operationType;
         OperationName = operationName;
         OperationGroup = operationGroup.GetName(entityScheme.EntityName, OperationName);
-        OperationsSharedConfiguration = new CqrsOperationsSharedConfiguration(
-            businessLogicFeatureName: operationsSharedConfiguration.BusinessLogicFeatureName,
-            businessLogicNamespaceForOperation: operationsSharedConfiguration.BusinessLogicNamespaceForOperation,
-            endpointsNamespaceForFeature: operationsSharedConfiguration.EndpointsNamespaceForFeature,
-            entityScheme: entityScheme,
-            operationName: OperationName,
-            operationGroup: OperationGroup
+        OperationsSharedConfiguration = new(
+            operationsSharedConfiguration.BusinessLogicFeatureName,
+            operationsSharedConfiguration.BusinessLogicNamespaceForOperation,
+            operationsSharedConfiguration.EndpointsNamespaceForFeature,
+            entityScheme,
+            OperationName,
+            OperationGroup
         );
         Operation = operation.GetName(entityScheme.EntityName, OperationName);
         Handler = handler.GetName(entityScheme.EntityName, OperationName);
         var constructorParametersForRoute = entityScheme.PrimaryKeys.GetAsMethodCallArguments();
-        Endpoint = new MinimalApiEndpointConfiguration(
+        Endpoint = new(
             Generate: endpoint.Generate,
             Name: endpoint.ClassName.GetName(entityScheme.EntityName, OperationName),
             FunctionName: endpoint.FunctionName.GetName(entityScheme.EntityName, OperationName),

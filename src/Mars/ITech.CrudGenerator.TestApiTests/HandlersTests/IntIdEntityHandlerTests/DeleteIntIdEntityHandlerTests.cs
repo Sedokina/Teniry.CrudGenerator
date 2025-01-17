@@ -11,7 +11,7 @@ public class DeleteIntIdEntityHandlerTests {
     private readonly DeleteIntIdEntityHandler _sut;
 
     public DeleteIntIdEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(1);
     }
@@ -23,7 +23,7 @@ public class DeleteIntIdEntityHandlerTests {
             .ReturnsAsync((IntIdEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().NotThrowAsync();
@@ -41,7 +41,7 @@ public class DeleteIntIdEntityHandlerTests {
             .ReturnsAsync(new IntIdEntity { Id = _command.Id, Name = "Test entity" });
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.Remove(It.IsAny<IntIdEntity>()));

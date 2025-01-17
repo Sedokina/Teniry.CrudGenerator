@@ -4,20 +4,20 @@ namespace ITech.CrudGenerator.TestApi.Generators.CustomOperationNameEntityGenera
 
 public class CustomOperationNameEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomOperationNameEntity> {
     public CustomOperationNameEntityGeneratorConfiguration() {
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
-            Operation = "CustomOpGetById",
+        GetByIdOperation = new() {
+            Operation = "CustomOpGetById"
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
-            Operation = "CustomOpGetList",
+        GetListOperation = new() {
+            Operation = "CustomOpGetList"
         };
-        CreateOperation = new EntityGeneratorCreateOperationConfiguration {
-            Operation = "CustomOpCreate",
+        CreateOperation = new() {
+            Operation = "CustomOpCreate"
         };
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration() {
-            Operation = "CustomOpDelete",
+        DeleteOperation = new() {
+            Operation = "CustomOpDelete"
         };
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
-            Operation = "CustomOpUpdate",
+        UpdateOperation = new() {
+            Operation = "CustomOpUpdate"
         };
     }
 }

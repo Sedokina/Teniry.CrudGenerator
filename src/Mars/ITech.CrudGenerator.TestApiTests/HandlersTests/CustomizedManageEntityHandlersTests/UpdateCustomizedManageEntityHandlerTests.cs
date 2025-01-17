@@ -13,7 +13,7 @@ public class UpdateCustomizedManageEntityHandlerTests {
     private readonly CustomizedNameUpdateManagedEntityHandler _sut;
 
     public UpdateCustomizedManageEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid()) {
             Name = "New entity name"
@@ -27,7 +27,7 @@ public class UpdateCustomizedManageEntityHandlerTests {
             .ReturnsAsync((CustomManagedEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -42,7 +42,7 @@ public class UpdateCustomizedManageEntityHandlerTests {
             .ReturnsAsync(entity);
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         entity.Name.Should().Be("New entity name");

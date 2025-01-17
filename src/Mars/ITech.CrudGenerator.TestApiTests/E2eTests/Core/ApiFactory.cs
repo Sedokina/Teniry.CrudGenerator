@@ -7,11 +7,11 @@ namespace ITech.CrudGenerator.TestApiTests.E2eTests.Core;
 internal class ApiFactory : WebApplicationFactory<Program> {
     private readonly IConfiguration _configuration;
 
+    public string BaseApiPath => "http://localhost/";
+
     public ApiFactory(IConfiguration configuration) {
         _configuration = configuration;
     }
-
-    public string BaseApiPath => "http://localhost/";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder) {
         var inMemoryConfiguration = new Dictionary<string, string> {

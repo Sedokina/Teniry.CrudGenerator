@@ -9,11 +9,11 @@ using Microsoft.CodeAnalysis;
 namespace ITech.CrudGenerator.Tests.Schemes;
 
 public class EntitySchemeFactoryTests {
-    private readonly InternalEntityGeneratorConfiguration _internalEntityGeneratorConfiguration;
     private readonly DbContextScheme _dbContextScheme;
+    private readonly InternalEntityGeneratorConfiguration _internalEntityGeneratorConfiguration;
 
     public EntitySchemeFactoryTests() {
-        _internalEntityGeneratorConfiguration = new(new InternalEntityClassMetadata("MyEntityName", "", "", []));
+        _internalEntityGeneratorConfiguration = new(new("MyEntityName", "", "", []));
         _dbContextScheme = new DbContextSchemeStub();
     }
 
@@ -121,7 +121,7 @@ public class EntitySchemeFactoryTests {
     [Fact]
     public void Should_UseDefaultSort_From_InternalEntityGeneratorConfiguration() {
         // Arrange
-        _internalEntityGeneratorConfiguration.DefaultSort = new EntityDefaultSort("asc", "MyProp");
+        _internalEntityGeneratorConfiguration.DefaultSort = new("asc", "MyProp");
 
         // Act
         var actual = EntitySchemeFactory.Construct(_internalEntityGeneratorConfiguration, _dbContextScheme);
@@ -136,7 +136,7 @@ public class EntitySchemeFactoryTests {
     public void Should_IgnoreReferenceProperties() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("ReferenceProp", "EntitySchemeFactoryTests", "", SpecialType.System_TypedReference, false, false),
+            new("ReferenceProp", "EntitySchemeFactoryTests", "", SpecialType.System_TypedReference, false, false)
         ];
 
         // Act
@@ -150,7 +150,7 @@ public class EntitySchemeFactoryTests {
     public void Should_ExtractSimpleProperty() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("SimpleProp", "int", "", SpecialType.System_Int32, true, false),
+            new("SimpleProp", "int", "", SpecialType.System_Int32, true, false)
         ];
 
         // Act
@@ -164,7 +164,7 @@ public class EntitySchemeFactoryTests {
     public void Should_IgnoreSystemPrefixInPropertyTypes() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("DateTimeProp", "System.DateTimeOffset", "DateTimeOffset", SpecialType.System_DateTime, true, false),
+            new("DateTimeProp", "System.DateTimeOffset", "DateTimeOffset", SpecialType.System_DateTime, true, false)
         ];
 
         // Act
@@ -179,7 +179,7 @@ public class EntitySchemeFactoryTests {
     public void Should_HaveDefaultValueForString() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("StringProp", "string", "", SpecialType.System_String, true, false),
+            new("StringProp", "string", "", SpecialType.System_String, true, false)
         ];
 
         // Act
@@ -202,7 +202,7 @@ public class EntitySchemeFactoryTests {
     public void Should_DetectEntityIdProperty(string propertyName, bool isEntityId) {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new(propertyName, "Guid", "Guid", SpecialType.None, true, false),
+            new(propertyName, "Guid", "Guid", SpecialType.None, true, false)
         ];
 
         // Act
@@ -235,7 +235,7 @@ public class EntitySchemeFactoryTests {
     [InlineData("Guid")]
     public void Should_DetectSortableProperty(string propertyType) {
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("SortableProperty", propertyType, propertyType, SpecialType.None, true, false),
+            new("SortableProperty", propertyType, propertyType, SpecialType.None, true, false)
         ];
 
         // Act
@@ -249,7 +249,7 @@ public class EntitySchemeFactoryTests {
     public void Should_NameSortablePropertyKeyInCamelCase() {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new("SortableProperty", "int", "int", SpecialType.System_Int32, true, false),
+            new("SortableProperty", "int", "int", SpecialType.System_Int32, true, false)
         ];
 
         // Act
@@ -279,7 +279,7 @@ public class EntitySchemeFactoryTests {
     ) {
         // Arrange
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new(propertyName, typeName, typeName, specialType, true, false),
+            new(propertyName, typeName, typeName, specialType, true, false)
         ];
 
         // Act
@@ -322,7 +322,7 @@ public class EntitySchemeFactoryTests {
         // Arrange
         var propertyName = "FilteredProperty";
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new(propertyName, typeName, typeName, specialType, true, false),
+            new(propertyName, typeName, typeName, specialType, true, false)
         ];
 
         // Act
@@ -363,7 +363,7 @@ public class EntitySchemeFactoryTests {
         // Arrange
         var propertyName = "FilteredProperty";
         _internalEntityGeneratorConfiguration.ClassMetadata.Properties = [
-            new(propertyName, typeName, typeName, specialType, true, false),
+            new(propertyName, typeName, typeName, specialType, true, false)
         ];
 
         // Act

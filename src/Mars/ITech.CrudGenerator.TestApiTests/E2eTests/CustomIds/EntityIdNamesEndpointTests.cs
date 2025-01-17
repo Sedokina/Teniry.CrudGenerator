@@ -2,8 +2,8 @@ using System.Net;
 using System.Net.Http.Json;
 using ITech.CrudGenerator.TestApi;
 using ITech.CrudGenerator.TestApi.Application.EntityIdNameFeature.CreateEntityIdName;
-using ITech.CrudGenerator.TestApi.Application.EntityIdNameFeature.GetEntityIdNames;
 using ITech.CrudGenerator.TestApi.Application.EntityIdNameFeature.GetEntityIdName;
+using ITech.CrudGenerator.TestApi.Application.EntityIdNameFeature.GetEntityIdNames;
 using ITech.CrudGenerator.TestApi.Application.EntityIdNameFeature.UpdateEntityIdName;
 using ITech.CrudGenerator.TestApi.Generators.CustomIds.EntityIdNameGenerator;
 using ITech.CrudGenerator.TestApiTests.E2eTests.Core;
@@ -80,7 +80,7 @@ public class EntityIdNamesEndpointTests(TestApiFixture fixture) {
             .And.Subject.ToString().Should().NotBeNullOrEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<EntityIdName>([actual.EntityIdNameId], new CancellationToken());
+        var entity = await _db.FindAsync<EntityIdName>([actual.EntityIdNameId], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -102,7 +102,7 @@ public class EntityIdNamesEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<EntityIdName>([createdEntity.EntityIdNameId], new CancellationToken());
+        var entity = await _db.FindAsync<EntityIdName>([createdEntity.EntityIdNameId], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
@@ -121,7 +121,7 @@ public class EntityIdNamesEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<EntityIdName>([createdEntityIdName.EntityIdNameId], new CancellationToken());
+        var entity = await _db.FindAsync<EntityIdName>([createdEntityIdName.EntityIdNameId], new());
         entity.Should().BeNull();
     }
 

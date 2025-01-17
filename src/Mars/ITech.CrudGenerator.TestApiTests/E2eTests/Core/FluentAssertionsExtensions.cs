@@ -14,7 +14,7 @@ public static class FluentAssertionsExtensions {
             .BecauseOf(because, becauseArgs)
             .FailWith("Expected HttpStatusCode to be successful (2xx){reason}, but HttpResponseMessage was <null>.");
 
-        if (success)
+        if (success) {
             Execute.Assertion
                 .ForCondition(httpResponseMessageAssertions.Subject!.IsSuccessStatusCode)
                 .BecauseOf(because, becauseArgs)
@@ -26,14 +26,15 @@ public static class FluentAssertionsExtensions {
                             .GetAwaiter()
                             .GetResult();
 
-                        return new FailReason(
+                        return new(
                             "Expected HttpStatusCode to be successful (2xx){reason}, but found {0}. {1}",
                             httpResponseMessageAssertions.Subject.StatusCode,
                             content
                         );
                     }
                 );
+        }
 
-        return new AndConstraint<HttpResponseMessageAssertions>(httpResponseMessageAssertions);
+        return new(httpResponseMessageAssertions);
     }
 }

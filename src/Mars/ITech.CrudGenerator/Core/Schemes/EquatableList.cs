@@ -32,7 +32,7 @@ public class EquatableList<T> : List<T>, IEquatable<EquatableList<T>> {
     }
 
     public static bool operator ==(EquatableList<T>? list1, EquatableList<T>? list2) {
-        return ReferenceEquals(list1, list2) || (list1 is not null && list2 is not null && list1.Equals(list2));
+        return ReferenceEquals(list1, list2) || list1 is not null && list2 is not null && list1.Equals(list2);
     }
 
     public static bool operator !=(EquatableList<T> list1, EquatableList<T> list2) {

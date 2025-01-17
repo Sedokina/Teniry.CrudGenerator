@@ -24,7 +24,7 @@ public class GetCustomOperationNameEntityEndpointTests {
             .CustomOpGetByIdAsync(
                 Guid.NewGuid(),
                 _queryDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

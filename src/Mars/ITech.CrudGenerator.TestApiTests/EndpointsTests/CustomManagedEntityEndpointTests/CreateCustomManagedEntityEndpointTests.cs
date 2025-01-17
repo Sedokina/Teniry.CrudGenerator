@@ -22,9 +22,9 @@ public class CreateCustomManagedEntityEndpointTests {
         // Act
         var actual = await CustomizedNameCreateManagedEntityEndpoint
             .RunCreateAsync(
-                new CustomizedNameCreateManagedEntityCommand(),
+                new(),
                 _commandDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

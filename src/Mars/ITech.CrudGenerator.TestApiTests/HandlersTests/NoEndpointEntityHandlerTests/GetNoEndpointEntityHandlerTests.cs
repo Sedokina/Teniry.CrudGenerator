@@ -12,7 +12,7 @@ public class GetNoEndpointEntityHandlerTests {
     private readonly GetNoEndpointEntityHandler _sut;
 
     public GetNoEndpointEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
@@ -24,7 +24,7 @@ public class GetNoEndpointEntityHandlerTests {
             .ReturnsAsync((NoEndpointEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -38,7 +38,7 @@ public class GetNoEndpointEntityHandlerTests {
             .ReturnsAsync(new NoEndpointEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.Id.Should().Be(_query.Id);

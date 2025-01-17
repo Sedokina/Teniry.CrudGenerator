@@ -23,9 +23,9 @@ public class UpdateCustomOperationNameEndpointTests {
         var actual = await CustomOpUpdateCustomOperationNameEntityEndpoint
             .CustomOpUpdateAsync(
                 Guid.NewGuid(),
-                new CustomOpUpdateCustomOperationNameEntityVm(),
+                new(),
                 _commandDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

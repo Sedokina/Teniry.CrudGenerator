@@ -13,9 +13,9 @@ using ITech.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 namespace ITech.CrudGenerator.Core.Runners;
 
 internal record GetByIdQueryGeneratorRunner : IGeneratorRunner {
-    public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
-    private readonly EntityScheme _entityScheme;
     private readonly DbContextScheme _dbContextScheme;
+    private readonly EntityScheme _entityScheme;
+    public CqrsOperationWithReturnValueGeneratorConfiguration Configuration { get; }
 
     public GetByIdQueryGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
@@ -34,23 +34,40 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner {
         _dbContextScheme = dbContextScheme;
     }
 
+    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
+        if (!Configuration.Generate) return [];
+
+        var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+            _entityScheme,
+            _dbContextScheme,
+            Configuration
+        );
+        var generateGetByIdQuery = new GetByIdQueryCrudGenerator(getByIdQueryScheme);
+        generateGetByIdQuery.RunGenerator();
+        if (generateGetByIdQuery.EndpointMap is not null) {
+            endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
+        }
+
+        return generateGetByIdQuery.GeneratedFiles;
+    }
+
     private static CqrsOperationWithReturnValueGeneratorConfiguration ConstructConfiguration(
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme
     ) {
-        return new CqrsOperationWithReturnValueGeneratorConfiguration(
-            generate: operationConfiguration?.Generate ?? true,
-            globalConfiguration: globalConfiguration,
-            operationsSharedConfiguration: operationsSharedConfiguration,
-            operationType: CqrsOperationType.Query,
-            operationName: operationConfiguration?.Operation ?? "Get",
-            operationGroup: new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
-            operation: new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
-            dto: new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
-            handler: new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
-            endpoint: new MinimalApiEndpointConfigurator {
+        return new(
+            operationConfiguration?.Generate ?? true,
+            globalConfiguration,
+            operationsSharedConfiguration,
+            CqrsOperationType.Query,
+            operationConfiguration?.Operation ?? "Get",
+            new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
+            new(operationConfiguration?.QueryName ?? "{{operation_name}}{{entity_name}}Query"),
+            new(operationConfiguration?.DtoName ?? "{{entity_name}}Dto"),
+            new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
+            new() {
                 Generate = operationConfiguration?.Generate != false &&
                     (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(
@@ -68,22 +85,5 @@ internal record GetByIdQueryGeneratorRunner : IGeneratorRunner {
         InternalEntityGeneratorGetByIdOperationConfiguration? operationConfiguration
     ) {
         return new(operationConfiguration?.RouteName ?? "/{{entity_name}}/{{id_param_name}}");
-    }
-
-    public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
-        if (!Configuration.Generate) return [];
-
-        var getByIdQueryScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
-            _entityScheme,
-            _dbContextScheme,
-            Configuration
-        );
-        var generateGetByIdQuery = new GetByIdQueryCrudGenerator(getByIdQueryScheme);
-        generateGetByIdQuery.RunGenerator();
-        if (generateGetByIdQuery.EndpointMap is not null) {
-            endpointsMaps.Add(generateGetByIdQuery.EndpointMap);
-        }
-
-        return generateGetByIdQuery.GeneratedFiles;
     }
 }

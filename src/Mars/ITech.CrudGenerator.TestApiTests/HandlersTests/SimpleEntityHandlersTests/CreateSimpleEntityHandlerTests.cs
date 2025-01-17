@@ -11,7 +11,7 @@ public class CreateSimpleEntityHandlerTests {
     private readonly CreateSimpleEntityHandler _sut;
 
     public CreateSimpleEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new() {
             Name = "My test entity"
@@ -25,7 +25,7 @@ public class CreateSimpleEntityHandlerTests {
             .Callback((SimpleEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         // Assert
         createdEntityDto.Id.Should().NotBeEmpty();
@@ -34,7 +34,7 @@ public class CreateSimpleEntityHandlerTests {
     [Fact]
     public async Task Should_MapCommandToEntityCorrectly() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(
@@ -48,7 +48,7 @@ public class CreateSimpleEntityHandlerTests {
     [Fact]
     public async Task Should_AddToDbSetAndSave() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.AddAsync(It.IsAny<SimpleEntity>(), It.IsAny<CancellationToken>()));

@@ -47,8 +47,8 @@ internal class DbContextScheme {
     public override int GetHashCode() {
         unchecked {
             var hashCode = DbContextNamespace.GetHashCode();
-            hashCode = (hashCode * 397) ^ DbContextName.GetHashCode();
-            hashCode = (hashCode * 397) ^ (int)Provider;
+            hashCode = hashCode * 397 ^ DbContextName.GetHashCode();
+            hashCode = hashCode * 397 ^ (int)Provider;
 
             return hashCode;
         }

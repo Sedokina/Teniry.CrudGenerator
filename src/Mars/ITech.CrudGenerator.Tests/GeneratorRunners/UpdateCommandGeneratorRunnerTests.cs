@@ -15,7 +15,7 @@ public class UpdateCommandGeneratorRunnerTests {
 
     public UpdateCommandGeneratorRunnerTests() {
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata(
+            new(
                 "TestEntity",
                 "",
                 "",
@@ -30,7 +30,7 @@ public class UpdateCommandGeneratorRunnerTests {
     [Fact]
     public void Should_PutGlobalAndSharedConfigurationsIntoBuiltConfiguration() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -46,7 +46,7 @@ public class UpdateCommandGeneratorRunnerTests {
     [Fact]
     public void Should_SetCorrectDefaultValues() {
         // Arrange
-        var sut = CreateFactory(new InternalEntityGeneratorUpdateOperationConfiguration());
+        var sut = CreateFactory(new());
 
         // Act
         var actual = sut.Configuration;
@@ -69,7 +69,7 @@ public class UpdateCommandGeneratorRunnerTests {
     public void Should_CustomizeAllConfigurationWithOperationName_When_OperationNameSetInGeneratorConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorUpdateOperationConfiguration {
+            new() {
                 Operation = "Upd"
             }
         );
@@ -95,7 +95,7 @@ public class UpdateCommandGeneratorRunnerTests {
     public void Should_CustomizeAllAvailableConfiguration() {
         // Arrange
         var sut = CreateFactory(
-            new InternalEntityGeneratorUpdateOperationConfiguration {
+            new() {
                 Generate = false,
                 OperationGroup = "CustomOperationGroupName",
                 CommandName = "CustomCommandName",
@@ -128,7 +128,7 @@ public class UpdateCommandGeneratorRunnerTests {
     private UpdateCommandGeneratorRunner CreateFactory(
         InternalEntityGeneratorUpdateOperationConfiguration configuration
     ) {
-        return new UpdateCommandGeneratorRunner(
+        return new(
             GlobalCrudGeneratorConfigurationFactory.Construct(),
             new CqrsOperationsSharedConfiguratorFactory().Construct(),
             configuration,

@@ -8,11 +8,11 @@ namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEnti
 
 public class DeleteCustomOperationNameEntityHandlerTests {
     private readonly CustomOpDeleteCustomOperationNameEntityCommand _command;
-    private readonly CustomOpDeleteCustomOperationNameEntityHandler _sut;
     private readonly Mock<TestMongoDb> _db;
+    private readonly CustomOpDeleteCustomOperationNameEntityHandler _sut;
 
     public DeleteCustomOperationNameEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
     }
@@ -27,7 +27,7 @@ public class DeleteCustomOperationNameEntityHandlerTests {
             .ReturnsAsync((CustomOperationNameEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().NotThrowAsync();
@@ -48,7 +48,7 @@ public class DeleteCustomOperationNameEntityHandlerTests {
             .ReturnsAsync(new CustomOperationNameEntity { Id = _command.Id, Name = "Test entity" });
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.Remove(It.IsAny<CustomOperationNameEntity>()));

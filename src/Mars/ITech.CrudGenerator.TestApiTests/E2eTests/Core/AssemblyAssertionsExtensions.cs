@@ -23,7 +23,7 @@ public static class AssemblyAssertionsExtensions {
                 types => types.Select(type => type.Name)
             );
 
-        return new AndConstraint<AssemblyAssertions>(parent);
+        return new(parent);
     }
 
     [CustomAssertion]
@@ -46,7 +46,7 @@ public static class AssemblyAssertionsExtensions {
                 types => types.Where(type => type.Name.Equals(typeName)).Select(type => type.FullName)
             );
 
-        return new AndConstraint<AssemblyAssertions>(parent);
+        return new(parent);
     }
 
     [CustomAssertion]
@@ -71,6 +71,6 @@ public static class AssemblyAssertionsExtensions {
                 types => types.Select(type => type.FullName)
             );
 
-        return new AndConstraint<AssemblyAssertions>(parent);
+        return new(parent);
     }
 }

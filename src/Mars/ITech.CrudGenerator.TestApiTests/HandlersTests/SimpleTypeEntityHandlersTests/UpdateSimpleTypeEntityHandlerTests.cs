@@ -12,7 +12,7 @@ public class UpdateSimpleTypeEntityHandlerTests {
     private readonly UpdateSimpleTypeEntityHandler _sut;
 
     public UpdateSimpleTypeEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid()) {
             Name = "New Test Entity",
@@ -31,7 +31,7 @@ public class UpdateSimpleTypeEntityHandlerTests {
             FloatRating = 18.13f,
             DoubleRating = 91873.862378,
             DecimalRating = 867.97716829m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
     }
 
@@ -42,7 +42,7 @@ public class UpdateSimpleTypeEntityHandlerTests {
             .ReturnsAsync((SimpleTypeEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_command, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -70,13 +70,13 @@ public class UpdateSimpleTypeEntityHandlerTests {
             FloatRating = 99.91f,
             DoubleRating = 123432.16536,
             DecimalRating = 0871.11137816562m,
-            NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+            NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
         };
         _db.Setup(x => x.FindAsync<SimpleTypeEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
             .ReturnsAsync(entity);
 
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         entity.Id.Should().Be(_command.Id);

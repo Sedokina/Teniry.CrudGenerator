@@ -6,7 +6,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
     protected CurrencyGeneratorConfiguration() {
         Title = "Curr";
         TitlePlural = "Currsive";
-        DefaultSort = new EntityGeneratorDefaultSort<Currency>("asc", x => x.Name);
+        DefaultSort = new("asc", x => x.Name);
         // CreateOperation = new EntityGeneratorCreateOperationConfiguration
         // {
         //     Generate = true,
@@ -20,7 +20,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
         //     EndpointFunctionName = "juj",
         //     RouteName = "/cru/cre"
         // };
-        DeleteOperation = new EntityGeneratorDeleteOperationConfiguration {
+        DeleteOperation = new() {
             Generate = true,
             Operation = "Del",
             OperationGroup = "DeleLCurrency",
@@ -31,7 +31,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "dkd",
             RouteName = "/cur/de/{{entity_name}}/{{id_param_name}}"
         };
-        UpdateOperation = new EntityGeneratorUpdateOperationConfiguration {
+        UpdateOperation = new() {
             Generate = true,
             Operation = "Upd",
             OperationGroup = "UpddCurcy",
@@ -43,7 +43,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "mmupd",
             RouteName = "/cur/udo"
         };
-        GetByIdOperation = new EntityGeneratorGetByIdOperationConfiguration {
+        GetByIdOperation = new() {
             Generate = true,
             Operation = "GtBy",
             OperationGroup = "IdGetCurcy",
@@ -55,7 +55,7 @@ public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Curre
             EndpointFunctionName = "ggetb",
             RouteName = "/cry/ggbyid"
         };
-        GetListOperation = new EntityGeneratorGetListOperationConfiguration {
+        GetListOperation = new() {
             Generate = true,
             Operation = "GtLi",
             OperationGroup = "ListCuries",

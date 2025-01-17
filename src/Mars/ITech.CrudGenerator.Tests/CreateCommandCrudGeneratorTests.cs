@@ -21,7 +21,7 @@ public class CreateCommandCrudGeneratorTests {
         var cqrsOperationsSharedConfigurationBuilder =
             new CqrsOperationsSharedConfiguratorFactory().Construct();
         var internalEntityGeneratorConfiguration = new InternalEntityGeneratorConfiguration(
-            new InternalEntityClassMetadata(
+            new(
                 "TestEntity",
                 "",
                 "",
@@ -44,7 +44,7 @@ public class CreateCommandCrudGeneratorTests {
                 null!
             )
             .Configuration;
-        _crudGeneratorScheme = new CrudGeneratorScheme<CqrsOperationWithReturnValueGeneratorConfiguration>(
+        _crudGeneratorScheme = new(
             entityScheme,
             new DbContextSchemeStub(),
             configuration

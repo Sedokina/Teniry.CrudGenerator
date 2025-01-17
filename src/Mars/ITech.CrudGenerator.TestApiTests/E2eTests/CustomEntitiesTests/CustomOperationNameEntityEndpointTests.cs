@@ -77,7 +77,7 @@ public class CustomOperationNameEntityEndpointTests(TestApiFixture fixture) {
         actual!.Id.Should().NotBeEmpty();
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomOperationNameEntity>([actual.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomOperationNameEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -99,7 +99,7 @@ public class CustomOperationNameEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomOperationNameEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomOperationNameEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
@@ -118,7 +118,7 @@ public class CustomOperationNameEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<CustomOperationNameEntity>([createdEntity.Id], new CancellationToken());
+        var entity = await _db.FindAsync<CustomOperationNameEntity>([createdEntity.Id], new());
         entity.Should().BeNull();
     }
 

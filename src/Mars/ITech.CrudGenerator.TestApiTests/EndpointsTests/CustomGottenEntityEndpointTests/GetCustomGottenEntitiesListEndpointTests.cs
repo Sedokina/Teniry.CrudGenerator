@@ -22,9 +22,9 @@ public class GetCustomGottenEntitiesListEndpointTests {
         // Act
         var actual = await CustomizedNameGetCustomEntitiesListEndpoint
             .RunGetListAsync(
-                new CustomizedNameGetCustomEntitiesListQuery(),
+                new(),
                 _queryDispatcher.Object,
-                new CancellationToken()
+                new()
             );
 
         // Assert

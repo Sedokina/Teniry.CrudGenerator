@@ -12,8 +12,8 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace ITech.CrudGenerator.Core.Generators;
 
 internal class EndpointsMapGenerator : BaseGenerator {
-    private readonly List<EndpointMap> _endpointsMaps;
     private readonly string _endpointMapsClassName;
+    private readonly List<EndpointMap> _endpointsMaps;
 
     public EndpointsMapGenerator(
         List<EndpointMap> endpointsMaps,

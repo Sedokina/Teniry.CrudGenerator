@@ -14,11 +14,11 @@ namespace ITech.CrudGenerator.Core.Generators;
 
 internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOperationGeneratorConfiguration> {
     private readonly string _dtoName;
+    private readonly string _endpointClassName;
+    private readonly string _filterName;
     private readonly string _handlerName;
     private readonly string _listItemDtoName;
     private readonly string _queryName;
-    private readonly string _endpointClassName;
-    private readonly string _filterName;
 
     public ListQueryCrudGenerator(CrudGeneratorScheme<CqrsListOperationGeneratorConfiguration> scheme) : base(scheme) {
         _queryName = Scheme.Configuration.Operation;
@@ -124,7 +124,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             )
             .WithBaseConstructor(["items", "page"]);
 
-        constructor.WithBody(new BlockBuilder());
+        constructor.WithBody(new());
         dtoClass.WithConstructor(constructor.Build());
 
         WriteFile(_dtoName, dtoClass.BuildAsString());
@@ -362,10 +362,10 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 [
                     new ParameterOfMethodBuilder($"[AsParameters]{_queryName}", "query"),
                     new ParameterOfMethodBuilder("IQueryDispatcher", "queryDispatcher"),
-                    new ParameterOfMethodBuilder("CancellationToken", "cancellation"),
+                    new ParameterOfMethodBuilder("CancellationToken", "cancellation")
                 ]
             )
-            .WithAttribute(new ProducesResponseTypeAttributeBuilder(_dtoName))
+            .WithAttribute(new(_dtoName))
             .WithXmlDoc(
                 $"Get {Scheme.EntityScheme.EntityTitle.PluralTitle}",
                 200,
@@ -389,7 +389,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         WriteFile(_endpointClassName, endpointClass.BuildAsString());
 
-        EndpointMap = new EndpointMap(
+        EndpointMap = new(
             EntityScheme.EntityTitle.ToString(),
             Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature,
             "Get",

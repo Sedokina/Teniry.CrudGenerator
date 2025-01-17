@@ -23,7 +23,7 @@ internal static class EntitySchemeFactory {
         var entityTitle = CreateEntityTitle(internalEntityGeneratorConfiguration, entityName);
         var properties = GetEntityProperties(classMetadata.ClassName, classMetadata.Properties, dbContextScheme);
 
-        return new EntityScheme(
+        return new(
             entityName,
             entityTitle,
             classMetadata.ContainingNamespace,
@@ -92,7 +92,7 @@ internal static class EntitySchemeFactory {
                 dbContextScheme
             );
             result.Add(
-                new EntityProperty(
+                new(
                     propertyTypeName,
                     propertyMetadata.PropertyName,
                     propertyMetadata.PropertyName.ToLowerFirstChar(),
@@ -119,7 +119,7 @@ internal static class EntitySchemeFactory {
             var pluralPropertyName = NamePluralizer.Pluralize(propertyMetadata.PropertyName);
             if (dbContextScheme.ContainsFilter(FilterType.Contains)) {
                 return [
-                    new EntityFilterProperty(
+                    new(
                         $"{propertyTypeName}[]?",
                         pluralPropertyName,
                         dbContextScheme.GetFilterExpression(FilterType.Contains)
@@ -138,12 +138,12 @@ internal static class EntitySchemeFactory {
             if (dbContextScheme.ContainsFilter(FilterType.GreaterThanOrEqual) &&
                 dbContextScheme.ContainsFilter(FilterType.LessThan)) {
                 return [
-                    new EntityFilterProperty(
+                    new(
                         propertyTypeName,
                         $"{propertyMetadata.PropertyName}From",
                         dbContextScheme.GetFilterExpression(FilterType.GreaterThanOrEqual)
                     ),
-                    new EntityFilterProperty(
+                    new(
                         propertyTypeName,
                         $"{propertyMetadata.PropertyName}To",
                         dbContextScheme.GetFilterExpression(FilterType.LessThan)
@@ -158,7 +158,7 @@ internal static class EntitySchemeFactory {
             if (propertyMetadata.SpecialType == SpecialType.System_String) {
                 if (dbContextScheme.ContainsFilter(FilterType.Like)) {
                     return [
-                        new EntityFilterProperty(
+                        new(
                             propertyTypeName,
                             propertyMetadata.PropertyName,
                             dbContextScheme.GetFilterExpression(FilterType.Like)
@@ -170,7 +170,7 @@ internal static class EntitySchemeFactory {
             }
 
             return [
-                new EntityFilterProperty(
+                new(
                     propertyTypeName,
                     propertyMetadata.PropertyName,
                     dbContextScheme.GetFilterExpression(FilterType.Equals)

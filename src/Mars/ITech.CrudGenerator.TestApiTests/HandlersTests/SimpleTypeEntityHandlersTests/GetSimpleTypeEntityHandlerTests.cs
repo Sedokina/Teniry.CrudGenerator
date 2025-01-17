@@ -12,7 +12,7 @@ public class GetSimpleTypeEntityHandlerTests {
     private readonly GetSimpleTypeEntityHandler _sut;
 
     public GetSimpleTypeEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());
     }
@@ -24,7 +24,7 @@ public class GetSimpleTypeEntityHandlerTests {
             .ReturnsAsync((SimpleTypeEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -54,12 +54,12 @@ public class GetSimpleTypeEntityHandlerTests {
                     FloatRating = 18.13f,
                     DoubleRating = 91873.862378,
                     DecimalRating = 867.97716829m,
-                    NotIdGuid = new Guid("63c4e04c-77d3-4e27-b490-8f6e4fc635bd"),
+                    NotIdGuid = new("63c4e04c-77d3-4e27-b490-8f6e4fc635bd")
                 }
             );
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.Id.Should().Be(_query.Id);

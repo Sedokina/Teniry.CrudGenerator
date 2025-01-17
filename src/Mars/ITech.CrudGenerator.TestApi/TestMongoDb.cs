@@ -23,12 +23,11 @@ public class Mmb : DbContext {
 
 [UseDbContext(DbContextDbProvider.Mongo)]
 public class TestMongoDb : Mmb {
+    public DbSet<Currency> Currencies { get; set; }
+    public DbSet<Country> Countries { get; set; }
     public TestMongoDb() { }
 
     public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options) { }
-
-    public DbSet<Currency> Currencies { get; set; }
-    public DbSet<Country> Countries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);

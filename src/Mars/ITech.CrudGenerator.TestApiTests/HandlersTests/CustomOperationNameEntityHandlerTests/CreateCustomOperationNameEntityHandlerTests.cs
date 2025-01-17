@@ -7,12 +7,12 @@ using Moq;
 namespace ITech.CrudGenerator.TestApiTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
 public class CreateCustomOperationNameEntityHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
     private readonly CustomOpCreateCustomOperationNameEntityCommand _command;
+    private readonly Mock<TestMongoDb> _db;
     private readonly CustomOpCreateCustomOperationNameEntityHandler _sut;
 
     public CreateCustomOperationNameEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _command = new() {
             Name = "My test entity"
@@ -26,7 +26,7 @@ public class CreateCustomOperationNameEntityHandlerTests {
             .Callback((CustomOperationNameEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
-        var createdEntityDto = await _sut.HandleAsync(_command, new CancellationToken());
+        var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         // Assert
         createdEntityDto.Id.Should().NotBeEmpty();
@@ -35,7 +35,7 @@ public class CreateCustomOperationNameEntityHandlerTests {
     [Fact]
     public async Task Should_MapCommandToEntityCorrectly() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(
@@ -49,7 +49,7 @@ public class CreateCustomOperationNameEntityHandlerTests {
     [Fact]
     public async Task Should_AddToDbSetAndSave() {
         // Act
-        await _sut.HandleAsync(_command, new CancellationToken());
+        await _sut.HandleAsync(_command, new());
 
         // Assert
         _db.Verify(x => x.AddAsync(It.IsAny<CustomOperationNameEntity>(), It.IsAny<CancellationToken>()));

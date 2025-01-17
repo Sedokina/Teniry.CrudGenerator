@@ -12,7 +12,7 @@ public class GetIntIdEntityHandlerTests {
     private readonly GetIntIdEntityHandler _sut;
 
     public GetIntIdEntityHandlerTests() {
-        _db = new Mock<TestMongoDb>();
+        _db = new();
         _sut = new(_db.Object);
         _query = new(1);
     }
@@ -24,7 +24,7 @@ public class GetIntIdEntityHandlerTests {
             .ReturnsAsync((IntIdEntity?)null);
 
         // Act
-        var act = async () => await _sut.HandleAsync(_query, new CancellationToken());
+        var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EfEntityNotFoundException>()
@@ -38,7 +38,7 @@ public class GetIntIdEntityHandlerTests {
             .ReturnsAsync(new IntIdEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
-        var entity = await _sut.HandleAsync(_query, new CancellationToken());
+        var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
         entity.Id.Should().Be(_query.Id);
