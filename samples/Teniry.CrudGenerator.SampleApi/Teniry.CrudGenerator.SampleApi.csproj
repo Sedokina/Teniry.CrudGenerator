@@ -25,7 +25,8 @@
     <ItemGroup Label="Used in Generators">
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.1"/>
         <PackageReference Include="Mapster" Version="7.4.0"/>
-        <PackageReference Include="ITech.Cqrs" Version="0.2.0"/>
+        <PackageReference Include="Teniry.Cqrs" Version="8.0.1"/>
+        <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1"/>
     </ItemGroup>
 
     <ItemGroup>

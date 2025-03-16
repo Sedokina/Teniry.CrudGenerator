@@ -1,8 +1,8 @@
-using ITech.Cqrs.Domain.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.UpdateSimpleEntity;
 using Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
 using Moq;
+using Teniry.Cqrs.Extended.Exceptions;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.SimpleEntityHandlersTests;
 
@@ -29,8 +29,8 @@ public class UpdateSimpleEntityHandlerTests {
         var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
-        await act.Should().ThrowAsync<EfEntityNotFoundException>()
-            .Where(x => x.TypeName.Equals(nameof(SimpleEntity)));
+        await act.Should().ThrowAsync<EntityNotFoundException>()
+            .Where(x => x.NotFoundType == typeof(SimpleEntity));
     }
 
     [Fact]

@@ -46,13 +46,13 @@ internal class UpdateCommandCrudGenerator
                 _commandName
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
+            .WithUsings(["Teniry.Cqrs.Extended.Exceptions"])
             .WithXmlDoc(
                 $"Update {EntityScheme.EntityTitle}",
                 "Nothing",
                 [
                     new(
-                        "EfEntityNotFoundException",
+                        "EntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )
                 ]
@@ -89,8 +89,8 @@ internal class UpdateCommandCrudGenerator
             )
             .WithUsings(
                 [
-                    "ITech.Cqrs.Cqrs.Commands",
-                    "ITech.Cqrs.Domain.Exceptions",
+                    "Teniry.Cqrs.Commands",
+                    "Teniry.Cqrs.Extended.Exceptions",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
                     "Mapster"
@@ -179,7 +179,7 @@ internal class UpdateCommandCrudGenerator
             .WithUsings(
                 [
                     "Microsoft.AspNetCore.Mvc",
-                    "ITech.Cqrs.Cqrs.Commands",
+                    "Teniry.Cqrs.Commands",
                     "Mapster",
                     Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
                 ]

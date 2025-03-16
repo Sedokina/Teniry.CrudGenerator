@@ -1,4 +1,4 @@
-using ITech.Cqrs.Cqrs.Queries;
+using Teniry.Cqrs.Queries;
 using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeature.CustomOpGetByIdCustomOperationNameEntity;
 using Teniry.CrudGenerator.SampleApi.Endpoints.CustomOperationNameEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;

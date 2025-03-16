@@ -1,4 +1,4 @@
-using ITech.Cqrs.Cqrs.Commands;
+using Teniry.Cqrs.Commands;
 using Teniry.CrudGenerator.SampleApi.Endpoints.CustomOperationNameEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Microsoft.AspNetCore.Http.HttpResults;

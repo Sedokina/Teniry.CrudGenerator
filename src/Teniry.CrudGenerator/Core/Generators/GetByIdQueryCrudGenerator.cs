@@ -45,13 +45,13 @@ internal class GetByIdQueryCrudGenerator
                 _queryName
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings(["ITech.Cqrs.Domain.Exceptions"])
+            .WithUsings(["Teniry.Cqrs.Extended.Exceptions"])
             .WithXmlDoc(
                 $"Get {EntityScheme.EntityTitle} by id",
                 $"Returns full entity data of type <see cref=\"{_dtoName}\" />",
                 [
                     new(
-                        "EfEntityNotFoundException",
+                        "EntityNotFoundException",
                         $"When {Scheme.EntityScheme.EntityTitle} entity does not exist"
                     )
                 ]
@@ -101,8 +101,8 @@ internal class GetByIdQueryCrudGenerator
             )
             .WithUsings(
                 [
-                    "ITech.Cqrs.Cqrs.Queries",
-                    "ITech.Cqrs.Domain.Exceptions",
+                    "Teniry.Cqrs.Queries",
+                    "Teniry.Cqrs.Extended.Exceptions",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
                     "Mapster"
@@ -172,7 +172,7 @@ internal class GetByIdQueryCrudGenerator
             .WithUsings(
                 [
                     "Microsoft.AspNetCore.Mvc",
-                    "ITech.Cqrs.Cqrs.Queries",
+                    "Teniry.Cqrs.Queries",
                     Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
                 ]
             )

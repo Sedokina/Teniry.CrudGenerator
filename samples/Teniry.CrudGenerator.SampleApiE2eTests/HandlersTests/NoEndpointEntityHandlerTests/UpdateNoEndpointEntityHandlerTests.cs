@@ -1,4 +1,4 @@
-using ITech.Cqrs.Domain.Exceptions;
+using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.NoEndpointEntityFeature.UpdateNoEndpointEntity;
 using Teniry.CrudGenerator.SampleApi.Generators.NoEndpointEntityGenerator;
@@ -29,8 +29,8 @@ public class UpdateNoEndpointEntityHandlerTests {
         var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
-        await act.Should().ThrowAsync<EfEntityNotFoundException>()
-            .Where(x => x.TypeName.Equals(nameof(NoEndpointEntity)));
+        await act.Should().ThrowAsync<EntityNotFoundException>()
+            .Where(x => x.NotFoundType == typeof(NoEndpointEntity));
     }
 
     [Fact]

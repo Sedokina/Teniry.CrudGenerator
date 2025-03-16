@@ -1,4 +1,4 @@
-using ITech.Cqrs.Cqrs.Commands;
+using Teniry.Cqrs.Commands;
 using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.Endpoints.CustomManagedEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;

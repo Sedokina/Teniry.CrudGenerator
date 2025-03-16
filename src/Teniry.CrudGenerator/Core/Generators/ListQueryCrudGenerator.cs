@@ -51,8 +51,8 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .WithUsings(
                 [
-                    "ITech.Cqrs.Queryables.Page",
-                    "ITech.Cqrs.Queryables.Sort"
+                    "Teniry.Cqrs.Extended.Queryables.Page",
+                    "Teniry.Cqrs.Extended.Queryables.Sort"
                 ]
             )
             .Implements("IDefineSortable")
@@ -111,7 +111,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 ],
                 _dtoName
             )
-            .WithUsings(["ITech.Cqrs.Queryables.Page"])
+            .WithUsings(["Teniry.Cqrs.Extended.Queryables.Page"])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .Implements("PagedResult", _listItemDtoName);
 
@@ -143,7 +143,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
                 [
                     "System.Linq.Expressions",
                     "Microsoft.EntityFrameworkCore",
-                    "ITech.Cqrs.Queryables.Filter",
+                    "Teniry.Cqrs.Extended.Queryables.Filter",
                     Scheme.EntityScheme.EntityNamespace
                 ]
             )
@@ -194,7 +194,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
         var method = new MethodBuilder(
                 [SyntaxKind.PublicKeyword, SyntaxKind.OverrideKeyword],
                 $"Dictionary<string, Expression<Func<{Scheme.EntityScheme.EntityName}, object>>>",
-                "Sort"
+                "DefineSort"
             )
             .WithXmlInheritdoc();
 
@@ -272,10 +272,10 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithUsings(
                 [
                     "Microsoft.EntityFrameworkCore",
-                    "ITech.Cqrs.Cqrs.Queries",
-                    "ITech.Cqrs.Domain.Exceptions",
-                    "ITech.Cqrs.Queryables.Page",
-                    "ITech.Cqrs.Queryables.Filter",
+                    "Teniry.Cqrs.Queries",
+                    "Teniry.Cqrs.Extended.Exceptions",
+                    "Teniry.Cqrs.Extended.Queryables.Page",
+                    "Teniry.Cqrs.Extended.Queryables.Filter",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
                     "Mapster"
@@ -320,7 +320,6 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
 
         var methodBodyBuilder = new BlockBuilder()
             .InitVariable("filter", CallGenericMethod("query", "Adapt", [_filterName], []))
-            .AssignVariable("filter.Sorts", "query.Sort")
             .InitVariable("items", linqBuilder.BuildAsyncCall())
             .Return(CallConstructor(_dtoName, [CallMethod("items", "ToList", []), CallMethod("items", "GetPage", [])]));
 
@@ -343,7 +342,7 @@ internal class ListQueryCrudGenerator : BaseOperationCrudGenerator<CqrsListOpera
             .WithUsings(
                 [
                     "Microsoft.AspNetCore.Mvc",
-                    "ITech.Cqrs.Cqrs.Queries",
+                    "Teniry.Cqrs.Queries",
                     Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
                 ]
             )

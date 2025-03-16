@@ -116,7 +116,7 @@ internal class BlockBuilder {
 
     public BlockBuilder ThrowEntityNotFoundException(string entityTypeName) {
         var throwStatement = ThrowStatement(
-            ObjectCreationExpression(ParseTypeName("EfEntityNotFoundException"))
+            ObjectCreationExpression(ParseTypeName("EntityNotFoundException"))
                 .WithArgumentList(
                     ArgumentList(SingletonSeparatedList(Argument(TypeOfExpression(ParseTypeName(entityTypeName)))))
                 )

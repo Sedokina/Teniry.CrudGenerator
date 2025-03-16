@@ -70,7 +70,7 @@ internal class
             )
             .WithUsings(
                 [
-                    "ITech.Cqrs.Cqrs.Commands",
+                    "Teniry.Cqrs.Commands",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace
                 ]
@@ -140,7 +140,7 @@ internal class
             .WithUsings(
                 [
                     "Microsoft.AspNetCore.Mvc",
-                    "ITech.Cqrs.Cqrs.Commands",
+                    "Teniry.Cqrs.Commands",
                     Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation
                 ]
             )

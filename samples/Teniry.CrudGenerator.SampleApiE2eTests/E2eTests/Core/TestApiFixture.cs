@@ -1,9 +1,9 @@
-using ITech.Cqrs.Cqrs.ApplicationEvents.EventsChannelHandler;
 using Teniry.CrudGenerator.SampleApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Teniry.Cqrs.ApplicationEvents.EventsChannelHandler;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
