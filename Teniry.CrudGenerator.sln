@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B1477810
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Mongo.TodoSampleApi", "samples\Teniry.CrudGenerator.Mongo.TodoSampleApi\Teniry.CrudGenerator.Mongo.TodoSampleApi.csproj", "{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.PostgreSql.TodoSampleApi", "samples\Teniry.CrudGenerator.PostgreSql.TodoSampleApi\Teniry.CrudGenerator.PostgreSql.TodoSampleApi.csproj", "{2E871F2C-2497-4019-B5ED-13C873DDC8C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E871F2C-2497-4019-B5ED-13C873DDC8C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E871F2C-2497-4019-B5ED-13C873DDC8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E871F2C-2497-4019-B5ED-13C873DDC8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E871F2C-2497-4019-B5ED-13C873DDC8C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6F802ABF-8245-432D-9286-77BA4026688D} = {0DC0F268-D6DD-465B-91B3-CC6045AB3450}
@@ -56,5 +62,6 @@ Global
 		{FEFA5816-539E-41B6-B4CD-50FF6FFB933E} = {2A9799AA-BA0B-4027-9B76-0121BC86CC54}
 		{C6392F3E-2D36-49A4-90EA-8DD59A65981B} = {B1477810-63DA-4F00-B517-483E81114E3C}
 		{254AB1B1-1742-4A3C-AB18-7C78F11B71BC} = {2A9799AA-BA0B-4027-9B76-0121BC86CC54}
+		{2E871F2C-2497-4019-B5ED-13C873DDC8C3} = {2A9799AA-BA0B-4027-9B76-0121BC86CC54}
 	EndGlobalSection
 EndGlobal

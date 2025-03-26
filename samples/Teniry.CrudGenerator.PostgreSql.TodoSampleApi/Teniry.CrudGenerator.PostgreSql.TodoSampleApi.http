@@ -1,0 +1,6 @@
+@Teniry.CrudGenerator.PostgreSql.TodoSampleApi_HostAddress = http://localhost:5079
+
+GET {{Teniry.CrudGenerator.PostgreSql.TodoSampleApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
