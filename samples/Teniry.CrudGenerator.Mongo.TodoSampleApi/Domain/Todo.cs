@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Teniry.CrudGenerator.TodoSampleAPI.Domain;
+namespace Teniry.CrudGenerator.Mongo.TodoSampleApi.Domain;
 
 public class Todo {
     /// <summary>

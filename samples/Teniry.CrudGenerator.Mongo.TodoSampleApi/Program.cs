@@ -5,8 +5,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Teniry.Cqrs;
-using Teniry.CrudGenerator.TodoSampleAPI;
-using Teniry.CrudGenerator.TodoSampleAPI.Mongo;
+using Teniry.CrudGenerator.Mongo.TodoSampleApi;
+using Teniry.CrudGenerator.Mongo.TodoSampleApi.Mongo;
 
 var builder = WebApplication.CreateBuilder(args);
 

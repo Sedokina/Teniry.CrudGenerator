@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
-using Teniry.CrudGenerator.TodoSampleAPI.Domain;
+using Teniry.CrudGenerator.Mongo.TodoSampleApi.Domain;
 
-namespace Teniry.CrudGenerator.TodoSampleAPI.CrudConfigurations;
+namespace Teniry.CrudGenerator.Mongo.TodoSampleApi.CrudConfigurations;
 
 public class TodoGeneratorConfiguration : EntityGeneratorConfiguration<Todo> { }

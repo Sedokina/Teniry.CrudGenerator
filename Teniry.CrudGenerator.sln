@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2A97
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B1477810-63DA-4F00-B517-483E81114E3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.TodoSampleAPI", "samples\Teniry.CrudGenerator.TodoSampleAPI\Teniry.CrudGenerator.TodoSampleAPI.csproj", "{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teniry.CrudGenerator.Mongo.TodoSampleApi", "samples\Teniry.CrudGenerator.Mongo.TodoSampleApi\Teniry.CrudGenerator.Mongo.TodoSampleApi.csproj", "{254AB1B1-1742-4A3C-AB18-7C78F11B71BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

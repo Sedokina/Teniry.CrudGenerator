@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Teniry.CrudGenerator.Abstractions.DbContext;
-using Teniry.CrudGenerator.TodoSampleAPI.Domain;
+using Teniry.CrudGenerator.Mongo.TodoSampleApi.Domain;
 
-namespace Teniry.CrudGenerator.TodoSampleAPI;
+namespace Teniry.CrudGenerator.Mongo.TodoSampleApi;
 
 [UseDbContext(DbContextDbProvider.Mongo)]
 public class TodoDb(DbContextOptions<TodoDb> options) : DbContext(options) {
