@@ -1,0 +1,6 @@
+@Teniry.CrudGenerator.TodoSampleAPI_HostAddress = http://localhost:5119
+
+GET {{Teniry.CrudGenerator.TodoSampleAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
