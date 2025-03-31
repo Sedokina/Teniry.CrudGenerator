@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 
 public class ReadOnlyCustomizedGeneratorConfiguration : EntityGeneratorConfiguration<ReadOnlyCustomizedEntity> {
     public ReadOnlyCustomizedGeneratorConfiguration() {

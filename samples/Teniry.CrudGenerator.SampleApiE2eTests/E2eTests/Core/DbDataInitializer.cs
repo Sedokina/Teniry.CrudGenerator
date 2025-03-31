@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.SampleApi;
 using Microsoft.EntityFrameworkCore;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 

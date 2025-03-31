@@ -7,7 +7,7 @@ using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
-public class CustomGottenEntityEndpointTests(TestApiFixture fixture) {
+public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

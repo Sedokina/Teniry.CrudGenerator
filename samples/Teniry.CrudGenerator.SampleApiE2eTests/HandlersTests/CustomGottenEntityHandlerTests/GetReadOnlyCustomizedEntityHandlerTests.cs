@@ -3,16 +3,16 @@ using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
 using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
 
-public class GetCustomGottenEntityHandlerTests {
+public class GetReadOnlyCustomizedEntityHandlerTests {
     private readonly Mock<SampleMongoDb> _db;
     private readonly CustomizedNameGetCustomEntityQuery _query;
     private readonly CustomizedNameGetCustomEntityHandler _sut;
 
-    public GetCustomGottenEntityHandlerTests() {
+    public GetReadOnlyCustomizedEntityHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _query = new(Guid.NewGuid());

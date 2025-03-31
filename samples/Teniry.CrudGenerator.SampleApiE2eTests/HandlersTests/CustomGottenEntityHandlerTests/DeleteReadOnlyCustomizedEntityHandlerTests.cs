@@ -2,7 +2,7 @@ using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
 
-public class DeleteCustomGottenEntityHandlerTests {
+public class DeleteReadOnlyCustomizedEntityHandlerTests {
     [Theory]
     [InlineData("DeleteCustomGottenEntityCommand")]
     [InlineData("DeleteCustomGottenEntityHandler")]

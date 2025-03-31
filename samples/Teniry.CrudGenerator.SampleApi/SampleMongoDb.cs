@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 

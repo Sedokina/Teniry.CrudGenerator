@@ -2,7 +2,7 @@ using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.CustomGottenEntityEndpointTests;
 
-public class DeleteCustomGottenEntityEndpointTests {
+public class DeleteReadOnlyCustomizedEntityEndpointTests {
     [Theory]
     [InlineData("DeleteCustomGottenEntityEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {

@@ -2,11 +2,11 @@ using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
 
-public class UpdateCustomGottenEntityHandlerTests {
+public class CreateReadOnlyCustomizedEntityHandlerTests {
     [Theory]
-    [InlineData("UpdateCustomGottenEntityCommand")]
-    [InlineData("UpdateCustomGottenEntityHandler")]
-    public void Should_NotGenerateUpdateHandler(string typeName) {
+    [InlineData("CreateCustomGottenEntityCommand")]
+    [InlineData("CreateCustomGottenEntityHandler")]
+    public void Should_NotGenerateCreateHandler(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);
     }
