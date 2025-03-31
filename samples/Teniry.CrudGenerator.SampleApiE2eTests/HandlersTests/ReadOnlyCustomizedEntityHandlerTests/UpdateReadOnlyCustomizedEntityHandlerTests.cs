@@ -4,8 +4,8 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.ReadOnlyCustomize
 
 public class UpdateReadOnlyCustomizedEntityHandlerTests {
     [Theory]
-    [InlineData("UpdateCustomGottenEntityCommand")]
-    [InlineData("UpdateCustomGottenEntityHandler")]
+    [InlineData("UpdateReadOnlyCustomizedEntityCommand")]
+    [InlineData("UpdateReadOnlyCustomizedEntityHandler")]
     public void Should_NotGenerateUpdateHandler(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);

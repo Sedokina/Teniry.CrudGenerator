@@ -4,8 +4,8 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.ReadOnlyCustomize
 
 public class DeleteReadOnlyCustomizedEntityHandlerTests {
     [Theory]
-    [InlineData("DeleteCustomGottenEntityCommand")]
-    [InlineData("DeleteCustomGottenEntityHandler")]
+    [InlineData("DeleteReadOnlyCustomizedEntityCommand")]
+    [InlineData("DeleteReadOnlyCustomizedEntityHandler")]
     public void Should_NotGenerateDeleteHandler(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);
