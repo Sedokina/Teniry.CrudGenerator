@@ -1,18 +1,12 @@
 using Teniry.CrudGenerator.SampleApi;
 using Microsoft.EntityFrameworkCore;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 public static class DbDataInitializer {
     public static async Task InitializeAsync(SampleMongoDb db) {
-        await db.AddRangeAsync(
-            new SimpleEntity { Id = Guid.NewGuid(), Name = "First Entity Name" },
-            new SimpleEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
-        );
-
         await db.AddRangeAsync(
             new SimpleTypeEntity {
                 Id = new("44bacea2-1e32-452a-b1f3-28e46924e899"),

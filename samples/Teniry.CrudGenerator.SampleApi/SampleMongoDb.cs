@@ -10,7 +10,6 @@ using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGen
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApi;
@@ -38,7 +37,6 @@ public class SampleMongoDb : Mmb {
             .WithMany(x => x.Currencies)
             .HasForeignKey(x => x.CountryId);
 
-        modelBuilder.Entity<SimpleEntity>().ToCollection("simpleEntities");
         modelBuilder.Entity<SimpleTypeEntity>().ToCollection("simpleTypeEntities");
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.LastSignInDate)
             .HasBsonRepresentation(BsonType.DateTime);
