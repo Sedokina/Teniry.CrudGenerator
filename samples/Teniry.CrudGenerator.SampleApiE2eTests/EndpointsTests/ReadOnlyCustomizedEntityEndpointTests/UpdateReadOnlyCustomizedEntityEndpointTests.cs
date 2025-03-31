@@ -1,10 +1,10 @@
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.CustomGottenEntityEndpointTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.ReadOnlyCustomizedEntityEndpointTests;
 
-public class DeleteReadOnlyCustomizedEntityEndpointTests {
+public class UpdateReadOnlyCustomizedEntityEndpointTests {
     [Theory]
-    [InlineData("DeleteCustomGottenEntityEndpoint")]
+    [InlineData("UpdateCustomGottenEntityEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);
