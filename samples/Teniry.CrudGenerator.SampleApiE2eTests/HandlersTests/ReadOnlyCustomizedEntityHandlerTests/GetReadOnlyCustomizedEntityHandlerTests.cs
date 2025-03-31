@@ -1,7 +1,7 @@
 using Moq;
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.GetReadOnlyModelCustomNamespace;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
@@ -9,8 +9,8 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.ReadOnlyCustomize
 
 public class GetReadOnlyCustomizedEntityHandlerTests {
     private readonly Mock<SampleMongoDb> _db;
-    private readonly CustomizedNameGetCustomEntityQuery _query;
-    private readonly CustomizedNameGetCustomEntityHandler _sut;
+    private readonly GetReadOnlyModelQuery _query;
+    private readonly GetReadOnlyModelHandler _sut;
 
     public GetReadOnlyCustomizedEntityHandlerTests() {
         _db = new();
@@ -42,7 +42,7 @@ public class GetReadOnlyCustomizedEntityHandlerTests {
         var entity = await _sut.HandleAsync(_query, new());
 
         // Assert
-        entity.Should().BeOfType<CustomizedNameGetCustomEntityDto>();
+        entity.Should().BeOfType<ReadOnlyModelCustomDto>();
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
         _db.Verify(
@@ -53,12 +53,12 @@ public class GetReadOnlyCustomizedEntityHandlerTests {
     }
 
     [Theory]
-    [InlineData("CustomizedNameGetCustomEntityQuery")]
-    [InlineData("CustomizedNameGetCustomEntityHandler")]
-    [InlineData("CustomizedNameGetCustomEntityDto")]
+    [InlineData("GetReadOnlyModelQuery")]
+    [InlineData("GetReadOnlyModelHandler")]
+    [InlineData("ReadOnlyModelCustomDto")]
     public void Should_BeInCustomNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
-            .BeInNamespaceThatEndsWith(typeName, "CustomGottenEntityGetOperationCustomNs");
+            .BeInNamespaceThatEndsWith(typeName, "GetReadOnlyModelCustomNamespace");
     }
 }

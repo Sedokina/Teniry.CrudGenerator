@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Teniry.Cqrs.Queries;
-using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.GetReadOnlyModelCustomNamespace;
 using Teniry.CrudGenerator.SampleApi.Endpoints.ReadOnlyCustomizedEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
@@ -11,7 +11,7 @@ public class GetReadOnlyCustomizedEntityEndpointTests {
     private readonly Mock<IQueryDispatcher> _queryDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameGetCustomEntityEndpoint")]
+    [InlineData("GetReadOnlyModelCustomizedEndpoint")]
     public void Should_CustomizeClassNames(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().ContainType(typeName);
@@ -20,7 +20,7 @@ public class GetReadOnlyCustomizedEntityEndpointTests {
     [Fact]
     public async Task Should_ReturnCorrectResult() {
         // Act
-        var actual = await CustomizedNameGetCustomEntityEndpoint
+        var actual = await GetReadOnlyModelCustomizedEndpoint
             .RunGetAsync(
                 Guid.NewGuid(),
                 _queryDispatcher.Object,
@@ -28,6 +28,6 @@ public class GetReadOnlyCustomizedEntityEndpointTests {
             );
 
         // Assert
-        actual.Should().BeOfType<Ok<CustomizedNameGetCustomEntityDto>>();
+        actual.Should().BeOfType<Ok<ReadOnlyModelCustomDto>>();
     }
 }

@@ -1,7 +1,7 @@
 using Moq;
 using Moq.EntityFrameworkCore;
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetListOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.GetReadOnlyModelsListCustomNamespace;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
@@ -9,8 +9,8 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.ReadOnlyCustomize
 
 public class GetReadOnlyCustomizedEntitiesListHandlerTests {
     private readonly Mock<SampleMongoDb> _db;
-    private readonly CustomizedNameGetCustomEntitiesListQuery _query;
-    private readonly CustomizedNameGetCustomEntitiesListHandler _sut;
+    private readonly GetReadOnlyModelsQuery _query;
+    private readonly GetReadOnlyModelsHandler _sut;
 
     public GetReadOnlyCustomizedEntitiesListHandlerTests() {
         _db = new();
@@ -33,7 +33,7 @@ public class GetReadOnlyCustomizedEntitiesListHandlerTests {
         var entities = await _sut.HandleAsync(_query, new());
 
         // Assert
-        entities.Should().BeOfType<CustomizedNameGetCustomEntitiesListDto>();
+        entities.Should().BeOfType<ReadOnlyModelsListCustomDto>();
         entities.Page.Should().NotBeNull();
         entities.Page.CurrentPageIndex.Should().Be(1);
         entities.Page.PageSize.Should().Be(10);
@@ -53,12 +53,12 @@ public class GetReadOnlyCustomizedEntitiesListHandlerTests {
     }
 
     [Theory]
-    [InlineData("CustomizedNameGetCustomEntitiesListQuery")]
-    [InlineData("CustomizedNameGetCustomEntitiesListHandler")]
-    [InlineData("CustomizedNameGetCustomEntitiesListDto")]
+    [InlineData("GetReadOnlyModelsQuery")]
+    [InlineData("GetReadOnlyModelsHandler")]
+    [InlineData("ReadOnlyModelsListCustomDto")]
     public void Should_BeInCustomNamespace(string typeName) {
         // Assert
         typeof(Program).Assembly.Should()
-            .BeInNamespaceThatEndsWith(typeName, "CustomGottenEntityGetListOperationCustomNs");
+            .BeInNamespaceThatEndsWith(typeName, "GetReadOnlyModelsListCustomNamespace");
     }
 }

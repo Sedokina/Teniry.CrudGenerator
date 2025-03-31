@@ -11,7 +11,7 @@ public class GetCustomOperationNameEntityEndpointTests {
     private readonly Mock<IQueryDispatcher> _queryDispatcher = new();
 
     [Theory]
-    [InlineData("CustomizedNameGetCustomEntityEndpoint")]
+    [InlineData("GetReadOnlyModelCustomizedEndpoint")]
     public void Should_CustomizeClassNames(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().ContainType(typeName);

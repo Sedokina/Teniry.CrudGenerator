@@ -19,22 +19,22 @@ public class ReadOnlyCustomizedGeneratorConfiguration : EntityGeneratorConfigura
         };
 
         GetByIdOperation = new() {
-            OperationGroup = "CustomGottenEntityGetOperationCustomNs",
-            QueryName = "CustomizedNameGetCustomEntityQuery",
-            HandlerName = "CustomizedNameGetCustomEntityHandler",
-            DtoName = "CustomizedNameGetCustomEntityDto",
-            EndpointClassName = "CustomizedNameGetCustomEntityEndpoint",
+            OperationGroup = "GetReadOnlyModelCustomNamespace",
+            QueryName = "GetReadOnlyModelQuery",
+            HandlerName = "GetReadOnlyModelHandler",
+            DtoName = "ReadOnlyModelCustomDto",
+            EndpointClassName = "GetReadOnlyModelCustomizedEndpoint",
             EndpointFunctionName = "RunGetAsync",
-            RouteName = "/getCustomGottenEntityById/{{id_param_name}}"
+            RouteName = "/getCustomizedReadOnlyModelById/{{id_param_name}}"
         };
         GetListOperation = new() {
-            OperationGroup = "CustomGottenEntityGetListOperationCustomNs",
-            QueryName = "CustomizedNameGetCustomEntitiesListQuery",
-            HandlerName = "CustomizedNameGetCustomEntitiesListHandler",
-            DtoName = "CustomizedNameGetCustomEntitiesListDto",
-            EndpointClassName = "CustomizedNameGetCustomEntitiesListEndpoint",
+            OperationGroup = "GetReadOnlyModelsListCustomNamespace",
+            QueryName = "GetReadOnlyModelsQuery",
+            HandlerName = "GetReadOnlyModelsHandler",
+            DtoName = "ReadOnlyModelsListCustomDto",
+            EndpointClassName = "ReadOnlyModelsListCustomizedEndpoint",
             EndpointFunctionName = "RunGetListAsync",
-            RouteName = "/getAllCustomGottenEntitiesList"
+            RouteName = "/getAllCustomizedReadOnlyEntities"
         };
     }
 }

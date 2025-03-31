@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetListOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.GetReadOnlyModelsListCustomNamespace;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.GetReadOnlyModelCustomNamespace;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
@@ -11,7 +11,7 @@ public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]
-    [InlineData("getCustomGottenEntityById/{0}")]
+    [InlineData("getCustomizedReadOnlyModelById/{0}")]
     public async Task Should_GetEntity(string endpoint) {
         // Arrange
         var entityId = new Guid("27ed3a08-c92e-4c8d-b515-f793eb65cacd");
@@ -23,14 +23,14 @@ public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntityDto>();
+        var actual = await response.Content.ReadFromJsonAsync<ReadOnlyModelCustomDto>();
         actual.Should().NotBeNull();
         actual!.Id.Should().Be(entityId);
         actual.Name.Should().NotBeEmpty();
     }
 
     [Theory]
-    [InlineData("getAllCustomGottenEntitiesList?page=1&pageSize=10")]
+    [InlineData("getAllCustomizedReadOnlyEntities?page=1&pageSize=10")]
     public async Task Should_GetEntitiesList(string endpoint) {
         // Act
         var response = await _httpClient.GetAsync(endpoint);
@@ -39,7 +39,7 @@ public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntitiesListDto>();
+        var actual = await response.Content.ReadFromJsonAsync<ReadOnlyModelsListCustomDto>();
         actual.Should().NotBeNull();
         actual!.Page.PageSize.Should().BeGreaterThan(0);
         actual.Page.CurrentPageIndex.Should().BeGreaterThan(0);
@@ -53,7 +53,7 @@ public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
     }
 
     [Theory]
-    [InlineData("getAllCustomGottenEntitiesList?page=1&pageSize=10")]
+    [InlineData("getAllCustomizedReadOnlyEntities?page=1&pageSize=10")]
     public async Task Should_SortListWithDefaultSort(string endpoint) {
         // Act
         var response = await _httpClient.GetAsync(endpoint);
@@ -62,7 +62,7 @@ public class ReadOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
         // Assert correct response
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var actual = await response.Content.ReadFromJsonAsync<CustomizedNameGetCustomEntitiesListDto>();
+        var actual = await response.Content.ReadFromJsonAsync<ReadOnlyModelsListCustomDto>();
 
         actual!.Items.Should().HaveCountGreaterThan(0)
             .And.BeInDescendingOrder(x => x.Name);
