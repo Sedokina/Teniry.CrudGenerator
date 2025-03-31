@@ -5,14 +5,14 @@ using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.CreateEntit
 using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.GetEntityIdName;
 using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.GetEntityIdNames;
 using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.UpdateEntityIdName;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomIds;
 
 [Collection("E2eTests")]
 public class EntityIdNamesEndpointTests(TestApiFixture fixture) {
-    private readonly TestMongoDb _db = fixture.GetDb();
+    private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

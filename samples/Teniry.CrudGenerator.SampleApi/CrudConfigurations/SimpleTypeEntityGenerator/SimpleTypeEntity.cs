@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 /// <summary>
 ///     This entity contains all supported simple types

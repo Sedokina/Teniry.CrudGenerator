@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.NoEndpointEntityFeature.DeleteNoEndpointEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.NoEndpointEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.NoEndpointEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.NoEndpointEntityHandlerTests;
 
 public class DeleteNoEndpointEntityHandlerTests {
     private readonly DeleteNoEndpointEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly DeleteNoEndpointEntityHandler _sut;
 
     public DeleteNoEndpointEntityHandlerTests() {

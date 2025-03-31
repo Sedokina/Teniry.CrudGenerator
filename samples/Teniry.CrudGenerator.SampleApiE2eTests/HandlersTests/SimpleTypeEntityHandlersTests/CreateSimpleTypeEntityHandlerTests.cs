@@ -1,14 +1,14 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleTypeEntityFeature.CreateSimpleTypeEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.SimpleTypeEntityHandlersTests;
 
 public class CreateSimpleTypeEntityHandlerTests {
     private readonly CreateSimpleTypeEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly CreateSimpleTypeEntityHandler _sut;
 
     public CreateSimpleTypeEntityHandlerTests() {

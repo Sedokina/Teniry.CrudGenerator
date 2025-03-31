@@ -1,15 +1,15 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeature.
     CustomOpGetListCustomOperationNameEntities;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
 public class GetCustomOperationNameEntitiesListHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly CustomOpGetListCustomOperationNameEntitiesQuery _query;
     private readonly CustomOpGetListCustomOperationNameEntitiesHandler _sut;
 

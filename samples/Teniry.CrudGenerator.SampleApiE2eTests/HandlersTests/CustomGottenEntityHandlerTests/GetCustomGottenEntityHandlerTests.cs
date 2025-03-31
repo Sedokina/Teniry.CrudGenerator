@@ -1,14 +1,14 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomGottenEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
 
 public class GetCustomGottenEntityHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly CustomizedNameGetCustomEntityQuery _query;
     private readonly CustomizedNameGetCustomEntityHandler _sut;
 

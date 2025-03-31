@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 
 /// <summary>
 ///     This is a basic entity to test simple case of CQRS generation

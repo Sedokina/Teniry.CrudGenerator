@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomGottenEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
 using Microsoft.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 public static class DbDataInitializer {
-    public static async Task InitializeAsync(TestMongoDb db) {
+    public static async Task InitializeAsync(SampleMongoDb db) {
         await db.AddRangeAsync(
             new SimpleEntity { Id = Guid.NewGuid(), Name = "First Entity Name" },
             new SimpleEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }

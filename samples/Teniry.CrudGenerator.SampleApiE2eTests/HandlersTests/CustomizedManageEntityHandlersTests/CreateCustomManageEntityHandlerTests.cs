@@ -1,14 +1,14 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomManagedEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomizedManageEntityHandlersTests;
 
 public class CreateCustomManageEntityHandlerTests {
     private readonly CustomizedNameCreateManagedEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly CustomizedNameCreateManagedEntityHandler _sut;
 
     public CreateCustomManageEntityHandlerTests() {

@@ -1,15 +1,15 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeature.CustomOpUpdateCustomOperationNameEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomOperationNameEntityHandlerTests;
 
 public class UpdateCustomOperationNameEntityHandlerTests {
     private readonly CustomOpUpdateCustomOperationNameEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly CustomOpUpdateCustomOperationNameEntityHandler _sut;
 
     public UpdateCustomOperationNameEntityHandlerTests() {

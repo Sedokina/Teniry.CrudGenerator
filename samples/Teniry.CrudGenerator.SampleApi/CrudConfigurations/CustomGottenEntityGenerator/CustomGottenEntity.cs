@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomGottenEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
 public class CustomGottenEntity {
     public Guid Id { get; set; }

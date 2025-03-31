@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomIds.EntityIdNameGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
 
 public class EntityIdNameGeneratorConfiguration : EntityGeneratorConfiguration<EntityIdName> { }
 

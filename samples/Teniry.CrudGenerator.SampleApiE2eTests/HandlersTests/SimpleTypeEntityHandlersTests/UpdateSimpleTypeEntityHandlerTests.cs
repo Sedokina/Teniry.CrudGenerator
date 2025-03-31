@@ -1,14 +1,14 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleTypeEntityFeature.UpdateSimpleTypeEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.SimpleTypeEntityHandlersTests;
 
 public class UpdateSimpleTypeEntityHandlerTests {
     private readonly UpdateSimpleTypeEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly UpdateSimpleTypeEntityHandler _sut;
 
     public UpdateSimpleTypeEntityHandlerTests() {

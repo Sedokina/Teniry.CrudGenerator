@@ -3,14 +3,14 @@ using System.Net.Http.Json;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomManagedEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
 public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
-    private readonly TestMongoDb _db = fixture.GetDb();
+    private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

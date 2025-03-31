@@ -1,14 +1,14 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.UpdateEntityIdName;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomIds.EntityIdNameGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
 
 public class UpdateEntityIdNameHandlerTests {
     private readonly UpdateEntityIdNameCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly UpdateEntityIdNameHandler _sut;
 
     public UpdateEntityIdNameHandlerTests() {

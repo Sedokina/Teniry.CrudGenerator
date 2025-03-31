@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.GetSimpleEntities;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.SimpleEntityHandlersTests;
 
 public class GetSimpleEntitiesListHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly GetSimpleEntitiesQuery _query;
     private readonly GetSimpleEntitiesHandler _sut;
 

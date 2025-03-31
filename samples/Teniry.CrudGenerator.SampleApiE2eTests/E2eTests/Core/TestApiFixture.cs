@@ -45,11 +45,11 @@ public class TestApiFixture : IAsyncLifetime {
     // потому что, ef core кэширует полученные данные если не был вызван AsNoTracking
     // и этот кэш может привести к тому, что в одном тесте была сделана выборка, результат закэшировался
     // при его вызове в следующем тесте, ef возьмет закэшированный результат и тест не выполнится
-    public TestMongoDb GetDb() {
+    public SampleMongoDb GetDb() {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         var connectionStringDbName = _configuration.GetConnectionString("DefaultConnectionDbName");
 
-        var optionsBuilder = new DbContextOptionsBuilder<TestMongoDb>()
+        var optionsBuilder = new DbContextOptionsBuilder<SampleMongoDb>()
             .UseMongoDB(connectionString!, connectionStringDbName!)
             .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddDebug()));
 
@@ -57,7 +57,7 @@ public class TestApiFixture : IAsyncLifetime {
         serviceProvider.Setup(it => it.GetService(typeof(EventsChannel)))
             .Returns(new EventsChannel());
 
-        var db = new TestMongoDb(optionsBuilder.Options, serviceProvider.Object);
+        var db = new SampleMongoDb(optionsBuilder.Options, serviceProvider.Object);
         // TODO: decide on Transactional behaviour
         // https://devblogs.microsoft.com/dotnet/mongodb-ef-core-provider-whats-new/#autotransactions-and-optimistic-concurrency
         // Transactions added to ef provider, but mongo should be configured additionally,

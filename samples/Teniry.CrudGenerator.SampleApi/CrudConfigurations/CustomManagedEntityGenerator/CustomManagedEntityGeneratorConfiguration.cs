@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomManagedEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 
 public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomManagedEntity> {
     public CustomManagedEntityGeneratorConfiguration() {

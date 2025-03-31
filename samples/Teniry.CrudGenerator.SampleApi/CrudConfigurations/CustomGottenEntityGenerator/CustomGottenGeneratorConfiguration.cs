@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomGottenEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
 public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity> {
     public CustomGottenGeneratorConfiguration() {

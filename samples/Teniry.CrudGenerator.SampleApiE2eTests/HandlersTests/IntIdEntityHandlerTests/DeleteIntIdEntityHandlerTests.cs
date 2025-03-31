@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.DeleteIntIdEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.IntIdEntityHandlerTests;
 
 public class DeleteIntIdEntityHandlerTests {
     private readonly DeleteIntIdEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly DeleteIntIdEntityHandler _sut;
 
     public DeleteIntIdEntityHandlerTests() {

@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 
 public class IntIdEntity {
     public int Id { get; set; }

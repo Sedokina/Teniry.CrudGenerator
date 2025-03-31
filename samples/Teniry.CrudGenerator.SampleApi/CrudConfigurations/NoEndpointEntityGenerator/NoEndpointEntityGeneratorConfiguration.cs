@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.NoEndpointEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.NoEndpointEntityGenerator;
 
 public class NoEndpointEntityGeneratorConfiguration : EntityGeneratorConfiguration<NoEndpointEntity> {
     public NoEndpointEntityGeneratorConfiguration() {

@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using MongoDB.Bson;
 
-namespace Teniry.CrudGenerator.SampleApi;
+namespace Teniry.CrudGenerator.SampleApi.Mongo;
 
 /// <summary>
 ///     Serialize ObjectId as string and deserialize string as ObjectId

@@ -5,14 +5,14 @@ using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.CreateSimpl
 using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.GetSimpleEntities;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.GetSimpleEntity;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleEntityFeature.UpdateSimpleEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.SimpleEntitiesTests;
 
 [Collection("E2eTests")]
 public class SimpleEntityEndpointTests(TestApiFixture fixture) {
-    private readonly TestMongoDb _db = fixture.GetDb();
+    private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

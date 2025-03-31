@@ -5,14 +5,14 @@ using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.CreateIntIdE
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntities;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntity;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.UpdateIntIdEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomIds;
 
 [Collection("E2eTests")]
 public class IntIdEntityEndpointTests(TestApiFixture fixture) {
-    private readonly TestMongoDb _db = fixture.GetDb();
+    private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

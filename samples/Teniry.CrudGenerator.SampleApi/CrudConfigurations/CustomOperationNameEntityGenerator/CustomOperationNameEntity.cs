@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 
 public class CustomOperationNameEntity {
     public Guid Id { get; set; }

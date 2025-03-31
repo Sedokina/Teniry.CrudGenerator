@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.SimpleTypeEntityFeature.DeleteSimpleTypeEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.SimpleTypeEntityHandlersTests;
 
 public class DeleteSimpleEntityHandlerTests {
     private readonly DeleteSimpleTypeEntityCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly DeleteSimpleTypeEntityHandler _sut;
 
     public DeleteSimpleEntityHandlerTests() {

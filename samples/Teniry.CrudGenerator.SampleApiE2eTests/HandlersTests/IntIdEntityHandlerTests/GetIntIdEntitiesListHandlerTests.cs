@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntities;
-using Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.IntIdEntityHandlerTests;
 
 public class GetIntIdEntitiesListHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly GetIntIdEntitiesQuery _query;
     private readonly GetIntIdEntitiesHandler _sut;
 

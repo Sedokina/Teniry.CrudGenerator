@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.DeleteEntityIdName;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomIds.EntityIdNameGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
 
 public class DeleteEntityIdNameHandlerTests {
     private readonly DeleteEntityIdNameCommand _command;
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly DeleteEntityIdNameHandler _sut;
 
     public DeleteEntityIdNameHandlerTests() {

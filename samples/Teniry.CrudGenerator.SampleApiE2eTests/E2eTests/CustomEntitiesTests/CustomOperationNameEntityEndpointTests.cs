@@ -6,14 +6,14 @@ using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeatur
 using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeature.
     CustomOpGetListCustomOperationNameEntities;
 using Teniry.CrudGenerator.SampleApi.Application.CustomOperationNameEntityFeature.CustomOpUpdateCustomOperationNameEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
 public class CustomOperationNameEntityEndpointTests(TestApiFixture fixture) {
-    private readonly TestMongoDb _db = fixture.GetDb();
+    private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
     [Theory]

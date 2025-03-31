@@ -1,5 +1,5 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 public class SimpleTypeEntityGeneratorConfiguration : EntityGeneratorConfiguration<SimpleTypeEntity> { }

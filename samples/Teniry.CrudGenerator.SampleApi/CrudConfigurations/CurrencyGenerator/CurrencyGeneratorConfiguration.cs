@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CurrencyGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
 
 public class CurrencyGeneratorConfiguration : EntityGeneratorConfiguration<Currency> {
     protected CurrencyGeneratorConfiguration() {

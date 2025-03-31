@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CurrencyGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
 
 public class Currency {
     // string with [BsonRepresentation(BsonType.ObjectId)] or ObjectId 

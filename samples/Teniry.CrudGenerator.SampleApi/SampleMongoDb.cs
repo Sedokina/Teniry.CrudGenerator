@@ -4,30 +4,30 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
-using Teniry.CrudGenerator.SampleApi.Generators.CurrencyGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomGottenEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomIds.EntityIdNameGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomManagedEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.Generators.SimpleTypeEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApi;
 
 public class Mmb : DbContext {
     public Mmb() { }
 
-    public Mmb(DbContextOptions<TestMongoDb> options) : base(options) { }
+    public Mmb(DbContextOptions<SampleMongoDb> options) : base(options) { }
 }
 
 [UseDbContext(DbContextDbProvider.Mongo)]
-public class TestMongoDb : Mmb {
+public class SampleMongoDb : Mmb {
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<Country> Countries { get; set; }
-    public TestMongoDb() { }
+    public SampleMongoDb() { }
 
-    public TestMongoDb(DbContextOptions<TestMongoDb> options, IServiceProvider services) : base(options) { }
+    public SampleMongoDb(DbContextOptions<SampleMongoDb> options, IServiceProvider services) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);

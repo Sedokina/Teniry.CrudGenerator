@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
+using Teniry.CrudGenerator.SampleApi.Mongo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ var connectionStringDbName = builder.Configuration.GetConnectionString("DefaultC
 // For Guid to work with mongo db
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 
-builder.Services.AddDbContext<TestMongoDb>(options => options.UseMongoDB(connectionString, connectionStringDbName));
+builder.Services.AddDbContext<SampleMongoDb>(options => options.UseMongoDB(connectionString, connectionStringDbName));
 
 // This is required for endpoints to serialize ObjectId as string and deserialize string as ObjectId
 builder.Services.ConfigureHttpJsonOptions(

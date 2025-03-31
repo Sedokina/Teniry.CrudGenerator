@@ -1,13 +1,13 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntity;
-using Teniry.CrudGenerator.SampleApi.Generators.IntIdEntityGenerator;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.IntIdEntityHandlerTests;
 
 public class GetIntIdEntityHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly GetIntIdEntityQuery _query;
     private readonly GetIntIdEntityHandler _sut;
 

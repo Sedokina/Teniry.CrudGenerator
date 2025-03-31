@@ -1,4 +1,4 @@
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomManagedEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 
 public class CustomManagedEntity {
     public Guid Id { get; set; }

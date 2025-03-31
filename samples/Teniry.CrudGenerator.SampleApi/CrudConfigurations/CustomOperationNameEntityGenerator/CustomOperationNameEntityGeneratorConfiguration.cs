@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.Generators.CustomOperationNameEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 
 public class CustomOperationNameEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomOperationNameEntity> {
     public CustomOperationNameEntityGeneratorConfiguration() {

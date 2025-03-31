@@ -1,13 +1,13 @@
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.NoEndpointEntityFeature.GetNoEndpointEntities;
-using Teniry.CrudGenerator.SampleApi.Generators.NoEndpointEntityGenerator;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.NoEndpointEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.NoEndpointEntityHandlerTests;
 
 public class GetNoEndpointEntitiesListHandlerTests {
-    private readonly Mock<TestMongoDb> _db;
+    private readonly Mock<SampleMongoDb> _db;
     private readonly GetNoEndpointEntitiesQuery _query;
     private readonly GetNoEndpointEntitiesHandler _sut;
 
