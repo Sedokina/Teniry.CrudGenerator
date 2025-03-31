@@ -1,17 +1,17 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.UpdateEntityIdName;
+using Teniry.CrudGenerator.SampleApi.Application.GuidEntityFeature.UpdateGuidEntity;
 using Moq;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.GuidEntityGeneratorHandlerTests;
 
-public class UpdateEntityIdNameHandlerTests {
-    private readonly UpdateEntityIdNameCommand _command;
+public class UpdateGuidEntityHandlerTests {
+    private readonly UpdateGuidEntityCommand _command;
     private readonly Mock<SampleMongoDb> _db;
-    private readonly UpdateEntityIdNameHandler _sut;
+    private readonly UpdateGuidEntityHandler _sut;
 
-    public UpdateEntityIdNameHandlerTests() {
+    public UpdateGuidEntityHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid()) {
@@ -24,25 +24,25 @@ public class UpdateEntityIdNameHandlerTests {
         // Arrange
         _db.Setup(
                 x =>
-                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+                    x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>())
             )
-            .ReturnsAsync((EntityIdName?)null);
+            .ReturnsAsync((GuidEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_command, new());
 
         // Assert
         await act.Should().ThrowAsync<EntityNotFoundException>()
-            .Where(x => x.NotFoundType == typeof(EntityIdName));
+            .Where(x => x.NotFoundType == typeof(GuidEntity));
     }
 
     [Fact]
     public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
-        var entity = new EntityIdName { EntityIdNameId = _command.EntityIdNameId, Name = "Old entity name" };
+        var entity = new GuidEntity { GuidEntityId = _command.GuidEntityId, Name = "Old entity name" };
         _db.Setup(
                 x =>
-                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+                    x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>())
             )
             .ReturnsAsync(entity);
 
@@ -53,7 +53,7 @@ public class UpdateEntityIdNameHandlerTests {
         entity.Name.Should().Be("New entity name");
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
-            x => x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();

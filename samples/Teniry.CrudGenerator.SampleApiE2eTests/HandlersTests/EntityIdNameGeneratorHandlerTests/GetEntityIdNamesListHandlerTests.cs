@@ -1,17 +1,17 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.GetEntityIdNames;
+using Teniry.CrudGenerator.SampleApi.Application.GuidEntityFeature.GetGuidEntities;
 using Moq;
 using Moq.EntityFrameworkCore;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.GuidEntityGeneratorHandlerTests;
 
-public class GetEntityIdNamesListHandlerTests {
+public class GetGuidEntitiesListHandlerTests {
     private readonly Mock<SampleMongoDb> _db;
-    private readonly GetEntityIdNamesQuery _query;
-    private readonly GetEntityIdNamesHandler _sut;
+    private readonly GetGuidEntitiesQuery _query;
+    private readonly GetGuidEntitiesHandler _sut;
 
-    public GetEntityIdNamesListHandlerTests() {
+    public GetGuidEntitiesListHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _query = new() {
@@ -25,8 +25,8 @@ public class GetEntityIdNamesListHandlerTests {
     [Fact]
     public async Task Should_GetEntitiesList() {
         // Arrange
-        _db.Setup(x => x.Set<EntityIdName>())
-            .ReturnsDbSet([new() { EntityIdNameId = Guid.NewGuid(), Name = "Test Entity" }]);
+        _db.Setup(x => x.Set<GuidEntity>())
+            .ReturnsDbSet([new() { GuidEntityId = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act
         var entities = await _sut.HandleAsync(_query, new());
@@ -37,7 +37,7 @@ public class GetEntityIdNamesListHandlerTests {
         entities.Page.PageSize.Should().Be(10);
         entities.Items.Should().SatisfyRespectively(
             dto => {
-                dto.EntityIdNameId.Should().NotBeEmpty();
+                dto.GuidEntityId.Should().NotBeEmpty();
                 dto.Name.Should().NotBeEmpty();
             }
         );
@@ -47,6 +47,6 @@ public class GetEntityIdNamesListHandlerTests {
     public void Should_HaveCorrectSortKeys() {
         // Assert
         _query.GetSortKeys()
-            .Should().ContainInConsecutiveOrder("entityIdNameId", "name");
+            .Should().ContainInConsecutiveOrder("guidEntityId", "name");
     }
 }

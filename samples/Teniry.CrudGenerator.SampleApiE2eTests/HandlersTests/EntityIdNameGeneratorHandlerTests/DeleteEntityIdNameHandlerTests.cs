@@ -1,16 +1,16 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.DeleteEntityIdName;
+using Teniry.CrudGenerator.SampleApi.Application.GuidEntityFeature.DeleteGuidEntity;
 using Moq;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.GuidEntityGeneratorHandlerTests;
 
-public class DeleteEntityIdNameHandlerTests {
-    private readonly DeleteEntityIdNameCommand _command;
+public class DeleteGuidEntityHandlerTests {
+    private readonly DeleteGuidEntityCommand _command;
     private readonly Mock<SampleMongoDb> _db;
-    private readonly DeleteEntityIdNameHandler _sut;
+    private readonly DeleteGuidEntityHandler _sut;
 
-    public DeleteEntityIdNameHandlerTests() {
+    public DeleteGuidEntityHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid());
@@ -21,9 +21,9 @@ public class DeleteEntityIdNameHandlerTests {
         // Arrange
         _db.Setup(
                 x =>
-                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+                    x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>())
             )
-            .ReturnsAsync((EntityIdName?)null);
+            .ReturnsAsync((GuidEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_command, new());
@@ -31,7 +31,7 @@ public class DeleteEntityIdNameHandlerTests {
         // Assert
         await act.Should().NotThrowAsync();
         _db.Verify(
-            x => x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();
@@ -42,18 +42,18 @@ public class DeleteEntityIdNameHandlerTests {
         // Arrange
         _db.Setup(
                 x =>
-                    x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>())
+                    x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>())
             )
-            .ReturnsAsync(new EntityIdName { EntityIdNameId = _command.EntityIdNameId, Name = "Test entity" });
+            .ReturnsAsync(new GuidEntity { GuidEntityId = _command.GuidEntityId, Name = "Test entity" });
 
         // Act
         await _sut.HandleAsync(_command, new());
 
         // Assert
-        _db.Verify(x => x.Remove(It.IsAny<EntityIdName>()));
+        _db.Verify(x => x.Remove(It.IsAny<GuidEntity>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
-            x => x.FindAsync<EntityIdName>(new object[] { _command.EntityIdNameId }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<GuidEntity>(new object[] { _command.GuidEntityId }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();

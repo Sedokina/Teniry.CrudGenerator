@@ -1,16 +1,16 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.EntityIdNameFeature.CreateEntityIdName;
+using Teniry.CrudGenerator.SampleApi.Application.GuidEntityFeature.CreateGuidEntity;
 using Moq;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.EntityIdNameGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.EntityIdNameGeneratorHandlerTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.GuidEntityGeneratorHandlerTests;
 
-public class CreateEntityIdNameHandlerTests {
-    private readonly CreateEntityIdNameCommand _command;
+public class CreateGuidEntityHandlerTests {
+    private readonly CreateGuidEntityCommand _command;
     private readonly Mock<SampleMongoDb> _db;
-    private readonly CreateEntityIdNameHandler _sut;
+    private readonly CreateGuidEntityHandler _sut;
 
-    public CreateEntityIdNameHandlerTests() {
+    public CreateGuidEntityHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _command = new() {
@@ -21,14 +21,14 @@ public class CreateEntityIdNameHandlerTests {
     [Fact]
     public async Task Should_ReturnCorrectValue() {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<EntityIdName>(), It.IsAny<CancellationToken>()))
-            .Callback((EntityIdName entity, CancellationToken _) => entity.EntityIdNameId = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<GuidEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((GuidEntity entity, CancellationToken _) => entity.GuidEntityId = Guid.NewGuid());
 
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new());
 
         // Assert
-        createdEntityDto.EntityIdNameId.Should().NotBeEmpty();
+        createdEntityDto.GuidEntityId.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class CreateEntityIdNameHandlerTests {
         // Assert
         _db.Verify(
             x => x.AddAsync(
-                It.Is<EntityIdName>(c => c.Name.Equals("My test entity")),
+                It.Is<GuidEntity>(c => c.Name.Equals("My test entity")),
                 It.IsAny<CancellationToken>()
             )
         );
@@ -51,7 +51,7 @@ public class CreateEntityIdNameHandlerTests {
         await _sut.HandleAsync(_command, new());
 
         // Assert
-        _db.Verify(x => x.AddAsync(It.IsAny<EntityIdName>(), It.IsAny<CancellationToken>()));
+        _db.Verify(x => x.AddAsync(It.IsAny<GuidEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }
