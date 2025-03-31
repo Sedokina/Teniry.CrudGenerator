@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetListOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;

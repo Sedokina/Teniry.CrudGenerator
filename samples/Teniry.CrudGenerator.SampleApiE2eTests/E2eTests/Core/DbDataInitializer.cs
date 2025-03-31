@@ -57,11 +57,11 @@ public static class DbDataInitializer {
         );
 
         await db.AddRangeAsync(
-            new CustomGottenEntity {
+            new ReadOnlyCustomizedEntity {
                 Id = new("27ed3a08-c92e-4c8d-b515-f793eb65cacd"),
                 Name = "First Entity Name"
             },
-            new CustomGottenEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
+            new ReadOnlyCustomizedEntity { Id = Guid.NewGuid(), Name = "Second Entity Name" }
         );
 
         // TODO: decide on Transactional behaviour

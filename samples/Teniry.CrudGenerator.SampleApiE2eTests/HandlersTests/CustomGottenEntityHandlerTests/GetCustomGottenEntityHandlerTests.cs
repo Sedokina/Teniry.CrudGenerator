@@ -1,8 +1,8 @@
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
@@ -21,22 +21,22 @@ public class GetCustomGottenEntityHandlerTests {
     [Fact]
     public async Task Should_ThrowEntityNotFoundException_When_GettingNotExistingEntity() {
         // Arrange
-        _db.Setup(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CustomGottenEntity?)null);
+        _db.Setup(x => x.FindAsync<ReadOnlyCustomizedEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ReadOnlyCustomizedEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_query, new());
 
         // Assert
         await act.Should().ThrowAsync<EntityNotFoundException>()
-            .Where(x => x.NotFoundType == typeof(CustomGottenEntity));
+            .Where(x => x.NotFoundType == typeof(ReadOnlyCustomizedEntity));
     }
 
     [Fact]
     public async Task Should_GetEntityWithCorrectData() {
         // Arrange
-        _db.Setup(x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CustomGottenEntity { Id = _query.Id, Name = "My test entity" });
+        _db.Setup(x => x.FindAsync<ReadOnlyCustomizedEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ReadOnlyCustomizedEntity { Id = _query.Id, Name = "My test entity" });
 
         // Act
         var entity = await _sut.HandleAsync(_query, new());
@@ -46,7 +46,7 @@ public class GetCustomGottenEntityHandlerTests {
         entity.Id.Should().Be(_query.Id);
         entity.Name.Should().Be("My test entity");
         _db.Verify(
-            x => x.FindAsync<CustomGottenEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<ReadOnlyCustomizedEntity>(new object[] { _query.Id }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();

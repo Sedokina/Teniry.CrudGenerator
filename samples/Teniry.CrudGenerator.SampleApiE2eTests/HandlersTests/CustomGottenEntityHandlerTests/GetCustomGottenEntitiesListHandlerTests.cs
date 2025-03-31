@@ -1,8 +1,8 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetListOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomGottenEntityHandlerTests;
@@ -26,7 +26,7 @@ public class GetCustomGottenEntitiesListHandlerTests {
     [Fact]
     public async Task Should_ChangeEntityDataAndSave() {
         // Arrange
-        _db.Setup(x => x.Set<CustomGottenEntity>())
+        _db.Setup(x => x.Set<ReadOnlyCustomizedEntity>())
             .ReturnsDbSet([new() { Id = Guid.NewGuid(), Name = "Test Entity" }]);
 
         // Act

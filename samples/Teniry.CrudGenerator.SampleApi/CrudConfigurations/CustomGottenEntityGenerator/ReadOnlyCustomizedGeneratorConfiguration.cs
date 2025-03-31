@@ -2,8 +2,8 @@ using Teniry.CrudGenerator.Abstractions.Configuration;
 
 namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomGottenEntityGenerator;
 
-public class CustomGottenGeneratorConfiguration : EntityGeneratorConfiguration<CustomGottenEntity> {
-    public CustomGottenGeneratorConfiguration() {
+public class ReadOnlyCustomizedGeneratorConfiguration : EntityGeneratorConfiguration<ReadOnlyCustomizedEntity> {
+    public ReadOnlyCustomizedGeneratorConfiguration() {
         DefaultSort = new("desc", x => x.Name);
 
         CreateOperation = new() {

@@ -1,9 +1,9 @@
 using Teniry.Cqrs.Queries;
-using Teniry.CrudGenerator.SampleApi.Application.CustomGottenEntityFeature.CustomGottenEntityGetListOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Endpoints.CustomGottenEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using Teniry.CrudGenerator.SampleApi.Application.ReadOnlyCustomizedEntityFeature.CustomGottenEntityGetListOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Endpoints.ReadOnlyCustomizedEntityEndpoints;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.CustomGottenEntityEndpointTests;
 

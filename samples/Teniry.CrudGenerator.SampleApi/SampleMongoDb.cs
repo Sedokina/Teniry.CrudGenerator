@@ -45,7 +45,7 @@ public class SampleMongoDb : Mmb {
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
             .HasElementName("_id");
         modelBuilder.Entity<CustomManagedEntity>().ToCollection("customManagedEntities");
-        modelBuilder.Entity<CustomGottenEntity>().ToCollection("customGottenEntities");
+        modelBuilder.Entity<ReadOnlyCustomizedEntity>().ToCollection("customGottenEntities");
         modelBuilder.Entity<CustomOperationNameEntity>().ToCollection("customOperationNameEntities");
         modelBuilder.Entity<IntIdEntity>().ToCollection("intIdEntities");
         modelBuilder.Entity<IntIdEntity>().Property(x => x.Id)
