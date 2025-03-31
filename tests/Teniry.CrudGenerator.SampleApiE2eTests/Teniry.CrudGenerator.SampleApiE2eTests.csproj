@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Teniry.CrudGenerator.SampleApi\Teniry.CrudGenerator.SampleApi.csproj" />
+        <ProjectReference Include="..\..\samples\Teniry.CrudGenerator.SampleApi\Teniry.CrudGenerator.SampleApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
