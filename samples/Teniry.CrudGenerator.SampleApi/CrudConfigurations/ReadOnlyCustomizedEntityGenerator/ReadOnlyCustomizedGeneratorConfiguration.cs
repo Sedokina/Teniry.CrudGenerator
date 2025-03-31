@@ -7,15 +7,15 @@ public class ReadOnlyCustomizedGeneratorConfiguration : EntityGeneratorConfigura
         DefaultSort = new("desc", x => x.Name);
 
         CreateOperation = new() {
-            Generate = true
+            Generate = false
         };
 
         DeleteOperation = new() {
-            Generate = true
+            Generate = false
         };
 
         UpdateOperation = new() {
-            Generate = true
+            Generate = false
         };
 
         GetByIdOperation = new() {
