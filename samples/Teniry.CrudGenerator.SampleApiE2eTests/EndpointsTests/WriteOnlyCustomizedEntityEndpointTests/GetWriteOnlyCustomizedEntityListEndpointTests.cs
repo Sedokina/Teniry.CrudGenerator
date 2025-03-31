@@ -4,7 +4,7 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.WriteOnlyCustomi
 
 public class GetWriteOnlyCustomizedEntityListEndpointTests {
     [Theory]
-    [InlineData("GetCustomManagedEntitiesEndpoint")]
+    [InlineData("GetWriteOnlyCustomizedEntitiesEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);

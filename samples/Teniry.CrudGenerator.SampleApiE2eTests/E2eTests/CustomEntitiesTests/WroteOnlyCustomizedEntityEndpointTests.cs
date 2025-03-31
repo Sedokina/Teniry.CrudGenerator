@@ -9,7 +9,7 @@ using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
-public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
+public class WroteOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
     private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
