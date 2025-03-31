@@ -9,6 +9,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <DocumentationFile>bin\Debug\net8.0\Teniry.CrudGenerator.PostgreSql.TodoSampleApi.xml</DocumentationFile>
+      <NoWarn>1701;1702;1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
