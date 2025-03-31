@@ -4,7 +4,7 @@ namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.ReadOnlyCustomiz
 
 public class DeleteReadOnlyCustomizedEntityEndpointTests {
     [Theory]
-    [InlineData("DeleteCustomGottenEntityEndpoint")]
+    [InlineData("DeleteReadOnlyCustomizedEntityEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);
