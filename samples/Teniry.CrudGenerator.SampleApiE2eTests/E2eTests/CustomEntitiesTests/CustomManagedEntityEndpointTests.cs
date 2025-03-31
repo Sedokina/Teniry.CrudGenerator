@@ -60,7 +60,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
     }
 
     [Theory]
-    [InlineData("customizedManagedEntityDelete/customManagedEntity/{0}")]
+    [InlineData("customizedManagedEntityDelete/writeOnlyCustomizedEntity/{0}")]
     public async Task Should_DeleteEntity(string endpoint) {
         // Arrange
         var createdSimpleEntity = await CreateEntityAsync("Entity to delete");
