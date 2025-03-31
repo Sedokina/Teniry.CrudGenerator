@@ -1,8 +1,8 @@
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomizedManageEntityHandlersTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.WriteOnlyCustomizedEntityHandlersTests;
 
-public class GetCustomManagedEntitiesListHandlerTests {
+public class GetWriteOnlyCustomizedEntitiesListHandlerTests {
     [Theory]
     [InlineData("GetCustomManagedEntitiesQuery")]
     [InlineData("GetCustomManagedEntitiesHandler")]

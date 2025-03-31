@@ -1,13 +1,13 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Moq;
 using Teniry.Cqrs.Commands;
 using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.Endpoints.WriteOnlyCustomizedEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Moq;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.CustomManagedEntityEndpointTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.WriteOnlyCustomizedEntityEndpointTests;
 
-public class CreateCustomManagedEntityEndpointTests {
+public class CreateWriteOnlyCustomizedEntityEndpointTests {
     private readonly Mock<ICommandDispatcher> _commandDispatcher = new();
 
     [Theory]

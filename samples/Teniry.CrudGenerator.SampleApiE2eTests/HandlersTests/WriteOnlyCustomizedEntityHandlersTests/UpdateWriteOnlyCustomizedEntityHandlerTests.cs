@@ -1,18 +1,18 @@
+using Moq;
 using Teniry.Cqrs.Extended.Exceptions;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityUpdateOperationCustomNs;
-using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
-using Moq;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
+using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomizedManageEntityHandlersTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.WriteOnlyCustomizedEntityHandlersTests;
 
-public class UpdateCustomizedManageEntityHandlerTests {
+public class UpdateWriteOnlyCustomizedEntityHandlerTests {
     private readonly CustomizedNameUpdateManagedEntityCommand _command;
     private readonly Mock<SampleMongoDb> _db;
     private readonly CustomizedNameUpdateManagedEntityHandler _sut;
 
-    public UpdateCustomizedManageEntityHandlerTests() {
+    public UpdateWriteOnlyCustomizedEntityHandlerTests() {
         _db = new();
         _sut = new(_db.Object);
         _command = new(Guid.NewGuid()) {

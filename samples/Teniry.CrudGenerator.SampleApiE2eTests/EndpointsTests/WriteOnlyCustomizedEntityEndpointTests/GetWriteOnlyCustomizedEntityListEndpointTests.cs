@@ -1,8 +1,8 @@
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
-namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.CustomManagedEntityEndpointTests;
+namespace Teniry.CrudGenerator.SampleApiE2eTests.EndpointsTests.WriteOnlyCustomizedEntityEndpointTests;
 
-public class GetCustomManagedEntitiesListEndpointTests {
+public class GetWriteOnlyCustomizedEntityListEndpointTests {
     [Theory]
     [InlineData("GetCustomManagedEntitiesEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {
