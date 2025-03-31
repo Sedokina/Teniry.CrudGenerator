@@ -1,9 +1,9 @@
 using Teniry.CrudGenerator.Abstractions.Configuration;
 
-namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
+namespace Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
 
-public class CustomManagedEntityGeneratorConfiguration : EntityGeneratorConfiguration<CustomManagedEntity> {
-    public CustomManagedEntityGeneratorConfiguration() {
+public class WriteOnlyCustomizedEntityGeneratorConfiguration : EntityGeneratorConfiguration<WriteOnlyCustomizedEntity> {
+    public WriteOnlyCustomizedEntityGeneratorConfiguration() {
         CreateOperation = new() {
             OperationGroup = "ManagedEntityCreateOperationCustomNs",
             CommandName = "CustomizedNameCreateManagedEntityCommand",

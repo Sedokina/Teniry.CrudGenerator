@@ -1,9 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityUpdateOperationCustomNs;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityCreateOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityUpdateOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
@@ -32,7 +32,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.Headers.Location.Should().BeNull("because get endpoint is not generated for this entity");
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomManagedEntity>([actual.Id], new());
+        var entity = await _db.FindAsync<WriteOnlyCustomizedEntity>([actual.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("My new entity");
     }
@@ -54,7 +54,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert saved to db
-        var entity = await _db.FindAsync<CustomManagedEntity>([createdEntity.Id], new());
+        var entity = await _db.FindAsync<WriteOnlyCustomizedEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
     }
@@ -73,7 +73,7 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // Assert deleted from db
-        var entity = await _db.FindAsync<CustomManagedEntity>([createdSimpleEntity.Id], new());
+        var entity = await _db.FindAsync<WriteOnlyCustomizedEntity>([createdSimpleEntity.Id], new());
         entity.Should().BeNull();
     }
 
@@ -88,8 +88,8 @@ public class CustomManagedEntityEndpointTests(TestApiFixture fixture) {
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    private async Task<CustomManagedEntity> CreateEntityAsync(string name) {
-        var entity = new CustomManagedEntity { Id = Guid.NewGuid(), Name = name };
+    private async Task<WriteOnlyCustomizedEntity> CreateEntityAsync(string name) {
+        var entity = new WriteOnlyCustomizedEntity { Id = Guid.NewGuid(), Name = name };
         await _db.AddAsync(entity);
         await _db.SaveChangesAsync();
         _db.ChangeTracker.Clear();

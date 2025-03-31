@@ -7,10 +7,10 @@ using MongoDB.EntityFrameworkCore.Extensions;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.ReadOnlyCustomizedEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.SimpleTypeEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
 
 namespace Teniry.CrudGenerator.SampleApi;
 
@@ -42,7 +42,7 @@ public class SampleMongoDb : Mmb {
             .HasBsonRepresentation(BsonType.DateTime);
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.Id)
             .HasElementName("_id");
-        modelBuilder.Entity<CustomManagedEntity>().ToCollection("customManagedEntities");
+        modelBuilder.Entity<WriteOnlyCustomizedEntity>().ToCollection("customManagedEntities");
         modelBuilder.Entity<ReadOnlyCustomizedEntity>().ToCollection("readOnlyCustomizedEntities");
         modelBuilder.Entity<CustomOperationNameEntity>().ToCollection("customOperationNameEntities");
         modelBuilder.Entity<IntIdEntity>().ToCollection("intIdEntities");

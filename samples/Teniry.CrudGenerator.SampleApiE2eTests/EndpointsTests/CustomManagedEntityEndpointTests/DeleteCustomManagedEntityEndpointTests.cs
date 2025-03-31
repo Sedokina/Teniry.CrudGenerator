@@ -1,5 +1,5 @@
 using Teniry.Cqrs.Commands;
-using Teniry.CrudGenerator.SampleApi.Endpoints.CustomManagedEntityEndpoints;
+using Teniry.CrudGenerator.SampleApi.Endpoints.WriteOnlyCustomizedEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;

@@ -1,8 +1,8 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityDeleteOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityDeleteOperationCustomNs;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomizedManageEntityHandlersTests;
 
@@ -20,8 +20,8 @@ public class DeleteCustomManagedEntityHandlerTests {
     [Fact]
     public async Task Should_DoNothingWhenEntityDoesNotExist() {
         // Arrange
-        _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CustomManagedEntity?)null);
+        _db.Setup(x => x.FindAsync<WriteOnlyCustomizedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((WriteOnlyCustomizedEntity?)null);
 
         // Act
         var act = async () => await _sut.HandleAsync(_command, new());
@@ -29,7 +29,7 @@ public class DeleteCustomManagedEntityHandlerTests {
         // Assert
         await act.Should().NotThrowAsync();
         _db.Verify(
-            x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<WriteOnlyCustomizedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();
@@ -38,17 +38,17 @@ public class DeleteCustomManagedEntityHandlerTests {
     [Fact]
     public async Task Should_RemoveFromDbSetAndSave() {
         // Arrange
-        _db.Setup(x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CustomManagedEntity { Id = _command.Id, Name = "Test entity" });
+        _db.Setup(x => x.FindAsync<WriteOnlyCustomizedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new WriteOnlyCustomizedEntity { Id = _command.Id, Name = "Test entity" });
 
         // Act
         await _sut.HandleAsync(_command, new());
 
         // Assert
-        _db.Verify(x => x.Remove(It.IsAny<CustomManagedEntity>()));
+        _db.Verify(x => x.Remove(It.IsAny<WriteOnlyCustomizedEntity>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.Verify(
-            x => x.FindAsync<CustomManagedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
+            x => x.FindAsync<WriteOnlyCustomizedEntity>(new object[] { _command.Id }, It.IsAny<CancellationToken>()),
             Times.Once
         );
         _db.VerifyNoOtherCalls();

@@ -1,8 +1,8 @@
 using Teniry.CrudGenerator.SampleApi;
-using Teniry.CrudGenerator.SampleApi.Application.CustomManagedEntityFeature.ManagedEntityCreateOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityCreateOperationCustomNs;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 using Moq;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomManagedEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.HandlersTests.CustomizedManageEntityHandlersTests;
 
@@ -22,8 +22,8 @@ public class CreateCustomManageEntityHandlerTests {
     [Fact]
     public async Task Should_ReturnCorrectValue() {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()))
-            .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<WriteOnlyCustomizedEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((WriteOnlyCustomizedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new());
@@ -35,8 +35,8 @@ public class CreateCustomManageEntityHandlerTests {
     [Fact]
     public async Task Should_HasCorrectReturnModelTypeName() {
         // Arrange
-        _db.Setup(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()))
-            .Callback((CustomManagedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
+        _db.Setup(x => x.AddAsync(It.IsAny<WriteOnlyCustomizedEntity>(), It.IsAny<CancellationToken>()))
+            .Callback((WriteOnlyCustomizedEntity entity, CancellationToken _) => entity.Id = Guid.NewGuid());
 
         // Act
         var createdEntityDto = await _sut.HandleAsync(_command, new());
@@ -52,7 +52,7 @@ public class CreateCustomManageEntityHandlerTests {
         // Assert
         _db.Verify(
             x => x.AddAsync(
-                It.Is<CustomManagedEntity>(c => c.Name.Equals("My test entity")),
+                It.Is<WriteOnlyCustomizedEntity>(c => c.Name.Equals("My test entity")),
                 It.IsAny<CancellationToken>()
             )
         );
@@ -64,7 +64,7 @@ public class CreateCustomManageEntityHandlerTests {
         await _sut.HandleAsync(_command, new());
 
         // Assert
-        _db.Verify(x => x.AddAsync(It.IsAny<CustomManagedEntity>(), It.IsAny<CancellationToken>()));
+        _db.Verify(x => x.AddAsync(It.IsAny<WriteOnlyCustomizedEntity>(), It.IsAny<CancellationToken>()));
         _db.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         _db.VerifyNoOtherCalls();
     }
