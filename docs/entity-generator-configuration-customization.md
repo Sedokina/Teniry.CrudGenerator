@@ -45,7 +45,24 @@ Note:
 * `Create` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
 * `{EntityName}` will be replaced with the name of the entity class
 
-Customization example:
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `Save` as a name of the operation instead of
+`Create`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        CreateOperation = new() {
+            Operation = "Save"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
 
 ```csharp
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
@@ -62,6 +79,10 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
     }
 }
 ```
+
+Note: When you override values of all properties you do not need to override `Operation` property, because it is only
+used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
+because it just will be ignored.
 
 ## Get list operation
 
@@ -90,7 +111,24 @@ Note:
 * `{PluralEntityName}` will be replaced with the pluralized name of the entity class
 * `{EntityName}` will be replaced with the name of the entity class
 
-Customization example:
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `All` as a name of the operation instead of
+`Get`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        GetListOperation = new() {
+            Operation = "All"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
 
 ```csharp
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
@@ -107,6 +145,10 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
     }
 }
 ```
+
+Note: When you override values of all properties you do not need to override `Operation` property, because it is only
+used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
+because it just will be ignored.
 
 ## Get by id operation
 
@@ -132,7 +174,24 @@ Note:
 * `Get` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
 * `{EntityName}` will be replaced with the name of the entity class
 
-Customization example:
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `GetById` as a name of the operation instead of
+`Get`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        GetByIdOperation = new() {
+            Operation = "GetById"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
 
 ```csharp
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
@@ -150,6 +209,10 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
 }
 
 ```
+
+Note: When you override values of all properties you do not need to override `Operation` property, because it is only
+used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
+because it just will be ignored.
 
 ## Update operation
 
@@ -175,7 +238,24 @@ Note:
 * `Update` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
 * `{EntityName}` will be replaced with the name of the entity class
 
-Customization example:
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `Change` as a name of the operation instead of
+`Update`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        UpdateOperation = new() {
+            Operation = "Change"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
 
 ```csharp
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
@@ -192,6 +272,10 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
     }
 }
 ```
+
+Note: When you override values of all properties you do not need to override `Operation` property, because it is only
+used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
+because it just will be ignored.
 
 ## Delete operation
 
@@ -216,7 +300,24 @@ Note:
 * `Delete` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
 * `{EntityName}` will be replaced with the name of the entity class
 
-Customization example:
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `Remove` as a name of the operation instead of
+`Delete`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        DeleteOperation = new() {
+            Operation = "Remove"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
 
 ```csharp
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
@@ -232,3 +333,7 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
     }
 }
 ```
+
+Note: When you override values of all properties you do not need to override `Operation` property, because it is only
+used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
+because it just will be ignored. 
