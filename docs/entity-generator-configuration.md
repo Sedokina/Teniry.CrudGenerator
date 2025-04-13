@@ -33,17 +33,17 @@ operations for the classes from configuration.
 ### Create a class
 
 ```csharp
-    public class Todo {
-        public Guid Id { get; set; }
-        public string Description { get; set; }
-        public bool IsDone { get; set; }
-    }
+public class Todo {
+    public Guid Id { get; set; }
+    public string Description { get; set; }
+    public bool IsDone { get; set; }
+}
 ```
 
 ### Create a configuration
 
 ```csharp
-    public class TodoConfiguration : EntityGeneratorConfiguration<Todo> { }
+public class TodoConfiguration : EntityGeneratorConfiguration<Todo> { }
 ```
 
 With this configuration, the CRUD generator will generate all CRUD operations for the `Todo` class.

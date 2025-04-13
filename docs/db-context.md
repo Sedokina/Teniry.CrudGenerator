@@ -31,10 +31,13 @@ If you wouldn't specify `UseDbContext` attribute on any DbContext class in the p
 # Create DbContext
 
 ```csharp
-    [UseDbContext(DbContextDbProvider.Mongo)]
-    public class TodoDb : DbContext {
-        public TodoDb(DbContextOptions<TodoDb> options) : base(options) { }
+using Microsoft.EntityFrameworkCore;
+using Teniry.CrudGenerator.Abstractions.DbContext;
 
-        public DbSet<Todo> Todos { get; set; }
-    }
+[UseDbContext(DbContextDbProvider.Mongo)]
+public class TodoDb : DbContext {
+    public TodoDb(DbContextOptions<TodoDb> options) : base(options) { }
+
+    public DbSet<Todo> Todos { get; set; }
+}
 ```
