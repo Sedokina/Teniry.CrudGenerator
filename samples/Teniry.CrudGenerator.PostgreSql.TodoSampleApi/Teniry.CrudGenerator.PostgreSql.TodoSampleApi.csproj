@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>a0fc1e9c-fc8c-4208-89be-ac836445efbb</UserSecretsId>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net8.0\Teniry.CrudGenerator.PostgreSql.TodoSampleApi.xml</DocumentationFile>
+      <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net8.0\Teniry.CrudGenerator.PostgreSql.TodoSampleApi.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12"/>
+        <PackageReference Include="Pluralize.NET" Version="1.0.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Label="Used in Generators">
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+        <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
+        <PackageReference Include="Mapster" Version="7.4.0"/>
+        <PackageReference Include="Teniry.Cqrs" Version="8.0.1"/>
+        <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Teniry.CrudGenerator\Teniry.CrudGenerator.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
+        <ProjectReference Include="..\..\src\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
+    </ItemGroup>
+
+</Project>
