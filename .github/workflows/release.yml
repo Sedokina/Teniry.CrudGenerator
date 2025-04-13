@@ -8,6 +8,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,10 +20,16 @@ jobs:
         run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
           git branch --remote --contains | grep origin/main
+      - name: Use .NET SDK from global.json
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
       - name: Set VERSION variable from tag
         run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+      - name: Restore dependencies
+        run: dotnet restore
       - name: Build
-        run: dotnet build --configuration Release /p:Version=${VERSION}
+        run: dotnet build --configuration Release /p:Version=${VERSION} --no-restore
       - name: Test
         run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
       - name: Pack
