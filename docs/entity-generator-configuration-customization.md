@@ -336,4 +336,31 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
 
 Note: When you override values of all properties you do not need to override `Operation` property, because it is only
 used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
-because it just will be ignored. 
+because it just will be ignored.
+
+# Configuration's keywords
+
+Keyword - is a special string that will be replaced with the value while generating code.
+
+Available keys for use in configuration of **each operation**:
+
+| Keyword                  | Replaced with                                             |
+|--------------------------|-----------------------------------------------------------|
+| `{{entity_name}}`        | name of the entity class                                  |
+| `{{entity_name_plural}}` | pluralized name of the entity class                       |
+| `{{operation_name}}`     | the `Operation` property of the operation's configuration |
+| `{{id_param_name}}`      | id properties of the entity                               |
+
+*be sure to use this params with double curly braces in your configurations*
+
+## Keywords usage example:
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        DeleteOperation = new() {
+            RouteName = "/myRoute/{{entity_name}}/{{id_param_name}}"
+        };
+    }
+}
+````
