@@ -338,6 +338,18 @@ Note: When you override values of all properties you do not need to override `Op
 used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
 because it just will be ignored.
 
+## Entity level customization
+
+You can customize the generated code for the whole entity and not for particular operation.
+
+Property of `EntityGeneratorConfiguration`
+
+| Property Name | Type                       | Default value                                      | Description                                                                     |
+|---------------|----------------------------|----------------------------------------------------|---------------------------------------------------------------------------------|
+| `Title`       | string                     | Entity name (words separated by spaces)            | used in descriptions of the generated api                                       |
+| `PluralTitle` | string                     | Pluralized entity name (words separated by spaces) | used in descriptions of the generated api when pluralized entity names are used |
+| `DefaultSort` | EntityGeneratorDefaultSort | None                                               | default sort applied to result when querying `Get list operation`               |
+
 # Configuration's keywords
 
 Keyword - is a special string that will be replaced with the value while generating code.
