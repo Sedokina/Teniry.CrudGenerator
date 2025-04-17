@@ -30,7 +30,7 @@ Instantly generate CRUD for an application
 * Docs
     * [Generator Configuration](docs/entity-generator-configuration.md)
     * [DbContext](docs/db-context.md)
-      * [MongoDb limitations](docs/mongo-limitations.md)
+        * [MongoDb limitations](docs/mongo-limitations.md)
 
 # 📦 Installation
 
@@ -136,7 +136,9 @@ lack some features that you might need.
 
 # Examples
 
-Check out the [Web API project](samples/Teniry.CrudGenerator.SampleApi) example on using Teniry.CrudGenerator library
+Check out the [Mongo Todo Web App Example](samples/Teniry.CrudGenerator.Mongo.TodoSampleApi)
+and [PostgreSql Todo Web App Example](samples/Teniry.CrudGenerator.PostgreSql.TodoSampleApi)
+examples on using Teniry.CrudGenerator library
 
 # Contributing
 
