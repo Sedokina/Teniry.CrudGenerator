@@ -24,6 +24,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Teniry.CrudGenerator" Version="8.0.1" OutputItemType="Analyzer"/>
     </ItemGroup>
 
     <ItemGroup Label="Used in Generators">
@@ -33,10 +34,4 @@
         <PackageReference Include="Teniry.Cqrs" Version="8.0.1"/>
         <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\Teniry.CrudGenerator\Teniry.CrudGenerator.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
-        <ProjectReference Include="..\..\src\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
-    </ItemGroup>
-
 </Project>
