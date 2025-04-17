@@ -30,6 +30,7 @@ Instantly generate CRUD for an application
 * Docs
     * [Generator Configuration](docs/entity-generator-configuration.md)
     * [DbContext](docs/db-context.md)
+      * [MongoDb limitations](docs/mongo-limitations.md)
 
 # 📦 Installation
 
