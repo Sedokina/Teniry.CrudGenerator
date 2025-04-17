@@ -1,0 +1,8 @@
+<Project>
+    <ItemGroup>
+        <!-- Add a reference to third party libs that generated code based on -->
+        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Teniry.Cqrs" Version="8.0.1" />
+        <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1" />
+    </ItemGroup>
+</Project>
