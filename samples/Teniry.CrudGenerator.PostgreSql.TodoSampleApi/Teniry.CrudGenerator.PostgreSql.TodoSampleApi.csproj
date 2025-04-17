@@ -25,12 +25,6 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Teniry.CrudGenerator" Version="8.0.1" OutputItemType="Analyzer"/>
-    </ItemGroup>
-
-    <ItemGroup Label="Used in Generators">
-        <PackageReference Include="Mapster" Version="7.4.0"/>
-        <PackageReference Include="Teniry.Cqrs" Version="8.0.1"/>
-        <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1"/>
+        <PackageReference Include="Teniry.CrudGenerator" Version="8.0.2" />
     </ItemGroup>
 </Project>
