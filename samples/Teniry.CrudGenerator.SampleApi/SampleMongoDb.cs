@@ -2,7 +2,6 @@ using Teniry.CrudGenerator.Abstractions.DbContext;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.EntityFrameworkCore.Extensions;
-using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CurrencyGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.GuidEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomOperationNameEntityGenerator;
@@ -21,20 +20,12 @@ public class Mmb : DbContext {
 
 [UseDbContext(DbContextDbProvider.Mongo)]
 public class SampleMongoDb : Mmb {
-    public DbSet<Currency> Currencies { get; set; }
-    public DbSet<Country> Countries { get; set; }
     public SampleMongoDb() { }
 
     public SampleMongoDb(DbContextOptions<SampleMongoDb> options, IServiceProvider services) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
-
-        modelBuilder.Entity<Currency>().ToCollection("currencies");
-        modelBuilder.Entity<Country>().ToCollection("countries");
-        modelBuilder.Entity<Currency>().HasOne(x => x.Country)
-            .WithMany(x => x.Currencies)
-            .HasForeignKey(x => x.CountryId);
 
         modelBuilder.Entity<SimpleTypeEntity>().ToCollection("simpleTypeEntities");
         modelBuilder.Entity<SimpleTypeEntity>().Property(x => x.LastSignInDate)

@@ -89,6 +89,21 @@ public static class SimpleSyntaxFactory {
         );
     }
 
+    public static InvocationExpressionSyntax NameOf(MemberAccessExpressionSyntax property) {
+        return InvocationExpression(
+                IdentifierName(
+                    Identifier(
+                        TriviaList(),
+                        SyntaxKind.NameOfKeyword,
+                        "nameof",
+                        "nameof",
+                        TriviaList()
+                    )
+                )
+            )
+            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(property))));
+    }
+
     public static SimpleLambdaExpressionSyntax Expression(string variableName, bool suppressNullableWarning = false) {
         var memberAccess = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
@@ -104,6 +119,11 @@ public static class SimpleSyntaxFactory {
             .WithExpressionBody(expressionBody);
     }
 
+    public static SimpleLambdaExpressionSyntax ExpressionWithBody(BlockSyntax block) {
+        return SimpleLambdaExpression(Parameter(Identifier("x")))
+            .WithBlock(block);
+    }
+    
     public static InterpolatedStringExpressionSyntax InterpolatedString(string interpolatedString) {
         return InterpolatedStringExpression(Token(SyntaxKind.InterpolatedStringStartToken))
             .WithContents(

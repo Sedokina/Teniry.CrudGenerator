@@ -46,7 +46,7 @@ internal class PatchCommandCrudGenerator
                 _commandName
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings(["Teniry.Cqrs.Extended.Exceptions"])
+            .WithUsings(["Teniry.Cqrs.Extended.Exceptions", "Teniry.Cqrs.Extended.Types.PatchOperationType"])
             .WithXmlDoc(
                 $"Patch {EntityScheme.EntityTitle}",
                 "Nothing",
@@ -69,8 +69,7 @@ internal class PatchCommandCrudGenerator
         }
 
         foreach (var property in EntityScheme.NotPrimaryKeys) {
-            command.WithProperty(property.TypeName, property.PropertyName)
-                .WithDefaultValue(property.DefaultValue);
+            command.WithProperty($"PatchOp<{property.TypeName}>?", property.PropertyName);
         }
 
         constructor.WithBody(constructorBody);
@@ -91,6 +90,7 @@ internal class PatchCommandCrudGenerator
                 [
                     "Teniry.Cqrs.Commands",
                     "Teniry.Cqrs.Extended.Exceptions",
+                    "Teniry.Cqrs.Extended.Types.PatchOperationType",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
                     "Mapster"
@@ -138,8 +138,22 @@ internal class PatchCommandCrudGenerator
                     [NewArray("object", findParameters), Variable("cancellation")]
                 )
             )
-            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
-            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
+            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()));
+
+        foreach (var property in EntityScheme.NotPrimaryKeys) {
+            methodBodyBuilder.CallMethod(
+                "PatchOp",
+                "Handle",
+                [
+                    Property("command", property.PropertyName), NameOf(Property("command", property.PropertyName)),
+                    ExpressionWithBody(
+                        new BlockBuilder().AssignVariable($"entity.{property.PropertyName}", "x").Build()
+                    )
+                ]
+            );
+        }
+
+        methodBodyBuilder.CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -156,11 +170,11 @@ internal class PatchCommandCrudGenerator
                 ],
                 _vmName
             )
+            .WithUsings(["Teniry.Cqrs.Extended.Types.PatchOperationType"])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
         foreach (var property in EntityScheme.NotPrimaryKeys) {
-            vmClass.WithProperty(property.TypeName, property.PropertyName)
-                .WithDefaultValue(property.DefaultValue);
+            vmClass.WithProperty($"PatchOp<{property.TypeName}>?", property.PropertyName);
         }
 
         WriteFile(_vmName, vmClass.BuildAsString());
