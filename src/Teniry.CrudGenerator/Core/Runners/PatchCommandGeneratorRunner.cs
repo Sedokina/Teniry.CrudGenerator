@@ -11,19 +11,19 @@ using Teniry.CrudGenerator.Core.Schemes.InternalEntityGenerator.Operations;
 
 namespace Teniry.CrudGenerator.Core.Runners;
 
-internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
+internal record PatchCommandGeneratorRunner : IGeneratorRunner {
     private readonly DbContextScheme _dbContextScheme;
     private readonly EntityScheme _entityScheme;
     public CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration Configuration { get; }
 
-    public UpdateCommandGeneratorRunner(
+    public PatchCommandGeneratorRunner(
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        InternalEntityGeneratorPatchOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme,
         DbContextScheme dbContextScheme
     ) {
-        Configuration = ConstructConfiguration(
+        Configuration = ConstructBuilder(
             globalConfiguration,
             operationsSharedConfiguration,
             operationConfiguration,
@@ -36,13 +36,13 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
     public List<GeneratorResult> RunGenerator(List<EndpointMap> endpointsMaps) {
         if (!Configuration.Generate) return [];
 
-        var updateCommandScheme =
+        var patchCommandScheme =
             new CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration>(
                 _entityScheme,
                 _dbContextScheme,
                 Configuration
             );
-        var generateUpdateCommand = new UpdateCommandCrudGenerator(updateCommandScheme);
+        var generateUpdateCommand = new PatchCommandCrudGenerator(patchCommandScheme);
         generateUpdateCommand.RunGenerator();
         if (generateUpdateCommand.EndpointMap is not null) {
             endpointsMaps.Add(generateUpdateCommand.EndpointMap);
@@ -51,10 +51,10 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
         return generateUpdateCommand.GeneratedFiles;
     }
 
-    private static CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration ConstructConfiguration(
+    private static CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration ConstructBuilder(
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
-        InternalEntityGeneratorUpdateOperationConfiguration? operationConfiguration,
+        InternalEntityGeneratorPatchOperationConfiguration? operationConfiguration,
         EntityScheme entityScheme
     ) {
         return new(
@@ -62,12 +62,13 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
             globalConfiguration,
             operationsSharedConfiguration,
             CqrsOperationType.Command,
-            operationConfiguration?.Operation ?? "Update",
+            operationConfiguration?.Operation ?? "Patch",
             new(operationConfiguration?.OperationGroup ?? "{{operation_name}}{{entity_name}}"),
             new(operationConfiguration?.CommandName ?? "{{operation_name}}{{entity_name}}Command"),
             new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
             new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
             new() {
+                // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                     (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(
@@ -77,7 +78,7 @@ internal record UpdateCommandGeneratorRunner : IGeneratorRunner {
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurator = new(
                     operationConfiguration?.RouteName ??
-                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
+                    "/{{entity_name}}/{{operation_name | string.downcase}}"
                 )
             },
             entityScheme

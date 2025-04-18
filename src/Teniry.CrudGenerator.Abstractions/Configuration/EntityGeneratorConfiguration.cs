@@ -7,6 +7,7 @@ public abstract class EntityGeneratorConfiguration<TEntity> where TEntity : clas
     public EntityGeneratorCreateOperationConfiguration? CreateOperation { get; set; }
     public EntityGeneratorDeleteOperationConfiguration? DeleteOperation { get; set; }
     public EntityGeneratorUpdateOperationConfiguration? UpdateOperation { get; set; }
+    public EntityGeneratorPatchOperationConfiguration? PatchOperation { get; set; }
     public EntityGeneratorGetByIdOperationConfiguration? GetByIdOperation { get; set; }
     public EntityGeneratorGetListOperationConfiguration? GetListOperation { get; set; }
 }

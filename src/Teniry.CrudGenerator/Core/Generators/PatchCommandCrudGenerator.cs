@@ -11,14 +11,14 @@ using static Teniry.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Sim
 
 namespace Teniry.CrudGenerator.Core.Generators;
 
-internal class UpdateCommandCrudGenerator
+internal class PatchCommandCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration> {
     private readonly string _commandName;
     private readonly string _endpointClassName;
     private readonly string _handlerName;
     private readonly string _vmName;
 
-    public UpdateCommandCrudGenerator(
+    public PatchCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration> scheme
     )
         : base(scheme) {
@@ -48,7 +48,7 @@ internal class UpdateCommandCrudGenerator
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
             .WithUsings(["Teniry.Cqrs.Extended.Exceptions"])
             .WithXmlDoc(
-                $"Update {EntityScheme.EntityTitle}",
+                $"Patch {EntityScheme.EntityTitle}",
                 "Nothing",
                 [
                     new(
@@ -139,7 +139,6 @@ internal class UpdateCommandCrudGenerator
                 )
             )
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
-            .CallMethod("command", "Adapt", [Variable("entity")])
             .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
         methodBuilder.WithBody(methodBodyBuilder);
@@ -205,7 +204,7 @@ internal class UpdateCommandCrudGenerator
             )
             .WithAttribute(new(204))
             .WithXmlDoc(
-                $"Update {Scheme.EntityScheme.EntityTitle}",
+                $"Patch {Scheme.EntityScheme.EntityTitle}",
                 204,
                 $"{Scheme.EntityScheme.EntityTitle} updated"
             );

@@ -107,6 +107,13 @@ public sealed class CrudGenerator : IIncrementalGenerator {
                 entityScheme,
                 dbContextScheme
             ),
+            new PatchCommandGeneratorRunner(
+                globalConfiguration,
+                sharedConfigurationBuilder,
+                entityGeneratorConfiguration.PatchOperation,
+                entityScheme,
+                dbContextScheme
+            ),
             new DeleteCommandGeneratorRunner(
                 globalConfiguration,
                 sharedConfigurationBuilder,

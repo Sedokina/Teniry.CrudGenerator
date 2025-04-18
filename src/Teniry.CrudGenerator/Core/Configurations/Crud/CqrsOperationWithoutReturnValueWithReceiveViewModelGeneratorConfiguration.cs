@@ -6,11 +6,11 @@ using Teniry.CrudGenerator.Core.Schemes.Entity;
 
 namespace Teniry.CrudGenerator.Core.Configurations.Crud;
 
-internal record CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration
+internal record CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration
     : CqrsOperationWithoutReturnValueGeneratorConfiguration {
     public string ViewModel { get; set; } = null!;
 
-    public CqrsOperationWithReturnValueWithReceiveViewModelGeneratorConfiguration(
+    public CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration(
         bool generate,
         GlobalCrudGeneratorConfiguration globalConfiguration,
         CqrsOperationsSharedConfigurator operationsSharedConfiguration,
