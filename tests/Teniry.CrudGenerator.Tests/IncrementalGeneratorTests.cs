@@ -31,6 +31,6 @@ public class IncrementalGeneratorTests {
         // Assert
         using var scope = new AssertionScope();
         diagnostics.Should().BeEmpty();
-        output.Should().HaveCount(22);
+        output.Should().HaveCount(26);
     }
 }

@@ -19,5 +19,8 @@ public class NoEndpointEntityGeneratorConfiguration : EntityGeneratorConfigurati
         UpdateOperation = new() {
             GenerateEndpoint = false
         };
+        PatchOperation = new() {
+            GenerateEndpoint = false
+        };
     }
 }

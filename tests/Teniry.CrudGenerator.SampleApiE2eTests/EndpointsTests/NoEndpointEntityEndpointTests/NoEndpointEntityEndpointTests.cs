@@ -9,6 +9,7 @@ public class NoEndpointEntityEndpointTests {
     [InlineData("CreateNoEndpointEntityEndpoint")]
     [InlineData("UpdateNoEndpointEntityEndpoint")]
     [InlineData("DeleteNoEndpointEntityEndpoint")]
+    [InlineData("PatchNoEndpointEntityEndpoint")]
     public void Should_NotGenerateEndpointClass(string typeName) {
         // Assert
         typeof(Program).Assembly.Should().NotContainType(typeName);
