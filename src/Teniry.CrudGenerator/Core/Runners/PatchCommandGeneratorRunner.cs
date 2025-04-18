@@ -68,7 +68,6 @@ internal record PatchCommandGeneratorRunner : IGeneratorRunner {
             new(operationConfiguration?.HandlerName ?? "{{operation_name}}{{entity_name}}Handler"),
             new(operationConfiguration?.ViewModelName ?? "{{operation_name}}{{entity_name}}Vm"),
             new() {
-                // If general generate is false, than endpoint generate is also false
                 Generate = operationConfiguration?.Generate != false &&
                     (operationConfiguration?.GenerateEndpoint ?? true),
                 ClassName = new(
@@ -78,7 +77,7 @@ internal record PatchCommandGeneratorRunner : IGeneratorRunner {
                 FunctionName = new(operationConfiguration?.EndpointFunctionName ?? "{{operation_name}}Async"),
                 RouteConfigurator = new(
                     operationConfiguration?.RouteName ??
-                    "/{{entity_name}}/{{operation_name | string.downcase}}"
+                    "/{{entity_name}}/{{id_param_name}}/{{operation_name | string.downcase}}"
                 )
             },
             entityScheme
