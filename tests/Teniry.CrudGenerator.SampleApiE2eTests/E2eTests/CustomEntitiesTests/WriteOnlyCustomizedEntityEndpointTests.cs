@@ -1,15 +1,18 @@
 using System.Net;
 using System.Net.Http.Json;
+using Teniry.Cqrs.Extended.Types.PatchOperationType;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityCreateOperationCustomNs;
+using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityPatchOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.Application.WriteOnlyCustomizedEntityFeature.ManagedEntityUpdateOperationCustomNs;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.WriteOnlyCustomizedGenerator;
+using Teniry.CrudGenerator.SampleApi.Endpoints.WriteOnlyCustomizedEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomEntitiesTests;
 
 [Collection("E2eTests")]
-public class WroteOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
+public class WriteOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
     private readonly SampleMongoDb _db = fixture.GetDb();
     private readonly HttpClient _httpClient = fixture.GetHttpClient();
 
@@ -46,7 +49,7 @@ public class WroteOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new CustomizedNameUpdateManagedEntityCommand(createdEntity.Id) { Name = "Updated entity name" }
+            new CustomizedNameUpdateManagedEntityViewModel { Name = "Updated entity name" }
         );
         response.Should().FailIfNotSuccessful();
 
@@ -57,6 +60,30 @@ public class WroteOnlyCustomizedEntityEndpointTests(TestApiFixture fixture) {
         var entity = await _db.FindAsync<WriteOnlyCustomizedEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
+    }
+
+    [Theory]
+    [InlineData("customizedManagedEntityPatch/{0}")]
+    public async Task Should_PatchEntity(string endpoint) {
+        // Arrange
+        var createdEntity = await CreateEntityAsync("Entity to patch");
+
+        // Act
+        var response = await _httpClient.PutAsJsonAsync(
+            string.Format(endpoint, createdEntity.Id),
+            new CustomizedNamePatchManagedEntityViewModel {
+                Name = new("Patched entity name", PatchOpType.Update)
+            }
+        );
+        response.Should().FailIfNotSuccessful();
+
+        // Assert correct response
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        // Assert saved to db
+        var entity = await _db.FindAsync<WriteOnlyCustomizedEntity>([createdEntity.Id], new());
+        entity.Should().NotBeNull();
+        entity!.Name.Should().Be("Patched entity name");
     }
 
     [Theory]

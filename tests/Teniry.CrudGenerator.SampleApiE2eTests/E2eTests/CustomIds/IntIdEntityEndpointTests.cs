@@ -1,11 +1,14 @@
 using System.Net;
 using System.Net.Http.Json;
+using Teniry.Cqrs.Extended.Types.PatchOperationType;
 using Teniry.CrudGenerator.SampleApi;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.CreateIntIdEntity;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntities;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.GetIntIdEntity;
+using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.PatchIntIdEntity;
 using Teniry.CrudGenerator.SampleApi.Application.IntIdEntityFeature.UpdateIntIdEntity;
 using Teniry.CrudGenerator.SampleApi.CrudConfigurations.CustomIds.IntIdEntityGenerator;
+using Teniry.CrudGenerator.SampleApi.Endpoints.IntIdEntityEndpoints;
 using Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.Core;
 
 namespace Teniry.CrudGenerator.SampleApiE2eTests.E2eTests.CustomIds;
@@ -94,7 +97,7 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture) {
         // Act
         var response = await _httpClient.PutAsJsonAsync(
             string.Format(endpoint, createdEntity.Id),
-            new UpdateIntIdEntityCommand(createdEntity.Id) { Name = "Updated entity name" }
+            new UpdateIntIdEntityVm { Name = "Updated entity name" }
         );
         response.Should().FailIfNotSuccessful();
 
@@ -105,6 +108,28 @@ public class IntIdEntityEndpointTests(TestApiFixture fixture) {
         var entity = await _db.FindAsync<IntIdEntity>([createdEntity.Id], new());
         entity.Should().NotBeNull();
         entity!.Name.Should().Be("Updated entity name");
+    }
+    
+    [Theory]
+    [InlineData("intIdEntity/{0}/patch")]
+    public async Task Should_PatchEntity(string endpoint) {
+        // Arrange
+        var createdEntity = await CreateEntityAsync("Entity to patch");
+
+        // Act
+        var response = await _httpClient.PutAsJsonAsync(
+            string.Format(endpoint, createdEntity.Id),
+            new PatchIntIdEntityVm { Name = new("Patched entity name", PatchOpType.Update) }
+        );
+        response.Should().FailIfNotSuccessful();
+
+        // Assert correct response
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+        // Assert saved to db
+        var entity = await _db.FindAsync<IntIdEntity>([createdEntity.Id], new());
+        entity.Should().NotBeNull();
+        entity!.Name.Should().Be("Patched entity name");
     }
 
     [Theory]
