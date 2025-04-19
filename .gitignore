@@ -479,3 +479,7 @@ $RECYCLE.BIN/
 
 # Secrets for nuget connection
 nuget.config
+
+# Verify
+*.received.*
+*.received/
