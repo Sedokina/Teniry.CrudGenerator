@@ -1,9 +1,6 @@
 using Microsoft.CodeAnalysis;
-using Teniry.CrudGenerator.Core.Configurations.Crud;
 using Teniry.CrudGenerator.Core.Configurations.Global;
 using Teniry.CrudGenerator.Core.Configurations.Shared;
-using Teniry.CrudGenerator.Core.Generators;
-using Teniry.CrudGenerator.Core.Generators.Core;
 using Teniry.CrudGenerator.Core.Runners;
 using Teniry.CrudGenerator.Core.Schemes.Entity;
 using Teniry.CrudGenerator.Core.Schemes.InternalEntityGenerator;
@@ -12,8 +9,7 @@ using Teniry.CrudGenerator.Tests.Helpers;
 namespace Teniry.CrudGenerator.Tests.Generators.Patch;
 
 public class PatchCommandCrudGeneratorTests {
-    private readonly CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration>
-        _crudGeneratorScheme;
+    private readonly PatchCommandGeneratorRunner _sut;
 
     public PatchCommandCrudGeneratorTests() {
         var globalCqrsGeneratorConfigurationBuilder =
@@ -34,18 +30,12 @@ public class PatchCommandCrudGeneratorTests {
         var entityScheme = EntitySchemeFactory
             .Construct(internalEntityGeneratorConfiguration, new DbContextSchemeStub());
 
-        var configuration = new PatchCommandGeneratorRunner(
-                globalCqrsGeneratorConfigurationBuilder,
-                cqrsOperationsSharedConfigurationBuilder,
-                internalEntityGeneratorConfiguration.PatchOperation,
-                entityScheme,
-                new DbContextSchemeStub()
-            )
-            .Configuration;
-        _crudGeneratorScheme = new(
+        _sut = new(
+            globalCqrsGeneratorConfigurationBuilder,
+            cqrsOperationsSharedConfigurationBuilder,
+            internalEntityGeneratorConfiguration.PatchOperation,
             entityScheme,
-            new DbContextSchemeStub(),
-            configuration
+            new DbContextSchemeStub()
         );
     }
 
@@ -55,16 +45,13 @@ public class PatchCommandCrudGeneratorTests {
     [InlineData("PatchTestEntityEndpoint.g.cs")]
     [InlineData("PatchTestEntityVm.g.cs")]
     public Task Should_ReturnGetRouteFromCreateEndpoint(string fileName) {
-        // Arrange
-        var sut = new PatchCommandCrudGenerator(_crudGeneratorScheme);
-
         // Act
-        sut.RunGenerator();
+        var generatedFiles = _sut.RunGenerator([]);
 
         // Assert
-        var endpoint = sut.GeneratedFiles.Find(x => x.FileName.Equals(fileName));
-        endpoint.Should().NotBeNull();
+        var file = generatedFiles.Find(x => x.FileName.Equals(fileName));
+        file.Should().NotBeNull();
 
-        return Verify(endpoint!.Source.ToString()).UseParameters(fileName);
+        return Verify(file!.Source.ToString()).UseParameters(fileName);
     }
 }
