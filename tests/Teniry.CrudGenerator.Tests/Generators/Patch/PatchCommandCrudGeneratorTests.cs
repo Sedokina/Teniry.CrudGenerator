@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Teniry.CrudGenerator.Core.Configurations.Global;
 using Teniry.CrudGenerator.Core.Configurations.Shared;
+using Teniry.CrudGenerator.Core.Generators.Core;
 using Teniry.CrudGenerator.Core.Runners;
 using Teniry.CrudGenerator.Core.Schemes.Entity;
 using Teniry.CrudGenerator.Core.Schemes.InternalEntityGenerator;
@@ -53,5 +54,17 @@ public class PatchCommandCrudGeneratorTests {
         file.Should().NotBeNull();
 
         return Verify(file!.Source.ToString()).UseParameters(fileName);
+    }
+
+    [Fact]
+    public Task Should_CorrectlyMapEndpoints() {
+        // Arrange
+        List<EndpointMap> endpointsMaps = [];
+
+        // Act
+        _sut.RunGenerator(endpointsMaps);
+
+        // Assert
+        return Verify(endpointsMaps);
     }
 }

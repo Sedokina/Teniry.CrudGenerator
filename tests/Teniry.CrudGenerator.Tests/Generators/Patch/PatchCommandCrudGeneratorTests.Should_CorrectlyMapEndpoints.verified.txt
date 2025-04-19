@@ -1,0 +1,10 @@
+﻿[
+  {
+    EntityTitle: Test entity,
+    EndpointNamespace: .Endpoints.TestEntityEndpoints,
+    HttpMethod: Put,
+    EndpointRoute: /testEntity/{id}/patch,
+    ClassName: PatchTestEntityEndpoint,
+    FunctionName: PatchAsync
+  }
+]
