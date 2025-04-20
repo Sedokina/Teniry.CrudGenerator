@@ -46,6 +46,34 @@ public class CreateCommandCrudGeneratorTests {
         """;
 
     [Fact]
+    public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
+        var getOperationConfiguration = """
+            GetByIdOperation = new() {
+               Generate = true
+            };
+            """;
+
+        var source = Source.Replace("{0}", getOperationConfiguration).Replace("Generate = true", "Generate = false");
+
+        return CrudHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
+        var getOperationConfiguration = """
+            GetByIdOperation = new() {
+               Generate = true
+            };
+            """;
+
+        var source = Source.Replace("{0}", getOperationConfiguration)
+            .Replace("Generate = true", "GenerateEndpoint = false");
+
+        return CrudHelper.Verify(source)
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
+    }
+
+    [Fact]
     public Task Should_ReturnLocationToGetEntityFromCreateEndpoint() {
         var getOperationConfiguration = """
             GetByIdOperation = new() {
@@ -68,7 +96,7 @@ public class CreateCommandCrudGeneratorTests {
         return CrudHelper.Verify(Source.Replace("{0}", getOperationConfiguration))
             .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
     }
-    
+
     [Fact]
     public Task Should_NotReturnLocationToGetEntityFromCreateEndpoint_When_GetOperationEndpointNotGenerated() {
         var getOperationConfiguration = """
