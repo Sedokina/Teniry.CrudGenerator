@@ -16,8 +16,6 @@ namespace Teniry.CrudGenerator;
 
 [Generator]
 public sealed class CrudGenerator : IIncrementalGenerator {
-    // review todos
-    // reformat code with customized formatter
     public void Initialize(IncrementalGeneratorInitializationContext context) {
         var generatorConfigurations = ValueProviders.GetGeneratorConfigurations(context);
         var dbContexts = ValueProviders.GetDbContexts(context);

@@ -5,7 +5,7 @@ namespace Teniry.CrudGenerator.Tests;
 
 public class IncrementalGeneratorTests {
     [Fact]
-    public void Should_TakeCachedSources_OnSecondRun() {
+    public Task Should_TakeCachedSources_OnSecondRun() {
         // Arrange
         const string source = """
             using Microsoft.EntityFrameworkCore;
@@ -32,5 +32,7 @@ public class IncrementalGeneratorTests {
         using var scope = new AssertionScope();
         diagnostics.Should().BeEmpty();
         output.Should().HaveCount(26);
+
+        return Verify(output);
     }
 }
