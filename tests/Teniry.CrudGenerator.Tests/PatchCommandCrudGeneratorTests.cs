@@ -63,10 +63,10 @@ public class PatchCommandCrudGeneratorTests {
                     OperationGroup = "UpdCustomNs",
                     CommandName = "UpdEntityCustomCommand",
                     HandlerName = "UpdEntityCustomHandler",
-                    DtoName = "UpddCustomDto",
-                    EndpointClassName = "UpddCustomEndpoint",
+                    ViewModelName = "UpdCustomVm",
+                    EndpointClassName = "UpdCustomEndpoint",
                     EndpointFunctionName = "RunUpdAsync",
-                    RouteName = "/customizedUpd"
+                    RouteName = "/customizedUpdate/{{id_param_name}}"
                 };
                 """
             ).Build();

@@ -15,6 +15,6 @@ public static class GeneratedEndpointsMapExtension
 {
     public static void MapGeneratedEndpoints(this WebApplication app)
     {
-        app.MapPut("/customizedUpd", UpddCustomEndpoint.RunUpdAsync).WithTags("Test entity");
+        app.MapPut("/customizedUpdate/{id}", UpdCustomEndpoint.RunUpdAsync).WithTags("Test entity");
     }
 }
