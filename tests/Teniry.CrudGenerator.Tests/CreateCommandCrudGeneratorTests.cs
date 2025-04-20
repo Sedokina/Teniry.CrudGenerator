@@ -74,6 +74,52 @@ public class CreateCommandCrudGeneratorTests {
     }
 
     [Fact]
+    public Task Should_GenerateClassNamesWithNewOperationName() {
+        var getOperationConfiguration = """
+            GetByIdOperation = new() {
+               Generate = false
+            };
+            """;
+
+        var source = Source
+            .Replace("{0}", getOperationConfiguration)
+            .Replace(
+                "Generate = true",
+                """
+                    Operation = "Add"
+                """
+            );
+
+        return CrudHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task Should_GenerateFullyCustomizedClassNames() {
+        var getOperationConfiguration = """
+            GetByIdOperation = new() {
+               Generate = false
+            };
+            """;
+
+        var source = Source
+            .Replace("{0}", getOperationConfiguration)
+            .Replace(
+                "Generate = true",
+                """
+                    OperationGroup = "CreateCustomNs",
+                    CommandName = "CreateEntityCustomCommand",
+                    HandlerName = "CreateEntityCustomHandler",
+                    DtoName = "CreatedCustomDto",
+                    EndpointClassName = "CreatedCustomEndpoint",
+                    EndpointFunctionName = "RunCreateAsync",
+                    RouteName = "/customizedCreate"
+                """
+            );
+
+        return CrudHelper.Verify(source);
+    }
+
+    [Fact]
     public Task Should_ReturnLocationToGetEntityFromCreateEndpoint() {
         var getOperationConfiguration = """
             GetByIdOperation = new() {
