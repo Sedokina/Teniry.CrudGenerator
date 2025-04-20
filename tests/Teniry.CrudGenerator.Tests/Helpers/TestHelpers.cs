@@ -12,17 +12,11 @@ namespace Teniry.CrudGenerator.Tests.Helpers;
 /// </summary>
 /// <remarks>It was taken from https://andrewlock.net/creating-a-source-generator-part-10-testing-your-incremental-generator-pipeline-outputs-are-cacheable/</remarks>
 public static class TestHelpers {
-    // You call this method passing in C# sources, and the list of stages you expect
-    // It runs the generator, asserts the outputs are ok, 
-    public static (ImmutableArray<Diagnostic> Diagnostics, string[] Output) GetGeneratedTrees<T>(
-        string[] sources, // C# source code 
-        string[] stages, // The tracking stages we expect
-        bool assertOutputs = true
-    ) // You can disable cacheability checking during dev
-        where T : IIncrementalGenerator, new() // T is your generator
-    {
+    public static CSharpCompilation CreateCompilation<T>(
+        string[] sources // C# source code 
+    ) {
         // Convert the source files to SyntaxTrees
-        IEnumerable<SyntaxTree> syntaxTrees = sources.Select(static x => CSharpSyntaxTree.ParseText(x));
+        var syntaxTrees = sources.Select(static x => CSharpSyntaxTree.ParseText(x));
 
         // Configure the assembly references you need
         // This will vary depending on your generator and requirements
@@ -38,12 +32,24 @@ public static class TestHelpers {
 
         // Create a Compilation object
         // You may want to specify other results here
-        var compilation = CSharpCompilation.Create(
+        return CSharpCompilation.Create(
             Assembly.GetExecutingAssembly().GetName().Name,
             syntaxTrees,
             references,
             new(OutputKind.DynamicallyLinkedLibrary)
         );
+    }
+
+    // You call this method passing in C# sources, and the list of stages you expect
+    // It runs the generator, asserts the outputs are ok, 
+    public static (ImmutableArray<Diagnostic> Diagnostics, string[] Output) GetGeneratedTrees<T>(
+        string[] sources, // C# source code 
+        string[] stages, // The tracking stages we expect
+        bool assertOutputs = true
+    ) // You can disable cacheability checking during dev
+        where T : IIncrementalGenerator, new() // T is your generator
+    {
+        var compilation = CreateCompilation<T>(sources);
 
         // Run the generator, get the results, and assert cacheability if applicable
         var runResult = RunGeneratorAndAssertOutput<T>(compilation, stages, assertOutputs);
