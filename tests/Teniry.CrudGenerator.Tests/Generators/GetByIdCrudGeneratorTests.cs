@@ -1,12 +1,12 @@
 using Teniry.CrudGenerator.Tests.Helpers;
 
-namespace Teniry.CrudGenerator.Tests;
+namespace Teniry.CrudGenerator.Tests.Generators;
 
-public class GetListCrudGeneratorTests {
+public class GetByIdCrudGeneratorTests {
     private readonly SutBuilder _sutBuilder = SutBuilder.Default()
-        .WithGetListConfiguration(
+        .WithGetByIdConfiguration(
             """
-            GetListOperation = new() {
+            GetByIdOperation = new() {
                 Generate = true
             };
             """
@@ -14,9 +14,9 @@ public class GetListCrudGeneratorTests {
 
     [Fact]
     public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
-        var source = _sutBuilder.WithGetListConfiguration(
+        var source = _sutBuilder.WithGetByIdConfiguration(
             """
-            GetListOperation = new() {
+            GetByIdOperation = new() {
                 Generate = false
             };
             """
@@ -28,9 +28,9 @@ public class GetListCrudGeneratorTests {
     [Fact]
     public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
         var source = _sutBuilder
-            .WithGetListConfiguration(
+            .WithGetByIdConfiguration(
                 """
-                GetListOperation = new() {
+                GetByIdOperation = new() {
                     GenerateEndpoint = false
                 };
                 """
@@ -43,9 +43,9 @@ public class GetListCrudGeneratorTests {
     [Fact]
     public Task Should_GenerateClassNamesWithNewOperationName() {
         var source = _sutBuilder
-            .WithGetListConfiguration(
+            .WithGetByIdConfiguration(
                 """
-                GetListOperation = new() {
+                GetByIdOperation = new() {
                     Operation = "Fetch"
                 };
                 """
@@ -57,17 +57,16 @@ public class GetListCrudGeneratorTests {
     [Fact]
     public Task Should_GenerateFullyCustomizedClassNames() {
         var source = SutBuilder.Default()
-            .WithGetListConfiguration(
+            .WithGetByIdConfiguration(
                 """
-                GetListOperation = new() {
+                GetByIdOperation = new() {
                     OperationGroup = "FetchCustomNs",
                     QueryName = "FetchEntityCustomCommand",
                     HandlerName = "FetchEntityCustomHandler",
                     DtoName = "FetchCustomDto",
-                    ListItemDtoName = "CustomFetchListItemDto",
                     EndpointClassName = "FetchCustomEndpoint",
                     EndpointFunctionName = "RunFetchAsync",
-                    RouteName = "/fetchAll"
+                    RouteName = "/customGet/{{id_param_name}}"
                 };
                 """
             ).Build();

@@ -1,12 +1,12 @@
 using Teniry.CrudGenerator.Tests.Helpers;
 
-namespace Teniry.CrudGenerator.Tests;
+namespace Teniry.CrudGenerator.Tests.Generators;
 
-public class UpdateCommandCrudGeneratorTests {
+public class PatchCommandCrudGeneratorTests {
     private readonly SutBuilder _sutBuilder = SutBuilder.Default()
-        .WithUpdateConfiguration(
+        .WithPatchConfiguration(
             """
-            UpdateOperation = new() {
+            PatchOperation = new() {
                 Generate = true
             };
             """
@@ -14,9 +14,9 @@ public class UpdateCommandCrudGeneratorTests {
 
     [Fact]
     public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
-        var source = _sutBuilder.WithUpdateConfiguration(
+        var source = _sutBuilder.WithPatchConfiguration(
             """
-            UpdateOperation = new() {
+            PatchOperation = new() {
                 Generate = false
             };
             """
@@ -28,24 +28,24 @@ public class UpdateCommandCrudGeneratorTests {
     [Fact]
     public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
         var source = _sutBuilder
-            .WithUpdateConfiguration(
+            .WithPatchConfiguration(
                 """
-                UpdateOperation = new() {
+                PatchOperation = new() {
                     GenerateEndpoint = false
                 };
                 """
             ).Build();
 
         return CrudHelper.Verify(source)
-            .IgnoreGeneratedResult(x => !x.HintName.Equals("UpdateTestEntityEndpoint.g.cs"));
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("PatchTestEntityEndpoint.g.cs"));
     }
 
     [Fact]
     public Task Should_GenerateClassNamesWithNewOperationName() {
         var source = _sutBuilder
-            .WithUpdateConfiguration(
+            .WithPatchConfiguration(
                 """
-                UpdateOperation = new() {
+                PatchOperation = new() {
                     Operation = "Upd"
                 };
                 """
@@ -57,9 +57,9 @@ public class UpdateCommandCrudGeneratorTests {
     [Fact]
     public Task Should_GenerateFullyCustomizedClassNames() {
         var source = SutBuilder.Default()
-            .WithUpdateConfiguration(
+            .WithPatchConfiguration(
                 """
-                UpdateOperation = new() {
+                PatchOperation = new() {
                     OperationGroup = "UpdCustomNs",
                     CommandName = "UpdEntityCustomCommand",
                     HandlerName = "UpdEntityCustomHandler",

@@ -1,6 +1,6 @@
 using Teniry.CrudGenerator.Tests.Helpers;
 
-namespace Teniry.CrudGenerator.Tests;
+namespace Teniry.CrudGenerator.Tests.Generators;
 
 public class CreateCommandCrudGeneratorTests {
     private readonly SutBuilder _sutBuilder = SutBuilder.Default()

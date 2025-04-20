@@ -1,12 +1,12 @@
 using Teniry.CrudGenerator.Tests.Helpers;
 
-namespace Teniry.CrudGenerator.Tests;
+namespace Teniry.CrudGenerator.Tests.Generators;
 
-public class DeleteCommandCrudGeneratorTests {
+public class UpdateCommandCrudGeneratorTests {
     private readonly SutBuilder _sutBuilder = SutBuilder.Default()
-        .WithDeleteConfiguration(
+        .WithUpdateConfiguration(
             """
-            DeleteOperation = new() {
+            UpdateOperation = new() {
                 Generate = true
             };
             """
@@ -14,9 +14,9 @@ public class DeleteCommandCrudGeneratorTests {
 
     [Fact]
     public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
-        var source = _sutBuilder.WithDeleteConfiguration(
+        var source = _sutBuilder.WithUpdateConfiguration(
             """
-            DeleteOperation = new() {
+            UpdateOperation = new() {
                 Generate = false
             };
             """
@@ -28,25 +28,25 @@ public class DeleteCommandCrudGeneratorTests {
     [Fact]
     public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
         var source = _sutBuilder
-            .WithDeleteConfiguration(
+            .WithUpdateConfiguration(
                 """
-                DeleteOperation = new() {
+                UpdateOperation = new() {
                     GenerateEndpoint = false
                 };
                 """
             ).Build();
 
         return CrudHelper.Verify(source)
-            .IgnoreGeneratedResult(x => !x.HintName.Equals("DeleteTestEntityEndpoint.g.cs"));
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("UpdateTestEntityEndpoint.g.cs"));
     }
 
     [Fact]
     public Task Should_GenerateClassNamesWithNewOperationName() {
         var source = _sutBuilder
-            .WithDeleteConfiguration(
+            .WithUpdateConfiguration(
                 """
-                DeleteOperation = new() {
-                    Operation = "Del"
+                UpdateOperation = new() {
+                    Operation = "Upd"
                 };
                 """
             ).Build();
@@ -57,15 +57,16 @@ public class DeleteCommandCrudGeneratorTests {
     [Fact]
     public Task Should_GenerateFullyCustomizedClassNames() {
         var source = SutBuilder.Default()
-            .WithDeleteConfiguration(
+            .WithUpdateConfiguration(
                 """
-                DeleteOperation = new() {
-                    OperationGroup = "DelCustomNs",
-                    CommandName = "DelEntityCustomCommand",
-                    HandlerName = "DelEntityCustomHandler",
-                    EndpointClassName = "DelCustomEndpoint",
-                    EndpointFunctionName = "RunDelAsync",
-                    RouteName = "/customDelete/{{entity_name}}/{{id_param_name}}"
+                UpdateOperation = new() {
+                    OperationGroup = "UpdCustomNs",
+                    CommandName = "UpdEntityCustomCommand",
+                    HandlerName = "UpdEntityCustomHandler",
+                    ViewModelName = "UpdCustomVm",
+                    EndpointClassName = "UpdCustomEndpoint",
+                    EndpointFunctionName = "RunUpdAsync",
+                    RouteName = "/customizedUpdate/{{id_param_name}}"
                 };
                 """
             ).Build();
