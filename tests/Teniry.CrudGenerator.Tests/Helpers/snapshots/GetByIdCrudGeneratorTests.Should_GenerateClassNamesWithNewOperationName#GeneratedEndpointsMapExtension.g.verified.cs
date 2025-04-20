@@ -15,6 +15,6 @@ public static class GeneratedEndpointsMapExtension
 {
     public static void MapGeneratedEndpoints(this WebApplication app)
     {
-        app.MapGet("/testEntity/{id}", fetchTestEntityEndpoint.fetchAsync).WithTags("Test entity");
+        app.MapGet("/testEntity/{id}", FetchTestEntityEndpoint.FetchAsync).WithTags("Test entity");
     }
 }

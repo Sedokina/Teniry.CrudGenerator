@@ -46,7 +46,7 @@ public class GetByIdCrudGeneratorTests {
             .WithGetByIdConfiguration(
                 """
                 GetByIdOperation = new() {
-                    Operation = "fetch"
+                    Operation = "Fetch"
                 };
                 """
             ).Build();
