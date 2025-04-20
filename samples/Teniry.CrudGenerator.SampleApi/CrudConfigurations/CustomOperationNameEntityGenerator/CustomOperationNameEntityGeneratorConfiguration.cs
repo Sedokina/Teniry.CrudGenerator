@@ -19,5 +19,8 @@ public class CustomOperationNameEntityGeneratorConfiguration : EntityGeneratorCo
         UpdateOperation = new() {
             Operation = "CustomOpUpdate"
         };
+        PatchOperation = new() {
+            Operation = "CustomOpPatch"
+        };
     }
 }

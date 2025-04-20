@@ -12,6 +12,7 @@ internal record InternalEntityGeneratorConfiguration(InternalEntityClassMetadata
     public InternalEntityGeneratorCreateOperationConfiguration? CreateOperation { get; set; }
     public InternalEntityGeneratorDeleteOperationConfiguration? DeleteOperation { get; set; }
     public InternalEntityGeneratorUpdateOperationConfiguration? UpdateOperation { get; set; }
+    public InternalEntityGeneratorPatchOperationConfiguration? PatchOperation { get; set; }
     public InternalEntityGeneratorGetByIdOperationConfiguration? GetByIdOperation { get; set; }
     public InternalEntityGeneratorGetListOperationConfiguration? GetListOperation { get; set; }
 }

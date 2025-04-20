@@ -33,6 +33,16 @@ public class WriteOnlyCustomizedEntityGeneratorConfiguration : EntityGeneratorCo
             RouteName = "/customizedManagedEntityUpdate/{{id_param_name}}"
         };
 
+        PatchOperation = new() {
+            OperationGroup = "ManagedEntityPatchOperationCustomNs",
+            CommandName = "CustomizedNamePatchManagedEntityCommand",
+            HandlerName = "CustomizedNamePatchManagedEntityHandler",
+            ViewModelName = "CustomizedNamePatchManagedEntityViewModel",
+            EndpointClassName = "CustomizedNamePatchManagedEntityEndpoint",
+            EndpointFunctionName = "RunPatchAsync",
+            RouteName = "/customizedManagedEntityPatch/{{id_param_name}}"
+        };
+
         GetByIdOperation = new() {
             Generate = false
         };

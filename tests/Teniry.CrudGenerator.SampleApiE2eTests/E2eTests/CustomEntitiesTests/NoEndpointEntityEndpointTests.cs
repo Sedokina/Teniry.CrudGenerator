@@ -13,6 +13,7 @@ public class NoEndpointEntityEndpointTests(TestApiFixture fixture) {
     [InlineData("noEndpointEntity/create")]
     [InlineData("noEndpointEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/delete")]
     [InlineData("noEndpointEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/update")]
+    [InlineData("noEndpointEntity/acda862c-c49f-4ea6-84c2-e5783dce8bc1/patch")]
     public async Task Should_NotGenerateManageEndpoints(string endpoint) {
         // Act
         var response = await _httpClient.SendAsync(new(HttpMethod.Options, endpoint));

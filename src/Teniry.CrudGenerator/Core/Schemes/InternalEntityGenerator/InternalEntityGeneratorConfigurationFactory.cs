@@ -101,6 +101,12 @@ internal class InternalEntityGeneratorConfigurationFactory {
         availableAssignmentExpressionsRightSideParsers
             .Add(
                 new ObjectCreationToObjectParser<
+                    EntityGeneratorPatchOperationConfiguration,
+                    InternalEntityGeneratorPatchOperationConfiguration>(assignmentExpressionParer)
+            );
+        availableAssignmentExpressionsRightSideParsers
+            .Add(
+                new ObjectCreationToObjectParser<
                     EntityGeneratorGetByIdOperationConfiguration,
                     InternalEntityGeneratorGetByIdOperationConfiguration>(assignmentExpressionParer)
             );

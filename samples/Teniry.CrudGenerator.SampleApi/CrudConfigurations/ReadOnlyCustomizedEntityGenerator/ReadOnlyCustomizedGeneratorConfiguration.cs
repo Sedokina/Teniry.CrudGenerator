@@ -17,6 +17,10 @@ public class ReadOnlyCustomizedGeneratorConfiguration : EntityGeneratorConfigura
         UpdateOperation = new() {
             Generate = false
         };
+        
+        PatchOperation = new() {
+            Generate = false
+        };
 
         GetByIdOperation = new() {
             OperationGroup = "GetReadOnlyModelCustomNamespace",

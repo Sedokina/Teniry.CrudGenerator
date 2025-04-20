@@ -11,14 +11,14 @@ using static Teniry.CrudGenerator.Core.Generators.Core.SyntaxFactoryBuilders.Sim
 
 namespace Teniry.CrudGenerator.Core.Generators;
 
-internal class UpdateCommandCrudGenerator
+internal class PatchCommandCrudGenerator
     : BaseOperationCrudGenerator<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration> {
     private readonly string _commandName;
     private readonly string _endpointClassName;
     private readonly string _handlerName;
     private readonly string _vmName;
 
-    public UpdateCommandCrudGenerator(
+    public PatchCommandCrudGenerator(
         CrudGeneratorScheme<CqrsOperationWithoutReturnValueWithReceiveViewModelGeneratorConfiguration> scheme
     )
         : base(scheme) {
@@ -46,9 +46,9 @@ internal class UpdateCommandCrudGenerator
                 _commandName
             )
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.BusinessLogicNamespaceForOperation)
-            .WithUsings(["Teniry.Cqrs.Extended.Exceptions"])
+            .WithUsings(["Teniry.Cqrs.Extended.Exceptions", "Teniry.Cqrs.Extended.Types.PatchOperationType"])
             .WithXmlDoc(
-                $"Update {EntityScheme.EntityTitle}",
+                $"Patch {EntityScheme.EntityTitle}",
                 "Nothing",
                 [
                     new(
@@ -69,8 +69,7 @@ internal class UpdateCommandCrudGenerator
         }
 
         foreach (var property in EntityScheme.NotPrimaryKeys) {
-            command.WithProperty(property.TypeName, property.PropertyName)
-                .WithDefaultValue(property.DefaultValue);
+            command.WithProperty($"PatchOp<{property.TypeName}>?", property.PropertyName);
         }
 
         constructor.WithBody(constructorBody);
@@ -91,6 +90,7 @@ internal class UpdateCommandCrudGenerator
                 [
                     "Teniry.Cqrs.Commands",
                     "Teniry.Cqrs.Extended.Exceptions",
+                    "Teniry.Cqrs.Extended.Types.PatchOperationType",
                     Scheme.DbContextScheme.DbContextNamespace,
                     EntityScheme.EntityNamespace,
                     "Mapster"
@@ -138,9 +138,22 @@ internal class UpdateCommandCrudGenerator
                     [NewArray("object", findParameters), Variable("cancellation")]
                 )
             )
-            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()))
-            .CallMethod("command", "Adapt", [Variable("entity")])
-            .CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
+            .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()));
+
+        foreach (var property in EntityScheme.NotPrimaryKeys) {
+            methodBodyBuilder.CallMethod(
+                "PatchOp",
+                "Handle",
+                [
+                    Property("command", property.PropertyName), NameOf(Property("command", property.PropertyName)),
+                    ExpressionWithBody(
+                        new BlockBuilder().AssignVariable($"entity.{property.PropertyName}", "x").Build()
+                    )
+                ]
+            );
+        }
+
+        methodBodyBuilder.CallAsyncMethod("_db", "SaveChangesAsync", [Variable("cancellation")]);
 
         methodBuilder.WithBody(methodBodyBuilder);
         handlerClass.WithConstructor(constructor.Build());
@@ -157,11 +170,11 @@ internal class UpdateCommandCrudGenerator
                 ],
                 _vmName
             )
+            .WithUsings(["Teniry.Cqrs.Extended.Types.PatchOperationType"])
             .WithNamespace(Scheme.Configuration.OperationsSharedConfiguration.EndpointsNamespaceForFeature);
 
         foreach (var property in EntityScheme.NotPrimaryKeys) {
-            vmClass.WithProperty(property.TypeName, property.PropertyName)
-                .WithDefaultValue(property.DefaultValue);
+            vmClass.WithProperty($"PatchOp<{property.TypeName}>?", property.PropertyName);
         }
 
         WriteFile(_vmName, vmClass.BuildAsString());
@@ -205,7 +218,7 @@ internal class UpdateCommandCrudGenerator
             )
             .WithAttribute(new(204))
             .WithXmlDoc(
-                $"Update {Scheme.EntityScheme.EntityTitle}",
+                $"Patch {Scheme.EntityScheme.EntityTitle}",
                 204,
                 $"{Scheme.EntityScheme.EntityTitle} updated"
             );
