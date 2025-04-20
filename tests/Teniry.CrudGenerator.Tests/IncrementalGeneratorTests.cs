@@ -16,6 +16,8 @@ public class IncrementalGeneratorTests {
                public string Name { get; set; }
         }
 
+        public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> { }
+
         [UseDbContext(DbContextDbProvider.Mongo)]
         public class TestDb : DbContext {}
         """;

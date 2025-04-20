@@ -28,7 +28,7 @@ internal static class CrudHelper {
             .ToArray();
     }
 
-    public static Task Verify(string source) {
+    public static SettingsTask Verify(string source) {
         var compilation = TestHelpers.CreateCompilation<CrudGenerator>([source]);
         var generator = new CrudGenerator();
 
