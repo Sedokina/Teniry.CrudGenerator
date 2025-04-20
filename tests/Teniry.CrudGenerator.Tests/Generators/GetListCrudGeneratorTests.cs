@@ -74,4 +74,30 @@ public class GetListCrudGeneratorTests {
 
         return CrudHelper.Verify(source);
     }
+
+    [Fact]
+    public Task Should_Generate_FilterDependentOnPostgreSqlDb() {
+        var source = _sutBuilder.WithDbContext(
+            """
+            [UseDbContext(DbContextDbProvider.Postgres)]
+            public class TestDb : DbContext {}
+            """
+        ).Build();
+
+        return CrudHelper.Verify(source)
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("GetTestEntitiesFilter.g.cs"));
+    }
+    
+    [Fact]
+    public Task Should_Generate_FilterDependentOnMongoDb() {
+        var source = _sutBuilder.WithDbContext(
+            """
+            [UseDbContext(DbContextDbProvider.Mongo)]
+            public class TestDb : DbContext {}
+            """
+        ).Build();
+
+        return CrudHelper.Verify(source)
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("GetTestEntitiesFilter.g.cs"));
+    }
 }
