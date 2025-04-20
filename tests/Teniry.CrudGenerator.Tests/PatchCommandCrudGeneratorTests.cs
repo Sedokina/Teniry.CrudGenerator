@@ -1,0 +1,76 @@
+using Teniry.CrudGenerator.Tests.Helpers;
+
+namespace Teniry.CrudGenerator.Tests;
+
+public class PatchCommandCrudGeneratorTests {
+    private readonly SutBuilder _sutBuilder = SutBuilder.Default()
+        .WithPatchConfiguration(
+            """
+            PatchOperation = new() {
+                Generate = true
+            };
+            """
+        );
+
+    [Fact]
+    public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
+        var source = _sutBuilder.WithPatchConfiguration(
+            """
+            PatchOperation = new() {
+                Generate = false
+            };
+            """
+        ).Build();
+
+        return CrudHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
+        var source = _sutBuilder
+            .WithPatchConfiguration(
+                """
+                PatchOperation = new() {
+                    GenerateEndpoint = false
+                };
+                """
+            ).Build();
+
+        return CrudHelper.Verify(source)
+            .IgnoreGeneratedResult(x => !x.HintName.Equals("PatchTestEntityEndpoint.g.cs"));
+    }
+
+    [Fact]
+    public Task Should_GenerateClassNamesWithNewOperationName() {
+        var source = _sutBuilder
+            .WithPatchConfiguration(
+                """
+                PatchOperation = new() {
+                    Operation = "Upd"
+                };
+                """
+            ).Build();
+
+        return CrudHelper.Verify(source);
+    }
+
+    [Fact]
+    public Task Should_GenerateFullyCustomizedClassNames() {
+        var source = SutBuilder.Default()
+            .WithPatchConfiguration(
+                """
+                PatchOperation = new() {
+                    OperationGroup = "UpdCustomNs",
+                    CommandName = "UpdEntityCustomCommand",
+                    HandlerName = "UpdEntityCustomHandler",
+                    DtoName = "UpddCustomDto",
+                    EndpointClassName = "UpddCustomEndpoint",
+                    EndpointFunctionName = "RunUpdAsync",
+                    RouteName = "/customizedUpd"
+                };
+                """
+            ).Build();
+
+        return CrudHelper.Verify(source);
+    }
+}
