@@ -3,71 +3,38 @@ using Teniry.CrudGenerator.Tests.Helpers;
 namespace Teniry.CrudGenerator.Tests;
 
 public class CreateCommandCrudGeneratorTests {
-    private const string Source = """
-        using Microsoft.EntityFrameworkCore;
-        using Teniry.CrudGenerator.Abstractions.DbContext;
-        using Teniry.CrudGenerator.Abstractions.Configuration;
-
-        namespace Teniry.CrudGenerator.Tests;
-
-        public class TestEntity {
-               public int Id { get; set; }
-               public string Name { get; set; }
-        }
-
-        public class TestEntityGeneratorConfiguration : EntityGeneratorConfiguration<TestEntity> {
-            public TestEntityGeneratorConfiguration() {
-                CreateOperation = new() {
-                    Generate = true
-                };
-                
-                DeleteOperation = new() {
-                    Generate = false
-                };
-                
-                UpdateOperation = new() {
-                    Generate = false
-                };
-                
-                PatchOperation = new() {
-                    Generate = false
-                };
-        
-                {0}
-        
-                GetListOperation = new() {
-                   Generate = false
-                };
-            }
-        }
-
-        [UseDbContext(DbContextDbProvider.Mongo)]
-        public class TestDb : DbContext {}
-        """;
+    private readonly SutBuilder _sutBuilder = SutBuilder.Default()
+        .WithCreateConfiguration(
+            """
+            CreateOperation = new() {
+                Generate = true
+            };
+            """
+        );
 
     [Fact]
     public Task Should_NotGenerateFiles_When_GenerateIsFalse() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = true
+        var source = _sutBuilder.WithCreateConfiguration(
+            """
+            CreateOperation = new() {
+                Generate = false
             };
-            """;
-
-        var source = Source.Replace("{0}", getOperationConfiguration).Replace("Generate = true", "Generate = false");
+            """
+        ).Build();
 
         return CrudHelper.Verify(source);
     }
 
     [Fact]
     public Task Should_NotGenerateEndpointFile_When_GenerateEndpointIsFalse() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = true
-            };
-            """;
-
-        var source = Source.Replace("{0}", getOperationConfiguration)
-            .Replace("Generate = true", "GenerateEndpoint = false");
+        var source = _sutBuilder
+            .WithCreateConfiguration(
+                """
+                CreateOperation = new() {
+                    GenerateEndpoint = false
+                };
+                """
+            ).Build();
 
         return CrudHelper.Verify(source)
             .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
@@ -75,37 +42,24 @@ public class CreateCommandCrudGeneratorTests {
 
     [Fact]
     public Task Should_GenerateClassNamesWithNewOperationName() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = false
-            };
-            """;
-
-        var source = Source
-            .Replace("{0}", getOperationConfiguration)
-            .Replace(
-                "Generate = true",
+        var source = _sutBuilder
+            .WithCreateConfiguration(
                 """
+                CreateOperation = new() {
                     Operation = "Add"
+                };
                 """
-            );
+            ).Build();
 
         return CrudHelper.Verify(source);
     }
 
     [Fact]
     public Task Should_GenerateFullyCustomizedClassNames() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = false
-            };
-            """;
-
-        var source = Source
-            .Replace("{0}", getOperationConfiguration)
-            .Replace(
-                "Generate = true",
+        var source = SutBuilder.Default()
+            .WithCreateConfiguration(
                 """
+                CreateOperation = new() {
                     OperationGroup = "CreateCustomNs",
                     CommandName = "CreateEntityCustomCommand",
                     HandlerName = "CreateEntityCustomHandler",
@@ -113,45 +67,47 @@ public class CreateCommandCrudGeneratorTests {
                     EndpointClassName = "CreatedCustomEndpoint",
                     EndpointFunctionName = "RunCreateAsync",
                     RouteName = "/customizedCreate"
+                };
                 """
-            );
+            ).Build();
 
         return CrudHelper.Verify(source);
     }
 
     [Fact]
     public Task Should_ReturnLocationToGetEntityFromCreateEndpoint() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = true
-            };
-            """;
+        var source = _sutBuilder
+            .WithGetByIdConfiguration(
+                """
+                GetByIdOperation = new() {
+                   Generate = true
+                };
+                """
+            ).Build();
 
-        return CrudHelper.Verify(Source.Replace("{0}", getOperationConfiguration))
+        return CrudHelper.Verify(source)
             .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
     }
 
     [Fact]
     public Task Should_NotReturnLocationToGetEntityFromCreateEndpoint_When_GetOperationNotGenerated() {
-        var getOperationConfiguration = """
-            GetByIdOperation = new() {
-               Generate = false
-            };
-            """;
+        var source = _sutBuilder.Build();
 
-        return CrudHelper.Verify(Source.Replace("{0}", getOperationConfiguration))
+        return CrudHelper.Verify(source)
             .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
     }
 
     [Fact]
     public Task Should_NotReturnLocationToGetEntityFromCreateEndpoint_When_GetOperationEndpointNotGenerated() {
-        var getOperationConfiguration = """
+        var source = _sutBuilder.WithGetByIdConfiguration(
+            """
             GetByIdOperation = new() {
                GenerateEndpoint = false
             };
-            """;
+            """
+        ).Build();
 
-        return CrudHelper.Verify(Source.Replace("{0}", getOperationConfiguration))
+        return CrudHelper.Verify(source)
             .IgnoreGeneratedResult(x => !x.HintName.Equals("CreateTestEntityEndpoint.g.cs"));
     }
 }
