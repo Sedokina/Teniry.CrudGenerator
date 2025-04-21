@@ -21,5 +21,8 @@
         <PackageReference Include="MongoDB.EntityFrameworkCore" Version="8.2.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
+        <PackageReference Include="Mapster" Version="7.4.0" />
+        <PackageReference Include="Teniry.Cqrs" Version="8.0.1" />
+        <PackageReference Include="Teniry.Cqrs.Extended" Version="8.0.1" />
     </ItemGroup>
 </Project>

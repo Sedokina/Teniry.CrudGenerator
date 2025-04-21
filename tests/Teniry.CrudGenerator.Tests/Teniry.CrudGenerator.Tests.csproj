@@ -13,6 +13,7 @@
         <PackageReference Include="FluentAssertions" Version="7.0.0"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
+        <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
         <PackageReference Include="Verify.Xunit" Version="29.2.0" />
         <PackageReference Include="xunit" Version="2.9.3" />
     </ItemGroup>
@@ -25,5 +26,9 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Teniry.CrudGenerator.Abstractions\Teniry.CrudGenerator.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\Teniry.CrudGenerator\Teniry.CrudGenerator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Helpers\snapshots\" />
     </ItemGroup>
 </Project>
