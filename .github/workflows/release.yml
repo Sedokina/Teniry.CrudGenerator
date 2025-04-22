@@ -16,23 +16,48 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       - name: Verify commit exists in origin/main
         run: |
           git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
           git branch --remote --contains | grep origin/main
+          
       - name: Use .NET SDK from global.json
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+          
       - name: Set VERSION variable from tag
         run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+        
       - name: Restore dependencies
         run: dotnet restore
+        
       - name: Build
         run: dotnet build --configuration Release /p:Version=${VERSION} --no-restore
+        
       - name: Test
         run: dotnet test --configuration Release /p:Version=${VERSION} --no-build
+        
       - name: Pack
         run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+        
+      - name: Extract the .nuspec from the .nupkg file
+        run: |
+          mkdir extracted
+          unzip Teniry.CrudGenerator.${VERSION}.nupkg -d extracted
+        
+      - name: Modify the .nuspec file to add dependencies from dependencies.xml
+        run: |
+          # read the dependencies.xml file into variable
+          xmlContent=$(cat src/Teniry.CrudGenerator/nuspec-dependencies.xml)
+         
+          # Insert the xmlContent inside the <dependencies> section of the .nuspec file
+          sed -i "/<dependencies>/r /dev/stdin" extracted/Teniry.CrudGenerator.nuspec <<< "$xmlContent"
+      - name: Repack the modified .nuspec into a .nupkg file
+        run: |
+          rm Teniry.CrudGenerator.${VERSION}.nupkg
+          cd extracted
+          zip -r ../Teniry.CrudGenerator.${VERSION}.nupkg *
       - name: Push
         run: dotnet nuget push Teniry.CrudGenerator.${VERSION}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

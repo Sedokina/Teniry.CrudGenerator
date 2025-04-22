@@ -1,0 +1,5 @@
+<group targetFramework="net8.0">
+    <dependency id="Mapster" version="7.4.0" />
+    <dependency id="Teniry.Cqrs" version="8.0.1" />
+    <dependency id="Teniry.Cqrs.Extended" version="8.0.1" />
+</group>
