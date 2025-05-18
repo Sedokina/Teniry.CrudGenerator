@@ -329,15 +329,15 @@ used to generate names of the classes defined by other properties. But it wouldn
 because it just will be ignored.
 
 ## Patch operation
+
 Generates code to partially update an entity in the database.
 
 Property of `EntityGeneratorConfiguration`: `PatchOperation` of type `EntityGeneratorPatchOperationConfiguration`
 
-
 | Property Name          | Type   | Default value                  | Description                                                                                                |
 |------------------------|--------|--------------------------------|------------------------------------------------------------------------------------------------------------|
 | `Generate`             | bool   | true                           | defines if the operation should be generated at all or not                                                 |
-| `Operation`            | string | Patch                           | name of the operation                                                                                      |
+| `Operation`            | string | Patch                          | name of the operation                                                                                      |
 | `OperationGroup`       | string | Patch{EntityName}              | namespace where all related classes for operation handling will be placed in                               |
 | `CommandName`          | string | Patch{EntityName}Command       | name of the CQRS command class                                                                             |
 | `HandlerName`          | string | Patch{EntityName}Handler       | name of the CQRS command handler class                                                                     |
@@ -351,7 +351,6 @@ Note:
 
 * `Patch` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
 * `{EntityName}` will be replaced with the name of the entity class
-
 
 ### Simple customization example:
 
