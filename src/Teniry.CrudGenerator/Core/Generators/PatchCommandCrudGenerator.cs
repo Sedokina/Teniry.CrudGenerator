@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Teniry.CrudGenerator.Core.Schemes.Entity.Formatters;
@@ -141,15 +142,23 @@ internal class PatchCommandCrudGenerator
             .IfNull("entity", builder => builder.ThrowEntityNotFoundException(EntityScheme.EntityName.ToString()));
 
         foreach (var property in EntityScheme.NotPrimaryKeys) {
+            List<ExpressionSyntax> arguments = [
+                Property("command", property.PropertyName), NameOf(Property("command", property.PropertyName)),
+                ExpressionWithBody(new BlockBuilder().AssignVariable($"entity.{property.PropertyName}", "x").Build())
+            ];
+            
+            if (property.IsNullable) {
+                arguments.Add(
+                    ExpressionWithBody(
+                        new BlockBuilder().AssignVariable($"entity.{property.PropertyName}", "default").Build()
+                    )
+                );
+            }
+
             methodBodyBuilder.CallMethod(
                 "PatchOp",
                 "Handle",
-                [
-                    Property("command", property.PropertyName), NameOf(Property("command", property.PropertyName)),
-                    ExpressionWithBody(
-                        new BlockBuilder().AssignVariable($"entity.{property.PropertyName}", "x").Build()
-                    )
-                ]
+                arguments
             );
         }
 

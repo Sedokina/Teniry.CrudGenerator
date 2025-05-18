@@ -73,4 +73,19 @@ public class PatchCommandCrudGeneratorTests {
 
         return CrudHelper.Verify(source);
     }
+
+    [Fact]
+    public Task Should_GenerateResetForField() {
+        var source = _sutBuilder.WithEntity(
+            "TestEntity",
+            """
+            public class TestEntity {
+                   public int Id { get; set; }
+                   public string? ResetableName { get; set; }
+            }
+            """
+        ).Build();
+
+        return CrudHelper.Verify(source);
+    }
 }
