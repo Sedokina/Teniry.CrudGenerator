@@ -9,6 +9,7 @@ Based on configuration, the generator will generate endpoints and handlers for:
 - Get list operation
 - Get by id operation
 - Update operation
+- Patch operation
 - Delete operation
 
 ## Entity
@@ -311,13 +312,13 @@ Customize all properties of the operation so that all generated classes would ha
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
     public ExampleGeneratorConfiguration() {
         UpdateOperation = new() {
-            OperationGroup = "ManagedEntityUpdateOperationCustomNs",
-            CommandName = "CustomizedNameUpdateManagedEntityCommand",
-            HandlerName = "CustomizedNameUpdateManagedEntityHandler",
-            ViewModelName = "CustomizedNameUpdateManagedEntityViewModel",
-            EndpointClassName = "CustomizedNameUpdateManagedEntityEndpoint",
+            OperationGroup = "CustomOperationNamespace",
+            CommandName = "CustomizedNameForUpdateEntityCommand",
+            HandlerName = "CustomizedNameForUpdateEntityHandler",
+            ViewModelName = "UpdateEntityCustomViewModel",
+            EndpointClassName = "UpdateEntityEndpoint",
             EndpointFunctionName = "RunUpdateAsync",
-            RouteName = "/customizedManagedEntityUpdate/{{id_param_name}}"
+            RouteName = "/update_entity/{{id_param_name}}"
         };
     }
 }
@@ -326,6 +327,66 @@ public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Exampl
 Note: When you override values of all properties you do not need to override `Operation` property, because it is only
 used to generate names of the classes defined by other properties. But it wouldn't be a mistake to override it as well,
 because it just will be ignored.
+
+## Patch operation
+Generates code to partially update an entity in the database.
+
+Property of `EntityGeneratorConfiguration`: `PatchOperation` of type `EntityGeneratorPatchOperationConfiguration`
+
+
+| Property Name          | Type   | Default value                  | Description                                                                                                |
+|------------------------|--------|--------------------------------|------------------------------------------------------------------------------------------------------------|
+| `Generate`             | bool   | true                           | defines if the operation should be generated at all or not                                                 |
+| `Operation`            | string | Patch                           | name of the operation                                                                                      |
+| `OperationGroup`       | string | Patch{EntityName}              | namespace where all related classes for operation handling will be placed in                               |
+| `CommandName`          | string | Patch{EntityName}Command       | name of the CQRS command class                                                                             |
+| `HandlerName`          | string | Patch{EntityName}Handler       | name of the CQRS command handler class                                                                     |
+| `GenerateEndpoint`     | bool   | true                           | defines if the endpoint should be generated at all or not                                                  |
+| `EndpointClassName`    | string | Patch{EntityName}Endpoint      | name of the class that will contain the endpoint function                                                  |
+| `EndpointFunctionName` | string | PatchAsync                     | name of the function that will be called when the endpoint is hit                                          |
+| `RouteName`            | string | /{EntityName}/{EntityId}/patch | name of the route that will be used to call the endpoint                                                   |
+| `ViewModelName`        | string | Patch{EntityName}Vm            | name of the view model class that is accepted in the body of the endpoint and is used to update the entity |
+
+Note:
+
+* `Patch` text is taken from the `Operation`, and would be replaced if the other `Operation` value provided
+* `{EntityName}` will be replaced with the name of the entity class
+
+
+### Simple customization example:
+
+Customize `Operation` so that all generated classes would have `PartiallyUpdate` as a name of the operation instead of
+`Patch`.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        PatchOperation = new() {
+            Operation = "PartiallyUpdate"
+        };
+    }
+}
+```
+
+### Full customization example:
+
+Customize all properties of the operation so that all generated classes would have custom names.
+
+```csharp
+public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
+    public ExampleGeneratorConfiguration() {
+        PatchOperation = new() {
+            OperationGroup = "CustomOperationNamespace",
+            CommandName = "CustomizedNameForPatchEntityCommand",
+            HandlerName = "CustomizedNameForPatchEntityHandler",
+            ViewModelName = "PatchEntityCustomViewModel",
+            EndpointClassName = "PatchEntityEndpoint",
+            EndpointFunctionName = "RunPatchAsync",
+            RouteName = "/patch_entity/{{id_param_name}}"
+        };
+    }
+}
+```
 
 ## Delete operation
 
@@ -373,12 +434,12 @@ Customize all properties of the operation so that all generated classes would ha
 public class ExampleGeneratorConfiguration : EntityGeneratorConfiguration<Example> {
     public ExampleGeneratorConfiguration() {
         DeleteOperation = new() {
-            OperationGroup = "ManagedEntityDeleteOperationCustomNs",
-            CommandName = "CustomizedNameDeleteManagedEntityCommand",
-            HandlerName = "CustomizedNameDeleteManagedEntityHandler",
-            EndpointClassName = "CustomizedNameDeleteManagedEntityEndpoint",
+            OperationGroup = "CustomOperationNamespace",
+            CommandName = "CustomizedNameForDeleteEntityCommand",
+            HandlerName = "CustomizedNameForDeleteEntityHandler",
+            EndpointClassName = "DeleteEntityEndpoint",
             EndpointFunctionName = "RunDeleteAsync",
-            RouteName = "/customizedManagedEntityDelete/{{entity_name}}/{{id_param_name}}"
+            RouteName = "/delete_{{entity_name}}/{{id_param_name}}"
         };
     }
 }
